@@ -22,6 +22,10 @@ const Committee: NextPage = () => {
     markedCells.push(x);
   }
 
+  function resetCells() {
+    markedCells = [];
+  }
+
   function updateCommittee(e: BaseSyntheticEvent) {
     committee = e.target.value;
   }
@@ -48,8 +52,7 @@ const Committee: NextPage = () => {
         className="text-center"
         style={{ width: "300px", margin: "0 auto" }}
       >
-       
-        <div style={{ margin: "0 auto" }}>
+        <div style={{ margin: "0 auto 15px" }}>
           <label
             htmlFor="first_name"
             className="block mb-2 mt-4 text-m font-medium text-black"
@@ -62,7 +65,7 @@ const Committee: NextPage = () => {
             }}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            {["Appkom", "Arrkom", "Bedkom", "Realfagskjelleren"].map((c) => {
+            {["Arrkom",	"Appkom",	"Bedkom",	"Dotkom",	"Fagkom",	"Online IL",	"Prokom",	"Trikom",	"Realfagskjelleren"].map((c) => {
               return (
                 <option key={c} value={c.toLowerCase()}>
                   {c}
@@ -70,7 +73,8 @@ const Committee: NextPage = () => {
               );
             })}
           </select>
-        </div> <div style={{ margin: "0 auto" }}>
+        </div>{" "}
+        <div style={{ margin: "0 auto" }}>
           <label className="block mb-2 text-m font-medium text-black">
             Passord
           </label>
@@ -85,7 +89,6 @@ const Committee: NextPage = () => {
         <label className="block mb-2 mt-5 text-m font-medium text-black">
           Fyll ut ledige tider før du sender.
         </label>
-
         <button
           type="submit"
           onChange={(e) => {
@@ -99,7 +102,9 @@ const Committee: NextPage = () => {
       <header className="text-center">
         <h2 className="text-2xl font-bold mt-5 mb-6">Uke 34?</h2>
       </header>
+
       <Whentomeet
+        resetCells={() => resetCells()}
         removeCell={(cell: string[]) => removeCell(cell)}
         addCell={(cell: string[]) => addCell(cell)}
       />
