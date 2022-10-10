@@ -2,8 +2,29 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import prisma from '../lib/prisma';
+import Post, { PostProps } from '../components/Post';
 
-const Home: NextPage = () => {
+export async function getStaticProps() {
+  const feed = await prisma.post.findMany({
+    where: { published: true },
+    include: {
+      author: {
+        select: { name: true },
+      },
+    },
+  });
+  console.log(feed);
+  return {
+    props: { feed },
+    revalidate: 10,
+  };
+}
+
+
+
+
+const Home: NextPage = (props) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -13,6 +34,11 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
+        {
+          props.feed.map((item)=>(
+            <p>{item.title}</p>
+          ))
+        }
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
