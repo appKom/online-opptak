@@ -2,16 +2,40 @@ import type { NextPage } from "next";
 import { BaseSyntheticEvent } from "react";
 import Whentomeet from "../components/committee/whentomeet";
 import styles from "../styles/committee.module.css";
+import Router from 'next/router';
 
 interface Interview {
   day: string;
   time: string;
 }
 
+
 const Committee: NextPage = () => {
   let markedCells: Interview[] = [];
   let committee: string = "";
   let password: string = "";
+
+  const committees = ["Arrkom",	"Appkom",	"Bedkom",	"Dotkom",	"Fagkom",	"Online IL",	"Prokom",	"Trikom",	"Realfagskjelleren"];
+
+  async function submit(e: BaseSyntheticEvent) {
+    e.preventDefault();
+    committee = (committee ? committee : committees[0]);
+    console.log(committee)
+    console.log(password)
+    try {
+      const body = { committee, password };
+      await fetch('/api/committee', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+    
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
 
   function removeCell(cell: string[]) {
     var x: Interview = { day: cell[0], time: cell[1] };
@@ -29,9 +53,12 @@ const Committee: NextPage = () => {
   function updateCommittee(e: BaseSyntheticEvent) {
     committee = e.target.value;
   }
+
   function updatePassword(e: BaseSyntheticEvent) {
     password = e.target.value;
   }
+
+  
 
   return (
     <div style={{ marginBottom: "50px" }}>
@@ -65,7 +92,7 @@ const Committee: NextPage = () => {
             }}
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
-            {["Arrkom",	"Appkom",	"Bedkom",	"Dotkom",	"Fagkom",	"Online IL",	"Prokom",	"Trikom",	"Realfagskjelleren"].map((c) => {
+            {committees.map((c) => {
               return (
                 <option key={c} value={c.toLowerCase()}>
                   {c}
@@ -80,10 +107,14 @@ const Committee: NextPage = () => {
           </label>
 
           <input
-            type="text"
+           onChange={(e) => {
+            updatePassword(e);
+          }}
+            type="password"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Passord"
             required
+            
           ></input>
         </div>
         <label className="block mb-2 mt-5 text-m font-medium text-black">
@@ -91,9 +122,7 @@ const Committee: NextPage = () => {
         </label>
         <button
           type="submit"
-          onChange={(e) => {
-            updatePassword(e);
-          }}
+          onClick={(e: BaseSyntheticEvent)=>{submit(e)}}
           className="text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
         >
           Lagre og send

@@ -5,6 +5,7 @@ import styles from '../styles/Home.module.css'
 import prisma from '../lib/prisma';
 import Post, { PostProps } from '../components/Post';
 
+/*
 export async function getStaticProps() {
   const feed = await prisma.post.findMany({
     where: { published: true },
@@ -20,7 +21,7 @@ export async function getStaticProps() {
     revalidate: 10,
   };
 }
-
+*/
 
 interface PrismaPost {
   id: string;
@@ -29,11 +30,6 @@ interface PrismaPost {
   published: boolean;
   author: string;
   authorId:  { name: string };
-}
-
-interface SP {
-  feed: PrismaPost[];
-  revalidate: Number;
 }
 
 
