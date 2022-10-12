@@ -22,9 +22,26 @@ export async function getStaticProps() {
 }
 
 
+interface PrismaPost {
+  id: string;
+  title: String;
+  content: string;
+  published: boolean;
+  author: string;
+  authorId:  { name: string };
+}
+
+interface SP {
+  feed: PrismaPost[];
+  revalidate: Number;
+}
+
+
 
 
 const Home: NextPage = (props) => {
+  
+
   return (
     <div className={styles.container}>
       <Head>
@@ -35,7 +52,7 @@ const Home: NextPage = (props) => {
 
       <main className={styles.main}>
         {
-          props.feed.map((item)=>(
+          props.feed.map((item: PrismaPost)=>(
             <p>{item.title}</p>
           ))
         }

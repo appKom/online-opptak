@@ -1,7 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -11,21 +10,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Post {
-  id        String     @default(cuid()) @id
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User?   @relation(fields: [authorId], references: [id])
-  authorId  String?
+model Committee {
+  id       String @id @default(cuid())
+  name     String
+  password String
+  interviews Interview[]
 }
 
-model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  posts         Post[]
-  @@map(name: "users")
+model Applicant {
+  id    String @id @default(cuid())
+  mail  String
+  name  String
+  about String
+  interviews Interview[]
+}
+
+model Interview {
+  id          String     @id @default(cuid())
+  applicant   Applicant? @relation(fields: [applicantID], references: [id])
+  applicantID String?
+  committee   Committee? @relation(fields: [committeeID], references: [id])
+  committeeID String?
+  time        String?
 }
