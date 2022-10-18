@@ -45,7 +45,7 @@ class OpptaksForm extends React.Component<State> {
       <div>
         <header className="mt-5">
           <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">
-            Komitésøknad 2023
+            Komitésøknad 2023 test test test
           </h2>
         </header>
         <form>
