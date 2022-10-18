@@ -1,24 +1,24 @@
-import * as React from 'react';
+import * as React from "react";
 
 interface Props {
-  updateInputValues: Function,
-    label: string,
-    id: string
+  updateInputValues: Function;
+  label: string;
+  id: string;
 }
- 
-class TextAreaComponent extends React.Component<Props> {
 
-    handleInputChange = (e: HTMLTextAreaElement) => {
-      this.props.updateInputValues(this.props.id, e.value);
-    }
-    render() { 
-        return ( <div className="flex justify-center" key={this.props.id}>
+class TextAreaComponent extends React.Component<Props> {
+  handleInputChange = (e: HTMLTextAreaElement) => {
+    this.props.updateInputValues(this.props.id, e.value);
+  };
+  render() {
+    return (
+      <div className="flex justify-center" key={this.props.id}>
         <div className="mb-3 xl:w-96">
           <label className="form-label inline-block mb-2 text-gray-700">
             {this.props.label}
           </label>
           <textarea
-            style={{resize: "none"}}
+            style={{ resize: "none" }}
             rows={6}
             className="form-control
             block
@@ -36,16 +36,16 @@ class TextAreaComponent extends React.Component<Props> {
             m-0
             focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none
           "
-  
-            id= {this.props.id}
+            id={this.props.id}
             onChange={(e) => {
               this.handleInputChange(e.target);
             }}
             required
           ></textarea>
         </div>
-      </div> );
-    }
+      </div>
+    );
+  }
 }
- 
-export default TextAreaComponent
+
+export default TextAreaComponent;

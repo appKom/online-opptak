@@ -14,7 +14,9 @@ interface Props {
 function W2MRow(props: Props) {
   return (
     <div style={{ display: "flex" }} className={styles.row}>
-      <div className={`${styles.cell_timecell} text-xl font-bold`}>{props.time}</div>
+      <div className={`${styles.cell_timecell} text-xl font-bold`}>
+        {props.time}
+      </div>
       {arrayOfLength(5).map((i) => {
         let day = ["monday", "tuesday", "wednesday", "thursday", "friday"][i];
         return (

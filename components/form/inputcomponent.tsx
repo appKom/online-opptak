@@ -36,7 +36,6 @@ class InputComponent extends React.Component<Props> {
     focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
             id={this.props.id}
             onChange={(e) => {
-   
               this.handleInputChange(e.target);
             }}
             required

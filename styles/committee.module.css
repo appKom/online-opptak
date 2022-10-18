@@ -1,82 +1,73 @@
 .cell {
-    height: 50px;
-    width: 180px;
-    border-bottom: .5px solid black;
-    border-right: .5px solid black;
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #F7F6DC;
+  height: 50px;
+  width: 180px;
+  border-bottom: 0.5px solid black;
+  border-right: 0.5px solid black;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f6dc;
 }
 .cell::selection {
-    background-color: unset;
-    color: unset;
+  background-color: unset;
+  color: unset;
 }
 .cell_timecell {
-    height: 50px;
-    width: 180px;
-    border-bottom: .5px solid black;
-    border-right: .5px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 700;
-    background-color: #7FB77E;
-   
+  height: 50px;
+  width: 180px;
+  border-bottom: 0.5px solid black;
+  border-right: 0.5px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  background-color: #7fb77e;
 }
-.cell_timecell::selection, .cell_headercell::selection {
-    background-color: #7FB77E;
+.cell_timecell::selection,
+.cell_headercell::selection {
+  background-color: #7fb77e;
 }
 
 .cell_headercell {
-    height: 50px;
-    width: 180px;
-    border-bottom: .5px solid black;
-    border-right: .5px solid black;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 700;
-    background-color: #7FB77E;
- 
+  height: 50px;
+  width: 180px;
+  border-bottom: 0.5px solid black;
+  border-right: 0.5px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  background-color: #7fb77e;
 }
 
-
-.row { 
-    display: "flex";
+.row {
+  display: "flex";
 }
-
 
 .w2m_maincontainer {
-    
-    display: flex;
-    margin-top: 50px;
-    align-items: center;
-    flex-direction: column;
-
-
-
+  display: flex;
+  margin-top: 50px;
+  align-items: center;
+  flex-direction: column;
 }
 
 .committee_select {
-    border: .5px solid;
-  
-    margin: 0 auto;
+  border: 0.5px solid;
+
+  margin: 0 auto;
 }
 
 .interviewlengthselect {
-    text-align: center;
-    
+  text-align: center;
 }
-.interviewlengthselect>label {
-    font-size: 22px;
-    margin-right: 10px;
+.interviewlengthselect > label {
+  font-size: 22px;
+  margin-right: 10px;
 }
-.interviewlengthselect>select {
-    padding: 4px;
-    font-size: 20px;
-    border: .5px solid; 
-    border-radius: 10%;
+.interviewlengthselect > select {
+  padding: 4px;
+  font-size: 20px;
+  border: 0.5px solid;
+  border-radius: 10%;
 }
