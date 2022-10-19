@@ -25,13 +25,11 @@ function Whentomeet(props: Props) {
   function updateInterviewInterval(e: BaseSyntheticEvent) {
     setInterviewInterval(parseInt(e.target.value));
     props.resetCells();
-    let cells = document.querySelectorAll<HTMLElement>('.cell');
-    for (let i = 0; i< cells.length; i++) {
+    let cells = document.querySelectorAll<HTMLElement>(".cell");
+    for (let i = 0; i < cells.length; i++) {
       cells[i].style.backgroundColor = "#F7F6DC";
       cells[i].innerText = "";
     }
-    
-   
   }
 
   return (
@@ -42,9 +40,8 @@ function Whentomeet(props: Props) {
           onChange={(e: BaseSyntheticEvent) => updateInterviewInterval(e)}
           name=""
           id=""
-          
         >
-           <option value={"20"} key={"20"}>
+          <option value={"20"} key={"20"}>
             20 min
           </option>
           <option value={"15"} key={"15"}>
@@ -61,8 +58,8 @@ function Whentomeet(props: Props) {
         onMouseUp={() => setMouseDown(0)}
       >
         <W2MRowHeader />
-        {arrayOfLength(8 * (60/interviewInterval) - 1).map((i) => {
-          let time: number = interviewInterval + 8 * 60 + i * interviewInterval; // 
+        {arrayOfLength(8 * (60 / interviewInterval) - 1).map((i) => {
+          let time: number = interviewInterval + 8 * 60 + i * interviewInterval; //
           return (
             <W2MRow
               removeCell={(cell: string[]) => props.removeCell(cell)}

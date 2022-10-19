@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useState, useEffect  } from "react";
+import React, { BaseSyntheticEvent, useState, useEffect } from "react";
 import styles from "../../styles/committee.module.css";
 
 interface Props {
@@ -12,8 +12,6 @@ interface Props {
 function W2MCell(props: Props) {
   const markedColor = "rgb(177, 215, 180)";
   const unMarkedColor = "#F7F6DC";
-
-
 
   function handleMouseOver(e: BaseSyntheticEvent, ignore?: boolean) {
     if (props.mouseDown || ignore) {
