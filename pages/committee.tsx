@@ -4,27 +4,32 @@ import Whentomeet from "../components/committee/whentomeet";
 import styles from "../styles/committee.module.css";
 import Router from 'next/router';
 
+
 interface Interview {
-  day: string;
+  date: string;
   time: string;
 }
+
 
 
 const Committee: NextPage = () => {
   let markedCells: Interview[] = [];
   let committee: string = "";
   let password: string = "";
-
   const committees = ["Arrkom",	"Appkom",	"Bedkom",	"Dotkom",	"Fagkom",	"Online IL",	"Prokom",	"Trikom",	"Realfagskjelleren"];
-
+  
+  let days: string[] = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+  let dates: string[] = ['22.08', '23.08', '24.08', '25.08', '26.08'];
+  
   async function submit(e: BaseSyntheticEvent) {
+    console.log(markedCells)
     e.preventDefault();
     committee = (committee ? committee : committees[0]);
     console.log(committee)
     console.log(password)
     try {
-      const body = { committee, password };
-      await fetch('/api/committee', {
+      const body = { committee, password, interviews: markedCells };
+      await fetch('/api/committee_POST', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -38,11 +43,13 @@ const Committee: NextPage = () => {
 
 
   function removeCell(cell: string[]) {
-    var x: Interview = { day: cell[0], time: cell[1] };
+   
+    var x: Interview = { date: dates[days.indexOf(cell[0])], time: cell[1] };
     markedCells.splice(markedCells.indexOf(x), 1);
   }
   function addCell(cell: string[]) {
-    var x: Interview = { day: cell[0], time: cell[1] };
+  
+    var x: Interview = { date: dates[days.indexOf(cell[0])], time: cell[1] };
     markedCells.push(x);
   }
 
@@ -105,7 +112,7 @@ const Committee: NextPage = () => {
           <label className="block mb-2 text-m font-medium text-black">
             Passord
           </label>
-
+    
           <input
            onChange={(e) => {
             updatePassword(e);

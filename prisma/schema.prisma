@@ -1,35 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model Committee {
-  id       String @id @default(cuid())
-  name     String
-  password String
+  id         String      @id @default(cuid())
+  name       String
+  password   String
   interviews Interview[]
 }
 
 model Applicant {
-  id    String @id @default(cuid())
-  mail  String
-  name  String
-  about String
+  id         String      @id @default(cuid())
+  mail       String
+  name       String
+  about      String
   interviews Interview[]
 }
 
 model Interview {
   id          String     @id @default(cuid())
-  applicant   Applicant? @relation(fields: [applicantID], references: [id])
   applicantID String?
-  committee   Committee? @relation(fields: [committeeID], references: [id])
   committeeID String?
   time        String?
+  applicant   Applicant? @relation(fields: [applicantID], references: [id])
+  committee   Committee? @relation(fields: [committeeID], references: [id])
 }
