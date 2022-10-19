@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Committee {
+  id         String      @id @default(cuid())
+  name       String
+  password   String
+  interviews Interview[]
+}
+
+model Applicant {
+  id         String      @id @default(cuid())
+  mail       String
+  name       String
+  about      String
+  interviews Interview[]
+}
+
+model Interview {
+  id          String     @id @default(cuid())
+  applicantID String?
+  committeeID String?
+  time        String?
+  applicant   Applicant? @relation(fields: [applicantID], references: [id])
+  committee   Committee? @relation(fields: [committeeID], references: [id])
+}
