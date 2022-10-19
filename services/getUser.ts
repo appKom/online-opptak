@@ -1,7 +1,7 @@
-import axios from "axios";
 import { IUser } from "../types";
-export function getUser(): Promise<IUser> {
-  return axios("/api/user").then((result) => result.data);
-}
+import axiosClient from "./apiClient";
+const getUser: () => Promise<IUser | Error> = () => {
+  return axiosClient.get("/user").then((res) => res.data);
+};
 
 export default getUser;
