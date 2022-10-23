@@ -13,9 +13,21 @@ export default async function handler(
   let arr: Applicant[] | null = await prisma.applicant.findMany({
     where: {
       OR: [
-        { committeechoice1: committee },
-        { committeechoice2: committee },
-        { committeechoice3: committee },
+        {
+          committeechoice1: {
+            contains: committee,
+          },
+        },
+        {
+          committeechoice2: {
+            contains: committee,
+          },
+        },
+        {
+          committeechoice3: {
+            contains: committee,
+          },
+        },
       ],
     },
   });
