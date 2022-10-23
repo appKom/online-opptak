@@ -4,12 +4,15 @@ export interface IUser {
 }
 
 export interface DBapplicant {
-  id:               String;
-  feminit:          Boolean;
-  about:            String;
-  bankkom:          Boolean;
-  email:            String;
-  informatikkyear:  Number;
-  name:             String;
-  phone:            String;
+  id: String;
+  feminit: Boolean;
+  about: String;
+  bankkom: Boolean;
+  committeechoice1: String;
+  committeechoice2: String;
+  committeechoice3: String;
+  email: String;
+  informatikkyear: Number;
+  name: String;
+  phone: String;
 }
