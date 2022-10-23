@@ -1,28 +1,18 @@
-import React from 'react'
+import React from "react";
+import { DBapplicant } from "../../types";
 
 interface Props {
-    data: {
-        navn: String,
-        epost: String,
-        telefon: String,
-        omdegselv: String,
-        informatikkar: Number,
-        komitevalg1: String,
-        komitevalg2: String,
-        komitevalg3: String,
-        okonomiansvarliginteresse: Boolean,
-        feminit: Boolean
-    }
+  data: DBapplicant;
 }
 
 const Applicantrow = (props: Props) => {
   return (
-    <tr> {/* En rad i tabellen */}
-        <td className="p-1">{props.data.navn}</td>
-        <td className="p-1">{props.data.epost}</td>
-        <td className="p-1">{props.data.telefon}</td>
+    <tr>
+      <td className="p-1">{props.data.name}</td>
+      <td className="p-1">{props.data.email}</td>
+      <td className="p-1">{props.data.phone}</td>
     </tr>
-  )
-}
+  );
+};
 
-export default Applicantrow
+export default Applicantrow;
