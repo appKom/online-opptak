@@ -9,6 +9,7 @@ interface Props {
   removeCell: Function;
   addCell: Function;
   resetCells: Function;
+  dates: { date: string; day: string }[];
 }
 
 function Whentomeet(props: Props) {
@@ -34,34 +35,17 @@ function Whentomeet(props: Props) {
 
   return (
     <div>
-      <div className={styles.interviewlengthselect}>
-        <label htmlFor="">Intervjulengde: </label>
-        <select
-          onChange={(e: BaseSyntheticEvent) => updateInterviewInterval(e)}
-          name=""
-          id=""
-        >
-          <option value={"20"} key={"20"}>
-            20 min
-          </option>
-          <option value={"15"} key={"15"}>
-            15 min
-          </option>
-          <option value={"30"} key={"30"}>
-            30 min
-          </option>
-        </select>
-      </div>
       <div
         className={styles.w2m_maincontainer}
         onMouseDown={() => setMouseDown(1)}
         onMouseUp={() => setMouseDown(0)}
       >
-        <W2MRowHeader />
+        <W2MRowHeader dates={props.dates} />
         {arrayOfLength(8 * (60 / interviewInterval) - 1).map((i) => {
           let time: number = interviewInterval + 8 * 60 + i * interviewInterval; //
           return (
             <W2MRow
+              dates={props.dates}
               removeCell={(cell: string[]) => props.removeCell(cell)}
               addCell={(cell: string[]) => props.addCell(cell)}
               mouseDown={mouseDown}

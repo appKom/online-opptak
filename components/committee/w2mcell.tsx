@@ -5,7 +5,7 @@ interface Props {
   mouseDown: number;
   removeCell: Function;
   addCell: Function;
-  day: string;
+  date: string;
   time: string;
 }
 
@@ -16,15 +16,14 @@ function W2MCell(props: Props) {
   function handleMouseOver(e: BaseSyntheticEvent, ignore?: boolean) {
     if (props.mouseDown || ignore) {
       let div: HTMLDivElement = e.target;
-      console.log(div.innerText);
       if (div.style.backgroundColor == markedColor) {
         div.innerText = "";
         div.style.backgroundColor = unMarkedColor;
-        props.removeCell([props.day, props.time]);
+        props.removeCell([props.date, props.time]);
       } else {
         div.innerText = "x";
         div.style.backgroundColor = markedColor;
-        props.addCell([props.day, props.time]);
+        props.addCell([props.date, props.time]);
       }
     }
   }
