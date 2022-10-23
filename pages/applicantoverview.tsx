@@ -5,7 +5,7 @@ import getApplicants from "../services/getApplicants";
 import { DBapplicant } from "../types";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 
-const applicantoverview: NextPage = () => {
+const ApplicantOverview: NextPage = () => {
   let applicants: String[] = ["Viktor", "Aksel", "David"];
   const { isLoading, isError, isSuccess, data } = useQuery<
     { applicants: DBapplicant[] },
@@ -40,4 +40,4 @@ const applicantoverview: NextPage = () => {
   );
 };
 
-export default applicantoverview;
+export default ApplicantOverview;
