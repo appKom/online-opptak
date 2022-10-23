@@ -4,16 +4,17 @@ import Applicantrow from "../components/applicantoverview/applicantrow";
 import getApplicants from "../services/getApplicants";
 import { DBapplicant } from "../types";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { Applicant } from "@prisma/client";
 
 const ApplicantOverview: NextPage = () => {
   let applicants: String[] = ["Viktor", "Aksel", "David"];
   const { isLoading, isError, isSuccess, data } = useQuery<
-    { applicants: DBapplicant[] },
+    { applicants: Applicant[] },
     Error
   >([], getApplicants);
 
   const handleApplicantsRequest = (
-    data: { applicants: DBapplicant[] } | undefined
+    data: { applicants: Applicant[] } | undefined
   ) => {
     console.log(data);
     if (data) {
