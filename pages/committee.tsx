@@ -1,9 +1,11 @@
 import type { NextPage } from "next";
-import { BaseSyntheticEvent } from "react";
+import { BaseSyntheticEvent, useEffect } from "react";
 import Whentomeet from "../components/committee/whentomeet";
 import styles from "../styles/committee.module.css";
-import Router from "next/router";
 import { useState } from "react";
+import getValidDates from "../services/getValidDates";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
+import { ValidDates } from "../types";
 
 interface Interview {
   date: string;
@@ -24,36 +26,52 @@ const Committee: NextPage = () => {
 
   const committee = "appkom";
   // Data from OW
-  const dates: string[][] = [
-    ["28.08", "29.08", "30.08", "31.08", "1.09"],
-    ["4.09", "5.09", "6.09", "7.09", "8.09"],
-  ];
+  const { isLoading, isError, isSuccess, data } = useQuery<
+    { dates: ValidDates },
+    Error
+  >([], getValidDates);
+
   const year: string = "2023";
 
-  const addDayToDate = (dates: string[][]) => {
-    let d = [];
-    for (let i of dates) {
-      let week = [];
-      for (let j of i) {
-        const dd = new Date(
-          parseInt(year),
-          parseInt(j.split(".")[1]),
-          parseInt(j.split(".")[0])
-        );
+  const handleValidDatesRequest = (data: { dates: ValidDates } | undefined) => {
+    if (!data) {
+      return <p>Error</p>;
+    } else {
+      const dates = data.dates;
+      let d: { date: string; day: string }[][] = [];
+      for (let i of dates.dates) {
+        let week = [];
+        for (let j of i) {
+          const dd = new Date(
+            parseInt(year),
+            parseInt(j.split(".")[1]),
+            parseInt(j.split(".")[0])
+          );
 
-        const ddd = {
-          date: j,
-          day: ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag"][
-            i.indexOf(j)
-          ],
-        };
-        week.push(ddd);
+          const ddd = {
+            date: j,
+            day: ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag"][
+              i.indexOf(j)
+            ],
+          };
+          week.push(ddd);
+        }
+        d.push(week);
       }
-      d.push(week);
+      return d.map((w) => {
+        return (
+          <Whentomeet
+            key={d.indexOf(w).toString()}
+            dates={w}
+            resetCells={() => resetCells()}
+            removeCell={(cell: string[]) => removeCell(cell)}
+            addCell={(cell: string[]) => addCell(cell)}
+            interviewInterval={interviewInterval}
+          />
+        );
+      });
     }
-    return d;
   };
-  const datesWithDay: { date: string; day: string }[][] = addDayToDate(dates);
 
   async function submit(e: BaseSyntheticEvent) {
     e.preventDefault();
@@ -102,6 +120,7 @@ const Committee: NextPage = () => {
     password = e.target.value;
   }
   */
+  useEffect(() => {}, []);
 
   return (
     <div style={{ marginBottom: "50px" }}>
@@ -195,18 +214,7 @@ const Committee: NextPage = () => {
           </option>
         </select>
       </div>
-      {datesWithDay.map((w) => {
-        return (
-          <Whentomeet
-            key={datesWithDay.indexOf(w).toString()}
-            dates={w}
-            resetCells={() => resetCells()}
-            removeCell={(cell: string[]) => removeCell(cell)}
-            addCell={(cell: string[]) => addCell(cell)}
-            interviewInterval={interviewInterval}
-          />
-        );
-      })}
+      {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)}
     </div>
   );
 };

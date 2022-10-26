@@ -16,3 +16,8 @@ export interface DBapplicant {
   name: String;
   phone: String;
 }
+
+export interface ValidDates {
+  year: string;
+  dates: string[][];
+}
