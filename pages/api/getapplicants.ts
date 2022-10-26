@@ -31,6 +31,6 @@ export default async function handler(
       ],
     },
   });
-  console.log(arr);
+
   res.status(200).json({ applicants: arr });
 }

@@ -8,7 +8,7 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 
-const applicantoverview: NextPage = () => {
+const ApplicantOverview: NextPage = () => {
   const { isLoading, isError, isSuccess, data } = useQuery<
     { applicants: DBapplicant[] },
     Error
@@ -68,4 +68,4 @@ const applicantoverview: NextPage = () => {
   );
 };
 
-export default applicantoverview;
+export default ApplicantOverview;
