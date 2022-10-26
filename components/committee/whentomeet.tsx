@@ -10,27 +10,17 @@ interface Props {
   addCell: Function;
   resetCells: Function;
   dates: { date: string; day: string }[];
+  interviewInterval: number;
 }
 
 function Whentomeet(props: Props) {
   const [mouseDown, setMouseDown] = useState(0);
-  const [interviewInterval, setInterviewInterval] = useState(20);
 
   function minutesToTimeString(m: number): string {
     // ex: 120 -> 2:00, 620 -> 10:20
     let hour: number = Math.floor(m / 60);
     let minute: number = m % 60;
     return minute == 0 ? `${hour}:00` : `${hour}:${minute.toString()}`;
-  }
-
-  function updateInterviewInterval(e: BaseSyntheticEvent) {
-    setInterviewInterval(parseInt(e.target.value));
-    props.resetCells();
-    let cells = document.querySelectorAll<HTMLElement>(".cell");
-    for (let i = 0; i < cells.length; i++) {
-      cells[i].style.backgroundColor = "#F7F6DC";
-      cells[i].innerText = "";
-    }
   }
 
   return (
@@ -41,8 +31,9 @@ function Whentomeet(props: Props) {
         onMouseUp={() => setMouseDown(0)}
       >
         <W2MRowHeader dates={props.dates} />
-        {arrayOfLength(8 * (60 / interviewInterval) - 1).map((i) => {
-          let time: number = interviewInterval + 8 * 60 + i * interviewInterval; //
+        {arrayOfLength(8 * (60 / props.interviewInterval) - 1).map((i) => {
+          let time: number =
+            props.interviewInterval + 8 * 60 + i * props.interviewInterval; //
           return (
             <W2MRow
               dates={props.dates}
@@ -50,7 +41,7 @@ function Whentomeet(props: Props) {
               addCell={(cell: string[]) => props.addCell(cell)}
               mouseDown={mouseDown}
               time={`${minutesToTimeString(time)} - ${minutesToTimeString(
-                time + interviewInterval
+                time + props.interviewInterval
               )}`}
               key={i.toString()}
             />

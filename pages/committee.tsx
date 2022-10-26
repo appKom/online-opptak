@@ -13,6 +13,7 @@ interface Interview {
 const Committee: NextPage = () => {
   let markedCells: Interview[] = [];
   const [interviewInterval, setInterviewInterval] = useState(20);
+
   /*
   let committee: string = "";
   let password: string = "";
@@ -85,6 +86,7 @@ const Committee: NextPage = () => {
   function updateInterviewInterval(e: BaseSyntheticEvent) {
     setInterviewInterval(parseInt(e.target.value));
     resetCells();
+
     let cells = document.querySelectorAll<HTMLElement>(".cell");
     for (let i = 0; i < cells.length; i++) {
       cells[i].style.backgroundColor = "#F7F6DC";
@@ -201,6 +203,7 @@ const Committee: NextPage = () => {
             resetCells={() => resetCells()}
             removeCell={(cell: string[]) => removeCell(cell)}
             addCell={(cell: string[]) => addCell(cell)}
+            interviewInterval={interviewInterval}
           />
         );
       })}
