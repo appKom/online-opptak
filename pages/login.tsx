@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import Image from "next/future/Image";
+import Image from "next/Image";
 import { useState } from "react";
 
 const Login: NextPage = (props)=>{
