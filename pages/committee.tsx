@@ -2,6 +2,9 @@ import type { NextPage } from "next";
 import { BaseSyntheticEvent, useEffect } from "react";
 import Whentomeet from "../components/committee/whentomeet";
 import styles from "../styles/committee.module.css";
+import Router from 'next/router';
+import Navbar from "../components/navbar";
+
 import { useState } from "react";
 import getValidDates from "../services/getValidDates";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
@@ -124,6 +127,7 @@ const Committee: NextPage = () => {
 
   return (
     <div style={{ marginBottom: "50px" }}>
+      <Navbar />
       <header className="text-center">
         <h2 className="text-5xl font-bold mt-5 mb-6">
           Legg inn ledige tider for intervjuer
