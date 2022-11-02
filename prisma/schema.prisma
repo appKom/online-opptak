@@ -15,18 +15,27 @@ model Committee {
 }
 
 model Applicant {
-  id         String      @id @default(cuid())
-  mail       String
-  name       String
-  about      String
-  interviews Interview[]
+  id               String      @id @default(cuid())
+  feminit          Boolean
+  about            String
+  bankkom          Boolean
+  committeechoice1 String
+  committeechoice2 String
+  committeechoice3 String
+  email            String
+  informatikkyear  Int
+  name             String
+  phone            String
+  interviews       Interview[]
 }
 
 model Interview {
   id          String     @id @default(cuid())
   applicantID String?
   committeeID String?
-  time        String?
+  date        String?
+  fromTime    String?
+  toTime      String?
   applicant   Applicant? @relation(fields: [applicantID], references: [id])
   committee   Committee? @relation(fields: [committeeID], references: [id])
 }
