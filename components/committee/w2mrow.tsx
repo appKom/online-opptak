@@ -5,6 +5,7 @@ import styles from "../../styles/committee.module.css";
 
 interface Props {
   time: string;
+  dates: { date: string; day: string }[];
   header?: boolean;
   mouseDown: number;
   addCell: Function;
@@ -17,12 +18,11 @@ function W2MRow(props: Props) {
       <div className={`${styles.cell_timecell} text-xl font-bold`}>
         {props.time}
       </div>
-      {arrayOfLength(5).map((i) => {
-        let day = ["monday", "tuesday", "wednesday", "thursday", "friday"][i];
+      {props.dates.map((i) => {
         return (
           <W2MCell
-            key={i}
-            day={day}
+            key={i.date.toString()}
+            date={i.date}
             time={props.time}
             removeCell={(cell: string[]) => props.removeCell(cell)}
             addCell={(cell: string[]) => props.addCell(cell)}

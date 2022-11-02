@@ -33,7 +33,9 @@ model Interview {
   id          String     @id @default(cuid())
   applicantID String?
   committeeID String?
-  time        String?
+  date        String?
+  fromTime    String?
+  toTime      String?
   applicant   Applicant? @relation(fields: [applicantID], references: [id])
   committee   Committee? @relation(fields: [committeeID], references: [id])
 }
