@@ -16,7 +16,7 @@ const Login: NextPage = (props)=>{
       <div className="xl:w-6/12 lg:w-5/12 md:w-8/12 mb-12 md:mb-0">
         <form>
             <div className="text-center">
-                <h1 className="p-[4rem] font-bold text-6xl leading-[5rem]">Logg inn med <img src="https://old.online.ntnu.no/wiki/70/plugin/attachments/download/679/" width="200" height="200" className="m-auto" alt=""/>brukeren din</h1>
+                <h1 className="p-[4rem] font-bold text-6xl leading-[5rem]">Logg inn med <Image src="https://old.online.ntnu.no/wiki/70/plugin/attachments/download/679/" width="200" height="200" className="m-auto" alt=""/>brukeren din</h1>
             </div>
           <div className="mb-6">
             

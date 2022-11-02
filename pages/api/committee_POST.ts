@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import prisma from '../../lib/prisma';
-import bcrypt from 'bcrypt';
 
 interface Interview {
   date: string;
