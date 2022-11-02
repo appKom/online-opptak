@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 const Navbar = () => {
@@ -6,9 +7,9 @@ const Navbar = () => {
         <img src="https://online.ntnu.no/img/online_logo.svg" className='h-[5rem]' />
         
         <nav style={{display: "flex", gap: 40, right: 0}}>
-            <a href="/form/">For søkere</a>
-            <a href="/committee/">For komiteer</a>
-            <a href="/applicantoverview/">Oversikt</a>
+            <Link href="/form/">For søkere</Link>
+            <Link href="/committee/">For komiteer</Link>
+            <Link href="/applicantoverview/">Oversikt</Link>
         </nav>
     </div>
   )
