@@ -5,10 +5,7 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import getUser from "../services/getUser";
 
 const Test: NextPage = () => {
-  const { isLoading, isError, isSuccess, data } = useQuery<IUser, Error>(
-    ["user", { id: 1 }],
-    getUser
-  );
+  const { isLoading, isError, data } = useQuery(["getUser"], getUser);
 
   return (
     <div className="text-3xl font-bold underline">

@@ -1,4 +1,8 @@
 import axios from "axios";
+import { BASE_URL } from "../utils/getBaseUrl";
 
-const BASE_URL = "http://localhost:3000/api";
-axios.defaults.baseURL = BASE_URL;
+const axiosClient = axios.create({
+  baseURL: BASE_URL + "/api",
+});
+
+export default axiosClient;
