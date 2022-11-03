@@ -9,8 +9,9 @@ const Navbar = () => {
       style={{ backgroundColor: "rgb(0,84,118)" }}
     >
       <Image
+        width="308.05"
+        height="80"
         src="https://online.ntnu.no/img/online_logo.svg"
-        className="h-[5rem]"
         alt="OnlineLogo"
       />
 

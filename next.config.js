@@ -23,6 +23,6 @@ const nextConfig = {
 
 module.exports = {
   images: {
-    domains: ['old.online.ntnu.no'],
+    domains: ["old.online.ntnu.no", "online.ntnu.no"],
   },
-}
+};
