@@ -10,10 +10,7 @@ interface Props {
 function W2MRowHeader(props: Props) {
   return (
     <div style={{ display: "flex" }} className={styles.row}>
-      <div
-        className={styles.cell_timecell}
-        style={{ backgroundColor: "white", height: "80px" }}
-      ></div>
+      <div className={styles.cell_headercell}></div>
       {props.dates.map((date) => {
         return (
           <div

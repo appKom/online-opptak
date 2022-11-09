@@ -19,16 +19,8 @@ const Committee: NextPage = () => {
   let markedCells: Interview[] = [];
   const [interviewInterval, setInterviewInterval] = useState(20);
 
-  /*
-  let committee: string = "";
-  let password: string = "";
-  const committees = ["Arrkom",	"Appkom",	"Bedkom",	"Dotkom",	"Fagkom",	"Online IL",	"Prokom",	"Trikom",	"Realfagskjelleren"];
-  let days: string[] =  ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
-  let dates: string[] = ['22.08', '23.08', '24.08', '25.08', '26.08'];
-  */
-
   const committee = "appkom";
-  // Data from OW
+
   const { isLoading, isError, isSuccess, data } = useQuery<
     { dates: ValidDates },
     Error
@@ -110,7 +102,7 @@ const Committee: NextPage = () => {
 
     let cells = document.querySelectorAll<HTMLElement>(".cell");
     for (let i = 0; i < cells.length; i++) {
-      cells[i].style.backgroundColor = "#F7F6DC";
+      cells[i].style.backgroundColor = "white";
       cells[i].innerText = "";
     }
   }
@@ -195,7 +187,8 @@ const Committee: NextPage = () => {
           onClick={(e: BaseSyntheticEvent) => {
             submit(e);
           }}
-          className="text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          className="text-white mt-1bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          style={{ marginBottom: "15px" }}
         >
           Lagre og send
         </button>

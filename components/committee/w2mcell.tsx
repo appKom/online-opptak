@@ -10,15 +10,16 @@ interface Props {
 }
 
 function W2MCell(props: Props) {
-  const markedColor = "rgb(177, 215, 180)";
-  const unMarkedColor = "#F7F6DC";
+  const markedColor = "rgba(0, 84, 118, 0.5)";
+  const unmarkedColor = "rgba(255, 255, 255, 1)";
 
   function handleMouseOver(e: BaseSyntheticEvent, ignore?: boolean) {
+    console.log(e.target.style.backgroundColor);
     if (props.mouseDown || ignore) {
       let div: HTMLDivElement = e.target;
       if (div.style.backgroundColor == markedColor) {
         div.innerText = "";
-        div.style.backgroundColor = unMarkedColor;
+        div.style.backgroundColor = unmarkedColor;
         props.removeCell([props.date, props.time]);
       } else {
         div.innerText = "x";
