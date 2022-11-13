@@ -14,7 +14,6 @@ function W2MCell(props: Props) {
   const unmarkedColor = "rgba(255, 255, 255, 1)";
 
   function handleMouseOver(e: BaseSyntheticEvent, ignore?: boolean) {
-    console.log(e.target.style.backgroundColor);
     if (props.mouseDown || ignore) {
       let div: HTMLDivElement = e.target;
       if (div.style.backgroundColor == markedColor) {

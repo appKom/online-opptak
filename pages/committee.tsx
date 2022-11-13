@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import { BaseSyntheticEvent, useEffect } from "react";
 import Whentomeet from "../components/committee/whentomeet";
 import styles from "../styles/committee.module.css";
-import Router from "next/router";
 import Navbar from "../components/navbar";
 
 import { useState } from "react";
@@ -20,6 +19,8 @@ const Committee: NextPage = () => {
   const [interviewInterval, setInterviewInterval] = useState(20);
 
   const committee = "appkom";
+
+  let [reqstatusmsg, setReqstatusmsg] = useState({ msg: "", status: 0 });
 
   const { isLoading, isError, isSuccess, data } = useQuery<
     { dates: ValidDates },
@@ -77,6 +78,15 @@ const Committee: NextPage = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
+      }).then((res) => {
+        if (res.status === 200) {
+          setReqstatusmsg({
+            msg: "Intervjuene ble lagt til",
+            status: res.status,
+          });
+        } else {
+          setReqstatusmsg({ msg: "Noe gikk galt", status: res.status });
+        }
       });
     } catch (error) {
       console.error(error);
@@ -106,15 +116,7 @@ const Committee: NextPage = () => {
       cells[i].innerText = "";
     }
   }
-  /*
-  function updateCommittee(e: BaseSyntheticEvent) {
-    committee = e.target.value;
-  }
 
-  function updatePassword(e: BaseSyntheticEvent) {
-    password = e.target.value;
-  }
-  */
   useEffect(() => {}, []);
 
   return (
@@ -125,6 +127,15 @@ const Committee: NextPage = () => {
           Legg inn ledige tider for intervjuer
         </h2>
       </header>
+      {
+        <p
+          className={`text-center text-2xl font-bold mt-5 mb-6 ${
+            reqstatusmsg.status == 200 ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {reqstatusmsg.msg}
+        </p>
+      }
 
       <div>
         <p className="text-center text-lg mt-5 mb-6">
@@ -137,48 +148,6 @@ const Committee: NextPage = () => {
         className="text-center"
         style={{ width: "300px", margin: "0 auto" }}
       >
-        {/*
-        <div style={{ margin: "0 auto 15px" }}>
-          <label
-            htmlFor="first_name"
-            className="block mb-2 mt-4 text-m font-medium text-black"
-          >
-            Komité
-          </label>
-       
-          <select
-            onChange={(e) => {
-              updateCommittee(e);
-            }}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-          >
-            {committees.map((c) => {
-              return (
-                <option key={c} value={c.toLowerCase()}>
-                  {c}
-                </option>
-              );
-            })}
-          </select>
-    
-        </div>
-        <div style={{ margin: "0 auto" }}>
-          <label className="block mb-2 text-m font-medium text-black">
-            Passord
-          </label>
-
-        <input
-            onChange={(e) => {
-              updatePassword(e);
-            }}
-            type="password"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Passord"
-            required
-          ></input>
-          
-        </div>
-        */}
         <label className="block mb-2 mt-5 text-m font-medium text-black">
           Fyll ut ledige tider før du sender.
         </label>
