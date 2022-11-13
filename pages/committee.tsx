@@ -117,13 +117,16 @@ const Committee: NextPage = () => {
     }
   }
 
-  useEffect(() => {}, []);
-
   return (
     <div style={{ marginBottom: "50px" }}>
       <Navbar />
       <header className="text-center">
-        <h2 className="text-5xl font-bold mt-5 mb-6">
+        <h2 className="text-blue-900 text-6xl font-bold mt-5 mb-6">
+          {committee.slice(0, 1).toUpperCase() + committee.slice(1)}
+        </h2>
+      </header>
+      <header className="text-center">
+        <h2 className="text-3xl font-bold mt-5 mb-6">
           Legg inn ledige tider for intervjuer
         </h2>
       </header>
