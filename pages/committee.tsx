@@ -8,11 +8,8 @@ import { useState } from "react";
 import getValidDates from "../services/getValidDates";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { ValidDates } from "../types";
-
-interface Interview {
-  date: string;
-  time: string;
-}
+import { Interview } from "@prisma/client";
+import getInterviewTimes from "../services/getInterviewTimes";
 
 const Committee: NextPage = () => {
   let markedCells: Interview[] = [];
@@ -22,12 +19,19 @@ const Committee: NextPage = () => {
 
   let [reqstatusmsg, setReqstatusmsg] = useState({ msg: "", status: 0 });
 
-  const { isLoading, isError, isSuccess, data } = useQuery<
-    { dates: ValidDates },
-    Error
-  >([], getValidDates);
+  const {
+    isLoading: isLoadingDates,
+    isError: isErrorDates,
+    isSuccess: isSuccessDates,
+    data: queryDatesData,
+  } = useQuery<{ dates: ValidDates }, Error>([], getValidDates);
 
-  const year: string = "2023";
+  const {
+    isLoading: isLoadingInterviews,
+    isError: isErrorInterviews,
+    isSuccess: isSuccessInterviews,
+    data: queryInterviewsData,
+  } = useQuery<{ interviews: Interview[] }, Error>([], getInterviewTimes);
 
   const handleValidDatesRequest = (data: { dates: ValidDates } | undefined) => {
     if (!data) {
@@ -35,6 +39,7 @@ const Committee: NextPage = () => {
     } else {
       const dates = data.dates;
       let d: { date: string; day: string }[][] = [];
+      let year = dates.year;
       for (let i of dates.dates) {
         let week = [];
         for (let j of i) {
@@ -54,19 +59,27 @@ const Committee: NextPage = () => {
         }
         d.push(week);
       }
+
       return d.map((w) => {
         return (
           <Whentomeet
             key={d.indexOf(w).toString()}
             dates={w}
             resetCells={() => resetCells()}
-            removeCell={(cell: string[]) => removeCell(cell)}
-            addCell={(cell: string[]) => addCell(cell)}
+            removeCell={(cell: Interview) => removeCell(cell)}
+            addCell={(cell: Interview) => addCell(cell)}
             interviewInterval={interviewInterval}
           />
         );
       });
     }
+  };
+
+  const handleInterviewsRequest = (
+    inteviewdata: { interviews: Interview[] } | undefined
+  ) => {
+    console.log(inteviewdata);
+    return "";
   };
 
   async function submit(e: BaseSyntheticEvent) {
@@ -93,28 +106,25 @@ const Committee: NextPage = () => {
     }
   }
 
-  function removeCell(cell: string[]) {
-    var x: Interview = { date: cell[0], time: cell[1] };
-    markedCells.splice(markedCells.indexOf(x), 1);
+  function removeCell(cellInterview: Interview) {
+    markedCells.splice(markedCells.indexOf(cellInterview), 1);
   }
-  function addCell(cell: string[]) {
-    var x: Interview = { date: cell[0], time: cell[1] };
-    markedCells.push(x);
+  function addCell(cellInterview: Interview) {
+    markedCells.push(cellInterview);
   }
 
   function resetCells() {
     markedCells = [];
-  }
-
-  function updateInterviewInterval(e: BaseSyntheticEvent) {
-    setInterviewInterval(parseInt(e.target.value));
-    resetCells();
-
     let cells = document.querySelectorAll<HTMLElement>(".cell");
     for (let i = 0; i < cells.length; i++) {
       cells[i].style.backgroundColor = "white";
       cells[i].innerText = "";
     }
+  }
+
+  function updateInterviewInterval(e: BaseSyntheticEvent) {
+    setInterviewInterval(parseInt(e.target.value));
+    resetCells();
   }
 
   return (
@@ -125,20 +135,20 @@ const Committee: NextPage = () => {
           {committee.slice(0, 1).toUpperCase() + committee.slice(1)}
         </h2>
       </header>
+
+      <p
+        className={`text-center text-2xl font-bold mt-5 mb-6 ${
+          reqstatusmsg.status == 200 ? "text-green-500" : "text-red-500"
+        }`}
+      >
+        {reqstatusmsg.msg}
+      </p>
+
       <header className="text-center">
         <h2 className="text-3xl font-bold mt-5 mb-6">
           Legg inn ledige tider for intervjuer
         </h2>
       </header>
-      {
-        <p
-          className={`text-center text-2xl font-bold mt-5 mb-6 ${
-            reqstatusmsg.status == 200 ? "text-green-500" : "text-red-500"
-          }`}
-        >
-          {reqstatusmsg.msg}
-        </p>
-      }
 
       <div>
         <p className="text-center text-lg mt-5 mb-6">
@@ -183,7 +193,16 @@ const Committee: NextPage = () => {
           </option>
         </select>
       </div>
-      {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)}
+      {isLoadingDates ? (
+        <p>Loading...</p>
+      ) : (
+        <div>{handleValidDatesRequest(queryDatesData)} </div>
+      )}
+      {isLoadingInterviews ? (
+        <p>Loading</p>
+      ) : (
+        handleInterviewsRequest(queryInterviewsData)
+      )}
     </div>
   );
 };

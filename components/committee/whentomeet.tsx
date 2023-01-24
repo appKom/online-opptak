@@ -4,6 +4,7 @@ import arrayOfLength from "./arrayoflength";
 import W2MRowHeader from "./w2mrowheader";
 import { useState } from "react";
 import styles from "../../styles/committee.module.css";
+import { Interview } from "@prisma/client";
 
 interface Props {
   removeCell: Function;
@@ -32,17 +33,21 @@ function Whentomeet(props: Props) {
       >
         <W2MRowHeader dates={props.dates} />
         {arrayOfLength(8 * (60 / props.interviewInterval) - 1).map((i) => {
-          let time: number =
-            props.interviewInterval + 8 * 60 + i * props.interviewInterval; //
+          let fromTime: number =
+            props.interviewInterval + 8 * 60 + i * props.interviewInterval;
+          let toTime: number =
+            props.interviewInterval +
+            8 * 60 +
+            i * props.interviewInterval +
+            props.interviewInterval;
           return (
             <W2MRow
               dates={props.dates}
-              removeCell={(cell: string[]) => props.removeCell(cell)}
-              addCell={(cell: string[]) => props.addCell(cell)}
+              removeCell={(cell: Interview) => props.removeCell(cell)}
+              addCell={(cell: Interview) => props.addCell(cell)}
               mouseDown={mouseDown}
-              time={`${minutesToTimeString(time)} - ${minutesToTimeString(
-                time + props.interviewInterval
-              )}`}
+              fromTime={minutesToTimeString(fromTime)}
+              toTime={minutesToTimeString(toTime)}
               key={i.toString()}
             />
           );

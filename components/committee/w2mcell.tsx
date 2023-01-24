@@ -6,12 +6,20 @@ interface Props {
   removeCell: Function;
   addCell: Function;
   date: string;
-  time: string;
+  fromTime: string;
+  toTime: string;
 }
 
 function W2MCell(props: Props) {
   const markedColor = "rgba(0, 84, 118, 0.5)";
   const unmarkedColor = "rgba(255, 255, 255, 1)";
+  const cellInterview = {
+    date: props.date,
+    fromTime: props.fromTime,
+    toTime: props.toTime,
+    applicantID: null,
+    committeeID: null,
+  };
 
   function handleMouseOver(e: BaseSyntheticEvent, ignore?: boolean) {
     if (props.mouseDown || ignore) {
@@ -19,11 +27,11 @@ function W2MCell(props: Props) {
       if (div.style.backgroundColor == markedColor) {
         div.innerText = "";
         div.style.backgroundColor = unmarkedColor;
-        props.removeCell([props.date, props.time]);
+        props.removeCell(cellInterview);
       } else {
         div.innerText = "x";
         div.style.backgroundColor = markedColor;
-        props.addCell([props.date, props.time]);
+        props.addCell(cellInterview);
       }
     }
   }
@@ -33,6 +41,7 @@ function W2MCell(props: Props) {
       onMouseEnter={(e) => handleMouseOver(e)}
       onMouseDown={(e) => handleMouseOver(e, true)}
       className={`cell ${styles.cell}`}
+      id={`${props.date} ${props.fromTime} ${props.toTime}`}
     ></div>
   );
 }

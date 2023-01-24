@@ -3,45 +3,28 @@ import prisma from "../../lib/prisma";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { ValidDates } from "../../types";
 import getValidDates from "../../services/getValidDates";
-
-interface DBInterview {
-  date: string;
-  fromTime: string;
-  toTime: string;
-  committeeID: string;
-  applicantID: undefined;
-}
-
-interface FormInterview {
-  date: string;
-  time: string;
-}
+import { Interview } from "@prisma/client";
 
 export default async function handle(req: any, res: any) {
   const committee: string = req.body.committee;
-  const interviews: FormInterview[] = req.body.interviews;
+  const interviews: Interview[] = req.body.interviews;
 
   // get valid dates
   const dev: boolean = process.env.NODE_ENV !== "production";
   const url: string = dev
     ? "http://localhost:3000/api/getValidDates"
-    : "realurl";
+    : "https://online-opptak-appkom.vercel.app/api/getValidDates";
   let validDates = await fetch(url).then((d) => d.json());
   if (validDates) {
     validDates = validDates.dates.dates.flat(1);
   }
 
   // validate dates
-  let valid: boolean = true;
   for (let i of interviews) {
     if (!validDates.includes(i.date)) {
-      valid = false;
-      break;
+      res.send(400);
+      return;
     }
-  }
-  if (!valid) {
-    res.send(200);
-    return;
   }
 
   let committeeID: { id: string } | null = await prisma.committee.findFirst({
@@ -52,31 +35,26 @@ export default async function handle(req: any, res: any) {
       name: committee,
     },
   });
-  if (!committeeID) {
-    res.send(400);
-  } else {
-    let data: DBInterview[] = [];
-    // Format inteviews like DB
-    for (let i of interviews) {
-      data.push({
-        applicantID: undefined,
-        committeeID: committeeID?.id,
-        date: i.date,
-        fromTime: i.time.replace(" ", "").split("-")[0],
-        toTime: i.time.replace(" ", "").split("-")[1],
-      });
-    }
-    // Delete previous times
+  if (committeeID !== null) {
+    // Delete current interviews
     await prisma.interview.deleteMany({
       where: {
         committeeID: committeeID.id,
       },
     });
+    // Format interviews
+    interviews.forEach((i) => {
+      i.committeeID = committeeID?.id ? committeeID.id : null;
+      i.applicantID = null;
+    });
+
     // Add new times
     await prisma.interview.createMany({
-      data: data,
+      data: interviews,
     });
 
     res.send(200);
+  } else {
+    res.send(400);
   }
 }
