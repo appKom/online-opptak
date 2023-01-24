@@ -26,12 +26,15 @@ const Committee: NextPage = () => {
     data: queryDatesData,
   } = useQuery<{ dates: ValidDates }, Error>([], getValidDates);
 
-  const {
+  // run query after first query is done
+  /*const {
     isLoading: isLoadingInterviews,
     isError: isErrorInterviews,
     isSuccess: isSuccessInterviews,
     data: queryInterviewsData,
-  } = useQuery<{ interviews: Interview[] }, Error>([], getInterviewTimes);
+  } = useQuery<{ interviews: Interview[] }, Error>([], getInterviewTimes, {
+    enabled: isSuccessDates,
+  });*/
 
   const handleValidDatesRequest = (data: { dates: ValidDates } | undefined) => {
     if (!data) {
@@ -198,11 +201,11 @@ const Committee: NextPage = () => {
       ) : (
         <div>{handleValidDatesRequest(queryDatesData)} </div>
       )}
-      {isLoadingInterviews ? (
+      {/*isLoadingInterviews ? (
         <p>Loading</p>
       ) : (
         handleInterviewsRequest(queryInterviewsData)
-      )}
+      )*/}
     </div>
   );
 };
