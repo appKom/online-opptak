@@ -1,18 +1,51 @@
-import Link from 'next/link'
-import React from 'react'
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React from "react";
+import Image from "next/image";
 
+const navElements = [
+  {
+    title: "For søkere",
+    uri: "/form",
+  },
+  {
+    title: "For komiteer",
+    uri: "/committee",
+  },
+  {
+    title: "Oversikt",
+    uri: "/applicantoverview",
+  },
+];
 const Navbar = () => {
-  return (
-    <div className="w-full p-5 text-white" style={{backgroundColor: "rgb(0,84,118)"}}>
-        <img src="https://online.ntnu.no/img/online_logo.svg" className='h-[5rem]' />
-        
-        <nav style={{display: "flex", gap: 40, right: 0}}>
-            <Link href="/form/">For søkere</Link>
-            <Link href="/committee/">For komiteer</Link>
-            <Link href="/applicantoverview/">Oversikt</Link>
-        </nav>
-    </div>
-  )
-}
+  const router = useRouter();
+  const isLinkActive = (href: string) => router.pathname === href;
 
-export default Navbar
+  return (
+    <div className="w-full text-white bg-online-darkTeal flex justify-between items-center px-10 py-5">
+      <Link href="/" passHref>
+        <a className={isLinkActive("/") ? "active" : ""}>
+          <Image
+            src="/Online_hvit.svg"
+            width={190}
+            height={50}
+            alt="Online logo"
+            className="cursor-pointer"
+          />
+        </a>
+      </Link>
+
+      <div className="flex gap-10 lg:gap-20">
+        {navElements.map((element) => (
+          <Link key={element.uri} href={element.uri}>
+            <a className={isLinkActive(element.uri) ? "underline" : ""}>
+              {element.title}
+            </a>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Navbar;

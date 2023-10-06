@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["old.online.ntnu.no"],
+    domains: ["old.online.ntnu.no", "online.ntnu.no"],
   },
   experimental: {
     appDir: true,

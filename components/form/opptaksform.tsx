@@ -4,243 +4,260 @@ import InputComponent from "./inputcomponent";
 import RadioComponent from "./radiocomponent";
 import TextAreaComponent from "./textareacomponent";
 import SelectComponent from "./selectcomponent";
-interface Data {
-  navn: string;
-  epost: string;
-  telefon: string;
-  omdegselv: string;
-  informatikkar: number;
-  komitevalg1: string;
-  komitevalg2: string;
-  komitevalg3: string;
-  okonomiansvarliginteresse: string;
+import { DBapplicant } from "../../types";
+import Line from "./line";
+import { useState } from "react";
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  about: string;
+  informatikkyear: number;
+  committeechoice1: string;
+  committeechoice2: string;
+  committeechoice3: string;
+  bankkom: string;
   feminit: string;
 }
-interface State {
-  data: Data;
-}
 
-class OpptaksForm extends React.Component<State> {
-  state = {
-    data: {
-      navn: "",
-      epost: "",
-      telefon: "",
-      omdegselv: "",
-      informatikkar: 0,
-      komitevalg1: "",
-      komitevalg2: "",
-      komitevalg3: "",
-      okonomiansvarliginteresse: "",
-      feminit: "",
-    },
+const OpptaksForm = () => {
+  const [state, setState] = useState<FormData>({
+    name: "",
+    email: "",
+    phone: "",
+    about: "",
+    informatikkyear: 0,
+    committeechoice1: "",
+    committeechoice2: "",
+    committeechoice3: "",
+    bankkom: "",
+    feminit: "",
+  });
+
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+
+    console.log(state);
+    return;
+
+    try {
+      const response = await fetch("/api/postApplicant", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            id: 0,
+            feminit: state.feminit,
+            about: state.about,
+            bankkom: state.bankkom,
+            committeechoice1: state.committeechoice1,
+            committeechoice2: state.committeechoice2,
+            committeechoice3: state.committeechoice3,
+            email: state.email,
+            informatikkyear: state.informatikkyear,
+            availableTimes: [],
+            name: state.name,
+            phone: state.phone,
+          },
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Applicant created successfully:", data);
+      } else {
+        console.error("Failed to create applicant:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error creating applicant:", error);
+    }
   };
+  return (
+    <div className="mx-5">
+      <header className="mt-5">
+        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">
+          Komitésøknad 2024
+        </h2>
+      </header>
+      <form>
+        <InputComponent
+          id={"epost"}
+          label={"E-postadresse *"}
+          updateInputValues={(id: string, value: string) =>
+            setState({ ...state, email: value })
+          }
+        />
+        <Line />
+        <InputComponent
+          id={"navn"}
+          label={"Fullt navn *"}
+          updateInputValues={(id: any, value: any) =>
+            setState({ ...state, name: value })
+          }
+        />
+        <Line />
 
-  handleSubmit = () => {
-    // send inn
-  };
+        <InputComponent
+          id={"telefon"}
+          label={"Telefonummer *"}
+          updateInputValues={(id: any, value: any) =>
+            setState({ ...state, phone: value })
+          }
+        />
+        <Line />
 
-  render() {
-    return (
-      <div>
-        <header className="mt-5">
-          <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900">
-            Komitésøknad 2023
-          </h2>
-        </header>
-        <form>
-          <InputComponent
-            id={"epost"}
-            label={"E-postadresse *"}
-            updateInputValues={(id: string, value: string) =>
-              this.setState({ data: { ...this.state.data, epost: value } })
-            }
-          />
-          <hr
-            className="mt-2 mb-2"
-            style={{ width: "400px", margin: "5px auto 10px" }}
-          />
-          <InputComponent
-            id={"navn"}
-            label={"Fullt navn *"}
-            updateInputValues={(id: any, value: any) =>
-              this.setState({ data: { ...this.state.data, navn: value } })
-            }
-          />
-          <hr
-            className="mt-2 mb-2"
-            style={{ width: "400px", margin: "5px auto 10px" }}
-          />
+        <RadioComponent
+          values={[
+            ["1.", "1"],
+            ["2.", "2"],
+            ["3.", "3"],
+            ["4.", "4"],
+            ["5.", "5"],
+          ]}
+          id={"informatikkar"}
+          label={"Hvilket år er du på i informatikkstudiet? *"}
+          updateInputValues={(id: any, value: any) =>
+            setState({
+              ...state,
+              informatikkyear: value,
+            })
+          }
+        />
+        <Line />
 
-          <InputComponent
-            id={"telefon"}
-            label={"Telefonummer *"}
-            updateInputValues={(id: any, value: any) =>
-              this.setState({ data: { ...this.state.data, telefon: value } })
-            }
-          />
-          <hr
-            className="mt-2 mb-2"
-            style={{ width: "400px", margin: "5px auto 10px" }}
-          />
+        <TextAreaComponent
+          id={"omdegselv"}
+          label={"Skriv litt om deg selv *"}
+          updateInputValues={(id: any, value: any) =>
+            setState({ ...state, about: value })
+          }
+        />
+        <Line />
 
-          <RadioComponent
-            values={[
-              ["1.", "1"],
-              ["2.", "2"],
-              ["3.", "3"],
-              ["4.", "4"],
-              ["5.", "5"],
-            ]}
-            id={"informatikkar"}
-            label={"Hvilket år er du på i informatikkstudiet? *"}
-            updateInputValues={(id: any, value: any) =>
-              this.setState({
-                data: { ...this.state.data, informatikkar: value },
-              })
-            }
-          />
-          <hr
-            className="mt-2 mb-2"
-            style={{ width: "400px", margin: "5px auto 10px" }}
-          />
-
-          <TextAreaComponent
-            id={"omdegselv"}
-            label={"Skriv litt om deg selv *"}
-            updateInputValues={(id: any, value: any) =>
-              this.setState({ data: { ...this.state.data, omdegselv: value } })
-            }
-          />
-          <hr
-            className="mt-2 mb-2"
-            style={{ width: "400px", margin: "5px auto 10px" }}
-          />
-
-          <div className="flex justify-center">
-            <div className="mb-3 xl:w-96">
-              <label className="form-label inline-block mb-2 text-black-700 text-xl">
-                Velg opp til 3 komiteer
-              </label>
-            </div>
+        <div className="flex justify-center">
+          <div className="mb-3 xl:w-96">
+            <label className="form-label inline-block mb-2 text-black-700 text-xl">
+              Velg opp til 3 komitéer
+            </label>
           </div>
-          <SelectComponent
-            biggerlabel={true}
-            values={[
-              ["Ingen", ""],
-              ["Arrkom", "arrkom"],
-              ["Appkom", "appkom"],
-              ["Bedkom", "bedkom"],
-              ["Dotkom", "dotkom"],
-              ["Fagkom", "fagkom"],
-              ["Online IL", "onlineil"],
-              ["Prokom", "prokom"],
-              ["Trikom", "trikom"],
-              ["Realfagskjelleren", "realfagskjelleren"],
-            ]}
-            id={"komitevalg1"}
-            label={"Førstevalg: "}
-            updateInputValues={(id: any, value: any) =>
-              this.setState({
-                data: { ...this.state.data, komitevalg1: value },
-              })
-            }
-          />
-          <SelectComponent
-            biggerlabel={true}
-            values={[
-              ["Ingen", ""],
-              ["Arrkom", "arrkom"],
-              ["Appkom", "appkom"],
-              ["Bedkom", "bedkom"],
-              ["Dotkom", "dotkom"],
-              ["Fagkom", "fagkom"],
-              ["Online IL", "onlineil"],
-              ["Prokom", "prokom"],
-              ["Trikom", "trikom"],
-              ["Realfagskjelleren", "realfagskjelleren"],
-            ]}
-            id={"komitevalg2"}
-            label={"Andrevalg: "}
-            updateInputValues={(id: any, value: any) =>
-              this.setState({
-                data: { ...this.state.data, komitevalg2: value },
-              })
-            }
-          />
-          <SelectComponent
-            biggerlabel={true}
-            values={[
-              ["Ingen", ""],
-              ["Arrkom", "arrkom"],
-              ["Appkom", "appkom"],
-              ["Bedkom", "bedkom"],
-              ["Dotkom", "dotkom"],
-              ["Fagkom", "fagkom"],
-              ["Online IL", "onlineil"],
-              ["Prokom", "prokom"],
-              ["Trikom", "trikom"],
-              ["Realfagskjelleren", "realfagskjelleren"],
-            ]}
-            id={"komitevalg3"}
-            label={"Tredjevalg: "}
-            updateInputValues={(id: any, value: any) =>
-              this.setState({
-                data: { ...this.state.data, komitevalg3: value },
-              })
-            }
-          />
-          <hr
-            className="mt-2 mb-2"
-            style={{ width: "400px", margin: "5px auto 10px" }}
-          />
+        </div>
+        <SelectComponent
+          biggerlabel={true}
+          values={[
+            ["Ingen", ""],
+            ["Arrkom", "arrkom"],
+            ["Appkom", "appkom"],
+            ["Bedkom", "bedkom"],
+            ["Dotkom", "dotkom"],
+            ["Fagkom", "fagkom"],
+            ["Online IL", "onlineil"],
+            ["Prokom", "prokom"],
+            ["Trikom", "trikom"],
+            ["Realfagskjelleren", "realfagskjelleren"],
+          ]}
+          id={"komitevalg1"}
+          label={"Førstevalg: "}
+          updateInputValues={(id: any, value: any) =>
+            setState({
+              ...state,
+              committeechoice1: value,
+            })
+          }
+        />
+        <SelectComponent
+          biggerlabel={true}
+          values={[
+            ["Ingen", ""],
+            ["Arrkom", "arrkom"],
+            ["Appkom", "appkom"],
+            ["Bedkom", "bedkom"],
+            ["Dotkom", "dotkom"],
+            ["Fagkom", "fagkom"],
+            ["Online IL", "onlineil"],
+            ["Prokom", "prokom"],
+            ["Trikom", "trikom"],
+            ["Realfagskjelleren", "realfagskjelleren"],
+          ]}
+          id={"komitevalg2"}
+          label={"Andrevalg: "}
+          updateInputValues={(id: any, value: any) =>
+            setState({
+              ...state,
+              committeechoice2: value,
+            })
+          }
+        />
+        <SelectComponent
+          biggerlabel={true}
+          values={[
+            ["Ingen", ""],
+            ["Arrkom", "arrkom"],
+            ["Appkom", "appkom"],
+            ["Bedkom", "bedkom"],
+            ["Dotkom", "dotkom"],
+            ["Fagkom", "fagkom"],
+            ["Online IL", "onlineil"],
+            ["Prokom", "prokom"],
+            ["Trikom", "trikom"],
+            ["Realfagskjelleren", "realfagskjelleren"],
+          ]}
+          id={"komitevalg3"}
+          label={"Tredjevalg: "}
+          updateInputValues={(id: any, value: any) =>
+            setState({
+              ...state,
+              committeechoice3: value,
+            })
+          }
+        />
+        <Line />
 
-          <RadioComponent
-            biggerlabel={true}
-            values={[
-              ["Ja", "ja"],
-              ["Nei", "nei"],
-              ["Usikker (gjerne spør om mer informasjon på intervjuet)"],
-            ]}
-            id={"okonomiansvarliginteresse"}
-            label={
-              "Er du interessert i å være økonomiansvarlig (tilleggsverv i bankkom)?"
-            }
-            updateInputValues={(id: any, value: any) =>
-              this.setState({
-                data: { ...this.state.data, okonomiansvarliginteresse: value },
-              })
-            }
-          />
-          <hr
-            className="mt-2 mb-2"
-            style={{ width: "400px", margin: "5px auto 10px" }}
-          />
+        <RadioComponent
+          biggerlabel={true}
+          values={[
+            ["Ja", "ja"],
+            ["Nei", "nei"],
+            ["Usikker (gjerne spør om mer info på intervjuet)"],
+          ]}
+          id={"okonomiansvarliginteresse"}
+          label={
+            "Er du interessert i å være økonomiansvarlig (tilleggsverv i bankkom)?"
+          }
+          updateInputValues={(id: any, value: any) =>
+            setState({
+              ...state,
+              bankkom: value,
+            })
+          }
+        />
+        <Line />
 
-          <RadioComponent
-            biggerlabel={true}
-            values={[
-              ["Ja", "ja"],
-              ["Nei", "nei"],
-            ]}
-            id={"feminit"}
-            label={"FeminIT opptak (valgfritt)?"}
-            updateInputValues={(id: any, value: any) =>
-              this.setState({ data: { ...this.state.data, feminit: value } })
-            }
-          />
-          <div className="m-5 flex space-x-2 justify-center">
-            <button
-              type="button"
-              className="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-            >
-              Send
-            </button>
-          </div>
-        </form>
-      </div>
-    );
-  }
-}
+        <RadioComponent
+          biggerlabel={true}
+          values={[
+            ["Ja", "ja"],
+            ["Nei", "nei"],
+          ]}
+          id={"feminit"}
+          label={"FeminIT opptak (valgfritt)?"}
+          updateInputValues={(id: any, value: any) =>
+            setState({ ...state, feminit: value })
+          }
+        />
+        <div className="m-5 flex space-x-2 justify-center">
+          <button
+            type="button"
+            onClick={(e) => handleSubmit(e)}
+            className="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
+          >
+            Send inn
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
 export default OpptaksForm;
