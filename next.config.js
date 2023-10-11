@@ -1,19 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    domains: ["old.online.ntnu.no"],
-  },
-  experimental: {
-    appDir: true,
-    serverComponentsExternalPackages: ["mongoose"],
-  },
-  webpack(config) {
-    config.experiments = {
-      ...config.experiments,
-      topLevelAwait: true,
-    };
-    return config;
-  },
   reactStrictMode: true,
   swcMinify: true,
   env: {
@@ -35,4 +21,8 @@ const nextConfig = {
   ],
 };
 
-module.exports = nextConfig;
+module.exports = {
+  images: {
+    domains: ["old.online.ntnu.no"],
+  },
+};
