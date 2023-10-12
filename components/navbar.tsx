@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 const navElements = [
   {
-    title: "For søkere",
+    title: "Søknad",
     uri: "/form",
   },
   {
