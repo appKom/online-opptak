@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import { BaseSyntheticEvent, useEffect } from "react";
 import Whentomeet from "../components/committee/whentomeet";
 import styles from "../styles/committee.module.css";
-import Router from 'next/router';
+import Router from "next/router";
 import Navbar from "../components/navbar";
 
 import { useState } from "react";
