@@ -1,5 +1,5 @@
-import Navbar from "../components/navbar";
 import { useAuth } from "../lib/hooks/useAuth";
+import Navbar from "../components/navbar";
 
 const Home = () => {
   const { profile, status } = useAuth();

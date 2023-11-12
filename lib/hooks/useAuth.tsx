@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearProfile, fetchProfile } from "../redux/profileSlice";
 import Cookies from "js-cookie";
 import { AppDispatch, RootState } from "../redux/store";
-import { UserProfile } from "../../types/types";
+import { UserProfile } from "../types";
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
