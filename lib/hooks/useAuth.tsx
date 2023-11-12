@@ -1,13 +1,16 @@
 import { useEffect } from "react";
-import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchProfile } from "../redux/profileSlice";
+import { clearProfile, fetchProfile } from "../redux/profileSlice";
+import Cookies from "js-cookie";
+import { AppDispatch, RootState } from "../redux/store";
+import { UserProfile } from "../../types/types";
 
 export const useAuth = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
-  const profile = useSelector((state) => state.profile.data);
-  const status = useSelector((state) => state.profile.status);
+  const dispatch = useDispatch<AppDispatch>();
+  const profile = useSelector(
+    (state: RootState) => state.profile.data as UserProfile | null
+  );
+  const status = useSelector((state: RootState) => state.profile.status);
 
   useEffect(() => {
     if (status === "idle") {
@@ -15,11 +18,10 @@ export const useAuth = () => {
     }
   }, [status, dispatch]);
 
-  useEffect(() => {
-    if (status === "failed" && !profile) {
-      router.push("/login");
-    }
-  }, [profile, status]);
+  const logoutUser = () => {
+    dispatch(clearProfile());
+    Cookies.remove("token");
+  };
 
-  return { profile, status };
+  return { profile, status, logoutUser };
 };

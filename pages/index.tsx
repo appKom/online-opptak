@@ -1,20 +1,20 @@
-import { useEffect } from "react";
 import Navbar from "../components/navbar";
-import { useSelector } from "react-redux";
+import { useAuth } from "../lib/hooks/useAuth";
 
 const Home = () => {
-  const profile = useSelector((state) => state.profile.data);
+  const { profile, status } = useAuth();
 
   return (
     <div>
       <Navbar />
       {profile ? (
         <h1>
-          Velkommen, {profile?.first_name} {profile?.last_name}
+          Velkommen, {profile.first_name} {profile.last_name}
         </h1>
       ) : (
         <h1>Du er ikke logget inn</h1>
       )}
+      <h2>Status: {status}</h2>
     </div>
   );
 };

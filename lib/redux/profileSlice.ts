@@ -23,7 +23,7 @@ const profileSlice = createSlice({
   initialState: {
     data: null,
     status: "idle", // 'idle' | 'loading' | 'succeeded' | 'failed'
-    error: null,
+    error: null as unknown,
   },
   reducers: {
     setProfile: (state, action) => {

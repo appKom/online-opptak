@@ -1,10 +1,8 @@
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
-import { clearProfile, fetchProfile } from "../lib/redux/profileSlice";
-import Cookies from "js-cookie";
+import { useAuth } from "../lib/hooks/useAuth";
 
 const navElements = [
   {
@@ -19,19 +17,11 @@ const navElements = [
 
 const Navbar = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const profile = useSelector((state) => state.profile.data);
-
-  useEffect(() => {
-    dispatch(fetchProfile());
-  }, [dispatch]);
+  const { profile, logoutUser } = useAuth();
 
   const handleLogout = () => {
-    Cookies.remove("token");
-    dispatch(clearProfile());
+    logoutUser();
   };
-
-  console.log(process.env.NEXT_PUBLIC_REDIRECT_URI);
 
   const handleLogin = () => {
     router.push(
@@ -46,6 +36,9 @@ const Navbar = () => {
   const isLinkActive = (uri: string) => {
     return router.pathname === uri;
   };
+
+  const link_styling =
+    "text-online-white hover:text-online-orange transition-all cursor-pointer";
 
   return (
     <div className="w-full text--online-white bg-online-darkTeal flex justify-between items-center pl-3 pr-10 py-3">
@@ -69,7 +62,7 @@ const Navbar = () => {
           <Link key={element.uri} href={element.uri}>
             <a
               className={
-                "text-online-white hover:text-online-orange transition-all" +
+                link_styling +
                 (isLinkActive(element.uri) &&
                   " text-online-orange font-semibold")
               }
@@ -81,15 +74,11 @@ const Navbar = () => {
       </div>
       {!profile ? (
         <div onClick={handleLogin}>
-          <p className="text-online-white hover:text-online-orange transition-all cursor-pointer">
-            Logg inn
-          </p>
+          <p className={link_styling}>Logg inn</p>
         </div>
       ) : (
         <div onClick={handleLogout}>
-          <p className="text-online-white hover:text-online-orange transition-all cursor-pointer">
-            Logg ut
-          </p>
+          <p className={link_styling}>Logg ut</p>
         </div>
       )}
     </div>

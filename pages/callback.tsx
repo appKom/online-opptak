@@ -3,13 +3,13 @@ import { useRouter } from "next/router";
 import Cookies from "js-cookie";
 import { setProfile } from "../lib/redux/profileSlice";
 import { useDispatch } from "react-redux";
+import Image from "next/image";
 
 const CallbackComponent = () => {
   const router = useRouter();
   const { code } = router.query;
   const dispatch = useDispatch();
-
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAuth = async () => {
@@ -41,8 +41,6 @@ const CallbackComponent = () => {
             throw new Error(authorization.error || "Authorization failed");
           }
 
-          console.log(authorization.access_token);
-
           Cookies.remove("token");
           Cookies.set("token", authorization.access_token, {
             expires: 7,
@@ -63,13 +61,15 @@ const CallbackComponent = () => {
           }
 
           const profileData = await profileResponse.json();
-          // Dispatch profile data to Redux store
+
           dispatch(setProfile(profileData));
-          router.push("/"); // Redirect to home page or dashboard
+          router.push("/");
         } catch (error) {
-          setError(
-            error.message || "An unexpected error occurred, please try again."
-          );
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError("An unexpected error occurred, please try again.");
+          }
         }
       }
     };
@@ -80,17 +80,22 @@ const CallbackComponent = () => {
   }, [code, dispatch, router]);
   const { push } = useRouter();
 
-  if (error) {
-    return <div>An error occurred: {error.message}</div>;
-  }
-
   if (Cookies.get("token")) {
     push("/");
   }
 
   return (
-    <div>
-      <h1>Redirecting...</h1>
+    <div className="flex flex-col justify-center items-center gap-10 h-screen">
+      <Image
+        src="/Online_bla.svg"
+        width={300}
+        height={100}
+        alt="Online logo"
+        className="animate-pulse"
+      />
+      <div className="text-xl">
+        {error ? <>An error occurred: {error}</> : <>Redirecting...</>}
+      </div>
     </div>
   );
 };
