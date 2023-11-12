@@ -6,9 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearProfile, fetchProfile } from "../lib/redux/profileSlice";
 import Cookies from "js-cookie";
 
-const CLIENT_ID = 627450;
-const REDIRECT_URI = "http://localhost:3000/callback";
-
 const navElements = [
   {
     title: "Søknad",
@@ -34,11 +31,13 @@ const Navbar = () => {
     dispatch(clearProfile());
   };
 
+  console.log(process.env.NEXT_PUBLIC_REDIRECT_URI);
+
   const handleLogin = () => {
     router.push(
       `https://old.online.ntnu.no/openid/authorize?` +
-        `client_id=${CLIENT_ID}` +
-        `&redirect_uri=${encodeURIComponent(REDIRECT_URI as string)}` +
+        `client_id=${process.env.NEXT_PUBLIC_CLIENT_ID}` +
+        `&redirect_uri=${process.env.NEXT_PUBLIC_REDIRECT_URI}` +
         `&response_type=code` +
         `&scope=openid+profile+onlineweb4`
     );

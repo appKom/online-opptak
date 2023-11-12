@@ -4,9 +4,6 @@ import Cookies from "js-cookie";
 import { setProfile } from "../lib/redux/profileSlice";
 import { useDispatch } from "react-redux";
 
-const CLIENT_ID = 627450;
-const REDIRECT_URI = "http://localhost:3000/callback";
-
 const CallbackComponent = () => {
   const router = useRouter();
   const { code } = router.query;
@@ -21,8 +18,11 @@ const CallbackComponent = () => {
           const body = new URLSearchParams();
           body.append("grant_type", "authorization_code");
           body.append("code", code);
-          body.append("redirect_uri", REDIRECT_URI);
-          body.append("client_id", CLIENT_ID.toString());
+          body.append(
+            "redirect_uri",
+            process.env.NEXT_PUBLIC_REDIRECT_URI as string
+          );
+          body.append("client_id", process.env.NEXT_PUBLIC_CLIENT_ID as string);
 
           const authorizationResponse = await fetch(
             "https://old.online.ntnu.no/openid/token",
