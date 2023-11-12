@@ -1,14 +1,20 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
-import { format } from "path";
+import { useEffect } from "react";
 import Navbar from "../components/navbar";
-import styles from "../styles/Home.module.css";
+import { useSelector } from "react-redux";
 
-const Home: NextPage = (props) => {
+const Home = () => {
+  const profile = useSelector((state) => state.profile.data);
+
   return (
     <div>
       <Navbar />
+      {profile ? (
+        <h1>
+          Velkommen, {profile?.first_name} {profile?.last_name}
+        </h1>
+      ) : (
+        <h1>Du er ikke logget inn</h1>
+      )}
     </div>
   );
 };

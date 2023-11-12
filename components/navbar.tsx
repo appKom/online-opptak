@@ -1,7 +1,13 @@
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { clearProfile, fetchProfile } from "../lib/redux/profileSlice";
+import Cookies from "js-cookie";
+
+const CLIENT_ID = 627450;
+const REDIRECT_URI = "http://localhost:3000/callback";
 
 const navElements = [
   {
@@ -12,27 +18,47 @@ const navElements = [
     title: "For komiteer",
     uri: "/committee",
   },
-  {
-    title: "Oversikt",
-    uri: "/applicantoverview",
-  },
 ];
 
 const Navbar = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.profile.data);
+
+  useEffect(() => {
+    dispatch(fetchProfile());
+  }, [dispatch]);
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    dispatch(clearProfile());
+  };
+
+  const handleLogin = () => {
+    router.push(
+      `https://old.online.ntnu.no/openid/authorize?` +
+        `client_id=${CLIENT_ID}` +
+        `&redirect_uri=${encodeURIComponent(REDIRECT_URI as string)}` +
+        `&response_type=code` +
+        `&scope=openid+profile+onlineweb4`
+    );
+  };
 
   const isLinkActive = (uri: string) => {
     return router.pathname === uri;
   };
 
   return (
-    <div className="w-full text--online-white bg-online-darkTeal flex justify-between items-center px-10 py-2">
+    <div className="w-full text--online-white bg-online-darkTeal flex justify-between items-center pl-3 pr-10 py-3">
       <Link href="/" passHref>
-        <a className={isLinkActive("/") ? "active" : ""}>
+        <a
+          className={isLinkActive("/") ? "active" : ""}
+          aria-label="Online logo"
+        >
           <Image
             src="/Online_hvit.svg"
-            width={190}
-            height={50}
+            width={100}
+            height={30}
             alt="Online logo"
             className="cursor-pointer"
           />
@@ -45,9 +71,8 @@ const Navbar = () => {
             <a
               className={
                 "text-online-white hover:text-online-orange transition-all" +
-                (isLinkActive(element.uri)
-                  ? " text-online-orange font-semibold"
-                  : "")
+                (isLinkActive(element.uri) &&
+                  " text-online-orange font-semibold")
               }
             >
               {element.title}
@@ -55,6 +80,19 @@ const Navbar = () => {
           </Link>
         ))}
       </div>
+      {!profile ? (
+        <div onClick={handleLogin}>
+          <p className="text-online-white hover:text-online-orange transition-all cursor-pointer">
+            Logg inn
+          </p>
+        </div>
+      ) : (
+        <div onClick={handleLogout}>
+          <p className="text-online-white hover:text-online-orange transition-all cursor-pointer">
+            Logg ut
+          </p>
+        </div>
+      )}
     </div>
   );
 };

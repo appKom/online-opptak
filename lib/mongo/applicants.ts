@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { applicantType, commiteeType } from "../types";
+import { applicantType, commiteeType } from "../../types/types";
 
 let client: MongoClient;
 let db: Db;
@@ -23,7 +23,7 @@ async function init() {
 })();
 
 export const createApplicant = async (
-  applicantData: applicantType | string,
+  applicantData: applicantType | string
 ) => {
   try {
     if (!applicants) await init();
@@ -64,13 +64,13 @@ export const getApplicants = async () => {
 
 export const updateSelectedTimes = async (
   id: string,
-  selectedTimes: [{ start: string; end: string }],
+  selectedTimes: [{ start: string; end: string }]
 ) => {
   try {
     if (!applicants) await init();
     const result = await applicants.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { selectedTimes: selectedTimes } },
+      { $set: { selectedTimes: selectedTimes } }
     );
     if (result.matchedCount > 0) {
       return { message: "Selected times updated successfully" };

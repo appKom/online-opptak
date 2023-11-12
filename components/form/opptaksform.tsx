@@ -3,7 +3,7 @@ import RadioComponent from "./radiocomponent";
 import TextAreaComponent from "./textareacomponent";
 import SelectComponent from "./selectcomponent";
 import { useState } from "react";
-import { applicantType } from "../../lib/types";
+import { applicantType } from "../../types/types";
 import Line from "./Line";
 import axios from "axios";
 import validator from "validator";
