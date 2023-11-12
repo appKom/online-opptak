@@ -29,10 +29,10 @@ const Committee: NextPage = () => {
 
   const committee = "appkom";
   // Data from OW
-  const { isLoading, isError, isSuccess, data } = useQuery<
+  /* const { isLoading, isError, isSuccess, data } = useQuery<
     { dates: ValidDates },
     Error
-  >([], getValidDates);
+  >([], getValidDates); */
 
   const year: string = "2023";
 
@@ -218,7 +218,7 @@ const Committee: NextPage = () => {
           </option>
         </select>
       </div>
-      {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)}
+      {/* {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)} */}
     </div>
   );
 };
