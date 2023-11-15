@@ -1,0 +1,82 @@
+.unavailablecell {
+  height: 30px;
+  width: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 2px solid black;
+}
+
+.availablecell {
+  height: 30px;
+  width: 180px;
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 2px solid black;
+}
+
+.headerCell {
+  height: 50px;
+  width: 180px;
+  background-color: lightblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 2px solid black;
+}
+
+.timeCell {
+  height: 30px;
+  width: 180px;
+  background-color: lightblue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 2px solid black;
+}
+
+.scheduleRow15,
+.scheduleRow20,
+.scheduleRow30 {
+  display: flex;
+  border-top: 2px dotted black;
+}
+
+.scheduleRow15:nth-child(4n + 1) {
+  border-top: 2px solid black;
+}
+
+.scheduleRow20:nth-child(3n + 1) {
+  border-top: 2px solid black;
+}
+
+.scheduleRow30:nth-child(2n + 1) {
+  border-top: 2px solid black;
+}
+
+.schedule {
+  margin-top: 2%;
+  margin-bottom: 2%;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
+}
+
+.scheduleHeader {
+  display: flex;
+}
+
+.committeePage {
+  margin-top: 2%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.lengthSelect {
+  border: solid 2px black;
+  margin-left: 5px;
+}

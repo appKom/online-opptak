@@ -4,7 +4,7 @@ import { IUser } from "../../types";
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<IUser>
+  res: NextApiResponse<IUser>,
 ) {
   res.status(200).json({ name: "John Doe", email: "john@gmail.com" });
 }
