@@ -1,25 +1,11 @@
-import { useState } from "react";
 import styles from "./../../styles/schedule.module.css";
-import ScheduleRow from "./ScheduleRow";
+import ScheduleColumn from "./ScheduleColumn";
 
 interface Props {
   interviewLength: number;
 }
 
-export default function Schedule(props: Props) {
-  const days: string[] = [
-    "",
-    "Mandag",
-    "Tirsdag",
-    "Onsdag",
-    "Torsdag",
-    "Fredag",
-  ];
-  const headerCells = days.map((day, index) => (
-    <div className={styles.headerCell} key={index}>
-      {day}
-    </div>
-  ));
+export default function Schedule(props : Props) {
 
   const startTime = new Date(0);
   startTime.setHours(8, 0, 0);
@@ -43,18 +29,26 @@ export default function Schedule(props: Props) {
     timeSlots.push(`${slotStartTime} - ${slotEndTime}`);
   }
 
-  const rows = timeSlots.map((time, index) => (
-    <ScheduleRow
-      time={time}
-      key={index}
+  const timeCells = timeSlots.map((time, index) => (
+    <div className={styles.timeCell} key={index}>{time}</div>
+  ));
+
+  const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const columns = weekDays.map((weekDay, index) => (
+    <ScheduleColumn
+      weekDay={weekDay}
       interviewLength={props.interviewLength}
+      key={index}
     />
   ));
 
   return (
     <div className={styles.schedule}>
-      <div className={styles.scheduleHeader}>{headerCells}</div>
-      <div className={styles.scheduleBody}>{rows}</div>
+      <div className={styles.timeColumn}>
+        <div className={styles.headerCell}></div>
+        {timeCells}
+      </div>
+    {columns}
     </div>
-  );
+  )
 }

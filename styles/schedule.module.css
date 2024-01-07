@@ -1,20 +1,41 @@
-.unavailablecell {
+.unavailableCell15,
+.unavailableCell20,
+.unavailableCell30 {
   height: 30px;
   width: 180px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-left: 2px solid black;
+  border-right: solid 2px black;
+  border-bottom: dotted 2px black;
 }
 
-.availablecell {
+.availableCell15,
+.availableCell20,
+.availableCell30 {
   height: 30px;
   width: 180px;
   background-color: lightgray;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-left: 2px solid black;
+  border-right: solid 2px black;
+  border-bottom: dotted 2px black;
+}
+
+.unavailableCell15:nth-child(4n + 1),
+.availableCell15:nth-child(4n + 1) {
+  border-bottom: 2px solid black;
+}
+
+.unavailableCell20:nth-child(3n + 1),
+.availableCell20:nth-child(3n + 1) {
+  border-bottom: 2px solid black;
+}
+
+.unavailableCell30:nth-child(2n + 1),
+.availableCell30:nth-child(2n + 1) {
+  border-bottom: 2px solid black;
 }
 
 .headerCell {
@@ -24,7 +45,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-left: 2px solid black;
+  border-right: solid 2px black;
+  border-bottom: solid 2px black;
 }
 
 .timeCell {
@@ -34,34 +56,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-left: 2px solid black;
-}
-
-.scheduleRow15,
-.scheduleRow20,
-.scheduleRow30 {
-  display: flex;
-  border-top: 2px dotted black;
-}
-
-.scheduleRow15:nth-child(4n + 1) {
-  border-top: 2px solid black;
-}
-
-.scheduleRow20:nth-child(3n + 1) {
-  border-top: 2px solid black;
-}
-
-.scheduleRow30:nth-child(2n + 1) {
-  border-top: 2px solid black;
+  border-right: solid 2px black;
+  border-bottom: solid 2px black;
 }
 
 .schedule {
   margin-top: 2%;
   margin-bottom: 2%;
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
-  border-right: 2px solid black;
+  display: flex;
+  border-left: solid 2px black;
+  border-top: solid 2px black;
 }
 
 .scheduleHeader {
