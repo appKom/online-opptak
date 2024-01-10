@@ -1,9 +1,18 @@
-import React from 'react'
-
 const Footer = () => {
   return (
-    <div className="absolute w-full p-5 text-[#ccc] text-center b-0" style={{backgroundColor: "white"}}><p>Made by Applikasjonskomiteen</p></div>
-  )
-}
+    <div className="flex flex-col items-center gap-3 my-5 text-online-darkTeal">
+      <div>
+        Skjedd en feil? Ta kontakt med{" "}
+        <a
+          className="font-semibold underline transition-all hover:text-online-orange"
+          href="mailto:appkom@online.ntnu.no"
+        >
+          Appkom
+        </a>{" "}
+        :)
+      </div>
+    </div>
+  );
+};
 
-export default Footer
+export default Footer;
