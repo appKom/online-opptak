@@ -6,8 +6,8 @@ import { DBapplicant } from "../types";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Applicant } from "@prisma/client";
 
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const ApplicantOverview: NextPage = () => {
   /* const { isLoading, isError, isSuccess, data } = useQuery<
