@@ -1,7 +1,6 @@
 import { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Applicantrow from "../components/applicantoverview/applicantrow";
-import getApplicants from "../services/getApplicants";
 import { DBapplicant } from "../types";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { Applicant } from "@prisma/client";

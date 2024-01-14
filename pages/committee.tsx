@@ -2,12 +2,9 @@ import type { NextPage } from "next";
 import { BaseSyntheticEvent, useEffect } from "react";
 import Whentomeet from "../components/committee/whentomeet";
 import styles from "../styles/committee.module.css";
-import Router from "next/router";
-import Navbar from "../components/navbar";
+import Navbar from "../components/Navbar";
 
 import { useState } from "react";
-import getValidDates from "../services/getValidDates";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { ValidDates } from "../types";
 
 interface Interview {
