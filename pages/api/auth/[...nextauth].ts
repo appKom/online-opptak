@@ -52,11 +52,11 @@ export const authOptions: NextAuthOptions = {
         const userEmail = session.user.email;
         const isAdmin = userEmail ? adminEmails.includes(userEmail) : false;
 
-        session.role = isAdmin ? "admin" : "user";
         session.accessToken = token.accessToken as string;
+        session.user.role = isAdmin ? "admin" : "user";
 
         if (token.id) {
-          session.user.id = token.id as string;
+          session.user.owId = token.id as string;
         }
       }
       return session;

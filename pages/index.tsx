@@ -1,10 +1,11 @@
 import { useSession } from "next-auth/react";
-import Navbar from "../components/navbar";
-import Footer from "../components/footer";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Link from "next/link";
-import AuthenticationIllustration from "../components/illustrations/authentication";
-import SelectionIllustration from "../components/illustrations/selection";
-import CustomizationIllustration from "../components/illustrations/customization";
+import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
+import SelectionIllustration from "../components/icons/illustrations/SelectionIllustration";
+import CustomizationIllustration from "../components/icons/illustrations/CustomizationIllustration";
+import Button from "../components/Button";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -21,7 +22,7 @@ const Home = () => {
       {!session && (
         <div className="flex items-center justify-center flex-grow">
           <div className="flex flex-col items-center justify-center gap-5">
-            <AuthenticationIllustration />
+            <AuthenticationIllustration className="h-60" />
             <p className="text-lg">
               Vennligst logg inn for å få tilgang til opptakssystemet
             </p>
@@ -36,25 +37,15 @@ const Home = () => {
           </h1>
           <div className="flex flex-col items-center justify-center gap-10 sm:flex-row md:gap-40">
             <div className="flex flex-col items-center justify-center gap-5">
-              <SelectionIllustration />
+              <SelectionIllustration className="h-32" />
               <Link href="/form">
-                <button
-                  type="button"
-                  className="px-6 py-3 font-medium text-center transition-all rounded-lg shadow-sm bg-online-darkTeal text-online-snowWhite hover:text-online-orange focus:ring focus:ring-primary-200"
-                >
-                  Søk komité
-                </button>
+                <Button title="Søk komité" color="blue" />
               </Link>
             </div>
             <div className="flex flex-col items-center justify-center gap-5">
-              <CustomizationIllustration />
+              <CustomizationIllustration className="h-32" />
               <Link href="/committee">
-                <button
-                  type="button"
-                  className="px-6 py-3 font-medium text-center transition-all rounded-lg shadow-sm bg-online-darkTeal text-online-snowWhite hover:text-online-orange focus:ring focus:ring-primary-200"
-                >
-                  Komité-innstillinger
-                </button>
+                <Button title="Komité-innstillinger" color="blue" />
               </Link>
             </div>
           </div>

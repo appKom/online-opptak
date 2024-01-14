@@ -1,10 +1,10 @@
-const AuthenticationIllustration = () => {
+const AuthenticationIllustration = ({ className }: { className: string }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       data-name="Layer 1"
-      className="h-60"
+      className={className}
       viewBox="0 0 543.21934 633.6012"
     >
       <path

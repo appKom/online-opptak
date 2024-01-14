@@ -1,7 +1,7 @@
-const LoginIcon = () => (
+const LogInIcon = ({ className }: { className: string }) => (
   <svg
     fill="currentColor"
-    className="w-4 h-4"
+    className={className}
     viewBox="0 0 20 20"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -19,4 +19,4 @@ const LoginIcon = () => (
   </svg>
 );
 
-export default LoginIcon;
+export default LogInIcon;
