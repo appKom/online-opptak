@@ -23,6 +23,7 @@ interface Props {
 }
 
 export const ApplicationForm = (props: Props) => {
+  // TODO: get available committees from api
   const availableCommittees = [
     ["Ingen", ""],
     ["Arrkom", "arrkom"],
@@ -146,6 +147,9 @@ export const ApplicationForm = (props: Props) => {
         }
       />
 
+      {
+        // TODO: check if FeminIT has opptak
+      }
       <RadioInput
         values={[
           ["Ja", true],

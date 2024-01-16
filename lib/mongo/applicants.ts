@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { applicantType, commiteeType } from "../types/types";
+import { applicantType } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
@@ -62,6 +62,32 @@ export const getApplicants = async () => {
   }
 };
 
+export const getApplicantById = async (id: number) => {
+  try {
+    if (!applicants) await init();
+    const result = await applicants.findOne({ owId: id });
+    return { applicant: result };
+  } catch (error) {
+    return { error: "Failed to fetch applicant" };
+  }
+};
+
+export const deleteApplicantById = async (id: number) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants.deleteOne({ owId: id });
+
+    if (result.deletedCount === 0) {
+      return { error: "No applicant found with the specified ID" };
+    } else {
+      return { message: "Applicant deleted successfully" };
+    }
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to delete applicant" };
+  }
+};
 export const updateSelectedTimes = async (
   id: string,
   selectedTimes: [{ start: string; end: string }]
