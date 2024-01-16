@@ -1,7 +1,5 @@
 import "../styles/globals.css";
 import React, { useEffect } from "react";
-import { Provider } from "react-redux";
-import { store } from "../lib/redux/store";
 import { SessionProvider, useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
@@ -30,7 +28,7 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
           alt="Online logo"
           className="animate-pulse"
         />
-        <div className="text-xl">Laster...</div>
+        <div className="text-xl">Vent litt...</div>
       </div>
     );
   }
@@ -41,15 +39,13 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
 function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
   return (
     <SessionProvider session={session}>
-      <Provider store={store}>
-        <Head>
-          <link rel="icon" href="/Online_hvit_o.svg" />
-          <title>Online Komitéopptak</title>
-        </Head>
-        <SessionHandler>
-          <Component {...pageProps} />
-        </SessionHandler>
-      </Provider>
+      <Head>
+        <link rel="icon" href="/Online_hvit_o.svg" />
+        <title>Online Komitéopptak</title>
+      </Head>
+      <SessionHandler>
+        <Component {...pageProps} />
+      </SessionHandler>
     </SessionProvider>
   );
 }
