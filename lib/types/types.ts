@@ -10,7 +10,7 @@ export type commiteeType = {
 };
 
 export type applicantType = {
-  owId: number | undefined;
+  owId: number;
   name: string;
   email: string;
   phone: string;
@@ -29,7 +29,7 @@ export type applicantType = {
       end: string;
     },
   ];
-  applicationDate: Date | undefined;
+  date: Date;
 };
 
 export type UserProfile = {

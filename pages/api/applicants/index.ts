@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { createApplicant, getApplicants } from "../../../lib/mongo/applicants";
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
+import { applicantType } from "../../../lib/types/types";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -21,13 +22,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "POST") {
-      const applicantData = req.body;
+      const applicantData = req.body as applicantType;
 
       if (applicantData.owId !== session.user.owId) {
         return res
           .status(403)
           .json({ error: "Access denied, unauthorized operation" });
       }
+
+      applicantData.date = new Date(new Date().getTime() + 60 * 60 * 1000); // add date with GMT+1
 
       const { applicant, error } = await createApplicant(applicantData);
       if (error) throw new Error(error);
