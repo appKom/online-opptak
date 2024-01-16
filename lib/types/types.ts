@@ -10,6 +10,7 @@ export type commiteeType = {
 };
 
 export type applicantType = {
+  owId: number;
   name: string;
   email: string;
   phone: string;
@@ -28,6 +29,7 @@ export type applicantType = {
       end: string;
     },
   ];
+  applicationDate: Date;
 };
 
 export type UserProfile = {
