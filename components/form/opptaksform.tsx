@@ -5,12 +5,12 @@ import SelectComponent from "./selectcomponent";
 import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
 import Line from "./Line";
-import axios from "axios";
 import validator from "validator";
 import toast from "react-hot-toast";
 
 export const OpptaksForm = () => {
   const [data, setData] = useState<applicantType>({
+    owId: undefined,
     name: "",
     email: "",
     phone: "",
@@ -23,6 +23,7 @@ export const OpptaksForm = () => {
       second: "",
       third: "",
     },
+    applicationDate: undefined,
   });
 
   const availableCommittees = [
@@ -58,9 +59,8 @@ export const OpptaksForm = () => {
       return;
     }
     try {
-      const response = await axios.post("/api/applicants", data);
+      //const response = await axios.post("/api/applicants", data);
       toast.success("Søknad sendt inn. Du vil få en bekreftelse på mail");
-      console.log("Response:", response.data);
     } catch (error) {
       toast.error("Det skjedde en feil, vennligst prøv igjen");
       console.error("Error:", error);

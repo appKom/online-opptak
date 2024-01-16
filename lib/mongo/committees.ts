@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { commiteeType } from "../../types/types";
+import { commiteeType } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
