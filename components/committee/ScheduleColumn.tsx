@@ -1,6 +1,7 @@
 import styles from "./../../styles/schedule.module.css";
 import ScheduleCell from "./ScheduleCell";
 import { useState } from "react";
+import getTimeSlots from "../../utils/getTimeSlots";
 
 interface Props {
   weekDay: string
@@ -20,13 +21,18 @@ export default function ScheduleColumn(props: Props) {
     setDragging(false);
   }
 
-  const columnLength = 480/props.interviewLength;
-  const tempArray = new Array(columnLength).fill(0);
+  function handleMouseLeave() {
+    setDragging(false);
+  }
 
-  const column = tempArray.map((index) => (
+  const timeSlots = getTimeSlots(props.interviewLength);
+
+  const column = timeSlots.map((time, index) => (
     <ScheduleCell
       interviewLength={props.interviewLength}
       isDragging={isDragging}
+      weekDay={props.weekDay}
+      time={time}
       key={index}
     />
   ))
@@ -36,6 +42,7 @@ export default function ScheduleColumn(props: Props) {
       className={styles.scheduleColumn}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
     >
       <div className={styles.headerCell}>{props.weekDay}</div>
       {column}

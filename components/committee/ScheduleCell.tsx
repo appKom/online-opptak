@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, BaseSyntheticEvent } from "react";
 import styles from "./../../styles/schedule.module.css";
 
 interface Props {
+  weekDay: String;
+  time: String;
   interviewLength: number;
   isDragging: boolean;
 }
@@ -9,26 +11,36 @@ interface Props {
 export default function ScheduleCell(props: Props) {
   const [available, setAvailable] = useState(false);
 
-  useEffect(() => {
-    handleSetAvailable
-  }, [props.isDragging]);
+  const unmarkedColor = "white";
+  const markedColor = "lightgray";
 
-  function handleSetAvailable() {
-    if (props.isDragging) {
-      setAvailable(!available);
+  function changeColor(e: BaseSyntheticEvent) {
+    let cell: HTMLDivElement = e.target;
+    if (available) {
+      cell.style.backgroundColor = unmarkedColor;
+    } else {
+      cell.style.backgroundColor = markedColor;
     }
   }
 
-  function handleMouseDown() {
-    setAvailable(!available);
+  function handleSetAvailable(e: BaseSyntheticEvent) {
+    if (props.isDragging) {
+      changeColor(e);
+      setAvailable(!available);
+      console.log(`${props.weekDay} ${props.time}`);
+    }
   }
 
-  const availableClassName = styles[`availableCell${props.interviewLength}`];
-  const unavailableClassName = styles[`unavailableCell${props.interviewLength}`];
+  function handleMouseDown(e: BaseSyntheticEvent) {
+    changeColor(e);
+    setAvailable(!available);
+    console.log(`${props.weekDay} ${props.time}`);
+
+  }
 
   return (
     <div
-      className={available ? availableClassName : unavailableClassName}
+      className={styles[`cell${props.interviewLength}`]}
       onMouseEnter={handleSetAvailable}
       onMouseDown={handleMouseDown}
     ></div>

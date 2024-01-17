@@ -1,6 +1,7 @@
-.unavailableCell15,
-.unavailableCell20,
-.unavailableCell30 {
+/* Different classes to account for dotted lines */
+.cell15,
+.cell20,
+.cell30 {
   height: 30px;
   width: 180px;
   display: flex;
@@ -10,31 +11,15 @@
   border-bottom: dotted 2px black;
 }
 
-.availableCell15,
-.availableCell20,
-.availableCell30 {
-  height: 30px;
-  width: 180px;
-  background-color: lightgray;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-right: solid 2px black;
-  border-bottom: dotted 2px black;
-}
-
-.unavailableCell15:nth-child(4n + 1),
-.availableCell15:nth-child(4n + 1) {
+.cell15:nth-child(4n + 1) {
   border-bottom: 2px solid black;
 }
 
-.unavailableCell20:nth-child(3n + 1),
-.availableCell20:nth-child(3n + 1) {
+.cell20:nth-child(3n + 1) {
   border-bottom: 2px solid black;
 }
 
-.unavailableCell30:nth-child(2n + 1),
-.availableCell30:nth-child(2n + 1) {
+.cell30:nth-child(2n + 1) {
   border-bottom: 2px solid black;
 }
 
