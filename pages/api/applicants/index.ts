@@ -13,7 +13,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     if (req.method === "GET") {
-      if (session.user.role !== "admin") {
+      if (session.user?.role !== "admin") {
         return res.status(403).json({ error: "Access denied, unauthorized" });
       }
       const { applicants, error } = await getApplicants();
@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "POST") {
       const applicantData = req.body as applicantType;
 
-      if (applicantData.owId !== session.user.owId) {
+      if (applicantData.owId !== session.user?.owId) {
         return res
           .status(403)
           .json({ error: "Access denied, unauthorized operation" });
