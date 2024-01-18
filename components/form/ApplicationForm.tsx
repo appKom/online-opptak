@@ -42,7 +42,6 @@ export const ApplicationForm = (props: Props) => {
       <TextInput
         label={"E-postadresse"}
         defaultValue={props.applicationData.email}
-        disabled
         updateInputValues={(value: string) =>
           props.setApplicationData({ ...props.applicationData, email: value })
         }
@@ -66,7 +65,11 @@ export const ApplicationForm = (props: Props) => {
 
       <SelectInput
         required
-        defaultValue="Velg trinn"
+        defaultValue={
+          props.applicationData.grade === undefined
+            ? "Velg trinn"
+            : props.applicationData.grade
+        }
         values={[
           ["1.", 1],
           ["2.", 2],

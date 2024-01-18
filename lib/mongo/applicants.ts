@@ -22,18 +22,14 @@ async function init() {
   await init();
 })();
 
-export const createApplicant = async (
-  applicantData: applicantType | string
-) => {
+export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
-    const parsedApplicantData =
-      typeof applicantData === "string"
-        ? JSON.parse(applicantData)
-        : applicantData;
+    console.log("db function:");
+    console.log(typeof applicantData.owId);
 
-    const result = await applicants.insertOne(parsedApplicantData);
+    const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
       const insertedApplicant = await applicants.findOne({
         _id: result.insertedId,
@@ -62,7 +58,7 @@ export const getApplicants = async () => {
   }
 };
 
-export const getApplicantById = async (id: number) => {
+export const getApplicantById = async (id: string) => {
   try {
     if (!applicants) await init();
     const result = await applicants.findOne({ owId: id });
@@ -72,7 +68,7 @@ export const getApplicantById = async (id: number) => {
   }
 };
 
-export const deleteApplicantById = async (id: number) => {
+export const deleteApplicantById = async (id: string) => {
   try {
     if (!applicants) await init();
 

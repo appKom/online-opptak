@@ -3,7 +3,7 @@ interface Props {
   label: string;
   values: any[][];
   required?: boolean;
-  defaultValue?: string;
+  defaultValue?: string | number;
 }
 
 const SelectInput = (props: Props) => {

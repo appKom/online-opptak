@@ -13,19 +13,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(403).json({ error: "Access denied, no session" });
   }
 
-  const idString = req.query.id;
+  const id = req.query.id;
 
-  if (typeof idString !== "string") {
+  if (typeof id !== "string") {
     return res.status(400).json({ error: "Invalid ID format" });
   }
 
-  if (session.user.role !== "admin" || session.user.owId !== idString) {
+  if (session?.user?.role !== "admin" || session.user.owId !== id) {
     return res.status(403).json({ error: "Access denied, unauthorized" });
   }
 
   try {
-    const id = parseInt(idString, 10);
-
     if (req.method === "GET") {
       const { applicant, error } = await getApplicantById(id);
       if (error) throw new Error(error);

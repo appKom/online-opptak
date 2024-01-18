@@ -5,6 +5,14 @@ declare module "next-auth" {
   interface Session {
     accessToken?: string;
     user?: User;
-    role?: string;
+  }
+
+  interface User {
+    owId?: string;
+    name: string;
+    role?: "admin" | "user";
+    email: string;
+    phone?: string;
+    grade?: number;
   }
 }
