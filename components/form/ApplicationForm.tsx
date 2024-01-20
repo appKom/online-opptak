@@ -3,22 +3,10 @@ import RadioInput from "./RadioInput";
 import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
+import { applicantType } from "../../lib/types/types";
 
 interface Props {
-  applicationData: {
-    name: string;
-    email: string;
-    phone: string;
-    about: string;
-    grade: number;
-    bankom: boolean;
-    feminIt: boolean;
-    preferences: {
-      first: string;
-      second: string;
-      third: string;
-    };
-  };
+  applicationData: applicantType;
   setApplicationData: Function;
 }
 
@@ -138,9 +126,9 @@ export const ApplicationForm = (props: Props) => {
 
       <RadioInput
         values={[
-          ["Ja", true],
-          ["Nei", false],
-          ["Usikker (gjerne spør om mer info på intervjuet)"],
+          ["Ja", "yes"],
+          ["Nei", "no"],
+          ["Usikker (gjerne spør om mer info på intervjuet)", "maybe"],
         ]}
         label={
           "Er du interessert i å være økonomiansvarlig i komitéen (tilleggsverv i Bankkom)?"
@@ -155,8 +143,8 @@ export const ApplicationForm = (props: Props) => {
       }
       <RadioInput
         values={[
-          ["Ja", true],
-          ["Nei", false],
+          ["Ja", "yes"],
+          ["Nei", "no"],
         ]}
         label={"Ønsker du å søke FeminIT i tillegg?"}
         updateInputValues={(value: boolean) =>

@@ -30,7 +30,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           .json({ error: "Access denied, unauthorized operation" });
       }
 
-      applicantData.date = new Date(new Date().getTime() + 60 * 60 * 1000); // add date with GMT+1
+      applicantData.date = new Date(new Date().getTime() + 60 * 60 * 1000); // add date with norwegain time (GMT+1)
 
       const { applicant, error } = await createApplicant(applicantData);
       if (error) throw new Error(error);

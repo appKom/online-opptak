@@ -8,10 +8,19 @@ type TabContent = {
 
 type TabsProps = {
   content: TabContent[];
+  activeTab?: number;
+  setActiveTab?: (index: number) => void;
 };
 
 export const Tabs = (props: TabsProps) => {
-  const [activeTab, setActiveTab] = useState(0);
+  const [internalActiveTab, setInternalActiveTab] = useState(0);
+
+  const currentActiveTab =
+    props.activeTab !== undefined ? props.activeTab : internalActiveTab;
+  const changeTab =
+    props.setActiveTab !== undefined
+      ? props.setActiveTab
+      : setInternalActiveTab;
 
   const getTabClass = (tabIndex: number) => {
     const defaultTabClass =
@@ -19,7 +28,7 @@ export const Tabs = (props: TabsProps) => {
 
     return (
       defaultTabClass +
-      (tabIndex === activeTab
+      (tabIndex === props.activeTab
         ? "relative text-online-darkTeal after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-online-darkTeal hover:text-online-darkTeal border-online-darkTeal"
         : "text-gray-500 hover:text-online-darkTeal")
     );
@@ -32,7 +41,7 @@ export const Tabs = (props: TabsProps) => {
           {props.content.map((tab, index) => (
             <li key={index}>
               <a
-                onClick={() => setActiveTab(index)}
+                onClick={() => changeTab(index)}
                 className={getTabClass(index)}
               >
                 {tab.icon}
@@ -44,7 +53,10 @@ export const Tabs = (props: TabsProps) => {
       </div>
       <div className="py-3">
         {props.content.map((tab, index) => (
-          <div key={index} className={activeTab === index ? "block" : "hidden"}>
+          <div
+            key={index}
+            className={currentActiveTab === index ? "block" : "hidden"}
+          >
             {tab.content}
           </div>
         ))}
