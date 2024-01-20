@@ -5,10 +5,14 @@
   height: 30px;
   width: 180px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: row;
   border-right: solid 2px black;
   border-bottom: dotted 2px black;
+}
+
+.interviewSlot {
+  height: 30px;
+  width: 60px;
 }
 
 .cell15:nth-child(4n + 1) {
