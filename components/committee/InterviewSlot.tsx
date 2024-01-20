@@ -44,11 +44,23 @@ export default function InterviewSlot(props: Props) {
     });
   }
 
+  function handleMouseOver(e: BaseSyntheticEvent) {
+    const slot = e.target;
+    slot.style.border = "1px solid black";
+  }
+
+  function handleMouseOut(e: BaseSyntheticEvent) {
+    const slot = e.target;
+    slot.style.border = "none";
+  }
+
   return (
     <div
       className={styles.interviewSlot}
       onMouseEnter={(e: BaseSyntheticEvent) => handleSetAvailable(e, true)}
       onMouseDown={(e: BaseSyntheticEvent) => handleSetAvailable(e, false)}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
     ></div>
   );
 }
