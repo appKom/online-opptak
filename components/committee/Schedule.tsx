@@ -14,14 +14,14 @@ export default function Schedule(props : Props) {
     <div className={styles.timeCell} key={index}>{time}</div>
   ));
 
-  const weekDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  const weekDays = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag"];
   const columns = weekDays.map((weekDay, index) => (
     <ScheduleColumn
       weekDay={weekDay}
       interviewLength={props.interviewLength}
       key={index}
     />
-  ));
+  )); 
 
   return (
     <div className={styles.schedule}>

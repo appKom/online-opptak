@@ -23,26 +23,23 @@ export default function ScheduleCell(props: Props) {
     }
   }
 
-  function handleSetAvailable(e: BaseSyntheticEvent) {
-    if (props.isDragging) {
-      changeColor(e);
-      setAvailable(!available);
-      console.log(`${props.weekDay} ${props.time}`);
+  function handleSetAvailable(e: BaseSyntheticEvent, dragging: boolean) {
+    if (dragging && !props.isDragging) {
+      return;
     }
-  }
-
-  function handleMouseDown(e: BaseSyntheticEvent) {
     changeColor(e);
-    setAvailable(!available);
-    console.log(`${props.weekDay} ${props.time}`);
-
+    setAvailable((prevAvailable) => {
+      const newAvailable = !prevAvailable;
+      console.log(`${props.weekDay} ${props.time} ${newAvailable}`);
+      return newAvailable;
+    });
   }
 
   return (
     <div
       className={styles[`cell${props.interviewLength}`]}
-      onMouseEnter={handleSetAvailable}
-      onMouseDown={handleMouseDown}
+      onMouseEnter={(e: BaseSyntheticEvent) => handleSetAvailable(e, true)}
+      onMouseDown={(e: BaseSyntheticEvent) => handleSetAvailable(e, false)}
     ></div>
   );
 }
