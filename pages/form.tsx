@@ -11,27 +11,29 @@ import CheckIcon from "../components/icons/icons/CheckIcon";
 import Button from "../components/Button";
 import CalendarIcon from "../components/icons/icons/CalendarIcon";
 import { Tabs } from "../components/Tabs";
+import { applicantType } from "../lib/types/types";
 
 const Form: NextPage = () => {
   const { data: session } = useSession();
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [applicationData, setApplicationData] = useState({
-    owId: session?.user?.owId,
+  const [applicationData, setApplicationData] = useState<applicantType>({
+    owId: session?.user?.owId || "",
     name: session?.user?.name || "",
     email: session?.user?.email || "",
     phone: session?.user?.phone || "",
-    about: "",
     grade: session?.user?.grade || 0,
-    bankom: false,
-    feminIt: false,
+    about: "",
+    bankom: undefined,
+    feminIt: undefined,
     preferences: {
       first: "",
       second: "",
       third: "",
     },
-    interviewTimes: [{}],
+    selectedTimes: undefined,
   });
 
   useEffect(() => {
@@ -40,10 +42,11 @@ const Form: NextPage = () => {
       if (session?.user?.owId) {
         try {
           const response = await fetch(`/api/applicants/${session.user.owId}`);
-          if (response.status === 404) {
-            setHasAlreadySubmitted(false);
+          const data = await response.json();
+          if (response.ok) {
+            setHasAlreadySubmitted(data.exists);
           } else {
-            setHasAlreadySubmitted(true);
+            throw new Error(data.error || "Unknown error");
           }
         } catch (error) {
           console.error("Error checking application status:", error);
@@ -79,7 +82,6 @@ const Form: NextPage = () => {
       setHasAlreadySubmitted(true);
     } catch (error) {
       toast.error("Det skjedde en feil, vennligst prøv igjen");
-      console.error("Error:", error);
     }
   };
 
@@ -137,6 +139,8 @@ const Form: NextPage = () => {
           </div>
         ) : (
           <Tabs
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
             content={[
               {
                 title: "Søknad",
@@ -149,9 +153,14 @@ const Form: NextPage = () => {
                     />
                     <div className="flex w-full justify-center">
                       <Button
-                        title="Send inn søknad"
+                        title="Videre"
                         color="blue"
-                        onClick={handleSubmitApplication}
+                        onClick={() => {
+                          if (!validateApplication(applicationData)) {
+                            return;
+                          }
+                          setActiveTab(activeTab + 1);
+                        }}
                         size="small"
                       />
                     </div>
@@ -162,45 +171,55 @@ const Form: NextPage = () => {
                 title: "Intervjutider",
                 icon: <CalendarIcon className="w-5 h-5" />,
                 content: (
-                  <div>
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    when2meet
-                    <br />
-                    <br />
-                  </div>
+                  <>
+                    <div>
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      when2meet
+                      <br />
+                      <br />
+                    </div>
+                    <div className="flex w-full justify-center">
+                      <Button
+                        title="Send inn søknad"
+                        color="blue"
+                        onClick={handleSubmitApplication}
+                        size="small"
+                      />
+                    </div>
+                  </>
                 ),
               },
             ]}
@@ -253,6 +272,14 @@ const validateApplication = (applicationData: any) => {
       applicationData.preferences.second === applicationData.preferences.third)
   ) {
     toast.error("Du kan ikke velge samme komité flere ganger");
+    return false;
+  }
+  if (applicationData.bankom === undefined) {
+    toast.error("Velg om du er interessert i Bankom");
+    return false;
+  }
+  if (applicationData.feminIt === undefined) {
+    toast.error("Velg om du er interessert i FeminIT");
     return false;
   }
   return true;

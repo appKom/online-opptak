@@ -19,17 +19,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: "Invalid ID format" });
   }
 
-  if (session?.user?.role !== "admin" || session.user.owId !== id) {
+  if (session?.user?.role !== "admin" && session.user?.owId !== id) {
     return res.status(403).json({ error: "Access denied, unauthorized" });
   }
 
   try {
     if (req.method === "GET") {
       const { applicant, error } = await getApplicantById(id);
-      if (error) throw new Error(error);
-      if (!applicant)
-        return res.status(404).json({ error: "Applicant not found" });
-      return res.status(200).json({ applicant });
+      if (error) {
+        throw new Error(error);
+      }
+      if (!applicant) {
+        return res.status(200).json({ exists: false });
+      }
+      return res.status(200).json({ exists: true, applicant });
     } else if (req.method === "DELETE") {
       const { error } = await deleteApplicantById(id);
       if (error) throw new Error(error);
