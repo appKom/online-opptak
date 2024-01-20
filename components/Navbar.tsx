@@ -35,7 +35,7 @@ const Navbar = () => {
             width={100}
             height={30}
             alt="Online logo"
-            className="cursor-pointer"
+            className="cursor-pointer hover:opacity-60 transition-all"
           />
         </a>
       </Link>
