@@ -26,9 +26,6 @@ export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
-    console.log("db function:");
-    console.log(typeof applicantData.owId);
-
     const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
       const insertedApplicant = await applicants.findOne({
