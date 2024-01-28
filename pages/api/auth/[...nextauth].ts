@@ -27,11 +27,12 @@ export const authOptions: NextAuthOptions = {
         }
 
         const userInfo = await response.json();
+        console.log(userInfo);
 
         return {
           id: profile.sub,
           name: `${userInfo.first_name} ${userInfo.last_name}`,
-          email: `${userInfo.online_mail}@online.ntnu.no`, // online_mail or mail?
+          email: userInfo.email, // online_mail or mail?
         };
       },
     },
