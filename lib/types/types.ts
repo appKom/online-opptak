@@ -31,17 +31,3 @@ export type applicantType = {
   ];
   date?: Date;
 };
-
-export type UserProfile = {
-  id: number;
-  first_name: string;
-  last_name: string;
-  username: string;
-  year: number;
-  email: string;
-  online_mail: string;
-  phone_number: string;
-  is_committee: boolean;
-  is_member: boolean;
-  image: string;
-};
