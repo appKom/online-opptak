@@ -10,7 +10,7 @@ export type commiteeType = {
 };
 
 export type applicantType = {
-  owId: number | undefined;
+  owId: string;
   name: string;
   email: string;
   phone: string;
@@ -21,13 +21,13 @@ export type applicantType = {
     second: string;
     third: string;
   };
-  bankom: boolean;
-  feminIt: boolean;
+  bankom: "yes" | "no" | "maybe" | undefined;
+  feminIt: "yes" | "no" | undefined;
   selectedTimes?: [
     {
       start: string;
       end: string;
     },
   ];
-  applicationDate: Date | undefined;
+  date?: Date;
 };

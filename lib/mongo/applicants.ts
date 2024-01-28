@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { applicantType, commiteeType } from "../types/types";
+import { applicantType } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
@@ -22,18 +22,11 @@ async function init() {
   await init();
 })();
 
-export const createApplicant = async (
-  applicantData: applicantType | string
-) => {
+export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
-    const parsedApplicantData =
-      typeof applicantData === "string"
-        ? JSON.parse(applicantData)
-        : applicantData;
-
-    const result = await applicants.insertOne(parsedApplicantData);
+    const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
       const insertedApplicant = await applicants.findOne({
         _id: result.insertedId,
@@ -62,6 +55,32 @@ export const getApplicants = async () => {
   }
 };
 
+export const getApplicantById = async (id: string) => {
+  try {
+    if (!applicants) await init();
+    const result = await applicants.findOne({ owId: id });
+    return { applicant: result };
+  } catch (error) {
+    return { error: "Failed to fetch applicant" };
+  }
+};
+
+export const deleteApplicantById = async (id: string) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants.deleteOne({ owId: id });
+
+    if (result.deletedCount === 0) {
+      return { error: "No applicant found with the specified ID" };
+    } else {
+      return { message: "Applicant deleted successfully" };
+    }
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to delete applicant" };
+  }
+};
 export const updateSelectedTimes = async (
   id: string,
   selectedTimes: [{ start: string; end: string }]

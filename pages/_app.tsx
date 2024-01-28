@@ -4,6 +4,7 @@ import { SessionProvider, useSession } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
 
 const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -44,6 +45,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
         <title>Online Komitéopptak</title>
       </Head>
       <SessionHandler>
+        <Toaster />
         <Component {...pageProps} />
       </SessionHandler>
     </SessionProvider>

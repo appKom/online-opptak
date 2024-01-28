@@ -32,33 +32,37 @@ export const authOptions: NextAuthOptions = {
         return {
           id: profile.sub,
           name: `${userInfo.first_name} ${userInfo.last_name}`,
-          email: userInfo.email, // online_mail or mail?
+          email: userInfo.email,
+          phone: userInfo.phone_number,
+          grade: userInfo.year,
         };
       },
     },
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
+    // server side
     async jwt({ token, account, user }) {
+      if (account && account.access_token) {
+        token.accessToken = account?.access_token;
+      }
       if (user) {
         token.id = user.id;
-      }
-      if (account) {
-        token.accessToken = account.access_token;
+        token.phone = user.phone;
+        token.grade = user.grade;
+        token.role = adminEmails.includes(user.email) ? "admin" : "user";
       }
       return token;
     },
+    // client side
     async session({ session, token }) {
       if (session.user) {
-        const userEmail = session.user.email;
-        const isAdmin = userEmail ? adminEmails.includes(userEmail) : false;
-
         session.accessToken = token.accessToken as string;
-        session.user.role = isAdmin ? "admin" : "user";
 
-        if (token.id) {
-          session.user.owId = token.id as string;
-        }
+        session.user.role = token.role as "admin" | "user";
+        session.user.owId = token.id as string;
+        session.user.phone = token.phone as string;
+        session.user.grade = token.grade as number;
       }
       return session;
     },
