@@ -2,12 +2,9 @@ import type { NextPage } from "next";
 import { BaseSyntheticEvent, useEffect } from "react";
 import Whentomeet from "../components/committee/whentomeet";
 import styles from "../styles/committee.module.css";
-import Router from "next/router";
-import Navbar from "../components/navbar";
+import Navbar from "../components/Navbar";
 
 import { useState } from "react";
-import getValidDates from "../services/getValidDates";
-import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { ValidDates } from "../types";
 
 interface Interview {
@@ -29,10 +26,10 @@ const Committee: NextPage = () => {
 
   const committee = "appkom";
   // Data from OW
-  const { isLoading, isError, isSuccess, data } = useQuery<
+  /* const { isLoading, isError, isSuccess, data } = useQuery<
     { dates: ValidDates },
     Error
-  >([], getValidDates);
+  >([], getValidDates); */
 
   const year: string = "2023";
 
@@ -218,7 +215,7 @@ const Committee: NextPage = () => {
           </option>
         </select>
       </div>
-      {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)}
+      {/* {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)} */}
     </div>
   );
 };
