@@ -10,7 +10,7 @@ export default function Schedule(props : Props) {
   const timeSlots = getTimeSlots(props.interviewLength);
 
   const timeCells = timeSlots.map((time, index) => (
-    <div className="h-8 border-t" key={index}>{time}</div>
+    <div className="h-8 border-t text-sm" key={index}>{time}</div>
   ));
 
   const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
