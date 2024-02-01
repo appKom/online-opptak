@@ -1,5 +1,4 @@
 import { useState, BaseSyntheticEvent } from "react";
-import styles from "./../../styles/schedule.module.css";
 import InterviewSlot from "./InterviewSlot";
 
 interface Props {
@@ -11,9 +10,7 @@ interface Props {
 
 export default function ScheduleCell(props: Props) {
   return (
-    <div
-      className={styles[`cell${props.interviewLength}`]}
-    >
+    <div className="flex border-t h-8 even:border-dotted">
       <InterviewSlot
         weekDay={props.weekDay}
         time={props.time}

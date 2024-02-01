@@ -1,4 +1,3 @@
-import styles from "./../../styles/schedule.module.css";
 import ScheduleCell from "./ScheduleCell";
 import { useState } from "react";
 import getTimeSlots from "../../utils/getTimeSlots";
@@ -39,13 +38,14 @@ export default function ScheduleColumn(props: Props) {
 
   return (
     <div 
-      className={styles.scheduleColumn}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={styles.headerCell}>{props.weekDay}</div>
-      {column}
+      <div className="flex justify-center border-l bg-online-orange">{props.weekDay}</div>
+      <div className="border-l">
+        {column}
+      </div>
     </div>
   )
 }

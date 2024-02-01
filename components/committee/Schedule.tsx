@@ -1,4 +1,3 @@
-import styles from "./../../styles/schedule.module.css";
 import ScheduleColumn from "./ScheduleColumn";
 import getTimeSlots from "../../utils/getTimeSlots";
 
@@ -11,10 +10,10 @@ export default function Schedule(props : Props) {
   const timeSlots = getTimeSlots(props.interviewLength);
 
   const timeCells = timeSlots.map((time, index) => (
-    <div className={styles.timeCell} key={index}>{time}</div>
+    <div className="h-8 border-t" key={index}>{time}</div>
   ));
 
-  const weekDays = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag"];
+  const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
   const columns = weekDays.map((weekDay, index) => (
     <ScheduleColumn
       weekDay={weekDay}
@@ -24,9 +23,8 @@ export default function Schedule(props : Props) {
   )); 
 
   return (
-    <div className={styles.schedule}>
-      <div className={styles.timeColumn}>
-        <div className={styles.headerCell}></div>
+    <div className="flex border">
+      <div className="flex flex-col justify-end bg-online-orange">
         {timeCells}
       </div>
     {columns}

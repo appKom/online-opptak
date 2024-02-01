@@ -1,5 +1,4 @@
 import { useState, BaseSyntheticEvent } from "react";
-import styles from "./../../styles/schedule.module.css";
 
 interface Props {
   weekDay: String;
@@ -47,6 +46,7 @@ export default function InterviewSlot(props: Props) {
   function handleMouseOver(e: BaseSyntheticEvent) {
     const slot = e.target;
     slot.style.border = "1px solid black";
+    slot.style.borderBottom = "2px solid black";
   }
 
   function handleMouseOut(e: BaseSyntheticEvent) {
@@ -55,8 +55,7 @@ export default function InterviewSlot(props: Props) {
   }
 
   return (
-    <div
-      className={styles.interviewSlot}
+    <div className="w-10 h-8"
       onMouseEnter={(e: BaseSyntheticEvent) => handleSetAvailable(e, true)}
       onMouseDown={(e: BaseSyntheticEvent) => handleSetAvailable(e, false)}
       onMouseOver={handleMouseOver}
