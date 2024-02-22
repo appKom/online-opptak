@@ -38,12 +38,12 @@ export default function ScheduleColumn(props: Props) {
 
   return (
     <div 
-      className="border-l w-12 sm:w-24 md:w-28 lg:w-32 xl:w-36"
+      className="border-l border-black w-12 sm:w-24 md:w-28 lg:w-32 xl:w-36"
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="flex justify-center bg-online-orange">{props.weekDay}</div>
+      <div className="flex justify-center bg-blue-200">{props.weekDay}</div>
       {column}
     </div>
   )

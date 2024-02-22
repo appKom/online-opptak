@@ -37,7 +37,7 @@ export default function ScheduleCell(props: Props) {
 
   return (
     <div
-      className="flex border-t h-8 odd:border-dotted"
+      className="flex border-t border-black h-8 odd:border-dotted"
       onMouseEnter={(e: BaseSyntheticEvent) => handleSetAvailable(e, true)}
       onMouseDown={(e: BaseSyntheticEvent) => handleSetAvailable(e, false)}
       >
