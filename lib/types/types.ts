@@ -25,15 +25,15 @@ export type applicantType = {
     second: string;
     third: string;
   };
-  bankom: "yes" | "no" | "maybe" | undefined;
-  feminIt: "yes" | "no" | undefined;
-  selectedTimes?: [
+  bankom: "yes" | "no" | "maybe";
+  feminIt: "yes" | "no";
+  selectedTimes: [
     {
       start: string;
       end: string;
     },
   ];
-  date?: Date;
+  date: Date;
 };
 
 export type periodType = {
