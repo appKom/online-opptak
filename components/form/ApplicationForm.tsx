@@ -3,10 +3,10 @@ import RadioInput from "./RadioInput";
 import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
-import { applicantType } from "../../lib/types/types";
+import { DeepPartial, applicantType } from "../../lib/types/types";
 
 interface Props {
-  applicationData: applicantType;
+  applicationData: DeepPartial<applicantType>;
   setApplicationData: Function;
 }
 
@@ -84,7 +84,7 @@ export const ApplicationForm = (props: Props) => {
       <Line />
 
       <div className="flex justify-center">
-        <label className="inline-block form-label text-gray-700 mt-6">
+        <label className="inline-block mt-6 text-gray-700 form-label">
           Velg opp til 3 komitéer
         </label>
       </div>

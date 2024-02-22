@@ -11,7 +11,7 @@ import CheckIcon from "../components/icons/icons/CheckIcon";
 import Button from "../components/Button";
 import CalendarIcon from "../components/icons/icons/CalendarIcon";
 import { Tabs } from "../components/Tabs";
-import { applicantType } from "../lib/types/types";
+import { DeepPartial, applicantType } from "../lib/types/types";
 
 const Form: NextPage = () => {
   const { data: session } = useSession();
@@ -19,21 +19,14 @@ const Form: NextPage = () => {
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [applicationData, setApplicationData] = useState<applicantType>({
-    owId: session?.user?.owId || "",
-    name: session?.user?.name || "",
-    email: session?.user?.email || "",
-    phone: session?.user?.phone || "",
-    grade: session?.user?.grade || 0,
-    about: "",
-    bankom: undefined,
-    feminIt: undefined,
-    preferences: {
-      first: "",
-      second: "",
-      third: "",
-    },
-    selectedTimes: undefined,
+  const [applicationData, setApplicationData] = useState<
+    DeepPartial<applicantType>
+  >({
+    owId: session?.user?.owId,
+    name: session?.user?.name,
+    email: session?.user?.email,
+    phone: session?.user?.phone,
+    grade: session?.user?.grade,
   });
 
   useEffect(() => {
@@ -151,7 +144,7 @@ const Form: NextPage = () => {
                       applicationData={applicationData}
                       setApplicationData={setApplicationData}
                     />
-                    <div className="flex w-full justify-center">
+                    <div className="flex justify-center w-full">
                       <Button
                         title="Videre"
                         color="blue"
@@ -211,7 +204,7 @@ const Form: NextPage = () => {
                       <br />
                       <br />
                     </div>
-                    <div className="flex w-full justify-center">
+                    <div className="flex justify-center w-full">
                       <Button
                         title="Send inn søknad"
                         color="blue"

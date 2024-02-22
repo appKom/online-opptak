@@ -1,3 +1,7 @@
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
 export type commiteeType = {
   name: string;
   email: string;
@@ -21,13 +25,13 @@ export type applicantType = {
     second: string;
     third: string;
   };
-  bankom: "yes" | "no" | "maybe" | undefined;
-  feminIt: "yes" | "no" | undefined;
-  selectedTimes?: [
+  bankom: "yes" | "no" | "maybe";
+  feminIt: "yes" | "no";
+  selectedTimes: [
     {
       start: string;
       end: string;
     },
   ];
-  date?: Date;
+  date: Date;
 };
