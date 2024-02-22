@@ -35,7 +35,7 @@ const Admin = () => {
               formatDate(period.interviewPeriod.end),
             committees: period.committees,
           };
-        })
+        }),
       );
     } catch (error) {
       console.error("Failed to fetch application periods:", error);

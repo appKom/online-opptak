@@ -45,7 +45,7 @@ const Committee: NextPage = () => {
           const dd = new Date(
             parseInt(year),
             parseInt(j.split(".")[1]),
-            parseInt(j.split(".")[0])
+            parseInt(j.split(".")[0]),
           );
 
           const ddd = {

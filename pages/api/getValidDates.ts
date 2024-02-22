@@ -6,7 +6,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ dates: ValidDates }>
+  res: NextApiResponse<{ dates: ValidDates }>,
 ) {
   const dates: string[][] = [
     ["28.08", "29.08", "30.08", "31.08", "1.09"],

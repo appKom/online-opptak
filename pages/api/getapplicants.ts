@@ -7,7 +7,7 @@ import { Applicant, Prisma } from "@prisma/client";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ applicants: DBapplicant[] | null }>
+  res: NextApiResponse<{ applicants: DBapplicant[] | null }>,
 ) {
   let committee = "appkom";
   let arr: Applicant[] | null = await prisma.applicant.findMany({

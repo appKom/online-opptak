@@ -32,7 +32,7 @@ const CheckboxInput = (props: Props) => {
     props.updateInputValues(
       isChecked
         ? [...checkedItems, value]
-        : checkedItems.filter((item) => item !== value)
+        : checkedItems.filter((item) => item !== value),
     );
   };
 

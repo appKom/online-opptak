@@ -15,7 +15,7 @@ const ApplicantOverview: NextPage = () => {
   >([], getApplicants); */
 
   const handleApplicantsRequest = (
-    data: { applicants: Applicant[] } | undefined
+    data: { applicants: Applicant[] } | undefined,
   ) => {
     if (data) {
       return data.applicants.map((a) => (
