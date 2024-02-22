@@ -14,10 +14,18 @@
 }
 
 @keyframes party {
-  0% {color: #ff0000;}
-  33% {color: #00ff00;}
-  67% {color: #0000ff;}
-  100% {color: #ff0000;}
+  0% {
+    color: #ff0000;
+  }
+  33% {
+    color: #00ff00;
+  }
+  67% {
+    color: #0000ff;
+  }
+  100% {
+    color: #ff0000;
+  }
 }
 
 .footer {
@@ -69,8 +77,15 @@
   border-radius: 5px;
   padding: 0.75rem;
   font-size: 1.1rem;
-  font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-    Bitstream Vera Sans Mono, Courier New, monospace;
+  font-family:
+    Menlo,
+    Monaco,
+    Lucida Console,
+    Liberation Mono,
+    DejaVu Sans Mono,
+    Bitstream Vera Sans Mono,
+    Courier New,
+    monospace;
 }
 
 .grid {
@@ -89,7 +104,9 @@
   text-decoration: none;
   border: 1px solid #eaeaea;
   border-radius: 10px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
   max-width: 300px;
 }
 

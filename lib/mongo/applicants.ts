@@ -83,13 +83,13 @@ export const deleteApplicantById = async (id: string) => {
 };
 export const updateSelectedTimes = async (
   id: string,
-  selectedTimes: [{ start: string; end: string }]
+  selectedTimes: [{ start: string; end: string }],
 ) => {
   try {
     if (!applicants) await init();
     const result = await applicants.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { selectedTimes: selectedTimes } }
+      { $set: { selectedTimes: selectedTimes } },
     );
     if (result.matchedCount > 0) {
       return { message: "Selected times updated successfully" };

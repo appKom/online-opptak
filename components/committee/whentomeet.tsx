@@ -41,7 +41,7 @@ function Whentomeet(props: Props) {
               addCell={(cell: string[]) => props.addCell(cell)}
               mouseDown={mouseDown}
               time={`${minutesToTimeString(time)} - ${minutesToTimeString(
-                time + props.interviewInterval
+                time + props.interviewInterval,
               )}`}
               key={i.toString()}
             />
