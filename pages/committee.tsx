@@ -204,11 +204,11 @@ const Committee: NextPage = () => {
           name=""
           id=""
         >
-          <option value={"20"} key={"20"}>
-            20 min
-          </option>
           <option value={"15"} key={"15"}>
             15 min
+          </option>
+          <option value={"20"} key={"20"}>
+            20 min
           </option>
           <option value={"30"} key={"30"}>
             30 min

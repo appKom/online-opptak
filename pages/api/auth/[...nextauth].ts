@@ -27,6 +27,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         const userInfo = await response.json();
+        console.log(userInfo);
 
         return {
           id: profile.sub,
