@@ -19,7 +19,7 @@ git clone https://github.com/appKom/OnlineOpptak.git
 Navigate into the project directory:
 
 ```bash
-cd online-opptak
+cd OnlineOpptak
 ```
 
 Install the dependencies:
