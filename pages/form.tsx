@@ -92,7 +92,7 @@ const Form: NextPage = () => {
     }
 
     const isConfirmed = confirm(
-      "Er du sikker på at du vil trekke tilbake søknaden?"
+      "Er du sikker på at du vil trekke tilbake søknaden?",
     );
     if (!isConfirmed) {
       return;

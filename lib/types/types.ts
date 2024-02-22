@@ -1,3 +1,7 @@
+export type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
 export type commiteeType = {
   name: string;
   email: string;
@@ -30,4 +34,23 @@ export type applicantType = {
     },
   ];
   date?: Date;
+};
+
+export type periodType = {
+  _id: string;
+  name: string;
+  description: string;
+  preparationPeriod: {
+    start: Date;
+    end: Date;
+  };
+  applicationPeriod: {
+    start: Date;
+    end: Date;
+  };
+  interviewPeriod: {
+    start: Date;
+    end: Date;
+  };
+  committees: string[];
 };

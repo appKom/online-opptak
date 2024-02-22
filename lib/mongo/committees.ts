@@ -48,13 +48,13 @@ export const getCommittee = async (id: string) => {
 
 export const updateAvailableTimes = async (
   id: string,
-  times: [{ start: string; end: string }]
+  times: [{ start: string; end: string }],
 ) => {
   try {
     if (!committees) await init();
     const result = await committees.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { availableTimes: times } }
+      { $set: { availableTimes: times } },
     );
     if (result.matchedCount > 0) {
       return { message: "Available times updated successfully" };
