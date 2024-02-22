@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
-import ApplicationForm from "../components/form/ApplicationForm";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import ApplicationForm from "../../components/form/ApplicationForm";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 import { useSession } from "next-auth/react";
 import validator from "validator";
 import toast from "react-hot-toast";
-import WellDoneIllustration from "../components/icons/illustrations/WellDoneIllustration";
-import CheckIcon from "../components/icons/icons/CheckIcon";
-import Button from "../components/Button";
-import CalendarIcon from "../components/icons/icons/CalendarIcon";
-import { Tabs } from "../components/Tabs";
-import { DeepPartial, applicantType } from "../lib/types/types";
+import WellDoneIllustration from "../../components/icons/illustrations/WellDoneIllustration";
+import CheckIcon from "../../components/icons/icons/CheckIcon";
+import Button from "../../components/Button";
+import CalendarIcon from "../../components/icons/icons/CalendarIcon";
+import { Tabs } from "../../components/Tabs";
+import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
+import { useRouter } from "next/router";
 
-const Form: NextPage = () => {
+const Application: NextPage = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+  const periodId = router.query["period-id"];
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
+  const [periodExists, setPeriodExists] = useState(false);
+
   const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [applicationData, setApplicationData] = useState<
@@ -28,13 +33,35 @@ const Form: NextPage = () => {
     phone: session?.user?.phone,
     grade: session?.user?.grade,
   });
+  const [period, setPeriod] = useState<periodType>();
 
   useEffect(() => {
+    const checkPeriod = async () => {
+      if (periodId === undefined) return;
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/periods/${periodId}`);
+        const data = await response.json();
+        if (response.ok) {
+          setPeriod(data.period);
+          setPeriodExists(data.exists);
+        } else {
+          throw new Error(data.error || "Unknown error");
+        }
+      } catch (error) {
+        console.error("Error checking period:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     const checkApplicationStatus = async () => {
       setIsLoading(true);
       if (session?.user?.owId) {
         try {
-          const response = await fetch(`/api/applicants/${session.user.owId}`);
+          const response = await fetch(
+            `/api/applicants/${periodId}/${session.user.owId}`
+          );
           const data = await response.json();
           if (response.ok) {
             setHasAlreadySubmitted(data.exists);
@@ -51,14 +78,16 @@ const Form: NextPage = () => {
       }
     };
 
+    checkPeriod();
     checkApplicationStatus();
-  }, [session?.user?.owId]);
+  }, [session?.user?.owId, router.query["period-id"]]);
 
   const handleSubmitApplication = async () => {
     if (!validateApplication(applicationData)) {
       return;
     }
     try {
+      applicationData.periodId = periodId as string;
       const response = await fetch("/api/applicants", {
         method: "POST",
         headers: {
@@ -85,16 +114,19 @@ const Form: NextPage = () => {
     }
 
     const isConfirmed = confirm(
-      "Er du sikker på at du vil trekke tilbake søknaden?",
+      "Er du sikker på at du vil trekke tilbake søknaden?"
     );
     if (!isConfirmed) {
       return;
     }
 
     try {
-      const response = await fetch(`/api/applicants/${session.user.owId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/applicants/${periodId}/${session.user.owId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete the application");
@@ -111,11 +143,15 @@ const Form: NextPage = () => {
     <div>
       <Navbar />
       <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
-          Komitésøknad 2024
-        </h1>
+        {periodExists && period && (
+          <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+            {period?.name}
+          </h1>
+        )}
         {isLoading ? (
           <p className="animate-pulse">Vent litt...</p>
+        ) : !periodExists ? (
+          <p>Perioden finnes ikke</p>
         ) : hasAlreadySubmitted ? (
           <div className="flex flex-col items-center justify-center gap-5 px-6 md:px-40 lg:px-80">
             <WellDoneIllustration className="h-32" />
@@ -165,45 +201,7 @@ const Form: NextPage = () => {
                 icon: <CalendarIcon className="w-5 h-5" />,
                 content: (
                   <>
-                    <div>
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      when2meet
-                      <br />
-                      <br />
-                    </div>
+                    <div>when2meet</div>
                     <div className="flex justify-center w-full">
                       <Button
                         title="Send inn søknad"
@@ -224,7 +222,7 @@ const Form: NextPage = () => {
   );
 };
 
-export default Form;
+export default Application;
 
 const validateApplication = (applicationData: any) => {
   if (!validator.isEmail(applicationData.email)) {

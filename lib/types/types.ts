@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
@@ -34,10 +36,11 @@ export type applicantType = {
     },
   ];
   date: Date;
+  periodId: ObjectId;
 };
 
 export type periodType = {
-  _id: string;
+  _id: ObjectId;
   name: string;
   description: string;
   preparationPeriod: {

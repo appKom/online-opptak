@@ -55,49 +55,44 @@ export const getApplicants = async () => {
   }
 };
 
-export const getApplicantById = async (id: string) => {
-  try {
-    if (!applicants) await init();
-    const result = await applicants.findOne({ owId: id });
-    return { applicant: result };
-  } catch (error) {
-    return { error: "Failed to fetch applicant" };
-  }
-};
-
-export const deleteApplicantById = async (id: string) => {
-  try {
-    if (!applicants) await init();
-
-    const result = await applicants.deleteOne({ owId: id });
-
-    if (result.deletedCount === 0) {
-      return { error: "No applicant found with the specified ID" };
-    } else {
-      return { message: "Applicant deleted successfully" };
-    }
-  } catch (error) {
-    console.error(error);
-    return { error: "Failed to delete applicant" };
-  }
-};
-export const updateSelectedTimes = async (
+export const getApplication = async (
   id: string,
-  selectedTimes: [{ start: string; end: string }],
+  periodId: string | ObjectId
 ) => {
   try {
     if (!applicants) await init();
-    const result = await applicants.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { selectedTimes: selectedTimes } },
-    );
-    if (result.matchedCount > 0) {
-      return { message: "Selected times updated successfully" };
+
+    const result = await applicants.findOne({
+      owId: id,
+      periodId: new ObjectId(periodId),
+    });
+
+    return { application: result, exists: !!result };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch application", exists: false };
+  }
+};
+
+export const deleteApplication = async (
+  owId: string,
+  periodId: string | ObjectId
+) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants.deleteOne({
+      owId: owId,
+      periodId: new ObjectId(periodId),
+    });
+
+    if (result.deletedCount === 1) {
+      return { message: "Application deleted successfully" };
     } else {
-      return { error: "No applicant found with the specified ID" };
+      return { error: "Application not found or already deleted" };
     }
   } catch (error) {
     console.error(error);
-    return { error: "Failed to update selected times" };
+    return { error: "Failed to delete application" };
   }
 };

@@ -1,19 +1,39 @@
 import { useSession } from "next-auth/react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Link from "next/link";
 import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
-import SelectionIllustration from "../components/icons/illustrations/SelectionIllustration";
-import CustomizationIllustration from "../components/icons/illustrations/CustomizationIllustration";
 import Button from "../components/Button";
+import { useEffect, useState } from "react";
+import { formatDateNorwegian } from "../lib/utils/dateUtils";
+import { periodType } from "../lib/types/types";
+import { useRouter } from "next/router";
 
 const Home = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+  const [currentPeriods, setCurrentPeriods] = useState([]);
 
-  // sjekk om bruker er i komité som har opptak
-  // sjekk om bruker allerede har sendt inn søknad
-  // sjekke om det er en søknadsperiode
-  //    sjekke hvilken søknadsperiode
+  useEffect(() => {
+    const fetchPeriods = async () => {
+      try {
+        const res = await fetch("/api/periods");
+        const data = await res.json();
+        const today = new Date();
+
+        setCurrentPeriods(
+          data.periods.filter((period: periodType) => {
+            const startDate = new Date(period.applicationPeriod.start || "");
+            const endDate = new Date(period.applicationPeriod.end || "");
+
+            return startDate <= today && endDate >= today;
+          })
+        );
+      } catch (error) {
+        console.error("Failed to fetch application periods:", error);
+      }
+    };
+    fetchPeriods();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -31,24 +51,43 @@ const Home = () => {
       )}
 
       {session && (
-        <div className="flex flex-col items-center justify-center flex-grow gap-20">
-          <h1 className="text-3xl font-semibold text-online-darkBlue">
-            Komitéopptak 2024
-          </h1>
-          <div className="flex flex-col items-center justify-center gap-10 sm:flex-row md:gap-40">
-            <div className="flex flex-col items-center justify-center gap-5">
-              <SelectionIllustration className="h-32" />
-              <Link href="/form">
-                <Button title="Søk komité" color="blue" />
-              </Link>
-            </div>
-            <div className="flex flex-col items-center justify-center gap-5">
-              <CustomizationIllustration className="h-32" />
-              <Link href="/committee">
-                <Button title="Komité-innstillinger" color="blue" />
-              </Link>
-            </div>
-          </div>
+        <div className="flex flex-col gap-5 px-5 my-10">
+          <h3 className="text-xl font-semibold text-center text-online-darkBlue">
+            Nåværende søknadsperioder
+          </h3>
+          {currentPeriods.map((period: periodType) => {
+            return (
+              <div className="w-full max-w-md mx-auto bg-white rounded-lg shadow">
+                <div className="p-4">
+                  <h3 className="text-xl font-medium text-gray-900">
+                    {period.name}
+                  </h3>
+                  <p className="mt-1 text-gray-500">{period.description}</p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Søknadsperiode:{" "}
+                    {formatDateNorwegian(period.applicationPeriod.start)} -{" "}
+                    {formatDateNorwegian(period.applicationPeriod.end)}
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Intervjuperiode:{" "}
+                    {formatDateNorwegian(period.interviewPeriod.start)} -{" "}
+                    {formatDateNorwegian(period.interviewPeriod.end)}
+                  </p>
+                  <div className="flex justify-center mt-2">
+                    <Button
+                      onClick={() =>
+                        //router.push(`/application/?period-id=${period._id}`)
+                        router.push(`/application/${period._id}`)
+                      }
+                      title="Søk nå"
+                      size="small"
+                      color="white"
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
       <Footer />
