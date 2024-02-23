@@ -6,6 +6,8 @@ interface Props {
   time: String;
   interviewLength: number;
   isDragging: boolean;
+  add: boolean;
+  parallells: number;
 }
 
 export default function ScheduleCell(props: Props) {
@@ -14,32 +16,40 @@ export default function ScheduleCell(props: Props) {
   const markedColor = "lightgray";
   const unmarkedColor = "rgba(255, 255, 255, 0)";
 
+  function handleSetAvailable() {
+    setAvailable((prevAvailable) => {
+      const newAvailable = !prevAvailable;
+      // console.log(`${props.weekDay} ${props.time} ${newAvailable}`);
+      return newAvailable;
+    });
+  }
+
   function changeColor(e: BaseSyntheticEvent) {
     let cell: HTMLDivElement = e.target;
-    if (available) {
+    console.log(`Cell: ${props.add}`);
+    if (available && !props.add) {
       cell.style.backgroundColor = unmarkedColor;
-    } else {
+      handleSetAvailable();
+    } else if (!available && props.add) {
       cell.style.backgroundColor = markedColor;
+      handleSetAvailable();
+    } else {
+      return;
     }
   }
 
-  function handleSetAvailable(e: BaseSyntheticEvent, dragging: boolean) {
+  function handleMouseEvent(e: BaseSyntheticEvent, dragging: boolean) {
     if (dragging && !props.isDragging) {
       return;
     }
     changeColor(e);
-    setAvailable((prevAvailable) => {
-      const newAvailable = !prevAvailable;
-      console.log(`${props.weekDay} ${props.time} ${newAvailable}`);
-      return newAvailable;
-    });
   }
 
   return (
     <div
       className="flex border-t border-black h-8 odd:border-dotted"
-      onMouseEnter={(e: BaseSyntheticEvent) => handleSetAvailable(e, true)}
-      onMouseDown={(e: BaseSyntheticEvent) => handleSetAvailable(e, false)}
+      onMouseEnter={(e: BaseSyntheticEvent) => handleMouseEvent(e, true)}
+      onMouseDown={(e: BaseSyntheticEvent) => handleMouseEvent(e, false)}
       >
     </div>
   );

@@ -18,7 +18,7 @@ const Committee: NextPage = () => {
       <div className="flex flex-col justify-center items-center mt-2">
         <Toggle onClick={() => handleToggle()}/>
         <p className="text-lg mt-2">{add ? "Legg til intervjutider" : "Fjern intervjutider"}</p>
-        <Schedule interviewLength={Number(30)} />
+        <Schedule interviewLength={Number(30)} add={add} />
       </div>
     </>
   );

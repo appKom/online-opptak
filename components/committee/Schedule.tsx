@@ -3,6 +3,7 @@ import getTimeSlots from "../../utils/getTimeSlots";
 
 interface Props {
   interviewLength: number;
+  add: boolean;
 }
 
 export default function Schedule(props : Props) {
@@ -19,6 +20,7 @@ export default function Schedule(props : Props) {
       weekDay={weekDay}
       interviewLength={props.interviewLength}
       key={index}
+      add={props.add}
     />
   )); 
 
