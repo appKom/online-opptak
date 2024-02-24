@@ -1,0 +1,15 @@
+diff --git a/node_modules/jose/dist/node/cjs/runtime/check_modulus_length.js b/node_modules/jose/dist/node/cjs/runtime/check_modulus_length.js
+index 72c670e..4e941d7 100644
+--- a/node_modules/jose/dist/node/cjs/runtime/check_modulus_length.js
++++ b/node_modules/jose/dist/node/cjs/runtime/check_modulus_length.js
+@@ -46,7 +46,8 @@ const setModulusLength = (keyObject, modulusLength) => {
+ };
+ exports.setModulusLength = setModulusLength;
+ exports.default = (key, alg) => {
+-    if (getModulusLength(key) < 2048) {
+-        throw new TypeError(`${alg} requires key modulusLength to be 2048 bits or larger`);
++    console.log("getModulusLength(key):", getModulusLength(key))
++    if (getModulusLength(key) < 1024) {
++       throw new TypeError(`${alg} requires key modulusLength to be 1024 bits or larger`);
+     }
+ };

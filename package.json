@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format:check": "prettier --check .",
-    "format:write": "prettier --write ."
+    "format:write": "prettier --write .",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@prisma/client": "^4.16.2",
@@ -49,7 +50,9 @@
     "autoprefixer": "^10.4.12",
     "eslint": "8.24.0",
     "eslint-config-next": "12.3.1",
+    "patch-package": "^8.0.0",
     "postcss": "^8.4.16",
+    "postinstall-postinstall": "^2.1.0",
     "prettier": "3.0.3",
     "prisma": "^4.16.2",
     "tailwindcss": "^3.1.8",
