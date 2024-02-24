@@ -55,9 +55,12 @@ const Home = () => {
           <h3 className="text-xl font-semibold text-center text-online-darkBlue">
             Nåværende søknadsperioder
           </h3>
-          {currentPeriods.map((period: periodType) => {
+          {currentPeriods.map((period: periodType, index: number) => {
             return (
-              <div className="w-full max-w-md mx-auto bg-white rounded-lg shadow">
+              <div
+                key={index}
+                className="w-full max-w-md mx-auto bg-white rounded-lg shadow"
+              >
                 <div className="p-4">
                   <h3 className="text-xl font-medium text-gray-900">
                     {period.name}

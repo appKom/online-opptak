@@ -80,7 +80,7 @@ const Application: NextPage = () => {
 
     checkPeriod();
     checkApplicationStatus();
-  }, [session?.user?.owId, router.query["period-id"]]);
+  }, [session?.user?.owId, periodId]);
 
   const handleSubmitApplication = async () => {
     if (!validateApplication(applicationData)) {

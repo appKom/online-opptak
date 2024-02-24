@@ -13,11 +13,11 @@ const DatePickerInput = (props: Props) => {
     const startDate = fromDate ? `${fromDate}T00:00` : "";
     const endDate = toDate ? `${toDate}T23:59` : "";
     props.updateDates({ start: startDate, end: endDate });
-  }, [fromDate, toDate]);
+  }, [fromDate, toDate, props]);
 
   return (
-    <div className="max-w-xs w-full mx-auto my-3">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+    <div className="w-full max-w-xs mx-auto my-3">
+      <label className="block mb-2 text-sm font-medium text-gray-700">
         {props.label}
       </label>
       <div className="flex items-center">
