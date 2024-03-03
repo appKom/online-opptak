@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
@@ -6,9 +5,10 @@ import AuthenticationIllustration from "../components/icons/illustrations/Authen
 import SelectionIllustration from "../components/icons/illustrations/SelectionIllustration";
 import CustomizationIllustration from "../components/icons/illustrations/CustomizationIllustration";
 import Button from "../components/Button";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 const Home = () => {
-  const { data: session } = useSession();
+  const { user } = useUser();
 
   // sjekk om bruker er i komité som har opptak
   // sjekk om bruker allerede har sendt inn søknad
@@ -19,7 +19,7 @@ const Home = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      {!session && (
+      {!user && (
         <div className="flex items-center justify-center flex-grow">
           <div className="flex flex-col items-center justify-center gap-5">
             <AuthenticationIllustration className="h-60" />
@@ -30,7 +30,7 @@ const Home = () => {
         </div>
       )}
 
-      {session && (
+      {user && (
         <div className="flex flex-col items-center justify-center flex-grow gap-20">
           <h1 className="text-3xl font-semibold text-online-darkBlue">
             Komitéopptak 2024

@@ -2,21 +2,21 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useSession, signIn, signOut } from "next-auth/react";
 import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
 import Button from "./Button";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 const Navbar = () => {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { user } = useUser();
 
   const handleLogout = () => {
-    signOut();
+    router.push("/api/auth/logout");
   };
 
   const handleLogin = () => {
-    signIn("ow4");
+    router.push("/api/auth/login");
   };
 
   const isLinkActive = (uri: string) => {
@@ -35,12 +35,12 @@ const Navbar = () => {
             width={100}
             height={30}
             alt="Online logo"
-            className="cursor-pointer hover:opacity-60 transition-all"
+            className="transition-all cursor-pointer hover:opacity-60"
           />
         </a>
       </Link>
 
-      {!session ? (
+      {!user ? (
         <Button
           title="Logg inn"
           color="blue"
@@ -51,8 +51,7 @@ const Navbar = () => {
       ) : (
         <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal">
           <div className="text-right">
-            Logget inn som{" "}
-            <span className="font-medium">{session.user?.name}</span>
+            Logget inn som <span className="font-medium">{user.email}</span>
           </div>
           <Button
             title="Logg ut"

@@ -1,6 +1,6 @@
 import "../styles/globals.css";
 import React, { useEffect } from "react";
-import { SessionProvider, useSession } from "next-auth/react";
+import { UserProvider, useUser } from "@auth0/nextjs-auth0/client";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -9,17 +9,17 @@ import { Toaster } from "react-hot-toast";
 const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const { user, isLoading } = useUser();
 
   useEffect(() => {
-    if (status === "loading") return;
-    if (!session && router.pathname !== "/") {
+    if (isLoading) return;
+    if (!user && router.pathname !== "/") {
       router.push("/");
     }
-  }, [session, status, router]);
+  }, [user, router]);
 
-  if (status === "loading" || (!session && router.pathname !== "/")) {
+  if (isLoading || (!user && router.pathname !== "/")) {
     return (
       <div className="flex flex-col items-center justify-center h-screen gap-10">
         <Image
@@ -39,7 +39,7 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
   return (
-    <SessionProvider session={session}>
+    <UserProvider>
       <Head>
         <link rel="icon" href="/Online_hvit_o.svg" />
         <title>Online Komitéopptak</title>
@@ -48,7 +48,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
         <Toaster />
         <Component {...pageProps} />
       </SessionHandler>
-    </SessionProvider>
+    </UserProvider>
   );
 }
 
