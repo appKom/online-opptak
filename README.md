@@ -13,13 +13,13 @@ Before you start, make sure you have Node.js and npm/yarn installed on your mach
 Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/appKom/OnlineOpptak.git
+git clone https://github.com/appKom/online-opptak.git
 ```
 
 Navigate into the project directory:
 
 ```bash
-cd OnlineOpptak
+cd online-opptak
 ```
 
 Install the dependencies:
