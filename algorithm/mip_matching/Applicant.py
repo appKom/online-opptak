@@ -36,6 +36,9 @@ class Applicant:
         for interval in intervals:
             self.add_interval(interval)
 
+    def get_intervals(self) -> set[TimeInterval]:
+        return self.slots.copy()
+
     def get_fitting_committee_slots(self, committee: Committee) -> set[TimeInterval]:
         """
         Returnerer alle tidsintervallene i *komiteen* 

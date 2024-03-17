@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from mip_matching.TimeInterval import TimeInterval
 from mip_matching.Committee import Committee
-from mip_matching.tests.fixed_test import applicants, committees
 from mip_matching.Applicant import Applicant
 import mip
 
@@ -152,4 +151,59 @@ class MipTest(unittest.TestCase):
         self.check_constraints(matchings=match["matchings"])
 
     def test_randomized_large(self):
-        
+        """
+        Tests a randomized selection of applicants, committees and slots.
+        All committees have a capacity of one.
+
+        This test is without asserts, and mostly to test performance.
+        """
+
+        import random
+
+        START_TID = 0
+        # Hadde -1 her, men husker ikke hvorfor, så har fjernet det inntil videre.
+        SLUTT_TID = 10*5*2
+        ANTALL_PERSONER = 400
+
+        ANTALL_SLOTS_PER_PERSON_MIN = 10
+        ANTALL_SLOTS_PER_PERSON_MAKS = 20
+
+        ANTALL_SLOTS_PER_KOMITE_MIN = 5*5*2
+        ANTALL_SLOTS_PER_KOMITE_MAKS = 8*5*2
+
+        ANTALL_KOMITEER_PER_PERSON_MIN = 1
+        ANTALL_KOMITEER_PER_PERSON_MAKS = 3
+
+        komite_navn = {"Appkom", "Prokom", "Arrkom", "Dotkom", "Bankkom",
+                       "OIL", "Fagkom", "Bedkom", "FemInIT", "Backlog", "Trikom"}
+        committees: set[Committee] = {
+            Committee(name=navn) for navn in komite_navn}
+
+        # Gir tider til hver søker
+        applicants: set[Applicant] = set()
+        for person in range(ANTALL_PERSONER):
+            applicant = Applicant(name=str(person))
+            # Velger ut et tilfeldig antall slots (alle av lengde 1) innenfor boundsene.
+            applicant.add_intervals(set(TimeInterval(start_tid, start_tid+1) for start_tid in set((random.sample(range(
+                START_TID, SLUTT_TID+1), random.randint(ANTALL_SLOTS_PER_PERSON_MIN, ANTALL_SLOTS_PER_PERSON_MAKS))))))
+
+            applicants.add(applicant)
+
+        # Gir intervaller til hver komité.
+        for committee in committees:
+            committee.add_intervals_with_capacities({TimeInterval(start_tid, start_tid + 1): 1 for start_tid in (random.sample(range(
+                START_TID, SLUTT_TID+1), random.randint(ANTALL_SLOTS_PER_KOMITE_MIN, ANTALL_SLOTS_PER_KOMITE_MAKS)))})
+
+        # Lar hver søker søke på tilfeldige komiteer
+        committees_list = list(committees)
+        # Må ha liste for at random.sample skal kunne velge ut riktig
+        for applicant in applicants:
+            applicant.add_committees(set(random.sample(committees_list, random.randint(
+                ANTALL_KOMITEER_PER_PERSON_MIN, ANTALL_KOMITEER_PER_PERSON_MAKS))))  # type: ignore
+
+        match = match_meetings(applicants=applicants, committees=committees)
+        self.check_constraints(matchings=match["matchings"])
+
+        print(
+            f"Klarte å matche {match['matched_meetings']} av {match['total_wanted_meetings']} ({match['matched_meetings']/match['total_wanted_meetings']:2f})")
+        print(f"Solver status: {match['solver_status']}")
