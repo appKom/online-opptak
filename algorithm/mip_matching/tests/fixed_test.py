@@ -7,53 +7,12 @@ TODO:
 """
 
 from __future__ import annotations
+from mip_matching.TimeInterval import TimeInterval
+from mip_matching.Applicant import Applicant
+from mip_matching.Committee import Committee
 
 import sys
 print(sys.path)
-
-from mip_matching.Committee import Committee
-from mip_matching.Applicant import Applicant
-from mip_matching.TimeInterval import TimeInterval
-
-
-
-
-committees: set[Committee]
-
-appkom = Committee(name="Appkom")
-appkom.add_intervals_with_capacities({TimeInterval(1, 2): 1,
-                                      TimeInterval(2, 3): 1,
-                                      TimeInterval(3, 4): 1,
-                                      TimeInterval(4, 5): 1})
-
-oil = Committee(name="OIL")
-oil.add_intervals_with_capacities({TimeInterval(4, 5): 1,
-                                   TimeInterval(5, 6): 1})
-
-prokom = Committee(name="Prokom")
-prokom.add_intervals_with_capacities({TimeInterval(1, 3): 1,
-                                      TimeInterval(4, 6): 1})
-
-committees = {appkom, oil, prokom}
-
-jørgen: Applicant = Applicant(name="Jørgen")
-jørgen.add_committees({appkom, prokom})
-jørgen.add_intervals({TimeInterval(1, 4)})
-
-sindre: Applicant = Applicant(name="Sindre")
-sindre.add_committees({appkom, oil})
-sindre.add_intervals({TimeInterval(2, 3), TimeInterval(4, 6)})
-
-julian: Applicant = Applicant(name="Julian")
-julian.add_committees({appkom, prokom, oil})
-julian.add_intervals(
-    {TimeInterval(3, 4), TimeInterval(1, 2), TimeInterval(5, 6)})
-
-fritz: Applicant = Applicant(name="Fritz")
-fritz.add_committees({oil})
-fritz.add_intervals({TimeInterval(1, 2), TimeInterval(4, 5)})
-
-applicants: set[Applicant] = {jørgen, sindre, julian, fritz}
 
 
 # personer_og_tidsslots = {"Jørgen": {TimeInterval(1, 4)},
