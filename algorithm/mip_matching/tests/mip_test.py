@@ -81,6 +81,29 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
 
 
 class MipTest(unittest.TestCase):
+    def check_constraints(self, matchings: list[tuple[Applicant, Committee, TimeInterval]]):
+        """Checks if the constraints are satisfied in the provided matchings.
+        TODO: Add more constraint tests."""
+
+        self.assertEqual(len(matchings), len(set((applicant, interval)
+                         for applicant, _, interval in matchings)),
+                         "Constraint \"Applicant can only have one meeting during each TimeInterval\" failed.")
+
+        load_per_committee_per_slot: dict[Committee, dict[TimeInterval, int]] = {
+        }
+        for _, committee, interval in matchings:
+            if committee not in load_per_committee_per_slot:
+                load_per_committee_per_slot[committee] = {}
+
+            # Øker antall med 1, eller setter inn 1
+            load_per_committee_per_slot[committee][interval] = load_per_committee_per_slot[committee].get(
+                interval, 0) + 1
+
+        for committee, load_per_interval in load_per_committee_per_slot.items():
+            for interval, load in load_per_interval.items():
+                self.assertGreaterEqual(committee.get_capacity(interval), load,
+                                        f"Constraint \"Number of interviews per slot per committee cannot exceed capacity\" failed for Committee {committee} and interval {interval}")
+
     def test_fixed_small(self):
         """Small, fixed test with all capacities set to one"""
 
@@ -125,6 +148,8 @@ class MipTest(unittest.TestCase):
 
         self.assertEqual(expected_number_of_matched_meetings,
                          match["matched_meetings"])
+
+        self.check_constraints(matchings=match["matchings"])
 
     def test_randomized_large(self):
         
