@@ -8,6 +8,7 @@
     "-p",
     "*test.py"
   ],
+  "python.analysis.typeCheckingMode": "standard",
   "python.testing.unittestEnabled": true,
   "python.testing.pytestEnabled": false,
   "conventionalCommits.scopes": [
