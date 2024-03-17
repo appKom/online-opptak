@@ -37,13 +37,20 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
         for interval, capacity in committee.get_intervals_and_capacities():
             model += mip.xsum(m[(applicant, committee, interval)]
                               for applicant in committee.get_applicants()
-                              if (applicant, committee, interval) in m) <= capacity
+                              if (applicant, committee, interval) in m) <= capacity  # type: ignore
 
     # Legger inn begrensninger for at en person kun har ett intervju med hver komité
     for applicant in applicants:
         for committee in applicant.get_committees():
             model += mip.xsum(m[(applicant, committee, interval)]
-                              for interval in applicant.get_fitting_committee_slots(committee)) <= 1
+                              for interval in applicant.get_fitting_committee_slots(committee)) <= 1  # type: ignore
+
+    # Legger inn begrensninger for at en person kun kan ha ett intervju på hvert tidspunkt
+    for applicant in applicants:
+        for interval in applicant.get_intervals():
+            model += mip.xsum(m[(applicant, committee, interval)]
+                              for committee in applicant.get_committees()
+                              if (applicant, committee, interval) in m) <= 1  # type: ignore
 
     # Setter mål til å være maksimering av antall møter
     model.objective = mip.maximize(mip.xsum(m.values()))
