@@ -45,7 +45,7 @@ antall_matchede_møter: int = 0
 for name, variable in m.items():
     if variable.x:
         antall_matchede_møter += 1
-        print(f"{name}: {variable.x}")
+        print(f"{name}")
 
 antall_ønskede_møter = sum(
     len(applicant.get_committees()) for applicant in applicants)
