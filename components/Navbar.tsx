@@ -16,7 +16,7 @@ const Navbar = () => {
   };
 
   const handleLogin = () => {
-    signIn("ow4");
+    signIn("auth0");
   };
 
   const isLinkActive = (uri: string) => {
@@ -35,7 +35,7 @@ const Navbar = () => {
             width={100}
             height={30}
             alt="Online logo"
-            className="cursor-pointer hover:opacity-60 transition-all"
+            className="transition-all cursor-pointer hover:opacity-60"
           />
         </a>
       </Link>
