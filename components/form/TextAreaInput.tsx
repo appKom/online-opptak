@@ -1,6 +1,7 @@
 interface Props {
   updateInputValues: Function;
   label: string;
+  placeholder?: string;
 }
 
 const TextAreaInput = (props: Props) => {
@@ -14,7 +15,8 @@ const TextAreaInput = (props: Props) => {
           style={{ resize: "none" }}
           rows={6}
           id="textAreaComponent"
-          className="block w-full px-3 py-2 m-0 text-base font-normal text-gray-700 transition ease-in-out bg-white border border-gray-300 rounded shadow-sm peer bg-clip-padding focus:text-gray-700 focus:outline-none p"
+          placeholder={props.placeholder}
+          className="block w-full px-3 py-2 m-0 text-base font-normal text-gray-700 transition ease-in-out bg-white border border-gray-300 rounded shadow-sm peer bg-clip-padding focus:text-gray-700 focus:outline-none placeholder:text-sm"
           onChange={(e) => {
             handleInputChange(e.target);
           }}

@@ -85,7 +85,7 @@ export const ApplicationForm = (props: Props) => {
 
       <div className="flex justify-center">
         <label className="inline-block mt-6 text-gray-700 form-label">
-          Velg opp til 3 komitéer
+          Velg opp til 3 komiteer
         </label>
       </div>
       <SelectInput
@@ -131,7 +131,7 @@ export const ApplicationForm = (props: Props) => {
           ["Usikker (gjerne spør om mer info på intervjuet)", "maybe"],
         ]}
         label={
-          "Er du interessert i å være økonomiansvarlig i komitéen (tilleggsverv i Bankkom)?"
+          "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankkom)?"
         }
         updateInputValues={(value: boolean) =>
           props.setApplicationData({ ...props.applicationData, bankom: value })

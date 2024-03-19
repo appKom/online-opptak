@@ -36,7 +36,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="flex flex-col justify-between min-h-screen">
+    <div className="flex flex-col justify-between min-h-screen overflow-x-hidden">
       <Navbar />
       <div className="flex items-center justify-center flex-grow gap-5 px-5 my-10">
         {session ? (
@@ -48,20 +48,22 @@ const Home = () => {
               </p>
             </div>
           ) : (
-            <>
+            <div className="flex flex-col gap-5">
               <h3 className="text-xl font-semibold text-center text-online-darkBlue">
                 Nåværende søknadsperioder
               </h3>
               {currentPeriods.map((period: periodType, index: number) => (
                 <div
                   key={index}
-                  className="w-full max-w-md mx-auto bg-white rounded-lg shadow"
+                  className="w-full max-w-md mx-auto break-words bg-white rounded-lg shadow"
                 >
                   <div className="p-4">
                     <h3 className="text-xl font-medium text-gray-900">
                       {period.name}
                     </h3>
-                    <p className="mt-1 text-gray-500">{period.description}</p>
+                    <p className="w-full mt-1 text-gray-500">
+                      {period.description}
+                    </p>
                     <p className="mt-1 text-sm text-gray-500">
                       Søknadsperiode:{" "}
                       {formatDateNorwegian(period.applicationPeriod.start)} -{" "}
@@ -85,7 +87,7 @@ const Home = () => {
                   </div>
                 </div>
               ))}
-            </>
+            </div>
           )
         ) : (
           <div className="flex flex-col items-center justify-center gap-5">
