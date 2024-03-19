@@ -38,7 +38,7 @@ Copy the .env.local.template file to .env.local and fill in the necessary enviro
 cp .env.local.template .env.local
 ```
 
-For access to the application's production environment variables, please contact Appkom at <appkom@online.ntnu.com>.
+For access to the application's environment variables, please contact Appkom at <appkom@online.ntnu.no>.
 
 ### Running the Development Server
 
