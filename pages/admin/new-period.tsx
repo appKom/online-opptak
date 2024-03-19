@@ -96,8 +96,8 @@ const NewPeriod = () => {
               name: name_short,
               value: name_short,
               description: email,
-            }),
-          ),
+            })
+          )
         );
       } catch (error) {
         console.error(error);

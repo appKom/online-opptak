@@ -13,7 +13,7 @@ const DatePickerInput = (props: Props) => {
     const startDate = fromDate ? `${fromDate}T00:00` : "";
     const endDate = toDate ? `${toDate}T23:59` : "";
     props.updateDates({ start: startDate, end: endDate });
-  }, [fromDate, toDate, props]);
+  }, [fromDate, toDate]);
 
   return (
     <div className="w-full max-w-xs mx-auto my-3">
