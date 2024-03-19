@@ -4,7 +4,6 @@ import { formatDateNorwegian } from "../lib/utils/dateUtils";
 import Button from "./Button";
 
 interface Props {
-  key: number;
   period: periodType;
 }
 
@@ -12,10 +11,7 @@ const PeriodCard = (props: Props) => {
   const router = useRouter();
 
   return (
-    <div
-      key={props.key}
-      className="w-full max-w-md mx-auto break-words bg-white rounded-lg shadow"
-    >
+    <div className="w-full max-w-md mx-auto break-words bg-white rounded-lg shadow">
       <div className="p-4">
         <h3 className="text-xl font-medium text-gray-900">
           {props.period.name}
