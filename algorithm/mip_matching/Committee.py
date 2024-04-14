@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import timedelta
 
 from mip_matching.Applicant import Applicant
 
@@ -22,9 +23,9 @@ class Committee:
     aksessere på.
     """
 
-    def __init__(self, name: str, interview_length: int = 1):
+    def __init__(self, name: str, interview_length: timedelta = timedelta(minutes=15)):
         self.capacities: dict[TimeInterval, int] = dict()
-        self.interview_length: int = interview_length
+        self.interview_length: timedelta = interview_length
         self.applicants: set[Applicant] = set()
         self.name = name
 

@@ -1,5 +1,8 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from datetime import datetime
+from datetime import timedelta
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -7,19 +10,24 @@ class TimeInterval:
     """
     Definerer et tidsintervall fra og med start til og uten end.
     """
-    start: int
-    end: int
+    start: datetime
+    end: datetime
+
+    def __post_init__(self) -> None:
+        """Metode som sikrer at start og end er av type datetime."""
+        if not (isinstance(self.start, datetime) and isinstance(self.end, datetime)):
+            raise ValueError("Start and end must be of type datetime.")
 
     def overlaps(self, other: TimeInterval) -> bool:
-        """Returnerer true om to timeslots er helt eller delvis overlappende."""
+        """Returnerer true om to tidsintervaller er helt eller delvis overlappende."""
         return other.start <= self.start < other.end or self.start <= other.start < self.end
 
     def contains(self, other: TimeInterval) -> bool:
         """Returnerer true om other inngår helt i self."""
         return self.start <= other.start and other.end <= self.end
 
-    def intersection(self, other: TimeInterval) -> TimeInterval:
-        """Returnerer et snitt av to timeslots."""
+    def intersection(self, other: TimeInterval) -> TimeInterval | None:
+        """Returnerer et snitt av to tidsintervaller."""
         if not self.overlaps(other):
             # Snittet er tomt grunnet ingen overlapp
             return None
@@ -29,15 +37,15 @@ class TimeInterval:
         return TimeInterval(start, end)
 
     def get_contained_slots(self, slots: list[TimeInterval]):
-        """Returnerer en delmengde av de slots i listen av timeslots
-          "slots", som inngår helt i dette timeslottet."""
+        """Returnerer en delmengde av de intervaller i listen
+          "slots", som inngår helt i dette tidsintervallet."""
         return set(slot for slot in slots if self.contains(slot))
 
-    def divide(self, length: int) -> list[TimeInterval]:
+    def divide(self, length: timedelta) -> list[TimeInterval]:
         return TimeInterval.divide_interval(self, length)
 
     @staticmethod
-    def divide_interval(interval: TimeInterval, length: int) -> list[TimeInterval]:
+    def divide_interval(interval: TimeInterval, length: timedelta) -> list[TimeInterval]:
         """
 
         Deler opp et intervall i mindre intervaller av lengde *length*.

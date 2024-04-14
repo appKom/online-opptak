@@ -1,63 +1,100 @@
 from __future__ import annotations
 import unittest
 from mip_matching.TimeInterval import TimeInterval
+from datetime import datetime
+from datetime import timedelta
 # from mip_matching.Applicant import Applicant
 # from mip_matching.Committee import Committee
 
 
 class TimeIntervalTest(unittest.TestCase):
     def setUp(self):
-        self.interval = TimeInterval(0, 6)
+        self.interval = TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                     datetime(2024, 8, 24, 9, 30))
 
     def test_overlapping(self):
-        interval1: TimeInterval = TimeInterval(0, 2)
-        interval2: TimeInterval = TimeInterval(1, 3)
+
+        interval1: TimeInterval = TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                               datetime(2024, 8, 24, 8, 30))
+        interval2: TimeInterval = TimeInterval(
+            datetime(2024, 8, 24, 8, 15),
+            datetime(2024, 8, 24, 8, 45))
 
         self.assertTrue(interval1.overlaps(interval2))
 
     def test_overlapping_edge(self):
-        interval1: TimeInterval = TimeInterval(0, 1)
-        interval2: TimeInterval = TimeInterval(1, 2)
+        interval1: TimeInterval = TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                               datetime(2024, 8, 24, 8, 15))
+        interval2: TimeInterval = TimeInterval(datetime(2024, 8, 24, 8, 15),
+                                               datetime(2024, 8, 24, 8, 30))
 
         self.assertFalse(interval1.overlaps(interval2))
 
-        interval3: TimeInterval = TimeInterval(0, 2)
+        interval3: TimeInterval = TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                               datetime(2024, 8, 24, 8, 30))
 
         self.assertTrue(interval1.overlaps(interval3))
 
     def test_division(self):
-        actual_division = self.interval.divide(2)
-        expected_division = [TimeInterval(
-            0, 2), TimeInterval(2, 4), TimeInterval(4, 6)]
+        actual_division = self.interval.divide(timedelta(minutes=30))
+        expected_division = [TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                          datetime(2024, 8, 24, 8, 30)),
+                             TimeInterval(datetime(2024, 8, 24, 8, 30),
+                                          datetime(2024, 8, 24, 9, 0)),
+                             TimeInterval(datetime(2024, 8, 24, 9, 0),
+                                          datetime(2024, 8, 24, 9, 30))]
 
         self.assertEqual(expected_division, actual_division)
 
     def test_contains(self):
-        self.assertTrue(self.interval.contains(TimeInterval(0, 4)))
-        self.assertTrue(self.interval.contains(TimeInterval(0, 6)))
-        self.assertTrue(self.interval.contains(TimeInterval(4, 6)))
-        self.assertTrue(self.interval.contains(TimeInterval(2, 4)))
+        self.assertTrue(self.interval.contains(TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                               datetime(2024, 8, 24, 9, 0))))
+        self.assertTrue(self.interval.contains(TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                               datetime(2024, 8, 24, 9, 30))))
+        self.assertTrue(self.interval.contains(TimeInterval(datetime(2024, 8, 24, 9, 0),
+                                               datetime(2024, 8, 24, 9, 30))))
+        self.assertTrue(self.interval.contains(TimeInterval(datetime(2024, 8, 24, 8, 30),
+                                               datetime(2024, 8, 24, 9, 0))))
 
-        self.assertFalse(self.interval.contains(TimeInterval(-1, 2)))
-        self.assertFalse(self.interval.contains(TimeInterval(-1, 7)))
-        self.assertFalse(self.interval.contains(TimeInterval(2, 7)))
+        self.assertFalse(self.interval.contains(TimeInterval(datetime(2024, 8, 24, 7, 45),
+                                                             datetime(2024, 8, 24, 8, 30))))
+        self.assertFalse(self.interval.contains(TimeInterval(datetime(2024, 8, 24, 7, 45),
+                                                             datetime(2024, 8, 24, 9, 31))))
+        self.assertFalse(self.interval.contains(TimeInterval(datetime(2024, 8, 24, 8, 30),
+                                                             datetime(2024, 8, 24, 9, 31))))
 
     def test_intersection(self):
         self.assertEqual(TimeInterval(
-            4, 6), self.interval.intersection(TimeInterval(4, 7)))
+            datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30)),
+            self.interval.intersection(TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 45))))
         self.assertEqual(TimeInterval(
-            4, 6), self.interval.intersection(TimeInterval(4, 6)))
+            datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30)),
+            self.interval.intersection(TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30))))
         self.assertEqual(TimeInterval(
-            4, 5), self.interval.intersection(TimeInterval(4, 5)))
+            datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 15)),
+            self.interval.intersection(TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 15))))
         self.assertEqual(TimeInterval(
-            0, 5), self.interval.intersection(TimeInterval(-5, 5)))
+            datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 9, 15)),
+            self.interval.intersection(TimeInterval(datetime(2024, 8, 24, 6, 45), datetime(2024, 8, 24, 9, 15))))
 
     def test_get_contained_slots(self):
-        test_case_slots = [TimeInterval(-1, 2), TimeInterval(0, 2),
-                           TimeInterval(1, 4), TimeInterval(4, 8), TimeInterval(3, 6)]
+        test_case_slots = [TimeInterval(datetime(2024, 8, 24, 7, 45),
+                                        datetime(2024, 8, 24, 8, 30)),
+                           TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                        datetime(2024, 8, 24, 8, 30)),
+                           TimeInterval(datetime(2024, 8, 24, 8, 15),
+                                        datetime(2024, 8, 24, 9, 0)),
+                           TimeInterval(datetime(2024, 8, 24, 9, 0),
+                                        datetime(2024, 8, 24, 10, 0)),
+                           TimeInterval(datetime(2024, 8, 24, 8, 45),
+                                        datetime(2024, 8, 24, 9, 30))]
         actual_contained = self.interval.get_contained_slots(test_case_slots)
-        expected_contained = [TimeInterval(
-            0, 2), TimeInterval(1, 4), TimeInterval(3, 6)]
+        expected_contained = [TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                           datetime(2024, 8, 24, 8, 30)),
+                              TimeInterval(datetime(2024, 8, 24, 8, 15),
+                                           datetime(2024, 8, 24, 9, 0)),
+                              TimeInterval(datetime(2024, 8, 24, 8, 45),
+                                           datetime(2024, 8, 24, 9, 30))]
 
         self.assertTrue(len(expected_contained), len(actual_contained))
         self.assertEqual(set(expected_contained), set(actual_contained))
