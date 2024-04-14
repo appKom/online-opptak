@@ -1,22 +1,24 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
+import Auth0Provider from "next-auth/providers/auth0";
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(",") || [];
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    {
-      id: "ow4",
-      name: "Online Web 4 Authorization",
-      type: "oauth",
-      authorization: {
-        params: { scope: "openid profile onlineweb4" },
+    Auth0Provider({
+      clientId: process.env.AUTH0_CLIENT_ID || "",
+      clientSecret: process.env.AUTH0_CLIENT_SECRET || "",
+      issuer: process.env.AUTH0_ISSUER,
+      style: {
+        logo: "/auth0.svg",
+        logoDark: "/auth0-dark.svg",
+        bg: "#fff",
+        text: "#EB5424",
+        bgDark: "#fff",
+        textDark: "#161b22",
       },
-      clientSecret: process.env.OW_CLIENT_SECRET,
-      clientId: process.env.OW_CLIENT_ID,
-      wellKnown:
-        "https://old.online.ntnu.no/openid/.well-known/openid-configuration",
       async profile(profile, tokens) {
-        const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
+        const apiUrl = "https://onlineweb.eu.auth0.com/userinfo";
         const headers = {
           Authorization: `Bearer ${tokens.access_token}`,
         };
@@ -27,17 +29,20 @@ export const authOptions: NextAuthOptions = {
         }
 
         const userInfo = await response.json();
+        /* console.log("userInfo:");
         console.log(userInfo);
+        console.log("profile:");
+        console.log(profile); */
 
         return {
           id: profile.sub,
-          name: `${userInfo.first_name} ${userInfo.last_name}`,
+          name: profile.name,
           email: userInfo.email,
-          phone: userInfo.phone_number,
-          grade: userInfo.year,
+          //phone: userInfo.phone_number,
+          //grade: userInfo.year,
         };
       },
-    },
+    }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
