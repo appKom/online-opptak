@@ -8,22 +8,17 @@ import { DeepPartial, applicantType } from "../../lib/types/types";
 interface Props {
   applicationData: DeepPartial<applicantType>;
   setApplicationData: Function;
+  availableCommittees: string[];
 }
 
 export const ApplicationForm = (props: Props) => {
-  // TODO: get available committees from api
-  const availableCommittees = [
-    ["Ingen", ""],
-    ["Arrkom", "arrkom"],
-    ["Appkom", "appkom"],
-    ["Bedkom", "bedkom"],
-    ["Dotkom", "dotkom"],
-    ["Fagkom", "fagkom"],
-    ["Online IL", "onlineil"],
-    ["Prokom", "prokom"],
-    ["Trikom", "trikom"],
-    ["Realfagskjelleren", "realfagskjelleren"],
-  ];
+  const availableCommittees = [["Ingen", ""]];
+
+  props.availableCommittees.forEach((committee) => {
+    if (!availableCommittees.some((item) => item[1] === committee)) {
+      availableCommittees.push([committee, committee.toLowerCase()]);
+    }
+  });
 
   return (
     <form className="px-5">

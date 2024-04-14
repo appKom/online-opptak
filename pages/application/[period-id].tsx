@@ -30,8 +30,13 @@ const Application: NextPage = () => {
     owId: session?.user?.owId,
     name: session?.user?.name,
     email: session?.user?.email,
-    phone: session?.user?.phone,
+    phone: session?.user?.phone || "",
     grade: session?.user?.grade,
+    preferences: {
+      first: "",
+      second: "",
+      third: "",
+    },
   });
   const [period, setPeriod] = useState<periodType>();
 
@@ -179,6 +184,7 @@ const Application: NextPage = () => {
                     <ApplicationForm
                       applicationData={applicationData}
                       setApplicationData={setApplicationData}
+                      availableCommittees={period?.committees || []}
                     />
                     <div className="flex justify-center w-full">
                       <Button
@@ -275,18 +281,3 @@ const validateApplication = (applicationData: any) => {
   }
   return true;
 };
-
-{
-  /* <Button
-        title="Videre"
-        color="blue"
-        onClick={() => {
-          if (!validateApplication(applicationData)) {
-            return;
-          }
-          setActiveTab(1);
-          window.scrollTo(0, 0);
-        }}
-        size="small"
-      /> */
-}
