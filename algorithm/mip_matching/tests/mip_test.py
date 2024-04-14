@@ -1,88 +1,47 @@
 from __future__ import annotations
+from datetime import datetime, timedelta
 
 from mip_matching.TimeInterval import TimeInterval
 from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
 
+from mip_matching.match_meetings import match_meetings
+
 from typing import TypedDict
 
 import unittest
 
 
-class MeetingMatch(TypedDict):
-    """Type definition of a meeting match object"""
-    solver_status: mip.OptimizationStatus
-    matched_meetings: int
-    total_wanted_meetings: int
-    matchings: list[tuple[Applicant, Committee, TimeInterval]]
+def print_matchings(committees: list[Committee], intervals: list[TimeInterval], matchings: list[tuple[Applicant, Committee, TimeInterval]]):
 
+    print("Tid".ljust(15), end="|")
+    print("|".join(str(com).ljust(8) for com in committees))
 
-def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> MeetingMatch:
-    """Matches meetings and returns a MeetingMatch-object"""
-    model = mip.Model(sense=mip.MAXIMIZE)
+    for interval in intervals:
+        print(interval.start.strftime("%d.%m %H:%M").ljust(15), end="|")
+        print()
 
-    m = {}
+    # for komite in solution:
+    #     print(komite.ljust(8), end="|")
+    #     print("|".join([str(slot).rjust(2) for slot in solution[komite]]))
 
-    # Lager alle maksimeringsvariabler
-    for applicant in applicants:
-        for committee in applicant.get_committees():
-            for interval in applicant.get_fitting_committee_slots(committee):
-                m[(applicant, committee, interval)] = model.add_var(
-                    var_type=mip.BINARY, name=f"({applicant}, {committee}, {interval})")
-
-    # Legger inn begrensninger for at en komité kun kan ha antall møter i et slot lik kapasiteten.
-    for committee in committees:
-        for interval, capacity in committee.get_intervals_and_capacities():
-            model += mip.xsum(m[(applicant, committee, interval)]
-                              for applicant in committee.get_applicants()
-                              if (applicant, committee, interval) in m) <= capacity  # type: ignore
-
-    # Legger inn begrensninger for at en person kun har ett intervju med hver komité
-    for applicant in applicants:
-        for committee in applicant.get_committees():
-            model += mip.xsum(m[(applicant, committee, interval)]
-                              for interval in applicant.get_fitting_committee_slots(committee)) <= 1  # type: ignore
-
-    # Legger inn begrensninger for at en person kun kan ha ett intervju på hvert tidspunkt
-    for applicant in applicants:
-        for interval in applicant.get_intervals():
-            model += mip.xsum(m[(applicant, committee, interval)]
-                              for committee in applicant.get_committees()
-                              if (applicant, committee, interval) in m) <= 1  # type: ignore
-
-    # Setter mål til å være maksimering av antall møter
-    model.objective = mip.maximize(mip.xsum(m.values()))
-
-    # Kjør optimeringen
-    solver_status = model.optimize()
-
-    # Få de faktiske møtetidene
-    antall_matchede_møter: int = 0
-    matchings: list = []
-    for name, variable in m.items():
-        if variable.x:
-            antall_matchede_møter += 1
-            matchings.append(name)
-            print(f"{name}")
-
-    antall_ønskede_møter = sum(
-        len(applicant.get_committees()) for applicant in applicants)
-
-    match_object: MeetingMatch = {
-        "solver_status": solver_status,
-        "matched_meetings": antall_matchede_møter,
-        "total_wanted_meetings": antall_ønskede_møter,
-        "matchings": matchings,
-    }
-
-    return match_object
+    # print("|".join(["Slot"] + [komite.rjust(8) for komite in komiteer]))
+    # for slot in solution2:
+    #     print(str(slot).ljust(4), end="|")
+    #     print("|".join([str(solution2[slot][komite]).rjust(8)
+    #           for komite in solution2[slot]]))
 
 
 class MipTest(unittest.TestCase):
+
     def check_constraints(self, matchings: list[tuple[Applicant, Committee, TimeInterval]]):
         """Checks if the constraints are satisfied in the provided matchings.
         TODO: Add more constraint tests."""
+
+        print("Matchings:")
+        for matching in matchings:
+            print(matching)
 
         self.assertEqual(len(matchings), len(set((applicant, interval)
                          for applicant, _, interval in matchings)),
@@ -107,33 +66,43 @@ class MipTest(unittest.TestCase):
         """Small, fixed test with all capacities set to one"""
 
         appkom = Committee(name="Appkom")
-        appkom.add_intervals_with_capacities({TimeInterval(1, 5): 1})
+        appkom.add_intervals_with_capacities(
+            {TimeInterval(datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 9, 15)): 1})
 
         oil = Committee(name="OIL")
-        oil.add_intervals_with_capacities({TimeInterval(4, 6): 1})
+        oil.add_intervals_with_capacities(
+            {TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30)): 1})
 
         prokom = Committee(name="Prokom")
-        prokom.add_intervals_with_capacities({TimeInterval(1, 3): 1,
-                                              TimeInterval(4, 6): 1})
+        prokom.add_intervals_with_capacities({TimeInterval(datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 8, 45)): 1,
+                                              TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30)): 1})
 
         committees: set[Committee] = {appkom, oil, prokom}
 
         jørgen: Applicant = Applicant(name="Jørgen")
         jørgen.add_committees({appkom, prokom})
-        jørgen.add_intervals({TimeInterval(1, 4)})
+        jørgen.add_intervals(
+            {TimeInterval(datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 9, 0))})
 
         sindre: Applicant = Applicant(name="Sindre")
         sindre.add_committees({appkom, oil})
-        sindre.add_intervals({TimeInterval(2, 3), TimeInterval(4, 6)})
+        sindre.add_intervals({TimeInterval(datetime(2024, 8, 24, 8, 30), datetime(
+            2024, 8, 24, 8, 45)),
+            TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30))})
 
         julian: Applicant = Applicant(name="Julian")
         julian.add_committees({appkom, prokom, oil})
         julian.add_intervals(
-            {TimeInterval(3, 4), TimeInterval(1, 2), TimeInterval(5, 6)})
+            {TimeInterval(datetime(2024, 8, 24, 8, 45), datetime(2024, 8, 24, 9, 0)),
+             TimeInterval(datetime(2024, 8, 24, 8, 0),
+                          datetime(2024, 8, 24, 8, 30)),
+             TimeInterval(datetime(2024, 8, 24, 9, 15), datetime(2024, 8, 24, 9, 30))})
 
         fritz: Applicant = Applicant(name="Fritz")
         fritz.add_committees({oil})
-        fritz.add_intervals({TimeInterval(1, 2), TimeInterval(4, 5)})
+        fritz.add_intervals(
+            {TimeInterval(datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 8, 30)),
+             TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 15))})
 
         applicants: set[Applicant] = {jørgen, sindre, julian, fritz}
 
@@ -151,28 +120,45 @@ class MipTest(unittest.TestCase):
         self.check_constraints(matchings=match["matchings"])
 
     def test_randomized_large(self):
-        """
-        Tests a randomized selection of applicants, committees and slots.
-        All committees have a capacity of one.
+        self.randomized_test(200, (10, 20), (5*5*2, 8*5*2), (1, 3))
+        self.randomized_test(200, (10, 20), (5*5*2, 8*5*2), (3, 3))
+        self.randomized_test(350, (15, 25), (5*5*2, 8*5*2), (3, 3))
 
-        This test is without asserts, and mostly to test performance.
+    def randomized_test(self,
+                        antall_personer: int,
+                        antall_slots_per_person_interval: tuple[int, int],
+                        antall_slots_per_komite_interval: tuple[int, int],
+                        antall_komiteer_per_person_interval: tuple[int, int]):
+        """
+        Tester tilfeldige utvalg av søkere, komitéer og tidsintervaller.
+        Alle komitéer har en kapasitet lik 1.
+
+        Tester først og fremst performance.
+        TODO: Legg til flere asserts.
         """
 
         import random
 
-        START_TID = 0
-        # Hadde -1 her, men husker ikke hvorfor, så har fjernet det inntil videre.
-        SLUTT_TID = 10*5*2
-        ANTALL_PERSONER = 400
+        DEFAULT_INTERVIEW_TIME = timedelta(minutes=15)
 
-        ANTALL_SLOTS_PER_PERSON_MIN = 10
-        ANTALL_SLOTS_PER_PERSON_MAKS = 20
+        SLOTS: list[TimeInterval] = []
+        for dag in range(0, 5):
+            """Lager slots for fra 0800 til 1800 hver dag"""
+            dagsintervall = TimeInterval(
+                datetime(2024, 8, 19+dag, 8, 0), datetime(2024, 8, 19+dag, 18, 0))
+            [SLOTS.append(interval) for interval in dagsintervall.divide(
+                DEFAULT_INTERVIEW_TIME)]
 
-        ANTALL_SLOTS_PER_KOMITE_MIN = 5*5*2
-        ANTALL_SLOTS_PER_KOMITE_MAKS = 8*5*2
+        ANTALL_PERSONER = antall_personer
 
-        ANTALL_KOMITEER_PER_PERSON_MIN = 1
-        ANTALL_KOMITEER_PER_PERSON_MAKS = 3
+        ANTALL_SLOTS_PER_PERSON_MIN = antall_slots_per_person_interval[0]
+        ANTALL_SLOTS_PER_PERSON_MAKS = antall_slots_per_person_interval[1]
+
+        ANTALL_SLOTS_PER_KOMITE_MIN = antall_slots_per_komite_interval[0]
+        ANTALL_SLOTS_PER_KOMITE_MAKS = antall_slots_per_komite_interval[1]
+
+        ANTALL_KOMITEER_PER_PERSON_MIN = antall_komiteer_per_person_interval[0]
+        ANTALL_KOMITEER_PER_PERSON_MAKS = antall_komiteer_per_person_interval[1]
 
         komite_navn = {"Appkom", "Prokom", "Arrkom", "Dotkom", "Bankkom",
                        "OIL", "Fagkom", "Bedkom", "FemInIT", "Backlog", "Trikom"}
@@ -184,22 +170,22 @@ class MipTest(unittest.TestCase):
         for person in range(ANTALL_PERSONER):
             applicant = Applicant(name=str(person))
             # Velger ut et tilfeldig antall slots (alle av lengde 1) innenfor boundsene.
-            applicant.add_intervals(set(TimeInterval(start_tid, start_tid+1) for start_tid in set((random.sample(range(
-                START_TID, SLUTT_TID+1), random.randint(ANTALL_SLOTS_PER_PERSON_MIN, ANTALL_SLOTS_PER_PERSON_MAKS))))))
+            applicant.add_intervals(set(random.sample(SLOTS, random.randint(
+                ANTALL_SLOTS_PER_PERSON_MIN, ANTALL_SLOTS_PER_PERSON_MAKS))))
 
             applicants.add(applicant)
 
         # Gir intervaller til hver komité.
         for committee in committees:
-            committee.add_intervals_with_capacities({TimeInterval(start_tid, start_tid + 1): 1 for start_tid in (random.sample(range(
-                START_TID, SLUTT_TID+1), random.randint(ANTALL_SLOTS_PER_KOMITE_MIN, ANTALL_SLOTS_PER_KOMITE_MAKS)))})
+            committee.add_intervals_with_capacities({slot: 1 for slot in random.sample(
+                SLOTS, random.randint(ANTALL_SLOTS_PER_KOMITE_MIN, ANTALL_SLOTS_PER_KOMITE_MAKS))})
 
         # Lar hver søker søke på tilfeldige komiteer
         committees_list = list(committees)
         # Må ha liste for at random.sample skal kunne velge ut riktig
         for applicant in applicants:
             applicant.add_committees(set(random.sample(committees_list, random.randint(
-                ANTALL_KOMITEER_PER_PERSON_MIN, ANTALL_KOMITEER_PER_PERSON_MAKS))))  # type: ignore
+                ANTALL_KOMITEER_PER_PERSON_MIN, ANTALL_KOMITEER_PER_PERSON_MAKS))))
 
         match = match_meetings(applicants=applicants, committees=committees)
         self.check_constraints(matchings=match["matchings"])
@@ -207,3 +193,5 @@ class MipTest(unittest.TestCase):
         print(
             f"Klarte å matche {match['matched_meetings']} av {match['total_wanted_meetings']} ({match['matched_meetings']/match['total_wanted_meetings']:2f})")
         print(f"Solver status: {match['solver_status']}")
+
+        print_matchings(committees_list, SLOTS, match["matchings"])
