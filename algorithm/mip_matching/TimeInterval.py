@@ -14,13 +14,30 @@ class TimeInterval:
     end: datetime
 
     def __post_init__(self) -> None:
-        """Metode som sikrer at start og end er av type datetime."""
+        """Metode som sikrer at start og end er av type datetime og at de er i kronologisk rekkefølge."""
         if not (isinstance(self.start, datetime) and isinstance(self.end, datetime)):
-            raise ValueError("Start and end must be of type datetime.")
+            raise TypeError("Start and end must be of type datetime.")
 
-    def overlaps(self, other: TimeInterval) -> bool:
+        if not (self.start <= self.end):
+            raise ValueError("Start must be before end")
+
+    def intersects(self, other: TimeInterval) -> bool:
         """Returnerer true om to tidsintervaller er helt eller delvis overlappende."""
         return other.start <= self.start < other.end or self.start <= other.start < self.end
+
+    def is_tangent_to(self, other: TimeInterval) -> bool:
+        """Returnerer true om self tangerer other (er helt inntil, men ikke overlappende)."""
+        return not self.intersects(other) and (other.start == self.end or self.start == other.end)
+
+    def union(self, other: TimeInterval) -> TimeInterval:
+        """Returnerer union av tidsintervall dersom de to intervallene har overlapp eller er inntil hverandre"""
+
+        if not (self.is_tangent_to(other) or self.intersects(other)):
+            raise ValueError("Cannot have union with gaps between")
+
+        start = min(self.start, other.start)
+        end = max(self.end, other.end)
+        return TimeInterval(start, end)
 
     def contains(self, other: TimeInterval) -> bool:
         """Returnerer true om other inngår helt i self."""
@@ -28,7 +45,7 @@ class TimeInterval:
 
     def intersection(self, other: TimeInterval) -> TimeInterval | None:
         """Returnerer et snitt av to tidsintervaller."""
-        if not self.overlaps(other):
+        if not self.intersects(other):
             # Snittet er tomt grunnet ingen overlapp
             return None
 

@@ -11,6 +11,14 @@ class TimeIntervalTest(unittest.TestCase):
     def setUp(self):
         self.interval = TimeInterval(datetime(2024, 8, 24, 8, 0),
                                      datetime(2024, 8, 24, 9, 30))
+        self.t1: TimeInterval = TimeInterval(
+            datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 8, 45))
+        self.t2: TimeInterval = TimeInterval(
+            datetime(2024, 8, 24, 8, 45), datetime(2024, 8, 24, 9, 0))
+        self.t3: TimeInterval = TimeInterval(
+            datetime(2024, 8, 24, 8, 30), datetime(2024, 8, 24, 9, 0))
+        self.t4: TimeInterval = TimeInterval(
+            datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 8, 30))
 
     def test_overlapping(self):
 
@@ -20,7 +28,7 @@ class TimeIntervalTest(unittest.TestCase):
             datetime(2024, 8, 24, 8, 15),
             datetime(2024, 8, 24, 8, 45))
 
-        self.assertTrue(interval1.overlaps(interval2))
+        self.assertTrue(interval1.intersects(interval2))
 
     def test_overlapping_edge(self):
         interval1: TimeInterval = TimeInterval(datetime(2024, 8, 24, 8, 0),
@@ -28,12 +36,12 @@ class TimeIntervalTest(unittest.TestCase):
         interval2: TimeInterval = TimeInterval(datetime(2024, 8, 24, 8, 15),
                                                datetime(2024, 8, 24, 8, 30))
 
-        self.assertFalse(interval1.overlaps(interval2))
+        self.assertFalse(interval1.intersects(interval2))
 
         interval3: TimeInterval = TimeInterval(datetime(2024, 8, 24, 8, 0),
                                                datetime(2024, 8, 24, 8, 30))
 
-        self.assertTrue(interval1.overlaps(interval3))
+        self.assertTrue(interval1.intersects(interval3))
 
     def test_division(self):
         actual_division = self.interval.divide(timedelta(minutes=30))
@@ -76,6 +84,21 @@ class TimeIntervalTest(unittest.TestCase):
         self.assertEqual(TimeInterval(
             datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 9, 15)),
             self.interval.intersection(TimeInterval(datetime(2024, 8, 24, 6, 45), datetime(2024, 8, 24, 9, 15))))
+
+    def test_tangent(self):
+        self.assertTrue(self.t1.is_tangent_to(self.t2))
+        self.assertFalse(self.t1.is_tangent_to(self.t3))
+        self.assertFalse(self.t4.is_tangent_to(self.t2))
+
+    def test_union(self):
+        with self.assertRaises(ValueError):
+            self.t4.union(self.t2)
+
+        self.assertEqual(self.t1.union(self.t2), TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                                              datetime(2024, 8, 24, 9, 0)))
+
+        self.assertEqual(self.t3.union(self.t4), TimeInterval(datetime(2024, 8, 24, 8, 0),
+                                                              datetime(2024, 8, 24, 9, 0)))
 
     def test_get_contained_slots(self):
         test_case_slots = [TimeInterval(datetime(2024, 8, 24, 7, 45),
