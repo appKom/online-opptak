@@ -32,7 +32,7 @@ class TimeInterval:
     def union(self, other: TimeInterval) -> TimeInterval:
         """Returnerer union av tidsintervall dersom de to intervallene har overlapp eller er inntil hverandre"""
 
-        if not (self.is_tangent_to(other) or self.intersects(other)):
+        if not self.is_mergable(other):
             raise ValueError("Cannot have union with gaps between")
 
         start = min(self.start, other.start)
@@ -42,6 +42,9 @@ class TimeInterval:
     def contains(self, other: TimeInterval) -> bool:
         """Returnerer true om other inngår helt i self."""
         return self.start <= other.start and other.end <= self.end
+
+    def is_mergable(self, other: TimeInterval) -> bool:
+        return self.intersects(other) or self.is_tangent_to(other)
 
     def intersection(self, other: TimeInterval) -> TimeInterval | None:
         """Returnerer et snitt av to tidsintervaller."""

@@ -30,6 +30,29 @@ class Applicant:
 
     def add_interval(self, interval: TimeInterval) -> None:
         # TODO: Vurder å gjøre "sanitizing" ved å slå sammen overlappende intervaller.
+        """
+        Slår også sammen overlappende intervaller.
+
+        Maksimalt to typer slots som må merges:
+        - Alle som inngår i dette intervallet
+        - De to som grenser møtes i grensene.
+        Merger først med førstnevnte, fordi etter det vil det kun være (opptil) to som kan merges (i sistnevnte kategori)
+        """
+        for other in interval.get_contained_slots(list(self.slots)):
+            self.slots.remove(other)
+            interval = interval.union(other)
+
+        slots_to_merge = set()
+        for _ in range(2):
+            for other in self.slots:
+                if interval.is_mergable(other):
+                    # Må legge til en liste midlertidig for å unngå concurrency errors.
+                    slots_to_merge.add(other)
+
+        for slot in slots_to_merge:
+            self.slots.remove(slot)
+            interval = interval.union(slot)
+
         self.slots.add(interval)
 
     def add_intervals(self, intervals: set[TimeInterval]) -> None:
