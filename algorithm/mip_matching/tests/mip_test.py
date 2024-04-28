@@ -1,5 +1,5 @@
 from __future__ import annotations
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 
 from mip_matching.TimeInterval import TimeInterval
 from mip_matching.Committee import Committee
@@ -10,27 +10,30 @@ from mip_matching.match_meetings import match_meetings
 
 from typing import TypedDict
 
+from faker import Faker
+
 import unittest
+import random
 
 
-def print_matchings(committees: list[Committee], intervals: list[TimeInterval], matchings: list[tuple[Applicant, Committee, TimeInterval]]):
+def print_matchings(committees: list[Committee],
+                    intervals: list[TimeInterval],
+                    matchings: list[tuple[Applicant, Committee, TimeInterval]]):
 
     print("Tid".ljust(15), end="|")
     print("|".join(str(com).ljust(8) for com in committees))
 
     for interval in intervals:
         print(interval.start.strftime("%d.%m %H:%M").ljust(15), end="|")
+        for committee in committees:
+            name = ""
+            cands = [a.name for a, c,
+                     i in matchings if interval == i and c == committee]
+            name = cands[0] if len(cands) > 0 else ""
+
+            print(name.rjust(8), end="|")
+
         print()
-
-    # for komite in solution:
-    #     print(komite.ljust(8), end="|")
-    #     print("|".join([str(slot).rjust(2) for slot in solution[komite]]))
-
-    # print("|".join(["Slot"] + [komite.rjust(8) for komite in komiteer]))
-    # for slot in solution2:
-    #     print(str(slot).ljust(4), end="|")
-    #     print("|".join([str(solution2[slot][komite]).rjust(8)
-    #           for komite in solution2[slot]]))
 
 
 class MipTest(unittest.TestCase):
@@ -39,9 +42,9 @@ class MipTest(unittest.TestCase):
         """Checks if the constraints are satisfied in the provided matchings.
         TODO: Add more constraint tests."""
 
-        print("Matchings:")
-        for matching in matchings:
-            print(matching)
+        # print("Matchings:")
+        # for matching in matchings:
+        #     print(matching)
 
         self.assertEqual(len(matchings), len(set((applicant, interval)
                          for applicant, _, interval in matchings)),
@@ -61,6 +64,10 @@ class MipTest(unittest.TestCase):
             for interval, load in load_per_interval.items():
                 self.assertGreaterEqual(committee.get_capacity(interval), load,
                                         f"Constraint \"Number of interviews per slot per committee cannot exceed capacity\" failed for Committee {committee} and interval {interval}")
+
+    def get_default_slots(self):
+        """
+        Returnerer slots"""
 
     def test_fixed_small(self):
         """Small, fixed test with all capacities set to one"""
@@ -124,6 +131,99 @@ class MipTest(unittest.TestCase):
         self.randomized_test(200, (10, 20), (5*5*2, 8*5*2), (3, 3))
         self.randomized_test(350, (15, 25), (5*5*2, 8*5*2), (3, 3))
 
+    def test_randomized_with_different_interview_sizes(self):
+        """
+        Plan:
+        Lager flere komitéer med ulike intervjulengder
+        """
+        pass
+
+    def test_randomized_with_continuous_intervals(self):
+        """
+        Gjør en randomisert test hvor hver person kan i sammenhengende
+        tidsperioder i stedet for tilfeldige slots.
+
+        Hver komité har fremdeles like lange intervjutider.
+        """
+        fake = Faker()
+
+        ANTALL_PERSONER = 400
+
+        DEFAULT_INTERVIEW_TIME = timedelta(minutes=20)
+
+        # ANTALL_INTERVALL_PER_PERSON_MIN = 5
+        # ANTALL_INTERVALL_PER_PERSON_MAKS = 8
+        # INTERVALLENGDE_PER_PERSON_MIN = timedelta(minutes=30)
+        INTERVALLENGDE_PER_PERSON_MAKS = timedelta(hours=10)
+        ANTALL_INTERVALL_FORSØK = 4
+
+        START_DATE = date(2024, 8, 26)
+        END_DATE = date(2024, 8, 30)
+        START_TIME_PER_DAY = time(hour=8, minute=0)
+        END_TIME_PER_DAY = time(hour=18, minute=0)
+
+        def get_random_interval(interval_date: date) -> TimeInterval:
+            interval_start = datetime.combine(interval_date, START_TIME_PER_DAY) + \
+                fake.time_delta(INTERVALLENGDE_PER_PERSON_MAKS)
+
+            interval_end = interval_start + \
+                fake.time_delta(INTERVALLENGDE_PER_PERSON_MAKS)
+
+            if interval_end > datetime.combine(interval_date, END_TIME_PER_DAY):
+                interval_end = datetime.combine(
+                    interval_date, END_TIME_PER_DAY)
+
+            return TimeInterval(interval_start, interval_end)
+
+        # Gir tider til hver søker
+        applicants: set[Applicant] = set()
+        for person in range(ANTALL_PERSONER):
+            applicant = Applicant(name=str(person))
+
+            for _ in range(ANTALL_INTERVALL_FORSØK):
+                interval_date = fake.date_between_dates(START_DATE, END_DATE)
+
+                applicant.add_interval(
+                    get_random_interval(interval_date=interval_date))
+
+            applicants.add(applicant)
+
+        KAPASITET_PER_INTERVALL_MIN = 1
+        KAPASITET_PER_INTERVALL_MAKS = 3
+        # INTERVALLENGDE_PER_KOMTIE_MAKS = timedelta(hours=10)
+        ANTALL_INTERVALL_FORSØK_KOMITE = 10
+
+        ANTALL_KOMITEER_PER_PERSON_MIN = 2
+        ANTALL_KOMITEER_PER_PERSON_MAKS = 3
+
+        # print([applicant.get_intervals() for applicant in applicants])
+
+        # Gir intervaller til hver komité.
+        committees: set[Committee] = {
+            Committee(name=navn, interview_length=DEFAULT_INTERVIEW_TIME) for navn in {"Appkom", "Prokom", "Arrkom", "Dotkom", "Bankkom",
+                                                                                       "OIL", "Fagkom", "Bedkom", "FemInIT", "Backlog", "Trikom"}}
+        for committee in committees:
+
+            for _ in range(ANTALL_INTERVALL_FORSØK_KOMITE):
+                interval_date = fake.date_between_dates(START_DATE, END_DATE)
+
+                committee.add_intervals_with_capacities({get_random_interval(interval_date): random.randint(
+                    KAPASITET_PER_INTERVALL_MIN, KAPASITET_PER_INTERVALL_MAKS)})
+
+        # Lar hver søker søke på tilfeldige komiteer
+        committees_list = list(committees)
+        # Må ha liste for at random.sample skal kunne velge ut riktig
+        for applicant in applicants:
+            applicant.add_committees(set(random.sample(committees_list, random.randint(
+                ANTALL_KOMITEER_PER_PERSON_MIN, ANTALL_KOMITEER_PER_PERSON_MAKS))))
+
+        match = match_meetings(applicants=applicants, committees=committees)
+        self.check_constraints(matchings=match["matchings"])
+
+        print(
+            f"Klarte å matche {match['matched_meetings']} av {match['total_wanted_meetings']} ({match['matched_meetings']/match['total_wanted_meetings']:2f})")
+        print(f"Solver status: {match['solver_status']}")
+
     def randomized_test(self,
                         antall_personer: int,
                         antall_slots_per_person_interval: tuple[int, int],
@@ -137,9 +237,7 @@ class MipTest(unittest.TestCase):
         TODO: Legg til flere asserts.
         """
 
-        import random
-
-        DEFAULT_INTERVIEW_TIME = timedelta(minutes=15)
+        DEFAULT_INTERVIEW_TIME = timedelta(minutes=20)
 
         SLOTS: list[TimeInterval] = []
         for dag in range(0, 5):
@@ -163,7 +261,7 @@ class MipTest(unittest.TestCase):
         komite_navn = {"Appkom", "Prokom", "Arrkom", "Dotkom", "Bankkom",
                        "OIL", "Fagkom", "Bedkom", "FemInIT", "Backlog", "Trikom"}
         committees: set[Committee] = {
-            Committee(name=navn) for navn in komite_navn}
+            Committee(name=navn, interview_length=DEFAULT_INTERVIEW_TIME) for navn in komite_navn}
 
         # Gir tider til hver søker
         applicants: set[Applicant] = set()
