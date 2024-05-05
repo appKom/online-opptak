@@ -13,6 +13,7 @@ import CalendarIcon from "../../components/icons/icons/CalendarIcon";
 import { Tabs } from "../../components/Tabs";
 import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
 import { useRouter } from "next/router";
+import Schedule from "../../components/committee/Schedule";
 
 const Application: NextPage = () => {
   const { data: session } = useSession();
@@ -206,9 +207,9 @@ const Application: NextPage = () => {
                 title: "Intervjutider",
                 icon: <CalendarIcon className="w-5 h-5" />,
                 content: (
-                  <>
-                    <div>when2meet</div>
-                    <div className="flex justify-center w-full">
+                  <div className="flex flex-col items-center justify-center">
+                    <Schedule interviewLength={Number(30)} />
+                    <div className="flex justify-center w-full mt-10">
                       <Button
                         title="Send inn søknad"
                         color="blue"
@@ -216,7 +217,7 @@ const Application: NextPage = () => {
                         size="small"
                       />
                     </div>
-                  </>
+                  </div>
                 ),
               },
             ]}
