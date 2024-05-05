@@ -4,11 +4,8 @@ from datetime import datetime, timedelta, date, time
 from mip_matching.TimeInterval import TimeInterval
 from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
-import mip
 
 from mip_matching.match_meetings import match_meetings
-
-from typing import TypedDict
 
 from faker import Faker
 
@@ -42,10 +39,6 @@ class MipTest(unittest.TestCase):
         """Checks if the constraints are satisfied in the provided matchings.
         TODO: Add more constraint tests."""
 
-        # print("Matchings:")
-        # for matching in matchings:
-        #     print(matching)
-
         self.assertEqual(len(matchings), len(set((applicant, interval)
                          for applicant, _, interval in matchings)),
                          "Constraint \"Applicant can only have one meeting during each TimeInterval\" failed.")
@@ -64,10 +57,6 @@ class MipTest(unittest.TestCase):
             for interval, load in load_per_interval.items():
                 self.assertGreaterEqual(committee.get_capacity(interval), load,
                                         f"Constraint \"Number of interviews per slot per committee cannot exceed capacity\" failed for Committee {committee} and interval {interval}")
-
-    def get_default_slots(self):
-        """
-        Returnerer slots"""
 
     def test_fixed_small(self):
         """Small, fixed test with all capacities set to one"""
@@ -130,13 +119,6 @@ class MipTest(unittest.TestCase):
         self.randomized_test(200, (10, 20), (5*5*2, 8*5*2), (1, 3))
         self.randomized_test(200, (10, 20), (5*5*2, 8*5*2), (3, 3))
         self.randomized_test(350, (15, 25), (5*5*2, 8*5*2), (3, 3))
-
-    def test_randomized_with_different_interview_sizes(self):
-        """
-        Plan:
-        Lager flere komitéer med ulike intervjulengder
-        """
-        pass
 
     def test_realistic(self):
         """
@@ -248,9 +230,6 @@ class MipTest(unittest.TestCase):
 
         DEFAULT_INTERVIEW_TIME = timedelta(minutes=20)
 
-        # ANTALL_INTERVALL_PER_PERSON_MIN = 5
-        # ANTALL_INTERVALL_PER_PERSON_MAKS = 8
-        # INTERVALLENGDE_PER_PERSON_MIN = timedelta(minutes=30)
         INTERVALLENGDE_PER_PERSON_MAKS = timedelta(hours=10)
         ANTALL_INTERVALL_FORSØK = 4
 
@@ -287,13 +266,10 @@ class MipTest(unittest.TestCase):
 
         KAPASITET_PER_INTERVALL_MIN = 1
         KAPASITET_PER_INTERVALL_MAKS = 3
-        # INTERVALLENGDE_PER_KOMTIE_MAKS = timedelta(hours=10)
         ANTALL_INTERVALL_FORSØK_KOMITE = 10
 
         ANTALL_KOMITEER_PER_PERSON_MIN = 2
         ANTALL_KOMITEER_PER_PERSON_MAKS = 3
-
-        # print([applicant.get_intervals() for applicant in applicants])
 
         # Gir intervaller til hver komité.
         committees: set[Committee] = {
