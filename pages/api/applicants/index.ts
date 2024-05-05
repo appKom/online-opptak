@@ -3,6 +3,8 @@ import { createApplicant, getApplicants } from "../../../lib/mongo/applicants";
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { applicantType } from "../../../lib/types/types";
+import { SESClient } from "@aws-sdk/client-ses";
+import sendEmail from "../../../utils/sendEmail";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -34,6 +36,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const { applicant, error } = await createApplicant(applicantData);
       if (error) throw new Error(error);
+
+      const sesClient = new SESClient({ region: "eu-north-1" });
+
+      sendEmail({
+        sesClient: sesClient,
+        fromEmail: "opptak@online.ntnu.no",
+        toEmails: [applicantData.email],
+        subject: "Din søknad er mottatt",
+        htmlContent: "Denne mailen er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny epost med dine intervjutider etter søkeperioden."
+      })
+
       return res.status(201).json({ applicant });
     }
   } catch (error) {

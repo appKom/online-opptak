@@ -1,23 +1,31 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
-export default async function sendEmail() {
-  const sesClient = new SESClient({ region: "eu-west-1" });
+interface SendEmailProps {
+  sesClient: SESClient;
+  fromEmail: string;
+  toEmails: string[];
+  subject: string;
+  htmlContent: string;
+}
+
+export default async function sendEmail(emailParams: SendEmailProps) {
+  const sesClient = emailParams.sesClient;
 
   const params = {
-    Source: "appkom@online.ntnu.no",
+    Source: emailParams.fromEmail,
     Destination: {
-      ToAddresses: ["sindreeh@stud.ntnu.no"],
+      ToAddresses: emailParams.toEmails,
       CcAddresses: [],
       BccAddresses: [],
     },
     Message: {
       Subject: {
-        Data: "Test Email",
+        Data: emailParams.subject,
         Charset: "UTF-8",
       },
       Body: {
         Html: {
-          Data: 'This is the html content of the email. Let\'s try a link: <a href="https://online.ntnu.no" target="_blank">Online linjeforening hjemmeside</a>',
+          Data: emailParams.htmlContent,
           Charset: "UTF-8",
         },
       },
