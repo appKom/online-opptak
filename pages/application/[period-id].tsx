@@ -13,6 +13,7 @@ import CalendarIcon from "../../components/icons/icons/CalendarIcon";
 import { Tabs } from "../../components/Tabs";
 import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
 import { useRouter } from "next/router";
+import ApplicationOverview from "../../components/applicantoverview/application_overview";
 
 const Application: NextPage = () => {
   const { data: session } = useSession();
@@ -21,6 +22,9 @@ const Application: NextPage = () => {
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
   const [periodExists, setPeriodExists] = useState(false);
+  const [fetchedApplicationData, setFetchedApplicationData] = useState(null);
+
+  const [shouldShowListView, setShouldShowListView] = useState(true);
 
   const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +74,7 @@ const Application: NextPage = () => {
           );
           const data = await response.json();
           console.log(data);
-          console.log(response);
+
           if (response.ok) {
             setHasAlreadySubmitted(data.exists);
           } else {
@@ -128,6 +132,29 @@ const Application: NextPage = () => {
       }
     }
   };
+  const fetchApplicationData = async () => {
+    if (!session?.user?.owId || !periodId) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/applicants/${periodId}/${session.user.owId}`
+      );
+      const data = await response.json();
+      console.log(data);
+
+      if (response.ok) {
+        setFetchedApplicationData(data);
+      } else {
+        throw new Error(data.error || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error fetching application data:", error);
+      toast.error("Failed to fetch application data.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleDeleteApplication = async () => {
     if (!session?.user?.owId) {
@@ -151,6 +178,7 @@ const Application: NextPage = () => {
       );
 
       if (!response.ok) {
+        console.log(response);
         throw new Error("Failed to delete the application");
       }
 
@@ -182,11 +210,27 @@ const Application: NextPage = () => {
               Du vil få enda en e-post med intervjutider når søknadsperioden er
               over.
             </p>
-            <Button
-              title="Trekk tilbake søknad"
-              color="white"
-              onClick={handleDeleteApplication}
-            />
+            <div className="flex-grid">
+              <Button
+                title="Trekk tilbake søknad"
+                color="white"
+                onClick={handleDeleteApplication}
+              />
+              {/* <Collapsible title="Se søknad">
+                <ApplicationOverview application={applicationData} />
+              </Collapsible> */}
+              <Button
+                title={shouldShowListView ? "Se søknad" : "Skjul søknad"}
+                color="blue"
+                onClick={() => {
+                  fetchApplicationData();
+                  setShouldShowListView(!shouldShowListView);
+                }}
+              />
+            </div>
+            {fetchedApplicationData && !shouldShowListView && (
+              <ApplicationOverview application={fetchedApplicationData} />
+            )}
           </div>
         ) : (
           <Tabs

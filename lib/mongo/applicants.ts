@@ -75,7 +75,7 @@ export const getApplication = async (
       owId: id,
       periodId: periodId,
     });
-    console.log(result);
+    // console.log(result);
 
     return { application: result, exists: !!result };
   } catch (error) {
