@@ -144,7 +144,7 @@ class MipTest(unittest.TestCase):
         START_TIME_PER_DAY = time(hour=8, minute=0)
         END_TIME_PER_DAY = time(hour=18, minute=0)
         DAY_LENGTH = datetime.combine(date.today(
-        ), END_TIME_PER_DAY) - datetime.combine(date.today(), START_TIME_PER_DAY)
+        ), END_TIME_PER_DAY) - datetime.combine(date.today(), START_TIME_PER_DAY)  # type: ignore
 
         def get_random_interval(interval_date: date, interval_length_min: timedelta, interval_length_max: timedelta) -> TimeInterval:
             interval_start = datetime.combine(interval_date, START_TIME_PER_DAY) + \

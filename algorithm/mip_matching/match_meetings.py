@@ -55,11 +55,6 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                               for committee in applicant.get_committees()
                               if (applicant, committee, interval) in m) <= 1  # type: ignore
 
-            # print(f"{applicant}, {interval}:")
-            # for committee in applicant.get_committees():
-            #     if (applicant, committee, interval) in m:
-            #         print(f"\t {(applicant, committee, interval)}")
-
     # Setter mål til å være maksimering av antall møter
     model.objective = mip.maximize(mip.xsum(m.values()))
 
