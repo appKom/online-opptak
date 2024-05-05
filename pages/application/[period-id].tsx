@@ -18,7 +18,7 @@ import ApplicationOverview from "../../components/applicantoverview/application_
 const Application: NextPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  const periodId = router.query["period-id"];
+  const periodId = router.query["period-id"] as string;
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
   const [periodExists, setPeriodExists] = useState(false);
@@ -45,53 +45,43 @@ const Application: NextPage = () => {
   const [period, setPeriod] = useState<periodType>();
 
   useEffect(() => {
-    const checkPeriod = async () => {
-      if (periodId === undefined) return;
-      setIsLoading(true);
+    const checkPeriodAndApplicationStatus = async () => {
+      if (!periodId || !session?.user?.owId) {
+        return;
+      }
 
+      setIsLoading(true);
       try {
-        const response = await fetch(`/api/periods/${periodId}`);
-        const data = await response.json();
-        if (response.ok) {
-          setPeriod(data.period);
-          setPeriodExists(data.exists);
+        const periodResponse = await fetch(`/api/periods/${periodId}`);
+        const periodData = await periodResponse.json();
+        if (periodResponse.ok) {
+          setPeriod(periodData.period);
+          setPeriodExists(periodData.exists);
         } else {
-          throw new Error(data.error || "Unknown error");
+          throw new Error(periodData.error || "Unknown error");
         }
       } catch (error) {
         console.error("Error checking period:", error);
+      }
+
+      try {
+        const applicationResponse = await fetch(
+          `/api/applicants/${periodId}/${session.user.owId}`
+        );
+        const applicationData = await applicationResponse.json();
+        if (applicationResponse.ok) {
+          setHasAlreadySubmitted(applicationData.exists);
+        } else {
+          throw new Error(applicationData.error || "Unknown error");
+        }
+      } catch (error) {
+        console.error("Error checking application status:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    const checkApplicationStatus = async () => {
-      setIsLoading(true);
-      if (session?.user?.owId) {
-        try {
-          const response = await fetch(
-            `/api/applicants/${periodId}/${session.user.owId}`
-          );
-          const data = await response.json();
-          console.log(data);
-
-          if (response.ok) {
-            setHasAlreadySubmitted(data.exists);
-          } else {
-            throw new Error(data.error || "Unknown error");
-          }
-        } catch (error) {
-          console.error("Error checking application status:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
-      }
-    };
-
-    checkPeriod();
-    checkApplicationStatus();
+    checkPeriodAndApplicationStatus();
   }, [session?.user?.owId, periodId]);
 
   const handleSubmitApplication = async () => {
@@ -99,7 +89,7 @@ const Application: NextPage = () => {
       return;
     }
     try {
-      applicationData.periodId = periodId as string; // Ensure periodId is properly set
+      applicationData.periodId = periodId as string;
       const response = await fetch("/api/applicants", {
         method: "POST",
         headers: {
@@ -124,7 +114,6 @@ const Application: NextPage = () => {
         }
       }
     } catch (error) {
-      // Handle any other errors that might occur
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -141,7 +130,6 @@ const Application: NextPage = () => {
         `/api/applicants/${periodId}/${session.user.owId}`
       );
       const data = await response.json();
-      console.log(data);
 
       if (response.ok) {
         setFetchedApplicationData(data);
@@ -178,7 +166,6 @@ const Application: NextPage = () => {
       );
 
       if (!response.ok) {
-        console.log(response);
         throw new Error("Failed to delete the application");
       }
 

@@ -75,7 +75,6 @@ export const getApplication = async (
       owId: id,
       periodId: periodId,
     });
-    // console.log(result);
 
     return { application: result, exists: !!result };
   } catch (error) {
@@ -84,16 +83,13 @@ export const getApplication = async (
   }
 };
 
-export const deleteApplication = async (
-  owId: string,
-  periodId: string | ObjectId
-) => {
+export const deleteApplication = async (owId: string, periodId: string) => {
   try {
     if (!applicants) await init();
 
     const result = await applicants.deleteOne({
       owId: owId,
-      periodId: new ObjectId(periodId),
+      periodId: periodId,
     });
 
     if (result.deletedCount === 1) {
