@@ -44,6 +44,7 @@ const Application: NextPage = () => {
     const checkPeriod = async () => {
       if (periodId === undefined) return;
       setIsLoading(true);
+
       try {
         const response = await fetch(`/api/periods/${periodId}`);
         const data = await response.json();
@@ -92,7 +93,7 @@ const Application: NextPage = () => {
       return;
     }
     try {
-      applicationData.periodId = periodId as string;
+      applicationData.periodId = periodId as string; // Ensure periodId is properly set
       const response = await fetch("/api/applicants", {
         method: "POST",
         headers: {
@@ -101,14 +102,27 @@ const Application: NextPage = () => {
         body: JSON.stringify(applicationData),
       });
 
-      if (!response.ok) {
-        throw new Error(`Error creating applicant: ${response.statusText}`);
-      }
+      const responseData = await response.json();
 
-      toast.success("Søknad sendt inn");
-      setHasAlreadySubmitted(true);
+      if (response.ok) {
+        toast.success("Søknad sendt inn");
+        setHasAlreadySubmitted(true);
+      } else {
+        if (
+          responseData.error === "Application already exists for this period"
+        ) {
+          toast.error("Du har allerede søkt for denne perioden");
+        } else {
+          throw new Error(`Error creating applicant: ${response.statusText}`);
+        }
+      }
     } catch (error) {
-      toast.error("Det skjedde en feil, vennligst prøv igjen");
+      // Handle any other errors that might occur
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Det skjedde en feil, vennligst prøv igjen");
+      }
     }
   };
 
