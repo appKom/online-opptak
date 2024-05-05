@@ -39,13 +39,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const sesClient = new SESClient({ region: "eu-north-1" });
 
-      await sendEmail({
-        sesClient: sesClient,
-        fromEmail: "opptak@online.ntnu.no",
-        toEmails: [applicantData.email],
-        subject: "Vi har mottatt din søknad!",
-        htmlContent: "Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over."
-      })
+      try {
+        await sendEmail({
+          sesClient: sesClient,
+          fromEmail: "opptak@online.ntnu.no",
+          toEmails: [applicantData.email],
+          subject: "Vi har mottatt din søknad!",
+          htmlContent: "Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad: <br><br>E-post: " + applicantData.email + "<br>Fullt navn: " + applicantData.name + "<br>Telefonnummer: " + applicantData.phone + "<br>Trinn: " + applicantData.grade + "<br>Komiteer søkt: " + applicantData.preferences.first + ", " + applicantData.preferences.second + ", " + applicantData.preferences.third + "<br>Ønsker du å være økonomiansvarlig: " + applicantData.bankom + "<br>Ønsker du å søke FeminIT: " + applicantData.feminIt + "<br><br>Kort om deg selv:<br>" + applicantData.about
+        })
+
+        console.log("Email sent to: ", applicantData.email);
+      } catch (error) {
+        console.error("Error sending email: ", error);
+        throw error;
+      }
 
       return res.status(201).json({ applicant });
     }
