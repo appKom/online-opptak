@@ -9,30 +9,36 @@ interface SendEmailProps {
 }
 
 export default async function sendEmail(emailParams: SendEmailProps) {
-  const sesClient = emailParams.sesClient;
-
-  const params = {
-    Source: emailParams.fromEmail,
-    Destination: {
-      ToAddresses: emailParams.toEmails,
-      CcAddresses: [],
-      BccAddresses: [],
-    },
-    Message: {
-      Subject: {
-        Data: emailParams.subject,
-        Charset: "UTF-8",
+  try {
+    const sesClient = emailParams.sesClient;
+    const params = {
+      Source: emailParams.fromEmail,
+      Destination: {
+        ToAddresses: emailParams.toEmails,
+        CcAddresses: [],
+        BccAddresses: [],
       },
-      Body: {
-        Html: {
-          Data: emailParams.htmlContent,
+      Message: {
+        Subject: {
+          Data: emailParams.subject,
           Charset: "UTF-8",
         },
+        Body: {
+          Html: {
+            Data: emailParams.htmlContent,
+            Charset: "UTF-8",
+          },
+        },
       },
-    },
-    ReplyToAddresses: [],
-  };
+      ReplyToAddresses: [],
+    };
+  
+    const command = new SendEmailCommand(params);
+    await sesClient.send(command);
 
-  const command = new SendEmailCommand(params);
-  await sesClient.send(command);
+    console.log("Email sent to: ", emailParams.toEmails);
+  } catch (error) {
+    console.error("Error sending email: ", error);
+    throw error;
+  }
 }
