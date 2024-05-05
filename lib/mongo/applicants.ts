@@ -32,7 +32,7 @@ export const createApplicant = async (applicantData: applicantType) => {
     });
 
     if (existingApplicant) {
-      return { error: "Application already exists for this period" };
+      return { error: "409 Application already exists for this period" };
     }
 
     const result = await applicants.insertOne(applicantData);
@@ -73,8 +73,9 @@ export const getApplication = async (
 
     const result = await applicants.findOne({
       owId: id,
-      periodId: new ObjectId(periodId),
+      periodId: periodId,
     });
+    console.log(result);
 
     return { application: result, exists: !!result };
   } catch (error) {

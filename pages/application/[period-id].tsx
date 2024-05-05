@@ -69,6 +69,8 @@ const Application: NextPage = () => {
             `/api/applicants/${periodId}/${session.user.owId}`
           );
           const data = await response.json();
+          console.log(data);
+          console.log(response);
           if (response.ok) {
             setHasAlreadySubmitted(data.exists);
           } else {
@@ -109,7 +111,8 @@ const Application: NextPage = () => {
         setHasAlreadySubmitted(true);
       } else {
         if (
-          responseData.error === "Application already exists for this period"
+          responseData.error ===
+          "409 Application already exists for this period"
         ) {
           toast.error("Du har allerede søkt for denne perioden");
         } else {
