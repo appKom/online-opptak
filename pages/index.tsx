@@ -1,56 +1,70 @@
 import { useSession } from "next-auth/react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import Link from "next/link";
 import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
-import SelectionIllustration from "../components/icons/illustrations/SelectionIllustration";
-import CustomizationIllustration from "../components/icons/illustrations/CustomizationIllustration";
-import Button from "../components/Button";
+import { useEffect, useState } from "react";
+import { periodType } from "../lib/types/types";
+import { useRouter } from "next/router";
+import PeriodCard from "../components/PeriodCard";
 
 const Home = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+  const [currentPeriods, setCurrentPeriods] = useState([]);
 
-  // sjekk om bruker er i komité som har opptak
-  // sjekk om bruker allerede har sendt inn søknad
-  // sjekke om det er en søknadsperiode
-  //    sjekke hvilken søknadsperiode
+  useEffect(() => {
+    const fetchPeriods = async () => {
+      try {
+        const res = await fetch("/api/periods");
+        const data = await res.json();
+        const today = new Date();
+
+        setCurrentPeriods(
+          data.periods.filter((period: periodType) => {
+            const startDate = new Date(period.applicationPeriod.start || "");
+            const endDate = new Date(period.applicationPeriod.end || "");
+
+            return startDate <= today && endDate >= today;
+          })
+        );
+      } catch (error) {
+        console.error("Failed to fetch application periods:", error);
+      }
+    };
+    fetchPeriods();
+  }, []);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col justify-between min-h-screen overflow-x-hidden">
       <Navbar />
-
-      {!session && (
-        <div className="flex items-center justify-center flex-grow">
+      <div className="flex items-center justify-center flex-grow gap-5 px-5 my-10">
+        {session ? (
+          currentPeriods.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-5">
+              <p className="text-lg">
+                Det er ingen aktive søknadsperioder for øyeblikket, kom tilbake
+                senere!
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-5">
+              <h3 className="text-xl font-semibold text-center text-online-darkBlue">
+                Nåværende søknadsperioder
+              </h3>
+              {currentPeriods.map((period: periodType, index: number) => (
+                <PeriodCard key={index} period={period} />
+              ))}
+            </div>
+          )
+        ) : (
           <div className="flex flex-col items-center justify-center gap-5">
-            <AuthenticationIllustration className="h-60" />
+            <AuthenticationIllustration className="h-52" />
             <p className="text-lg">
               Vennligst logg inn for å få tilgang til opptakssystemet
             </p>
           </div>
-        </div>
-      )}
-
-      {session && (
-        <div className="flex flex-col items-center justify-center flex-grow gap-20">
-          <h1 className="text-3xl font-semibold text-online-darkBlue">
-            Komitéopptak 2024
-          </h1>
-          <div className="flex flex-col items-center justify-center gap-10 sm:flex-row md:gap-40">
-            <div className="flex flex-col items-center justify-center gap-5">
-              <SelectionIllustration className="h-32" />
-              <Link href="/form">
-                <Button title="Søk komité" color="blue" />
-              </Link>
-            </div>
-            <div className="flex flex-col items-center justify-center gap-5">
-              <CustomizationIllustration className="h-32" />
-              <Link href="/committee">
-                <Button title="Komité-innstillinger" color="blue" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
       <Footer />
     </div>
   );

@@ -1,4 +1,4 @@
-import { Collection, Db, MongoClient } from "mongodb";
+import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
 import { periodType } from "../types/types";
 
@@ -87,5 +87,28 @@ export const getCurrentPeriods = async () => {
   } catch (error) {
     console.error(error);
     return { error: "Failed to fetch periods" };
+  }
+};
+
+export const getPeriodById = async (id: string | ObjectId) => {
+  try {
+    if (!periods) await init();
+
+    if (typeof id === "string" && !id.match(/^[0-9a-fA-F]{24}$/)) {
+      console.error("Invalid ID format");
+      return { error: "Invalid ID format", exists: false };
+    }
+
+    const period = await periods.findOne({ _id: new ObjectId(id) });
+
+    if (period) {
+      return { exists: true, period };
+    } else {
+      console.log("Period not found");
+      return { exists: false };
+    }
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch period by ID", exists: false };
   }
 };

@@ -96,8 +96,8 @@ const NewPeriod = () => {
               name: name_short,
               value: name_short,
               description: email,
-            }),
-          ),
+            })
+          )
         );
       } catch (error) {
         console.error(error);
@@ -144,6 +144,7 @@ const NewPeriod = () => {
           <TextInput
             label="Navn"
             defaultValue={periodData.name}
+            placeholder="Eksempel: Suppleringsopptak vår 2025"
             updateInputValues={(value: string) =>
               setPeriodData({
                 ...periodData,
@@ -154,6 +155,8 @@ const NewPeriod = () => {
 
           <TextAreaInput
             label="Beskrivelse"
+            placeholder="Flere komiteer søker nye medlemmer til suppleringsopptak. Har du det som trengs? Søk nå og bli en del av vårt fantastiske miljø!
+            "
             updateInputValues={(value: string) =>
               setPeriodData({
                 ...periodData,
@@ -176,7 +179,7 @@ const NewPeriod = () => {
           />
 
           {isLoadingCommittees ? (
-            <div className="animate-pulse">Laster komitéer...</div>
+            <div className="animate-pulse">Laster komiteer...</div>
           ) : (
             <CheckboxInput
               updateInputValues={(selectedValues: string[]) => {
@@ -185,7 +188,7 @@ const NewPeriod = () => {
                   committees: selectedValues,
                 });
               }}
-              label="Velg komitéer"
+              label="Velg komiteer"
               values={availableCommittees}
               required
             />
