@@ -1,5 +1,4 @@
 const ApplicationOverview = ({ application }: { application: any }) => {
-  console.log(application);
   return (
     <div className="p-4 bg-white shadow rounded-lg">
       <ul className=" space-y-2">
