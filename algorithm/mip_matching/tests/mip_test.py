@@ -138,6 +138,97 @@ class MipTest(unittest.TestCase):
         """
         pass
 
+    def test_realistic(self):
+        """
+        En realistisk test (grovt) basert på historisk data.
+        """
+
+        fake = Faker()
+
+        ANTALL_PERSONER = 200
+
+        INTERVALLENGDE_PER_PERSON_MIN = timedelta(minutes=30)
+        INTERVALLENGDE_PER_PERSON_MAKS = timedelta(hours=4)
+        ANTALL_INTERVALL_FORSØK = 4
+
+        START_DATE = date(2024, 8, 26)
+        END_DATE = date(2024, 8, 30)
+        START_TIME_PER_DAY = time(hour=8, minute=0)
+        END_TIME_PER_DAY = time(hour=18, minute=0)
+        DAY_LENGTH = datetime.combine(date.today(
+        ), END_TIME_PER_DAY) - datetime.combine(date.today(), START_TIME_PER_DAY)
+
+        def get_random_interval(interval_date: date, interval_length_min: timedelta, interval_length_max: timedelta) -> TimeInterval:
+            interval_start = datetime.combine(interval_date, START_TIME_PER_DAY) + \
+                fake.time_delta(DAY_LENGTH)
+
+            interval_end = interval_start + interval_length_min + \
+                fake.time_delta(interval_length_max - interval_length_min)
+
+            if interval_end > datetime.combine(interval_date, END_TIME_PER_DAY):
+                interval_end = datetime.combine(
+                    interval_date, END_TIME_PER_DAY)
+
+            return TimeInterval(interval_start, interval_end)
+
+        # Gir tider til hver søker
+        applicants: set[Applicant] = set()
+        for person in range(ANTALL_PERSONER):
+            applicant = Applicant(name=str(person))
+
+            for _ in range(ANTALL_INTERVALL_FORSØK):
+                interval_date = fake.date_between_dates(START_DATE, END_DATE)
+
+                applicant.add_interval(
+                    get_random_interval(interval_date=interval_date, interval_length_min=INTERVALLENGDE_PER_PERSON_MIN, interval_length_max=INTERVALLENGDE_PER_PERSON_MAKS))
+
+            applicants.add(applicant)
+
+        KAPASITET_PER_INTERVALL_MIN = 1
+        KAPASITET_PER_INTERVALL_MAKS = 1
+        INTERVALLENGDE_PER_KOMTIE_MIN = timedelta(hours=2)
+        INTERVALLENGDE_PER_KOMTIE_MAKS = timedelta(hours=8)
+        ANTALL_INTERVALL_FORSØK_KOMITE = 8
+
+        ANTALL_KOMITEER_PER_PERSON_MIN = 2
+        ANTALL_KOMITEER_PER_PERSON_MAKS = 3
+
+        # Gir intervaller til hver komité.
+        committees: set[Committee] = {
+            Committee(name="Appkom", interview_length=timedelta(minutes=20)),
+            Committee(name="Prokom", interview_length=timedelta(minutes=20)),
+            Committee(name="Arrkom", interview_length=timedelta(minutes=20)),
+            Committee(name="Dotkom", interview_length=timedelta(minutes=30)),
+            Committee(name="OIL", interview_length=timedelta(minutes=20)),
+            Committee(name="Fagkom", interview_length=timedelta(minutes=20)),
+            Committee(name="Bedkom", interview_length=timedelta(minutes=30)),
+            Committee(name="FemInIT", interview_length=timedelta(minutes=30)),
+            Committee(name="Backlog", interview_length=timedelta(minutes=20)),
+            Committee(name="Trikom", interview_length=timedelta(minutes=35)),
+        }
+
+        for committee in committees:
+
+            for _ in range(ANTALL_INTERVALL_FORSØK_KOMITE):
+                interval_date = fake.date_between_dates(START_DATE, END_DATE)
+
+                committee.add_intervals_with_capacities({get_random_interval(interval_date, INTERVALLENGDE_PER_KOMTIE_MIN, INTERVALLENGDE_PER_KOMTIE_MAKS): random.randint(
+                    KAPASITET_PER_INTERVALL_MIN, KAPASITET_PER_INTERVALL_MAKS)})
+
+        # Lar hver søker søke på tilfeldige komiteer
+        committees_list = list(committees)
+        # Må ha liste for at random.sample skal kunne velge ut riktig
+        for applicant in applicants:
+            applicant.add_committees(set(random.sample(committees_list, random.randint(
+                ANTALL_KOMITEER_PER_PERSON_MIN, ANTALL_KOMITEER_PER_PERSON_MAKS))))
+
+        match = match_meetings(applicants=applicants, committees=committees)
+        self.check_constraints(matchings=match["matchings"])
+
+        print(
+            f"Klarte å matche {match['matched_meetings']} av {match['total_wanted_meetings']} ({match['matched_meetings']/match['total_wanted_meetings']:2f})")
+        print(f"Solver status: {match['solver_status']}")
+
     def test_randomized_with_continuous_intervals(self):
         """
         Gjør en randomisert test hvor hver person kan i sammenhengende
