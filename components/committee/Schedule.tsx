@@ -3,15 +3,18 @@ import getTimeSlots from "../../utils/getTimeSlots";
 
 interface Props {
   interviewLength: number;
-  add: boolean;
 }
 
-export default function Schedule(props : Props) {
-
+export default function Schedule(props: Props) {
   const timeSlots = getTimeSlots(props.interviewLength);
 
   const timeCells = timeSlots.map((time, index) => (
-    <div className="h-8 border-t border-black text-sm" key={index}>{time}</div>
+    <div
+      className="flex items-center justify-center h-8 px-4 text-sm border-t border-gray-500"
+      key={index}
+    >
+      {time}
+    </div>
   ));
 
   const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
@@ -20,16 +23,13 @@ export default function Schedule(props : Props) {
       weekDay={weekDay}
       interviewLength={props.interviewLength}
       key={index}
-      add={props.add}
     />
-  )); 
+  ));
 
   return (
-    <div className="flex border border-black mt-5">
-      <div className="flex flex-col justify-end bg-blue-200">
-        {timeCells}
-      </div>
-    {columns}
+    <div className="flex px-3 py-2 border border-gray-300 rounded-md shadow">
+      <div className="flex flex-col justify-end">{timeCells}</div>
+      {columns}
     </div>
-  )
+  );
 }
