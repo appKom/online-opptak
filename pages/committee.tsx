@@ -6,6 +6,10 @@ import Navbar from "../components/Navbar";
 
 import { useState } from "react";
 import { ValidDates } from "../types";
+import { useSession } from "next-auth/react";
+import FullCalendar from '@fullcalendar/react'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
 
 interface Interview {
   date: string;
@@ -13,8 +17,11 @@ interface Interview {
 }
 
 const Committee: NextPage = () => {
+  const { data: session } = useSession();
+  console.log(session)
   let markedCells: Interview[] = [];
   const [interviewInterval, setInterviewInterval] = useState(20);
+
 
   /*
   let committee: string = "";
@@ -101,6 +108,23 @@ const Committee: NextPage = () => {
     markedCells = [];
   }
 
+  function createInterval(selectionInfo) {
+    console.log(selectionInfo)
+
+    const event = {
+      title: "",
+      start: selectionInfo.start,
+      end: selectionInfo.end
+    }
+    if (selectionInfo.allDay) {
+      event.start = "08:00"
+      event.end = "18:00"
+      // TODO: Gjør dynamisk
+    }
+    selectionInfo.view.calendar.addEvent(event)
+    console.log("Start")
+  }
+
   function updateInterviewInterval(e: BaseSyntheticEvent) {
     setInterviewInterval(parseInt(e.target.value));
     resetCells();
@@ -120,10 +144,13 @@ const Committee: NextPage = () => {
     password = e.target.value;
   }
   */
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   return (
-    <div style={{ marginBottom: "50px" }}>
+    <div
+      // style={{ marginBottom: "50px" }}
+      className="flex flex-col"
+    >
       <Navbar />
       <header className="text-center">
         <h2 className="text-5xl font-bold mt-5 mb-6">
@@ -139,9 +166,49 @@ const Committee: NextPage = () => {
         </p>
       </div>
       <form
-        className="text-center"
-        style={{ width: "300px", margin: "0 auto" }}
+        className="text-center flex flex-col"
+      // style={{ width: "300px", margin: "0 auto" }}
+
       >
+        <div className={styles.interviewlengthselect}>
+          <label htmlFor="">Intervjulengde: </label>
+          <select
+            onChange={(e: BaseSyntheticEvent) => updateInterviewInterval(e)}
+            name=""
+            id=""
+          >
+            <option value={"15"} key={"15"}>
+              15 min
+            </option>
+            <option value={"20"} key={"20"}>
+              20 min
+            </option>
+            <option value={"30"} key={"30"}>
+              30 min
+            </option>
+          </select>
+        </div>
+
+        <FullCalendar
+          plugins={[timeGridPlugin, interactionPlugin]}
+          initialView={"timeGridWeek"}
+          headerToolbar={{ start: "today prev,next", center: "", end: "" }}
+          selectable={true}
+          selectMirror={true}
+          height={"auto"}
+          select={createInterval}
+          slotDuration={"00:" + interviewInterval} // TODO: Gjøre mer generisk
+          businessHours={{ startTime: "08:00", endTime: "18:00" }}
+          weekends={false}
+          slotMinTime={"08:00"}
+          slotMaxTime={"18:00"}
+          visibleRange={{
+            start: "2024-05-06",
+            end: "2024-05-20"
+          }}
+          duration={{ days: 10 }}
+          eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
+        />
         {/*
         <div style={{ margin: "0 auto 15px" }}>
           <label
@@ -184,6 +251,7 @@ const Committee: NextPage = () => {
           
         </div>
         */}
+
         <label className="block mb-2 mt-5 text-m font-medium text-black">
           Fyll ut ledige tider før du sender.
         </label>
@@ -197,24 +265,7 @@ const Committee: NextPage = () => {
           Lagre og send
         </button>
       </form>
-      <div className={styles.interviewlengthselect}>
-        <label htmlFor="">Intervjulengde: </label>
-        <select
-          onChange={(e: BaseSyntheticEvent) => updateInterviewInterval(e)}
-          name=""
-          id=""
-        >
-          <option value={"15"} key={"15"}>
-            15 min
-          </option>
-          <option value={"20"} key={"20"}>
-            20 min
-          </option>
-          <option value={"30"} key={"30"}>
-            30 min
-          </option>
-        </select>
-      </div>
+
       {/* {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)} */}
     </div>
   );
