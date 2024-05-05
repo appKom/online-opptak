@@ -19,14 +19,16 @@ export default function Schedule(props: Props) {
           className="flex-shrink-0 w-5 h-5 mr-3"
         >
           <path
-            fill-rule="evenodd"
+            fillRule="evenodd"
             d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-            clip-rule="evenodd"
+            clipRule="evenodd"
           />
         </svg>
         <b className="mr-2">Valgfritt</b>
-        Legg til tider du ikke er ledig for intervju. Flere ledige tidspunkter
-        øker sjansen for automatisk tildeling av intervjutider!
+        Legg til tider du&nbsp;
+        <span className="font-semibold">IKKE</span>&nbsp;er ledig for intervju.
+        Flere ledige tider øker sjansen for automatisk tildeling av
+        intervjutider!
       </div>
       <div className="flex justify-center gap-10 text-gray-700">
         <div className="flex items-center gap-2">
