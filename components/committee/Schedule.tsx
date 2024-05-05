@@ -10,8 +10,8 @@ export default function Schedule(props: Props) {
   const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
 
   return (
-    <div>
-      <div className="flex p-4 mb-5 text-sm text-yellow-500 rounded-md bg-yellow-50">
+    <div className="flex flex-col items-center">
+      <div className="flex max-w-full p-4 mb-5 text-sm text-yellow-500 rounded-md bg-yellow-50">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
@@ -25,19 +25,22 @@ export default function Schedule(props: Props) {
           />
         </svg>
         <b className="mr-2">Valgfritt</b>
-        Legg til tider du ikke er ledig for intervju.
+        Legg til tider du ikke er ledig for intervju. Flere ledige tidspunkter
+        øker sjansen for automatisk tildeling av intervjutider!
       </div>
-      <div className="flex justify-center gap-10">
-        <div className="flex items-center gap-2">
-          <div className="w-16 h-8 bg-red-200 border border-gray-300 rounded-sm"></div>
-          Ikke ledig for intervju
-        </div>
+      <div className="flex justify-center gap-10 text-gray-700">
         <div className="flex items-center gap-2">
           <div className="w-16 h-8 bg-green-200 border border-gray-300 rounded-sm"></div>
-          Ledig for intervju
+          Jeg er ledig
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-16 h-8 bg-red-200 border border-gray-300 rounded-sm"></div>
+          <div>
+            Jeg er <span className="font-bold">ikke</span> ledig
+          </div>
         </div>
       </div>
-      <div className="flex px-5 pt-2 pb-4 mt-5 border border-gray-300 rounded-md shadow">
+      <div className="flex px-5 pt-2 pb-4 mt-5 border border-gray-300 rounded-md shadow w-max">
         <div className="flex flex-col justify-end">
           {timeSlots.map((time, index) => (
             <div
