@@ -2,53 +2,32 @@ import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 
 export default async function sendEmail() {
 
-    const sesClient = new SESClient({});
+    const sesClient = new SESClient({region: "eu-west-1"});
 
     const params = {
-        Source: "STRING_VALUE",
+        Source: "appkom@online.ntnu.no",
         Destination: {
           ToAddresses: [
-            "STRING_VALUE",
+            "sindreeh@stud.ntnu.no",
           ],
-          CcAddresses: [
-            "STRING_VALUE",
-          ],
-          BccAddresses: [
-            "STRING_VALUE",
-          ],
+          CcAddresses: [],
+          BccAddresses: [],
         },
         Message: {
           Subject: {
-            Data: "STRING_VALUE",
-            Charset: "STRING_VALUE",
+            Data: "Test Email",
+            Charset: "UTF-8",
           },
           Body: {
-            Text: {
-              Data: "STRING_VALUE",
-              Charset: "STRING_VALUE",
-            },
             Html: {
-              Data: "STRING_VALUE",
-              Charset: "STRING_VALUE",
+              Data: "This is the html content of the email. Let's try a link: <a href=\"https://online.ntnu.no\" target=\"_blank\">Online linjeforening hjemmeside</a>",
+              Charset: "UTF-8",
             },
           },
         },
-        ReplyToAddresses: [
-          "STRING_VALUE",
-        ],
-        ReturnPath: "STRING_VALUE",
-        SourceArn: "STRING_VALUE",
-        ReturnPathArn: "STRING_VALUE",
-        Tags: [
-          {
-            Name: "STRING_VALUE",
-            Value: "STRING_VALUE",
-          },
-        ],
-        ConfigurationSetName: "STRING_VALUE",
+        ReplyToAddresses: [],
   };
 
   const command = new SendEmailCommand(params);
-  const response = await sesClient.send(command);
-
+  await sesClient.send(command);
 }

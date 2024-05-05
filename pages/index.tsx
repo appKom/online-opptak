@@ -6,6 +6,7 @@ import AuthenticationIllustration from "../components/icons/illustrations/Authen
 import SelectionIllustration from "../components/icons/illustrations/SelectionIllustration";
 import CustomizationIllustration from "../components/icons/illustrations/CustomizationIllustration";
 import Button from "../components/Button";
+import EmailTest from "./emailTest";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -17,7 +18,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      {/* <Navbar />
 
       {!session && (
         <div className="flex items-center justify-center flex-grow">
@@ -51,7 +52,8 @@ const Home = () => {
           </div>
         </div>
       )}
-      <Footer />
+      <Footer /> */}
+      <EmailTest />
     </div>
   );
 };
