@@ -8,10 +8,7 @@ interface Props {
 }
 
 export default function ScheduleCell(props: Props) {
-  const [available, setAvailable] = useState(false);
-
-  const markedColor = "lightgray";
-  const unmarkedColor = "rgba(255, 255, 255, 0)";
+  const [available, setAvailable] = useState(true);
 
   function handleSetAvailable() {
     setAvailable((prevAvailable) => {
@@ -24,10 +21,8 @@ export default function ScheduleCell(props: Props) {
   function changeColor(e: BaseSyntheticEvent) {
     let cell: HTMLDivElement = e.target;
     if (available) {
-      cell.style.backgroundColor = unmarkedColor;
       handleSetAvailable();
     } else if (!available) {
-      cell.style.backgroundColor = markedColor;
       handleSetAvailable();
     } else {
       return;
@@ -41,9 +36,11 @@ export default function ScheduleCell(props: Props) {
     changeColor(e);
   }
 
+  const bgColorClass = available ? "bg-green-200" : "bg-red-200";
+
   return (
     <div
-      className="flex h-8 border-t border-gray-500 cursor-pointer odd:border-dotted"
+      className={`flex h-8 ${bgColorClass} border-t border-gray-500 cursor-pointer odd:border-dotted`}
       onMouseEnter={(e: BaseSyntheticEvent) => handleMouseEvent(e, true)}
       onMouseDown={(e: BaseSyntheticEvent) => handleMouseEvent(e, false)}
     ></div>

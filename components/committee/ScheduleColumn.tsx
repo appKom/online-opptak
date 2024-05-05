@@ -9,6 +9,7 @@ interface Props {
 
 export default function ScheduleColumn(props: Props) {
   const [isDragging, setDragging] = useState(false);
+  const timeSlots = getTimeSlots(props.interviewLength);
 
   function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
     event.preventDefault();
@@ -24,18 +25,6 @@ export default function ScheduleColumn(props: Props) {
     setDragging(false);
   }
 
-  const timeSlots = getTimeSlots(props.interviewLength);
-
-  const column = timeSlots.map((time, index) => (
-    <ScheduleCell
-      interviewLength={props.interviewLength}
-      isDragging={isDragging}
-      weekDay={props.weekDay}
-      time={time}
-      key={index}
-    />
-  ));
-
   return (
     <div
       className="w-12 border-l border-gray-500 sm:w-24 md:w-28 lg:w-32 xl:w-36"
@@ -44,7 +33,15 @@ export default function ScheduleColumn(props: Props) {
       onMouseLeave={handleMouseLeave}
     >
       <div className="flex justify-center">{props.weekDay}</div>
-      {column}
+      {timeSlots.map((time, index) => (
+        <ScheduleCell
+          interviewLength={props.interviewLength}
+          isDragging={isDragging}
+          weekDay={props.weekDay}
+          time={time}
+          key={index}
+        />
+      ))}
     </div>
   );
 }
