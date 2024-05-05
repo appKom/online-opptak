@@ -140,7 +140,13 @@ class MipTest(unittest.TestCase):
 
     def test_realistic(self):
         """
-        En realistisk test (grovt) basert på historisk data.
+        En realistisk test (grovt) basert på historiske søkertall og info fra komitéer.
+        - 200 søkere
+        - Intervjuperiode (én uke og 8-18 hver dag)
+        - Hver person søker på 2 eller 3 komitéer
+        - Hver søker har mellom 2 og 16 timer ledig i løpet av uken.
+        - Intervjulengder etter komitéers ønsker.
+
         """
 
         fake = Faker()
