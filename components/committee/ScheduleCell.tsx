@@ -1,13 +1,10 @@
 import { useState, BaseSyntheticEvent } from "react";
-import InterviewSlot from "./InterviewSlot";
 
 interface Props {
   weekDay: String;
   time: String;
   interviewLength: number;
   isDragging: boolean;
-  add: boolean;
-  parallells: number;
 }
 
 export default function ScheduleCell(props: Props) {
@@ -26,11 +23,10 @@ export default function ScheduleCell(props: Props) {
 
   function changeColor(e: BaseSyntheticEvent) {
     let cell: HTMLDivElement = e.target;
-    console.log(`Cell: ${props.add}`);
-    if (available && !props.add) {
+    if (available) {
       cell.style.backgroundColor = unmarkedColor;
       handleSetAvailable();
-    } else if (!available && props.add) {
+    } else if (!available) {
       cell.style.backgroundColor = markedColor;
       handleSetAvailable();
     } else {
@@ -47,10 +43,9 @@ export default function ScheduleCell(props: Props) {
 
   return (
     <div
-      className="flex border-t border-black h-8 odd:border-dotted"
+      className="flex h-8 border-t border-gray-500 cursor-pointer odd:border-dotted"
       onMouseEnter={(e: BaseSyntheticEvent) => handleMouseEvent(e, true)}
       onMouseDown={(e: BaseSyntheticEvent) => handleMouseEvent(e, false)}
-      >
-    </div>
+    ></div>
   );
 }
