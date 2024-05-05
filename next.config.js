@@ -20,9 +20,3 @@ const nextConfig = {
     },
   ],
 };
-
-module.exports = {
-  images: {
-    domains: ["old.online.ntnu.no"],
-  },
-};

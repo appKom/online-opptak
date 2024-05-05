@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { applicantType, commiteeType } from "../types";
+import { applicantType } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
@@ -22,18 +22,11 @@ async function init() {
   await init();
 })();
 
-export const createApplicant = async (
-  applicantData: applicantType | string,
-) => {
+export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
-    const parsedApplicantData =
-      typeof applicantData === "string"
-        ? JSON.parse(applicantData)
-        : applicantData;
-
-    const result = await applicants.insertOne(parsedApplicantData);
+    const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
       const insertedApplicant = await applicants.findOne({
         _id: result.insertedId,
@@ -62,23 +55,44 @@ export const getApplicants = async () => {
   }
 };
 
-export const updateSelectedTimes = async (
+export const getApplication = async (
   id: string,
-  selectedTimes: [{ start: string; end: string }],
+  periodId: string | ObjectId
 ) => {
   try {
     if (!applicants) await init();
-    const result = await applicants.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { selectedTimes: selectedTimes } },
-    );
-    if (result.matchedCount > 0) {
-      return { message: "Selected times updated successfully" };
+
+    const result = await applicants.findOne({
+      owId: id,
+      periodId: new ObjectId(periodId),
+    });
+
+    return { application: result, exists: !!result };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch application", exists: false };
+  }
+};
+
+export const deleteApplication = async (
+  owId: string,
+  periodId: string | ObjectId
+) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants.deleteOne({
+      owId: owId,
+      periodId: new ObjectId(periodId),
+    });
+
+    if (result.deletedCount === 1) {
+      return { message: "Application deleted successfully" };
     } else {
-      return { error: "No applicant found with the specified ID" };
+      return { error: "Application not found or already deleted" };
     }
   } catch (error) {
     console.error(error);
-    return { error: "Failed to update selected times" };
+    return { error: "Failed to delete application" };
   }
 };
