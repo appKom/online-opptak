@@ -36,7 +36,7 @@ export type applicantType = {
     },
   ];
   date: Date;
-  periodId: String;
+  periodId: ObjectId | String;
 };
 
 export type periodType = {
