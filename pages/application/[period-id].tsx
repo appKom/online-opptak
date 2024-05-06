@@ -203,9 +203,6 @@ const Application: NextPage = () => {
                 color="white"
                 onClick={handleDeleteApplication}
               />
-              {/* <Collapsible title="Se søknad">
-                <ApplicationOverview application={applicationData} />
-              </Collapsible> */}
               <Button
                 title={shouldShowListView ? "Se søknad" : "Skjul søknad"}
                 color="blue"
