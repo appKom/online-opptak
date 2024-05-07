@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { periodType } from "../lib/types/types";
 import { useRouter } from "next/router";
 import PeriodCard from "../components/PeriodCard";
+import Button from "../components/Button";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -18,6 +19,7 @@ const Home = () => {
         const res = await fetch("/api/periods");
         const data = await res.json();
         const today = new Date();
+        console.log(data);
 
         setCurrentPeriods(
           data.periods.filter((period: periodType) => {
@@ -37,7 +39,7 @@ const Home = () => {
   return (
     <div className="flex flex-col justify-between min-h-screen overflow-x-hidden">
       <Navbar />
-      <div className="flex items-center justify-center flex-grow gap-5 px-5 my-10">
+      <div className="flex items-center justify-center flex-col gap-5 px-5 my-10">
         {session ? (
           currentPeriods.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-5">
@@ -47,13 +49,15 @@ const Home = () => {
               </p>
             </div>
           ) : (
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-10">
               <h3 className="text-xl font-semibold text-center text-online-darkBlue">
                 Nåværende søknadsperioder
               </h3>
-              {currentPeriods.map((period: periodType, index: number) => (
-                <PeriodCard key={index} period={period} />
-              ))}
+              <div className="flex flex-row gap-5">
+                {currentPeriods.map((period: periodType, index: number) => (
+                  <PeriodCard key={index} period={period} />
+                ))}
+              </div>
             </div>
           )
         ) : (
@@ -64,6 +68,15 @@ const Home = () => {
             </p>
           </div>
         )}
+        {session?.user?.role === "admin" ? ( //TODO endre til hvorvidt man er komitemedlem
+          <div className="flex flex-col gap-20 ">
+            <Button
+              title="Se eller administrer komiteens intervjutider"
+              color="blue"
+              onClick={() => router.push(`/commitee/`)}
+            />
+          </div>
+        ) : null}
       </div>
       <Footer />
     </div>

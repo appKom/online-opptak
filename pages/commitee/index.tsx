@@ -34,7 +34,7 @@ const Committee: NextPage = () => {
         });
         if (availablePeriods.length > 0) {
           setPeriods(availablePeriods);
-          setSelectedPeriod(availablePeriods[0].id); // Select the first period by default
+          setSelectedPeriod(availablePeriods[0].id);
         } else {
           console.warn("No suitable interview periods found.");
         }
@@ -47,7 +47,7 @@ const Committee: NextPage = () => {
         });
 
         if (period) {
-          console.log(period), setPeriods;
+          setPeriods;
           setVisibleRange({
             start: period.interviewPeriod.start,
             end: period.interviewPeriod.end,
@@ -185,6 +185,22 @@ const Committee: NextPage = () => {
               {period.name}
             </option>
           ))}
+        </select>
+        <label htmlFor="">Velg komitee: </label>
+        <select
+          onChange={(e: BaseSyntheticEvent) => updateInterviewInterval(e)}
+          name=""
+          id=""
+        >
+          <option value={"15"} key={"15"}>
+            Testkom1
+          </option>
+          <option value={"20"} key={"20"}>
+            Testkom2
+          </option>
+          <option value={"30"} key={"30"}>
+            Testkom3
+          </option>
         </select>
       </div>
 
