@@ -7,6 +7,7 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { periodType } from "../../lib/types/types";
+import toast from "react-hot-toast";
 
 interface Interview {
   startDate: string;
@@ -81,6 +82,10 @@ const Committee: NextPage = () => {
   async function submit(e: BaseSyntheticEvent) {
     e.preventDefault();
     const formattedEvents = formatEventsForExport(markedCells);
+    if (formattedEvents.length == 0) {
+      toast.error("Fyll inn minst et gyldig tidspunkt");
+      return;
+    }
     // try {
     //   const response = await fetch("/api/export_events", {
     //     method: "POST",
