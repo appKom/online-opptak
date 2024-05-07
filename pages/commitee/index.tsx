@@ -9,8 +9,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { periodType } from "../../lib/types/types";
 
 interface Interview {
-  date: string;
-  time: string;
+  startDate: string;
+  endDate: string;
 }
 
 const Committee: NextPage = () => {
@@ -80,33 +80,39 @@ const Committee: NextPage = () => {
 
   async function submit(e: BaseSyntheticEvent) {
     e.preventDefault();
-    try {
-      const body = { committee, interviews: markedCells };
-      await fetch("/api/postInterviewTimes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    const formattedEvents = formatEventsForExport(markedCells);
+    // try {
+    //   const response = await fetch("/api/export_events", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ events: formattedEvents }),
+    //   });
+
+    //   if (!response.ok) {
+    //     throw new Error("Failed to export events");
+    //   }
+
+    //   const result = await response.json();
+    //   console.log("Successfully exported events:", result);
+    // } catch (error) {
+    //   console.error("Error exporting events:", error);
+    // }
   }
 
-  function removeCell(event: {
-    startStr: string;
-    endStr: string;
-    remove: () => void;
-  }) {
+  function removeCell(event: any) {
     setMarkedCells((prevCells) =>
       prevCells.filter(
-        (cell) => !(cell.date === event.startStr && cell.time === event.endStr)
+        (cell) =>
+          cell.startDate !== event.startStr && cell.endDate !== event.endStr
       )
     );
-    event.remove(); // Directly remove event from calendar
+    event.remove();
   }
 
   function addCell(cell: string[]) {
-    setMarkedCells([...markedCells, { date: cell[0], time: cell[1] }]);
+    setMarkedCells([...markedCells, { startDate: cell[0], endDate: cell[1] }]);
   }
 
   function updateInterviewInterval(e: BaseSyntheticEvent) {
@@ -122,7 +128,12 @@ const Committee: NextPage = () => {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            removeCell(eventContent.event);
+
+            removeCell({
+              startStr: eventContent.event.start.toISOString(),
+              endStr: eventContent.event.end.toISOString(),
+              remove: () => eventContent.event.remove(),
+            });
           }}
         >
           <img
@@ -162,7 +173,21 @@ const Committee: NextPage = () => {
     updateVisibleRange(newPeriodId);
   };
 
-  // useEffect(() => {}, []);
+  function formatEventsForExport(events: any[]) {
+    return events
+      .map((event) => {
+        const startDateTimeString = `${event.startDate}`;
+        const endDatetimeString = `${event.endDate}`;
+
+        const startDateTime = new Date(startDateTimeString);
+        const endDateTime = new Date(endDatetimeString);
+        return {
+          start: startDateTime.toISOString(),
+          end: endDateTime.toISOString(),
+        };
+      })
+      .filter((event) => event !== null);
+  }
 
   if (!session || session.user?.role !== "admin") {
     //TODO sjekke komitee istedenfor admin
