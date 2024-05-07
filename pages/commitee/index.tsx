@@ -7,6 +7,8 @@ import { useSession } from "next-auth/react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { periodType } from "../../lib/types/types";
+import toast from "react-hot-toast";
 
 interface Interview {
   date: string;
@@ -17,6 +19,51 @@ const Committee: NextPage = () => {
   const { data: session } = useSession();
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(20);
+  const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
+
+  useEffect(() => {
+    const fetchPeriods = async () => {
+      try {
+        const res = await fetch("/api/periods");
+        const data = await res.json();
+        const today = new Date();
+
+        const period = data.periods.find((p: periodType) => {
+          const startDate = new Date(p.interviewPeriod.start || "");
+          const endDate = new Date(p.interviewPeriod.end || "");
+
+          return startDate >= today && endDate >= today;
+        });
+
+        if (period) {
+          console.log(period),
+            setVisibleRange({
+              start: period.interviewPeriod.start,
+              end: period.interviewPeriod.end,
+            });
+        } else {
+          console.warn("No suitable interview period found.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch interview periods:", error);
+      }
+    };
+
+    fetchPeriods();
+  }, []);
+
+  function createInterval(selectionInfo: any) {
+    const event = {
+      title: "",
+      start: selectionInfo.start,
+      end: selectionInfo.end,
+    };
+    selectionInfo.view.calendar.addEvent(event);
+    addCell([
+      selectionInfo.start.toISOString(),
+      selectionInfo.end.toISOString(),
+    ]);
+  }
 
   const committee = "appkom";
 
@@ -49,28 +96,6 @@ const Committee: NextPage = () => {
 
   function addCell(cell: string[]) {
     setMarkedCells([...markedCells, { date: cell[0], time: cell[1] }]);
-  }
-
-  function createInterval(selectionInfo: {
-    start: Date;
-    end: Date;
-    allDay: boolean;
-    view: {
-      calendar: {
-        addEvent: (arg0: { title: string; start: any; end: any }) => void;
-      };
-    };
-  }) {
-    const event = {
-      title: "",
-      start: selectionInfo.start,
-      end: selectionInfo.end,
-    };
-    selectionInfo.view.calendar.addEvent(event);
-    addCell([
-      selectionInfo.start.toISOString(),
-      selectionInfo.end.toISOString(),
-    ]);
   }
 
   function updateInterviewInterval(e: BaseSyntheticEvent) {
@@ -114,6 +139,22 @@ const Committee: NextPage = () => {
           Legg inn ledige tider for intervjuer
         </h2>
       </header>
+      <div className="pt-10 text-center">
+        <label htmlFor="">Velg opptak: </label>
+        <select
+        //TODO
+        >
+          <option value={"15"} key={"15"}>
+            Opptak 1
+          </option>
+          <option value={"20"} key={"20"}>
+            Opptak 2
+          </option>
+          <option value={"30"} key={"30"}>
+            Opptak 3
+          </option>
+        </select>
+      </div>
 
       <div>
         <p className="text-center text-lg mt-5 mb-6">
@@ -155,7 +196,7 @@ const Committee: NextPage = () => {
           weekends={false}
           slotMinTime="08:00"
           slotMaxTime="18:00"
-          visibleRange={{ start: "2024-05-06", end: "2024-05-20" }}
+          validRange={visibleRange}
           eventContent={renderEventContent}
           eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
           slotLabelFormat={{
