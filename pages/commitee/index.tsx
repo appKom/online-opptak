@@ -135,11 +135,34 @@ const Committee: NextPage = () => {
     );
   }
 
-  const handlePeriodSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedPeriod(e.target.value);
+  const updateVisibleRange = (periodId: string) => {
+    const selectedPeriodData = periods.find(
+      (p) => p._id.toString() === periodId
+    );
+
+    if (selectedPeriodData) {
+      const { start, end } = selectedPeriodData.interviewPeriod;
+
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+
+      setVisibleRange({
+        start: startDate.toISOString(),
+        end: endDate.toISOString(),
+      });
+    } else {
+      console.warn("Selected period not found.");
+    }
   };
 
-  useEffect(() => {}, []);
+  const handlePeriodSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newPeriodId = e.target.value;
+    setSelectedPeriod(newPeriodId);
+
+    updateVisibleRange(newPeriodId);
+  };
+
+  // useEffect(() => {}, []);
 
   if (!session || session.user?.role !== "admin") {
     //TODO sjekke komitee istedenfor admin
@@ -158,7 +181,7 @@ const Committee: NextPage = () => {
         <label htmlFor="">Velg opptak: </label>
         <select onChange={handlePeriodSelection} value={selectedPeriod}>
           {periods.map((period) => (
-            <option key={period.name} value={period.name}>
+            <option key={period._id.toString()} value={period._id.toString()}>
               {period.name}
             </option>
           ))}
