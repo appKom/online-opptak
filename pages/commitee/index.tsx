@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { BaseSyntheticEvent, useEffect } from "react";
-import styles from "../../styles/committee.module.css";
 import Navbar from "../../components/Navbar";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -8,7 +7,6 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { periodType } from "../../lib/types/types";
-import toast from "react-hot-toast";
 
 interface Interview {
   date: string;
@@ -20,6 +18,8 @@ const Committee: NextPage = () => {
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(20);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
+  const [periods, setPeriods] = useState<periodType[]>([]);
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
 
   useEffect(() => {
     const fetchPeriods = async () => {
@@ -27,6 +27,17 @@ const Committee: NextPage = () => {
         const res = await fetch("/api/periods");
         const data = await res.json();
         const today = new Date();
+
+        const availablePeriods = data.periods.filter((p: periodType) => {
+          const startDate = new Date(p.interviewPeriod.start || "");
+          return startDate >= today;
+        });
+        if (availablePeriods.length > 0) {
+          setPeriods(availablePeriods);
+          setSelectedPeriod(availablePeriods[0].id); // Select the first period by default
+        } else {
+          console.warn("No suitable interview periods found.");
+        }
 
         const period = data.periods.find((p: periodType) => {
           const startDate = new Date(p.interviewPeriod.start || "");
@@ -36,11 +47,11 @@ const Committee: NextPage = () => {
         });
 
         if (period) {
-          console.log(period),
-            setVisibleRange({
-              start: period.interviewPeriod.start,
-              end: period.interviewPeriod.end,
-            });
+          console.log(period), setPeriods;
+          setVisibleRange({
+            start: period.interviewPeriod.start,
+            end: period.interviewPeriod.end,
+          });
         } else {
           console.warn("No suitable interview period found.");
         }
@@ -124,6 +135,10 @@ const Committee: NextPage = () => {
     );
   }
 
+  const handlePeriodSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedPeriod(e.target.value);
+  };
+
   useEffect(() => {}, []);
 
   if (!session || session.user?.role !== "admin") {
@@ -141,18 +156,12 @@ const Committee: NextPage = () => {
       </header>
       <div className="pt-10 text-center">
         <label htmlFor="">Velg opptak: </label>
-        <select
-        //TODO
-        >
-          <option value={"15"} key={"15"}>
-            Opptak 1
-          </option>
-          <option value={"20"} key={"20"}>
-            Opptak 2
-          </option>
-          <option value={"30"} key={"30"}>
-            Opptak 3
-          </option>
+        <select onChange={handlePeriodSelection} value={selectedPeriod}>
+          {periods.map((period) => (
+            <option key={period.name} value={period.name}>
+              {period.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -193,7 +202,7 @@ const Committee: NextPage = () => {
           select={createInterval}
           slotDuration={`00:${interviewInterval}`}
           businessHours={{ startTime: "08:00", endTime: "18:00" }}
-          weekends={false}
+          weekends={false} //Skal helger være skrudd av?
           slotMinTime="08:00"
           slotMaxTime="18:00"
           validRange={visibleRange}
