@@ -31,8 +31,7 @@ const Home = () => {
         console.error("Failed to fetch application periods:", error);
       }
     };
-    console.log(`userid: ${session?.user?.id}`);
-    console.log(`sub: ${session?.user?.owId}`);
+
     fetchPeriods();
   }, []);
 

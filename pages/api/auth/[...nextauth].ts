@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         const userInfo = await response.json();
-        console.log(userInfo);
+        // console.log(userInfo);
 
         return {
           id: userInfo.id,
