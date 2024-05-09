@@ -77,7 +77,7 @@ const Home = () => {
             <Button
               title="Se eller administrer komiteens intervjutider"
               color="blue"
-              onClick={() => router.push(`/commitee/`)}
+              onClick={() => router.push(`/committee/`)}
             />
           </div>
         ) : null}
