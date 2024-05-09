@@ -9,6 +9,7 @@ declare module "next-auth" {
 
   interface User {
     owId?: string;
+    subId: string;
     name: string;
     role?: "admin" | "user";
     email: string;

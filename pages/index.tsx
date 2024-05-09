@@ -34,21 +34,7 @@ const Home = () => {
         console.error("Failed to fetch application periods:", error);
       }
     };
-    // const fetchUserProfile = async () => {
-    //   const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
-    //   const headers = {
-    //     Authorization: `Bearer ${session?.accessToken}`,
-    //   };
 
-    //   const response = await fetch(apiUrl, { headers });
-    //   if (!response.ok) {
-    //     throw new Error("Failed to fetch user profile");
-    //   }
-    //   console.log(response.json());
-    //   // console.log(response);
-    // };
-
-    // fetchUserProfile();
     fetchPeriods();
   }, []);
 
