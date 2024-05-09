@@ -20,7 +20,6 @@ export const authOptions: NextAuthOptions = {
 
       async profile(profile, tokens) {
         const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
-        const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
         const headers = {
           Authorization: `Bearer ${tokens.access_token}`,
         };
