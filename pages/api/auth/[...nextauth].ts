@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
         textDark: "#161b22",
       },
       async profile(profile, tokens) {
-        const apiUrl = "https://onlineweb.eu.auth0.com/userinfo";
+        const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
         const headers = {
           Authorization: `Bearer ${tokens.access_token}`,
         };
