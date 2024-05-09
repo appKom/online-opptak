@@ -40,11 +40,13 @@ const Committee: NextPage = () => {
         const data = await res.json();
         const today = new Date();
 
-        const availablePeriods = data.periods.filter((p: periodType) => {
-          const prepStartDate = new Date(p.preparationPeriod.start || "");
-          const prepEndDate = new Date(p.preparationPeriod.end || "");
-          return prepStartDate <= today && prepEndDate >= today;
+        let availablePeriods = data.periods.filter((p: periodType) => {
+          const interviewStartDate = new Date(p.interviewPeriod.start || "");
+          // const endDate = new Date(p.interviewPeriod.end || "");
+          return interviewStartDate >= today;
         });
+
+        availablePeriods = filterPeriodsByCommittee(availablePeriods);
 
         if (availablePeriods.length > 0) {
           setPeriods(availablePeriods);
@@ -55,9 +57,9 @@ const Committee: NextPage = () => {
         }
 
         const period = availablePeriods.find((p: periodType) => {
-          const startDate = new Date(p.interviewPeriod.start || "");
-          const endDate = new Date(p.interviewPeriod.end || "");
-          return startDate >= today && endDate >= today;
+          const interviewStartDate = new Date(p.interviewPeriod.start || "");
+          // const endDate = new Date(p.interviewPeriod.end || "");
+          return interviewStartDate >= today;
         });
 
         if (period) {
@@ -165,29 +167,42 @@ const Committee: NextPage = () => {
     );
   }
 
-  const updateVisibleRange = (periodId: string) => {
-    const selectedPeriodData = periods.find(
-      (p) => p._id.toString() === periodId
-    );
+  // const updateVisibleRange = (periodId: string) => {
+  //   const selectedPeriodData = periods.find(
+  //     (p) => p._id.toString() === periodId
+  //   );
 
-    if (selectedPeriodData) {
-      const { start, end } = selectedPeriodData.interviewPeriod;
+  //   if (selectedPeriodData) {
+  //     const { start, end } = selectedPeriodData.interviewPeriod;
 
-      setVisibleRange({
-        start: new Date(start).toISOString(),
-        end: new Date(end).toISOString(),
-      });
+  //     setVisibleRange({
+  //       start: new Date(start).toISOString(),
+  //       end: new Date(end).toISOString(),
+  //     });
 
-      setFilteredCommittees(filterCommittees(selectedPeriodData));
-    } else {
-      console.warn("Selected period not found.");
-    }
-  };
+  //     setFilteredCommittees(filterCommittees(selectedPeriodData));
+  //   } else {
+  //     console.warn("Selected period not found.");
+  //   }
+  // };
 
   const handlePeriodSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newPeriodId = e.target.value;
-    setSelectedPeriod(newPeriodId);
-    updateVisibleRange(newPeriodId);
+    const selectedPeriodData = periods.find(
+      (p) => p._id.toString() === newPeriodId
+    );
+    if (selectedPeriodData) {
+      setSelectedPeriod(newPeriodId);
+      const startDate = new Date(selectedPeriodData.interviewPeriod.start);
+      const endDate = new Date(selectedPeriodData.interviewPeriod.end);
+
+      setVisibleRange({
+        start: startDate.toISOString(),
+        end: endDate.toISOString(),
+      });
+    } else {
+      console.warn("Selected period not found.");
+    }
   };
 
   function formatEventsForExport(events: any[]) {
@@ -206,6 +221,17 @@ const Committee: NextPage = () => {
       .filter((event) => event !== null);
   }
 
+  const filterPeriodsByCommittee = (periods: periodType[]) => {
+    const userCommittees = session?.user?.committees || [];
+    return periods.filter((period) =>
+      period.committees.some((committee) =>
+        userCommittees
+          .map((c) => c.toLowerCase())
+          .includes(committee.toLowerCase())
+      )
+    );
+  };
+
   if (!session || !session.user?.isCommitee) {
     return <p>Access Denied. You must be in a commitee to view this page.</p>;
   }
@@ -221,7 +247,11 @@ const Committee: NextPage = () => {
       <div className="flex flex-row pt-10 text-center justify-center">
         <div className="px-5">
           <label htmlFor="">Velg opptak: </label>
-          <select onChange={handlePeriodSelection} value={selectedPeriod}>
+          <select
+            id="period-select"
+            onChange={handlePeriodSelection}
+            value={selectedPeriod}
+          >
             {periods.map((period) => (
               <option key={period._id.toString()} value={period._id.toString()}>
                 {period.name}
