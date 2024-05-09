@@ -15,5 +15,7 @@ declare module "next-auth" {
     email: string;
     phone?: string;
     grade?: number;
+    committees?: string[];
+    isCommitee: boolean;
   }
 }

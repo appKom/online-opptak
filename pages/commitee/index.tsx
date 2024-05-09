@@ -51,6 +51,7 @@ const Committee: NextPage = () => {
 
         if (period) {
           setPeriods;
+          // setSelectedCommittee;
           setVisibleRange({
             start: period.interviewPeriod.start,
             end: period.interviewPeriod.end,
@@ -64,6 +65,7 @@ const Committee: NextPage = () => {
     };
 
     fetchPeriods();
+    // console.log(periods);
   }, []);
 
   function createInterval(selectionInfo: any) {
@@ -79,7 +81,7 @@ const Committee: NextPage = () => {
     ]);
   }
 
-  const committee = "appkom";
+  // const committee = "appkom";
 
   async function submit(e: BaseSyntheticEvent) {
     e.preventDefault();
@@ -197,9 +199,8 @@ const Committee: NextPage = () => {
       .filter((event) => event !== null);
   }
 
-  if (!session || session.user?.role !== "admin") {
-    //TODO sjekke komitee istedenfor admin
-    return <p>Access Denied. You must be an admin to view this page.</p>;
+  if (!session || !session.user?.isCommitee) {
+    return <p>Access Denied. You must be in a commitee to view this page.</p>;
   }
 
   return (
