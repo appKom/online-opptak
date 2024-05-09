@@ -1,6 +1,6 @@
 # Algoritme
 
-Prøvde først med CSP-algoritme, men har nå gått over til MIP-programmering (Mixd Integer Linear Programming).
+Algoritmen baserer seg på MIP-programmering (Mixed Integer Linear Programming).
 
 ## Setup Python Venv
 
