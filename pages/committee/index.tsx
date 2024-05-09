@@ -101,12 +101,8 @@ const Committee: NextPage = () => {
     ]);
   }
 
-  // const committee = "appkom";
-
   async function submit(e: BaseSyntheticEvent) {
     e.preventDefault();
-
-    // Formatting the events for submission
     const formattedEvents = formatEventsForExport(markedCells);
     if (formattedEvents.length === 0) {
       toast.error("Fyll inn minst et gyldig tidspunkt");
@@ -125,7 +121,8 @@ const Committee: NextPage = () => {
 
     const dataToSend = {
       _id: selectedPeriodData._id,
-      name: selectedCommittee,
+      period_name: selectedPeriodData.name,
+      committee: selectedCommittee,
       availabletimes: formattedEvents,
       timeslot: `${selectedTimeslot}`,
     };
