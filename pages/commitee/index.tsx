@@ -31,7 +31,9 @@ const Committee: NextPage = () => {
 
         const availablePeriods = data.periods.filter((p: periodType) => {
           const startDate = new Date(p.interviewPeriod.start || "");
-          return startDate >= today;
+          const prepEndDate = new Date(p.preparationPeriod.end || "");
+          const presStartDate = new Date(p.preparationPeriod.start || "");
+          return presStartDate <= today && prepEndDate >= today;
         });
         if (availablePeriods.length > 0) {
           setPeriods(availablePeriods);
@@ -86,6 +88,7 @@ const Committee: NextPage = () => {
       toast.error("Fyll inn minst et gyldig tidspunkt");
       return;
     }
+    // console.log(formattedEvents);
     // try {
     //   const response = await fetch("/api/export_events", {
     //     method: "POST",

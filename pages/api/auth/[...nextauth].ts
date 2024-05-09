@@ -17,11 +17,14 @@ export const authOptions: NextAuthOptions = {
         bgDark: "#fff",
         textDark: "#161b22",
       },
+
       async profile(profile, tokens) {
-        const apiUrl = "https://onlineweb.eu.auth0.com/userinfo";
+        const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
         const headers = {
           Authorization: `Bearer ${tokens.access_token}`,
         };
+        // console.log(apiUrl);
+        // console.log(tokens.access_token);
 
         const response = await fetch(apiUrl, { headers });
         if (!response.ok) {
@@ -29,10 +32,22 @@ export const authOptions: NextAuthOptions = {
         }
 
         const userInfo = await response.json();
-        /* console.log("userInfo:");
-        console.log(userInfo);
-        console.log("profile:");
-        console.log(profile); */
+
+        // const fetchUserProfile = async () => {
+        //   const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
+        //   const headers = {
+        //     Authorization: `Bearer ${tokens.access_Token}`,
+        //   };
+
+        //   const response = await fetch(apiUrl, { headers });
+        //   if (!response.ok) {
+        //     throw new Error("Failed to fetch user profile");
+        //   }
+        //   console.log(response.json());
+        //   // console.log(response);
+        // };
+
+        // fetchUserProfile();
 
         return {
           id: profile.sub,
