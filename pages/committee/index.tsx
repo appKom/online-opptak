@@ -23,6 +23,9 @@ const Committee: NextPage = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
 
+  const [selectedCommittee, setSelectedCommittee] = useState<string>("");
+  const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
+
   const filterCommittees = (period: periodType) => {
     const userCommittees = session?.user?.committees || [];
     const periodCommittees = period?.committees || [];
@@ -51,7 +54,13 @@ const Committee: NextPage = () => {
         if (availablePeriods.length > 0) {
           setPeriods(availablePeriods);
           setSelectedPeriod(availablePeriods[0]._id.toString());
-          setFilteredCommittees(filterCommittees(availablePeriods[0]));
+
+          const committees = filterCommittees(availablePeriods[0]);
+          setFilteredCommittees(committees);
+          if (committees.length > 0) {
+            setSelectedCommittee(committees[0]);
+          }
+          setSelectedTimeslot("15");
         } else {
           console.warn("No suitable interview periods found.");
         }
@@ -96,30 +105,51 @@ const Committee: NextPage = () => {
 
   async function submit(e: BaseSyntheticEvent) {
     e.preventDefault();
+
+    // Formatting the events for submission
     const formattedEvents = formatEventsForExport(markedCells);
-    if (formattedEvents.length == 0) {
+    if (formattedEvents.length === 0) {
       toast.error("Fyll inn minst et gyldig tidspunkt");
       return;
     }
-    // console.log(formattedEvents);
-    // try {
-    //   const response = await fetch("/api/export_events", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ events: formattedEvents }),
-    //   });
 
-    //   if (!response.ok) {
-    //     throw new Error("Failed to export events");
-    //   }
+    const selectedPeriodData = periods.find(
+      (p) => p._id.toString() === selectedPeriod
+    );
+    if (!selectedPeriodData) {
+      toast.error("No period selected or period data is missing");
+      return;
+    }
 
-    //   const result = await response.json();
-    //   console.log("Successfully exported events:", result);
-    // } catch (error) {
-    //   console.error("Error exporting events:", error);
-    // }
+    console.log("Selected committee data:", selectedCommittee);
+
+    const dataToSend = {
+      _id: selectedPeriodData._id,
+      name: selectedCommittee,
+      availabletimes: formattedEvents,
+      timeslot: `${selectedTimeslot}`,
+    };
+
+    try {
+      const response = await fetch("/api/committees", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit data");
+      }
+
+      const result = await response.json();
+      toast.success("Successfully submitted!");
+      console.log("Successfully submitted data:", result);
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      // toast.error("Error during submission: " + error.message);
+    }
   }
 
   function removeCell(event: any) {
@@ -167,24 +197,11 @@ const Committee: NextPage = () => {
     );
   }
 
-  // const updateVisibleRange = (periodId: string) => {
-  //   const selectedPeriodData = periods.find(
-  //     (p) => p._id.toString() === periodId
-  //   );
-
-  //   if (selectedPeriodData) {
-  //     const { start, end } = selectedPeriodData.interviewPeriod;
-
-  //     setVisibleRange({
-  //       start: new Date(start).toISOString(),
-  //       end: new Date(end).toISOString(),
-  //     });
-
-  //     setFilteredCommittees(filterCommittees(selectedPeriodData));
-  //   } else {
-  //     console.warn("Selected period not found.");
-  //   }
-  // };
+  const handleCommitteeSelection = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setSelectedCommittee(e.target.value);
+  };
 
   const handlePeriodSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newPeriodId = e.target.value;
@@ -232,6 +249,10 @@ const Committee: NextPage = () => {
     );
   };
 
+  const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTimeslot(e.target.value);
+  };
+
   if (!session || !session.user?.isCommitee) {
     return <p>Access Denied. You must be in a commitee to view this page.</p>;
   }
@@ -261,7 +282,7 @@ const Committee: NextPage = () => {
         </div>
         <div className="px-5">
           <label>Velg komitee: </label>
-          <select>
+          <select onChange={handleCommitteeSelection}>
             {filteredCommittees.map((committee) => (
               <option key={committee} value={committee}>
                 {committee}
@@ -282,7 +303,10 @@ const Committee: NextPage = () => {
         <div className="pt-10">
           <label htmlFor="">Intervjulengde: </label>
           <select
-            onChange={(e: BaseSyntheticEvent) => updateInterviewInterval(e)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => [
+              updateInterviewInterval(e),
+              handleTimeslotSelection(e),
+            ]}
             name=""
             id=""
           >
