@@ -38,12 +38,12 @@ export const authOptions: NextAuthOptions = {
         if (!committeeResponse.ok)
           throw new Error("Failed to fetch committees");
 
-        const committee = await committeeResponse.json();
+        const committeeData = await committeeResponse.json();
 
-        const committees = committee.results.map((committee: any) => ({
-          name: committee.name_short,
-          id: committee.id,
-        }));
+        // const committees = committee.results.map((committee: any) => ({
+        //   name: committee.name_short,
+        //   id: committee.id,
+        // }));
 
         // console.log(committee);
 
@@ -54,7 +54,9 @@ export const authOptions: NextAuthOptions = {
           email: userInfo.email,
           //phone: userInfo.phone_number,
           //grade: userInfo.year,
-          committees,
+          committees: committeeData.results.map((committee: any) =>
+            committee.name_short.toLowerCase()
+          ),
           isCommitee: userInfo.is_committee,
         };
       },

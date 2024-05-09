@@ -21,6 +21,17 @@ const Committee: NextPage = () => {
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
   const [periods, setPeriods] = useState<periodType[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
+  const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
+
+  const filterCommittees = (period: periodType) => {
+    const userCommittees = session?.user?.committees || [];
+    const periodCommittees = period?.committees || [];
+    return userCommittees.filter((committee) =>
+      periodCommittees
+        .map((c) => c.toLowerCase())
+        .includes(committee.toLowerCase())
+    );
+  };
 
   useEffect(() => {
     const fetchPeriods = async () => {
@@ -30,28 +41,26 @@ const Committee: NextPage = () => {
         const today = new Date();
 
         const availablePeriods = data.periods.filter((p: periodType) => {
-          const startDate = new Date(p.interviewPeriod.start || "");
+          const prepStartDate = new Date(p.preparationPeriod.start || "");
           const prepEndDate = new Date(p.preparationPeriod.end || "");
-          const presStartDate = new Date(p.preparationPeriod.start || "");
-          return presStartDate <= today && prepEndDate >= today;
+          return prepStartDate <= today && prepEndDate >= today;
         });
+
         if (availablePeriods.length > 0) {
           setPeriods(availablePeriods);
-          setSelectedPeriod(availablePeriods[0].id);
+          setSelectedPeriod(availablePeriods[0]._id.toString());
+          setFilteredCommittees(filterCommittees(availablePeriods[0]));
         } else {
           console.warn("No suitable interview periods found.");
         }
 
-        const period = data.periods.find((p: periodType) => {
+        const period = availablePeriods.find((p: periodType) => {
           const startDate = new Date(p.interviewPeriod.start || "");
           const endDate = new Date(p.interviewPeriod.end || "");
-
           return startDate >= today && endDate >= today;
         });
 
         if (period) {
-          setPeriods;
-          // setSelectedCommittee;
           setVisibleRange({
             start: period.interviewPeriod.start,
             end: period.interviewPeriod.end,
@@ -164,13 +173,12 @@ const Committee: NextPage = () => {
     if (selectedPeriodData) {
       const { start, end } = selectedPeriodData.interviewPeriod;
 
-      const startDate = new Date(start);
-      const endDate = new Date(end);
-
       setVisibleRange({
-        start: startDate.toISOString(),
-        end: endDate.toISOString(),
+        start: new Date(start).toISOString(),
+        end: new Date(end).toISOString(),
       });
+
+      setFilteredCommittees(filterCommittees(selectedPeriodData));
     } else {
       console.warn("Selected period not found.");
     }
@@ -179,7 +187,6 @@ const Committee: NextPage = () => {
   const handlePeriodSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newPeriodId = e.target.value;
     setSelectedPeriod(newPeriodId);
-
     updateVisibleRange(newPeriodId);
   };
 
@@ -211,31 +218,27 @@ const Committee: NextPage = () => {
           Legg inn ledige tider for intervjuer
         </h2>
       </header>
-      <div className="pt-10 text-center">
-        <label htmlFor="">Velg opptak: </label>
-        <select onChange={handlePeriodSelection} value={selectedPeriod}>
-          {periods.map((period) => (
-            <option key={period._id.toString()} value={period._id.toString()}>
-              {period.name}
-            </option>
-          ))}
-        </select>
-        <label htmlFor="">Velg komitee: </label>
-        <select
-          onChange={(e: BaseSyntheticEvent) => updateInterviewInterval(e)}
-          name=""
-          id=""
-        >
-          <option value={"15"} key={"15"}>
-            Testkom1
-          </option>
-          <option value={"20"} key={"20"}>
-            Testkom2
-          </option>
-          <option value={"30"} key={"30"}>
-            Testkom3
-          </option>
-        </select>
+      <div className="flex flex-row pt-10 text-center justify-center">
+        <div className="px-5">
+          <label htmlFor="">Velg opptak: </label>
+          <select onChange={handlePeriodSelection} value={selectedPeriod}>
+            {periods.map((period) => (
+              <option key={period._id.toString()} value={period._id.toString()}>
+                {period.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="px-5">
+          <label>Velg komitee: </label>
+          <select>
+            {filteredCommittees.map((committee) => (
+              <option key={committee} value={committee}>
+                {committee}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <div>
