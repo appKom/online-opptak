@@ -18,24 +18,23 @@ export const authOptions: NextAuthOptions = {
         textDark: "#161b22",
       },
       async profile(profile, tokens) {
-        const apiUrl = "https://onlineweb.eu.auth0.com/userinfo";
+        const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
         const headers = {
           Authorization: `Bearer ${tokens.access_token}`,
         };
 
         const response = await fetch(apiUrl, { headers });
+
         if (!response.ok) {
           throw new Error("Failed to fetch user profile");
         }
 
         const userInfo = await response.json();
-        /* console.log("userInfo:");
-        console.log(userInfo);
-        console.log("profile:");
-        console.log(profile); */
+        // console.log(userInfo);
 
         return {
-          id: profile.sub,
+          id: userInfo.id,
+          subId: profile.sub,
           name: profile.name,
           email: userInfo.email,
           //phone: userInfo.phone_number,
@@ -55,6 +54,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.phone = user.phone;
         token.grade = user.grade;
+        token.subId = user.subId;
         token.role = adminEmails.includes(user.email) ? "admin" : "user";
       }
       return token;
@@ -65,9 +65,10 @@ export const authOptions: NextAuthOptions = {
         session.accessToken = token.accessToken as string;
 
         session.user.role = token.role as "admin" | "user";
-        session.user.owId = token.id as string;
+        session.user.owId = token.subId as string;
         session.user.phone = token.phone as string;
         session.user.grade = token.grade as number;
+        session.user.id = token.id as string;
       }
       return session;
     },
