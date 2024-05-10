@@ -4,6 +4,7 @@ import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
+import { useEffect } from "react";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -24,16 +25,29 @@ export const ApplicationForm = (props: Props) => {
 
   availableCommittees.forEach((committee) => {
     if (availableCommittees.length <= 2) {
-      return; // Edge case: if FeminIT is the only available committee
+      committeesToDisplay.push(committee);
     }
-    if (!committessToRemove.includes(committee[0])) {
+    if (
+      !committessToRemove.includes(committee[0]) &&
+      availableCommittees.length > 2
+    ) {
       committeesToDisplay.push(committee);
     }
   });
 
-  // console.log(committeesToDisplay);
-
   const isFeminITAvailable = props.availableCommittees.includes("FeminIT");
+
+  //Sets feminIt to false if it is not available
+  useEffect(() => {
+    // Check availability of FeminIT and update state accordingly
+    const isFeminITAvailable = props.availableCommittees.includes("FeminIT");
+    if (!isFeminITAvailable && props.applicationData.feminIt !== "no") {
+      props.setApplicationData({
+        ...props.applicationData,
+        feminIt: "no",
+      });
+    }
+  }, [props.availableCommittees, props.applicationData.feminIt]);
 
   return (
     <form className="px-5">
@@ -95,7 +109,9 @@ export const ApplicationForm = (props: Props) => {
 
       <div className="flex justify-center">
         <label className="inline-block mt-6 text-gray-700 form-label">
-          Velg opp til 3 komiteer
+          {committeesToDisplay.length > 2
+            ? "Velg opp til 3 komiteer"
+            : "Velg komite"}
         </label>
       </div>
       <SelectInput
