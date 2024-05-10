@@ -82,7 +82,7 @@ const Committee: NextPage = () => {
           .toLowerCase();
 
       const relevantTimes = committeeInterviewTimes.filter((time) => {
-        const cleanPeriodId = cleanString(time._id);
+        const cleanPeriodId = cleanString(time.periodId);
         const cleanCommittee = cleanString(time.committee);
         const cleanSelectedPeriod = cleanString(selectedPeriod);
         const cleanSelectedCommittee = cleanString(selectedCommittee);
@@ -194,7 +194,7 @@ const Committee: NextPage = () => {
     }
 
     const dataToSend = {
-      _id: selectedPeriodData._id,
+      periodId: selectedPeriodData._id,
       period_name: selectedPeriodData.name,
       committee: selectedCommittee,
       availabletimes: formattedEvents,
@@ -215,11 +215,10 @@ const Committee: NextPage = () => {
       }
 
       const result = await response.json();
-      toast.success("Successfully submitted!");
-      console.log("Successfully submitted data:", result);
+      toast.success("Tidene er sendt inn!");
+      setHasAlreadySubmitted(true);
     } catch (error) {
-      console.error("Error submitting data:", error);
-      // toast.error("Error during submission: " + error.message);
+      toast.error("Kunne ikke sende inn!");
     }
   }
 
@@ -325,20 +324,16 @@ const Committee: NextPage = () => {
     setSelectedTimeslot(e.target.value);
   };
 
-  async function deleteSubmission(e: BaseSyntheticEvent) {
+  const deleteSubmission = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const dataToDelete = {
-      _id: selectedPeriod,
+    const queryParams = new URLSearchParams({
       committee: selectedCommittee,
-    };
+      periodId: selectedPeriod,
+    }).toString();
 
     try {
-      const response = await fetch("/api/committees", {
+      const response = await fetch(`/api/committees?${queryParams}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToDelete),
       });
 
       if (!response.ok) {
@@ -354,7 +349,7 @@ const Committee: NextPage = () => {
       console.error("Error deleting submission:", error);
       toast.error("Klarte ikke å slette innsendingen");
     }
-  }
+  };
 
   if (!session || !session.user?.isCommitee) {
     return <p>Access Denied. You must be in a commitee to view this page.</p>;
@@ -430,7 +425,7 @@ const Committee: NextPage = () => {
           initialView="timeGridWeek"
           headerToolbar={{ start: "today prev,next", center: "", end: "" }}
           events={calendarEvents}
-          selectable={true}
+          selectable={hasAlreadySubmitted ? false : true}
           selectMirror={true}
           height="auto"
           select={createInterval}

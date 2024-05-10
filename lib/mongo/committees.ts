@@ -92,17 +92,38 @@ export const createCommittee = async (committeeData: commiteeType) => {
     return { error: "Failed to create committee" };
   }
 };
-
-export const deleteCommittee = async (id: string) => {
+export const deleteCommittee = async (committee: string, periodId: string) => {
   try {
-    const result = await committees.deleteOne({ _id: new ObjectId(id) });
+    if (!committees) await init();
 
-    if (result.deletedCount === 0) {
-      return { error: "No committee found with that id." };
+    let validPeriodId = periodId;
+    if (typeof periodId === "string") {
+      if (!ObjectId.isValid(periodId)) {
+        console.error("Invalid ObjectId:", periodId);
+        return { error: "Invalid ObjectId format" };
+      }
+      validPeriodId = periodId;
     }
 
-    return { success: true };
-  } catch (error: any) {
-    return { error: error.message };
+    const count = await committees.countDocuments({
+      committee: committee,
+      periodId: validPeriodId,
+    });
+    if (count === 0) {
+      return { error: "Committee not found or already deleted" };
+    }
+
+    const result = await committees.deleteOne({
+      committee: committee,
+      periodId: validPeriodId,
+    });
+
+    if (result.deletedCount === 1) {
+      return { message: "Committee deleted successfully" };
+    } else {
+      return { error: "Committee not found or already deleted" };
+    }
+  } catch (error) {
+    return { error: "Failed to delete committee" };
   }
 };

@@ -64,7 +64,7 @@ export type AvailableTime = {
 };
 
 export type committeeInterviewType = {
-  _id: string;
+  periodId: string;
   period_name: string;
   committee: string;
   availabletimes: AvailableTime[];

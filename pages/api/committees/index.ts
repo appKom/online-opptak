@@ -4,8 +4,12 @@ import {
   createCommittee,
   deleteCommittee,
 } from "../../../lib/mongo/committees";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getServerSession(req, res, authOptions);
+
   if (req.method === "GET") {
     try {
       const { committees, error } = await getCommittees();
@@ -30,24 +34,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === "DELETE") {
-    const { id } = req.query;
+    const committee = req.query.committee as string;
+    const periodId = req.query.periodId as string;
 
-    console.log(id?.toString);
-
-    if (!id || Array.isArray(id)) {
-      return res
-        .status(400)
-        .json({ error: "Invalid or missing id parameter." });
+    if (!committee || !periodId) {
+      return res.status(400).json({ error: "Missing or invalid parameters" });
     }
 
     try {
-      const { success, error } = await deleteCommittee(id);
+      const { error } = await deleteCommittee(committee, periodId);
       if (error) throw new Error(error);
 
       return res
         .status(200)
         .json({ message: "Committee successfully deleted." });
     } catch (error: any) {
+      console.error("Deletion failed with error:", error);
       return res.status(500).json({ error: error.message });
     }
   }
