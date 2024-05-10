@@ -470,9 +470,11 @@ const Committee: NextPage = () => {
             hour12: false,
           }}
         />
-        <label className="block mb-2 mt-5 text-m font-medium text-black">
-          Fyll ut ledige tider før du sender.
-        </label>
+        {!hasAlreadySubmitted && (
+          <label className="block mb-2 mt-5 text-m font-medium text-black">
+            Fyll ut ledige tider før du sender.
+          </label>
+        )}
         {!hasAlreadySubmitted && (
           <button
             type="submit"
