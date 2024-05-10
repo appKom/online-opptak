@@ -13,12 +13,25 @@ interface Props {
 
 export const ApplicationForm = (props: Props) => {
   const availableCommittees = [["Ingen", ""]];
+  const committeesToDisplay: string[][] = [];
+  const committessToRemove = ["FeminIT", "Fond"];
 
   props.availableCommittees.forEach((committee) => {
     if (!availableCommittees.some((item) => item[1] === committee)) {
       availableCommittees.push([committee, committee.toLowerCase()]);
     }
   });
+
+  availableCommittees.forEach((committee) => {
+    if (availableCommittees.length <= 2) {
+      return; // Edge case: if FeminIT is the only available committee
+    }
+    if (!committessToRemove.includes(committee[0])) {
+      committeesToDisplay.push(committee);
+    }
+  });
+
+  // console.log(committeesToDisplay);
 
   const isFeminITAvailable = props.availableCommittees.includes("FeminIT");
 
@@ -87,8 +100,8 @@ export const ApplicationForm = (props: Props) => {
       </div>
       <SelectInput
         required
-        values={availableCommittees}
-        label={availableCommittees.length > 2 ? "Førstevalg" : "Velg komite"}
+        values={committeesToDisplay}
+        label={committeesToDisplay.length > 2 ? "Førstevalg" : "Velg komite"}
         updateInputValues={(value: string) =>
           props.setApplicationData({
             ...props.applicationData,
@@ -96,9 +109,9 @@ export const ApplicationForm = (props: Props) => {
           })
         }
       />
-      {availableCommittees.length > 2 && (
+      {committeesToDisplay.length > 2 && (
         <SelectInput
-          values={availableCommittees}
+          values={committeesToDisplay}
           label={"Andrevalg"}
           updateInputValues={(value: string) =>
             props.setApplicationData({
@@ -111,9 +124,9 @@ export const ApplicationForm = (props: Props) => {
           }
         />
       )}
-      {availableCommittees.length > 3 && (
+      {committeesToDisplay.length > 3 && (
         <SelectInput
-          values={availableCommittees}
+          values={committeesToDisplay}
           label={"Tredjevalg"}
           updateInputValues={(value: string) =>
             props.setApplicationData({
