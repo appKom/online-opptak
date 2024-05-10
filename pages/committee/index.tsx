@@ -355,6 +355,14 @@ const Committee: NextPage = () => {
     return <p>Access Denied. You must be in a commitee to view this page.</p>;
   }
 
+  if (periods.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <h2 className="text-3xl font-bold mt-5 mb-6">Ingen aktive opptakk!</h2>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col">
       <Navbar />

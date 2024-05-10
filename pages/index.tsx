@@ -72,7 +72,7 @@ const Home = () => {
             </p>
           </div>
         )}
-        {session?.user?.isCommitee ? ( //Sjekker hvorvidt man er i en komite
+        {session?.user?.isCommitee && currentPeriods.length !== 0 ? ( //Sjekker hvorvidt man er i en komite
           <div className="flex flex-col gap-20 ">
             <Button
               title="Se eller administrer komiteens intervjutider"
