@@ -335,6 +335,16 @@ const Committee: NextPage = () => {
           validRange={visibleRange}
           eventContent={renderEventContent}
           eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
+          selectAllow={(selectInfo) => {
+            const start = selectInfo.start;
+            const end = selectInfo.end;
+            const startHour = start.getHours();
+            const endHour = end.getHours();
+
+            const isSameDay = start.toDateString() === end.toDateString();
+
+            return isSameDay && startHour >= 8 && endHour <= 18;
+          }}
           slotLabelFormat={{
             hour: "2-digit",
             minute: "2-digit",
