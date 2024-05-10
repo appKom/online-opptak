@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
 import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
+import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
 
 const Navbar = () => {
@@ -54,6 +55,15 @@ const Navbar = () => {
             Logget inn som{" "}
             <span className="font-medium">{session.user?.name}</span>
           </div>
+          {!session || session.user?.role === "admin" ? (
+            <Button
+              title="Admin"
+              color="blue"
+              size="small"
+              icon={<AdminIcon className="w-4 h-4" fill={""} />}
+              onClick={() => router.push("/admin")}
+            />
+          ) : null}
           <Button
             title="Logg ut"
             color="white"
