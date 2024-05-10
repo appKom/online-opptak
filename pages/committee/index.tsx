@@ -6,12 +6,12 @@ import { useSession } from "next-auth/react";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { periodType } from "../../lib/types/types";
+import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
 
 interface Interview {
-  startDate: string;
-  endDate: string;
+  start: string;
+  end: string;
 }
 
 const Committee: NextPage = () => {
@@ -26,6 +26,12 @@ const Committee: NextPage = () => {
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
 
+  const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
+    committeeInterviewType[]
+  >([]);
+
+  const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
+
   const filterCommittees = (period: periodType) => {
     const userCommittees = session?.user?.committees || [];
     const periodCommittees = period?.committees || [];
@@ -35,6 +41,72 @@ const Committee: NextPage = () => {
         .includes(committee.toLowerCase())
     );
   };
+
+  useEffect(() => {
+    const fetchCommitteeInterviewTimes = async () => {
+      try {
+        const res = await fetch("/api/committees");
+        const data = await res.json();
+
+        if (data && Array.isArray(data.committees)) {
+          setCommitteeInterviewTimes(data.committees);
+        } else {
+          console.error(
+            "Fetched data does not contain an 'committees' array:",
+            data
+          );
+          setCommitteeInterviewTimes([]);
+        }
+      } catch (error) {
+        console.error("Error fetching committee interview times:", error);
+        setCommitteeInterviewTimes([]);
+      }
+    };
+
+    fetchCommitteeInterviewTimes();
+  }, []);
+
+  useEffect(() => {
+    if (
+      selectedPeriod &&
+      selectedCommittee &&
+      Array.isArray(committeeInterviewTimes)
+    ) {
+      const cleanString = (input: string) =>
+        input
+          .replace(/[\x00-\x1F\x7F-\x9F]/g, "")
+          .trim()
+          .toLowerCase();
+
+      const relevantTimes = committeeInterviewTimes.filter((time) => {
+        const cleanPeriodId = cleanString(time._id);
+        const cleanCommittee = cleanString(time.committee);
+        const cleanSelectedPeriod = cleanString(selectedPeriod);
+        const cleanSelectedCommittee = cleanString(selectedCommittee);
+
+        return (
+          cleanPeriodId === cleanSelectedPeriod &&
+          cleanCommittee === cleanSelectedCommittee
+        );
+      });
+
+      if (relevantTimes.length > 0) {
+        const events = relevantTimes.flatMap((time) =>
+          time.availabletimes.map((at) => ({
+            start: new Date(at.start).toISOString(),
+            end: new Date(at.end).toISOString(),
+          }))
+        );
+
+        setCalendarEvents(events);
+      } else {
+        console.log("No matching events found.");
+        setCalendarEvents([]);
+      }
+    }
+  }, [selectedPeriod, selectedCommittee, committeeInterviewTimes]);
+
+  useEffect(() => {}, [committeeInterviewTimes]);
 
   useEffect(() => {
     const fetchPeriods = async () => {
@@ -117,8 +189,6 @@ const Committee: NextPage = () => {
       return;
     }
 
-    console.log("Selected committee data:", selectedCommittee);
-
     const dataToSend = {
       _id: selectedPeriodData._id,
       period_name: selectedPeriodData.name,
@@ -152,15 +222,14 @@ const Committee: NextPage = () => {
   function removeCell(event: any) {
     setMarkedCells((prevCells) =>
       prevCells.filter(
-        (cell) =>
-          cell.startDate !== event.startStr && cell.endDate !== event.endStr
+        (cell) => cell.start !== event.startStr && cell.end !== event.endStr
       )
     );
     event.remove();
   }
 
   function addCell(cell: string[]) {
-    setMarkedCells([...markedCells, { startDate: cell[0], endDate: cell[1] }]);
+    setMarkedCells([...markedCells, { start: cell[0], end: cell[1] }]);
   }
 
   function updateInterviewInterval(e: BaseSyntheticEvent) {
@@ -323,8 +392,9 @@ const Committee: NextPage = () => {
           plugins={[timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
           headerToolbar={{ start: "today prev,next", center: "", end: "" }}
-          selectable
-          selectMirror
+          events={calendarEvents}
+          selectable={true}
+          selectMirror={true}
           height="auto"
           select={createInterval}
           slotDuration={`00:${interviewInterval}`}
