@@ -32,6 +32,9 @@ const Committee: NextPage = () => {
 
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
 
+  const [hasAlreadySubmitted, setHasAlreadySubmitted] =
+    useState<boolean>(false);
+
   const filterCommittees = (period: periodType) => {
     const userCommittees = session?.user?.committees || [];
     const periodCommittees = period?.committees || [];
@@ -91,6 +94,7 @@ const Committee: NextPage = () => {
       });
 
       if (relevantTimes.length > 0) {
+        setHasAlreadySubmitted(true);
         const events = relevantTimes.flatMap((time) =>
           time.availabletimes.map((at) => ({
             start: new Date(at.start).toISOString(),
@@ -100,7 +104,7 @@ const Committee: NextPage = () => {
 
         setCalendarEvents(events);
       } else {
-        console.log("No matching events found.");
+        setHasAlreadySubmitted(false);
         setCalendarEvents([]);
       }
     }
@@ -240,25 +244,27 @@ const Committee: NextPage = () => {
     return (
       <div>
         <span>{eventContent.timeText}</span>
-        <button
-          className="ml-2"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
+        {!hasAlreadySubmitted && (
+          <button
+            className="ml-2"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
 
-            removeCell({
-              startStr: eventContent.event.start.toISOString(),
-              endStr: eventContent.event.end.toISOString(),
-              remove: () => eventContent.event.remove(),
-            });
-          }}
-        >
-          <img
-            src="/close.svg"
-            alt="close icon"
-            style={{ width: "22px", height: "22px" }}
-          />
-        </button>
+              removeCell({
+                startStr: eventContent.event.start.toISOString(),
+                endStr: eventContent.event.end.toISOString(),
+                remove: () => eventContent.event.remove(),
+              });
+            }}
+          >
+            <img
+              src="/close.svg"
+              alt="close icon"
+              style={{ width: "22px", height: "22px" }}
+            />
+          </button>
+        )}
       </div>
     );
   }
@@ -291,8 +297,8 @@ const Committee: NextPage = () => {
   function formatEventsForExport(events: any[]) {
     return events
       .map((event) => {
-        const startDateTimeString = `${event.startDate}`;
-        const endDatetimeString = `${event.endDate}`;
+        const startDateTimeString = `${event.start}`;
+        const endDatetimeString = `${event.end}`;
 
         const startDateTime = new Date(startDateTimeString);
         const endDateTime = new Date(endDatetimeString);
@@ -318,6 +324,37 @@ const Committee: NextPage = () => {
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTimeslot(e.target.value);
   };
+
+  async function deleteSubmission(e: BaseSyntheticEvent) {
+    e.preventDefault();
+    const dataToDelete = {
+      _id: selectedPeriod,
+      committee: selectedCommittee,
+    };
+
+    try {
+      const response = await fetch("/api/committees", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dataToDelete),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete data");
+      }
+
+      const result = await response.json();
+      toast.success("Innsendingen er slettet!");
+
+      setHasAlreadySubmitted(false);
+      setCalendarEvents([]);
+    } catch (error: any) {
+      console.error("Error deleting submission:", error);
+      toast.error("Klarte ikke å slette innsendingen");
+    }
+  }
 
   if (!session || !session.user?.isCommitee) {
     return <p>Access Denied. You must be in a commitee to view this page.</p>;
@@ -424,15 +461,26 @@ const Committee: NextPage = () => {
         <label className="block mb-2 mt-5 text-m font-medium text-black">
           Fyll ut ledige tider før du sender.
         </label>
-        <button
-          type="submit"
-          onClick={(e: BaseSyntheticEvent) => {
-            submit(e);
-          }}
-          className="text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          Lagre og send
-        </button>
+        {!hasAlreadySubmitted && (
+          <button
+            type="submit"
+            onClick={(e: BaseSyntheticEvent) => {
+              submit(e);
+            }}
+            className="text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          >
+            Lagre og send
+          </button>
+        )}
+        {hasAlreadySubmitted && (
+          <button
+            type="reset"
+            onClick={deleteSubmission}
+            className="text-white mt-1 bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+          >
+            Slett innsending
+          </button>
+        )}
       </form>
 
       {/* {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)} */}
