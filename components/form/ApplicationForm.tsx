@@ -20,6 +20,8 @@ export const ApplicationForm = (props: Props) => {
     }
   });
 
+  const isFeminITAvailable = props.availableCommittees.includes("FeminIT");
+
   return (
     <form className="px-5">
       <TextInput
@@ -86,7 +88,7 @@ export const ApplicationForm = (props: Props) => {
       <SelectInput
         required
         values={availableCommittees}
-        label={"Førstevalg"}
+        label={availableCommittees.length > 2 ? "Førstevalg" : "Velg komite"}
         updateInputValues={(value: string) =>
           props.setApplicationData({
             ...props.applicationData,
@@ -94,29 +96,36 @@ export const ApplicationForm = (props: Props) => {
           })
         }
       />
-      <SelectInput
-        values={availableCommittees}
-        label={"Andrevalg"}
-        updateInputValues={(value: string) =>
-          props.setApplicationData({
-            ...props.applicationData,
-            preferences: {
-              ...props.applicationData.preferences,
-              second: value,
-            },
-          })
-        }
-      />
-      <SelectInput
-        values={availableCommittees}
-        label={"Tredjevalg"}
-        updateInputValues={(value: string) =>
-          props.setApplicationData({
-            ...props.applicationData,
-            preferences: { ...props.applicationData.preferences, third: value },
-          })
-        }
-      />
+      {availableCommittees.length > 2 && (
+        <SelectInput
+          values={availableCommittees}
+          label={"Andrevalg"}
+          updateInputValues={(value: string) =>
+            props.setApplicationData({
+              ...props.applicationData,
+              preferences: {
+                ...props.applicationData.preferences,
+                second: value,
+              },
+            })
+          }
+        />
+      )}
+      {availableCommittees.length > 3 && (
+        <SelectInput
+          values={availableCommittees}
+          label={"Tredjevalg"}
+          updateInputValues={(value: string) =>
+            props.setApplicationData({
+              ...props.applicationData,
+              preferences: {
+                ...props.applicationData.preferences,
+                third: value,
+              },
+            })
+          }
+        />
+      )}
       <Line />
 
       <RadioInput
@@ -129,23 +138,27 @@ export const ApplicationForm = (props: Props) => {
           "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankkom)?"
         }
         updateInputValues={(value: boolean) =>
-          props.setApplicationData({ ...props.applicationData, bankom: value })
+          props.setApplicationData({
+            ...props.applicationData,
+            bankom: value,
+          })
         }
       />
-
-      {
-        // TODO: check if FeminIT has opptak
-      }
-      <RadioInput
-        values={[
-          ["Ja", "yes"],
-          ["Nei", "no"],
-        ]}
-        label={"Ønsker du å søke FeminIT i tillegg?"}
-        updateInputValues={(value: boolean) =>
-          props.setApplicationData({ ...props.applicationData, feminIt: value })
-        }
-      />
+      {isFeminITAvailable && (
+        <RadioInput
+          values={[
+            ["Ja", "yes"],
+            ["Nei", "no"],
+          ]}
+          label={"Ønsker du å søke FeminIT i tillegg?"}
+          updateInputValues={(value: boolean) =>
+            props.setApplicationData({
+              ...props.applicationData,
+              feminIt: value,
+            })
+          }
+        />
+      )}
     </form>
   );
 };
