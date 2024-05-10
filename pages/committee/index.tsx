@@ -406,27 +406,36 @@ const Committee: NextPage = () => {
         </p>
       </div>
       <form className="text-center flex flex-col">
-        <div className="pt-10">
-          <label htmlFor="">Intervjulengde: </label>
-          <select
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => [
-              updateInterviewInterval(e),
-              handleTimeslotSelection(e),
-            ]}
-            name=""
-            id=""
-          >
-            <option value={"15"} key={"15"}>
-              15 min
-            </option>
-            <option value={"20"} key={"20"}>
-              20 min
-            </option>
-            <option value={"30"} key={"30"}>
-              30 min
-            </option>
-          </select>
-        </div>
+        {!hasAlreadySubmitted && (
+          <div className="pt-10">
+            <label htmlFor="">Intervjulengde: </label>
+            <select
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => [
+                updateInterviewInterval(e),
+                handleTimeslotSelection(e),
+              ]}
+              name=""
+              id=""
+            >
+              <option value={"15"} key={"15"}>
+                15 min
+              </option>
+              <option value={"20"} key={"20"}>
+                20 min
+              </option>
+              <option value={"30"} key={"30"}>
+                30 min
+              </option>
+            </select>
+          </div>
+        )}
+        {hasAlreadySubmitted && (
+          <div>
+            <p className="text-center text-lg mt-5 mb-6">
+              Intervjulengde: {selectedTimeslot}min
+            </p>
+          </div>
+        )}
 
         <FullCalendar
           plugins={[timeGridPlugin, interactionPlugin]}
