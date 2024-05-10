@@ -31,6 +31,7 @@ const Home = () => {
         console.error("Failed to fetch application periods:", error);
       }
     };
+
     fetchPeriods();
   }, []);
 
