@@ -9,7 +9,6 @@ const Admin = () => {
   const [isLoading, setIsLoading] = useState(true);
   const periodId = router.query["period-id"];
   const [period, setPeriod] = useState<periodType>();
-  const [periodExists, setPeriodExists] = useState(false);
 
   const [applications, setApplications] = useState<applicantType[] | null>(
     null
@@ -34,7 +33,6 @@ const Admin = () => {
         const data = await response.json();
         if (response.ok) {
           setPeriod(data.period);
-          setPeriodExists(data.exists);
           setCommittees(data.period.committees);
         } else {
           throw new Error(data.error || "Unknown error");
@@ -110,7 +108,7 @@ const Admin = () => {
               </h2>
             </div>
             {committees && (
-              <div className="flex flex-row pt-10 py-5">
+              <div className="flex flex-row py-5 pt-10">
                 <select
                   className=""
                   value={selectedCommittee ?? ""}
@@ -128,42 +126,42 @@ const Admin = () => {
                   placeholder="Søk etter navn"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="ml-5 p-2 border"
+                  className="p-2 ml-5 border"
                 />
               </div>
             )}
 
             {applicationsExist && filteredApplications?.length ? (
-              <table className="min-w-full bg-white border-collapse border border-gray-200">
+              <table className="min-w-full bg-white border border-collapse border-gray-200">
                 <thead>
                   <tr>
-                    <th className="border p-2">Navn</th>
-                    <th className="border p-2">1. Komitee</th>
-                    <th className="border p-2">2. Komitee</th>
-                    <th className="border p-2">3. Komitee</th>
-                    <th className="border p-2">Dato</th>
-                    <th className="border p-2">Klasse</th>
-                    <th className="border p-2">Telefon</th>
+                    <th className="p-2 border">Navn</th>
+                    <th className="p-2 border">1. Komitee</th>
+                    <th className="p-2 border">2. Komitee</th>
+                    <th className="p-2 border">3. Komitee</th>
+                    <th className="p-2 border">Dato</th>
+                    <th className="p-2 border">Klasse</th>
+                    <th className="p-2 border">Telefon</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredApplications.map((applicant, index) => (
                     <tr key={index}>
-                      <td className="border p-2">{applicant.name}</td>
-                      <td className="border p-2">
+                      <td className="p-2 border">{applicant.name}</td>
+                      <td className="p-2 border">
                         {applicant.preferences.first}
                       </td>
-                      <td className="border p-2">
+                      <td className="p-2 border">
                         {applicant.preferences.second}
                       </td>
-                      <td className="border p-2">
+                      <td className="p-2 border">
                         {applicant.preferences.third}
                       </td>
-                      <td className="border p-2">
+                      <td className="p-2 border">
                         {new Date(applicant.date).toLocaleDateString()}
                       </td>
-                      <td className="border p-2">{applicant.grade}</td>
-                      <td className="border p-2">{applicant.phone}</td>
+                      <td className="p-2 border">{applicant.grade}</td>
+                      <td className="p-2 border">{applicant.phone}</td>
                     </tr>
                   ))}
                 </tbody>
