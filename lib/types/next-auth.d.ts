@@ -9,10 +9,13 @@ declare module "next-auth" {
 
   interface User {
     owId?: string;
+    subId: string;
     name: string;
     role?: "admin" | "user";
     email: string;
     phone?: string;
     grade?: number;
+    committees?: string[];
+    isCommitee: boolean;
   }
 }

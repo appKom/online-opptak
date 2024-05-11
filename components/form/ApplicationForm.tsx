@@ -4,6 +4,7 @@ import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
+import { useEffect } from "react";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -13,12 +14,45 @@ interface Props {
 
 export const ApplicationForm = (props: Props) => {
   const availableCommittees = [["Ingen", ""]];
+  const committeesToDisplay: string[][] = [];
+  const committessToRemove = ["FeminIT"];
 
   props.availableCommittees.forEach((committee) => {
     if (!availableCommittees.some((item) => item[1] === committee)) {
       availableCommittees.push([committee, committee.toLowerCase()]);
     }
   });
+
+  availableCommittees.forEach((committee) => {
+    if (availableCommittees.length <= 2) {
+      committeesToDisplay.push(committee);
+    }
+    if (
+      !committessToRemove.includes(committee[0]) &&
+      availableCommittees.length > 2
+    ) {
+      committeesToDisplay.push(committee);
+    }
+  });
+
+  const isFeminITAvailable = props.availableCommittees.includes("FeminIT");
+
+  //Sets feminIt to false if it is not available
+  useEffect(() => {
+    // Check availability of FeminIT and update state accordingly
+    const isFeminITAvailable = props.availableCommittees.includes("FeminIT");
+    if (!isFeminITAvailable && props.applicationData.feminIt !== "no") {
+      props.setApplicationData({
+        ...props.applicationData,
+        feminIt: "no",
+      });
+    } else if (isFeminITAvailable && committeesToDisplay.length <= 2) {
+      props.setApplicationData({
+        ...props.applicationData,
+        feminIt: "yes",
+      });
+    }
+  }, [props.availableCommittees, props.applicationData.feminIt]);
 
   return (
     <form className="px-5">
@@ -29,7 +63,6 @@ export const ApplicationForm = (props: Props) => {
           props.setApplicationData({ ...props.applicationData, email: value })
         }
       />
-
       <TextInput
         label={"Fullt navn"}
         defaultValue={props.applicationData.name}
@@ -37,7 +70,6 @@ export const ApplicationForm = (props: Props) => {
           props.setApplicationData({ ...props.applicationData, name: value })
         }
       />
-
       <TextInput
         label={"Telefonummer"}
         defaultValue={props.applicationData.phone}
@@ -45,7 +77,6 @@ export const ApplicationForm = (props: Props) => {
           props.setApplicationData({ ...props.applicationData, phone: value })
         }
       />
-
       <SelectInput
         required
         defaultValue={
@@ -69,7 +100,6 @@ export const ApplicationForm = (props: Props) => {
         }
       />
       <Line />
-
       <TextAreaInput
         label={"Skriv litt om deg selv"}
         updateInputValues={(value: any) =>
@@ -77,16 +107,17 @@ export const ApplicationForm = (props: Props) => {
         }
       />
       <Line />
-
       <div className="flex justify-center">
         <label className="inline-block mt-6 text-gray-700 form-label">
-          Velg opp til 3 komiteer
+          {committeesToDisplay.length > 2
+            ? `Velg opp til ${committeesToDisplay.length - 1} komiteer`
+            : "Velg komite"}
         </label>
       </div>
       <SelectInput
         required
-        values={availableCommittees}
-        label={"Førstevalg"}
+        values={committeesToDisplay}
+        label={committeesToDisplay.length > 2 ? "Førstevalg" : "Velg komite"}
         updateInputValues={(value: string) =>
           props.setApplicationData({
             ...props.applicationData,
@@ -94,31 +125,38 @@ export const ApplicationForm = (props: Props) => {
           })
         }
       />
-      <SelectInput
-        values={availableCommittees}
-        label={"Andrevalg"}
-        updateInputValues={(value: string) =>
-          props.setApplicationData({
-            ...props.applicationData,
-            preferences: {
-              ...props.applicationData.preferences,
-              second: value,
-            },
-          })
-        }
-      />
-      <SelectInput
-        values={availableCommittees}
-        label={"Tredjevalg"}
-        updateInputValues={(value: string) =>
-          props.setApplicationData({
-            ...props.applicationData,
-            preferences: { ...props.applicationData.preferences, third: value },
-          })
-        }
-      />
-      <Line />
 
+      {committeesToDisplay.length > 2 && (
+        <SelectInput
+          values={committeesToDisplay}
+          label={"Andrevalg"}
+          updateInputValues={(value: string) =>
+            props.setApplicationData({
+              ...props.applicationData,
+              preferences: {
+                ...props.applicationData.preferences,
+                second: value,
+              },
+            })
+          }
+        />
+      )}
+      {committeesToDisplay.length > 3 && (
+        <SelectInput
+          values={committeesToDisplay}
+          label={"Tredjevalg"}
+          updateInputValues={(value: string) =>
+            props.setApplicationData({
+              ...props.applicationData,
+              preferences: {
+                ...props.applicationData.preferences,
+                third: value,
+              },
+            })
+          }
+        />
+      )}
+      <Line />
       <RadioInput
         values={[
           ["Ja", "yes"],
@@ -129,23 +167,27 @@ export const ApplicationForm = (props: Props) => {
           "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankkom)?"
         }
         updateInputValues={(value: boolean) =>
-          props.setApplicationData({ ...props.applicationData, bankom: value })
+          props.setApplicationData({
+            ...props.applicationData,
+            bankom: value,
+          })
         }
       />
-
-      {
-        // TODO: check if FeminIT has opptak
-      }
-      <RadioInput
-        values={[
-          ["Ja", "yes"],
-          ["Nei", "no"],
-        ]}
-        label={"Ønsker du å søke FeminIT i tillegg?"}
-        updateInputValues={(value: boolean) =>
-          props.setApplicationData({ ...props.applicationData, feminIt: value })
-        }
-      />
+      {isFeminITAvailable && committeesToDisplay.length > 2 && (
+        <RadioInput
+          values={[
+            ["Ja", "yes"],
+            ["Nei", "no"],
+          ]}
+          label={"Ønsker du å søke FeminIT i tillegg?"}
+          updateInputValues={(value: boolean) =>
+            props.setApplicationData({
+              ...props.applicationData,
+              feminIt: value,
+            })
+          }
+        />
+      )}
     </form>
   );
 };

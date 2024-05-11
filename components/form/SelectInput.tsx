@@ -7,11 +7,9 @@ interface Props {
 }
 
 const SelectInput = (props: Props) => {
-  const handleInputChange = (e: React.BaseSyntheticEvent) => {
-    const value = isNaN(e.target.value)
-      ? e.target.value
-      : Number(e.target.value);
-    props.updateInputValues(value);
+  const handleChange = (event: any) => {
+    const newValue = event.target.value;
+    props.updateInputValues(newValue);
   };
 
   return (
@@ -22,11 +20,11 @@ const SelectInput = (props: Props) => {
           aria-label={props.label}
           required={props.required}
           id="selectComponent"
-          defaultValue=""
-          onChange={handleInputChange}
+          defaultValue={props.defaultValue || ""}
+          onChange={handleChange}
         >
           <option value="" disabled>
-            Velg trinn
+            Velg
           </option>
           {props.values.map((option) => (
             <option key={option[1]} value={option[1]}>

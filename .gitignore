@@ -40,3 +40,7 @@ next-env.d.ts
 
 # SWC
 .babelrc
+
+# Python
+__pycache__/
+.venv/
