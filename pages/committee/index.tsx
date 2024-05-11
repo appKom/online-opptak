@@ -368,17 +368,31 @@ const Committee: NextPage = () => {
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
         Legg inn ledige tider for intervjuer
       </h2>
-      <div className="flex gap-10 text-center w-max">
-        <SelectInput
-          updateInputValues={handlePeriodSelection}
-          label="Velg opptak"
-          values={periods.map((period) => [period.name, period._id.toString()])}
-        />
-        <SelectInput
-          updateInputValues={handleCommitteeSelection}
-          label="Velg komité"
-          values={filteredCommittees.map((committee) => [committee, committee])}
-        />
+      <div className="flex gap-10  w-max">
+        <div className="px-5 flex flex-col">
+          <label htmlFor="">Velg opptak: </label>
+          <select
+            id="period-select"
+            onChange={handlePeriodSelection}
+            value={selectedPeriod}
+          >
+            {periods.map((period) => (
+              <option key={period._id.toString()} value={period._id.toString()}>
+                {period.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="px-5 flex flex-col">
+          <label>Velg komitee: </label>
+          <select onChange={handleCommitteeSelection}>
+            {filteredCommittees.map((committee) => (
+              <option key={committee} value={committee}>
+                {committee}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <p className="my-5 text-lg text-center">
@@ -388,6 +402,10 @@ const Committee: NextPage = () => {
       </p>
       <form className="flex flex-col text-center">
         {hasAlreadySubmitted ? (
+          <p className="mt-5 mb-6 text-lg text-center">
+            Intervjulengde: {selectedTimeslot}min
+          </p>
+        ) : (
           <div className="pt-10">
             <label htmlFor="">Intervjulengde: </label>
             <select
@@ -405,10 +423,6 @@ const Committee: NextPage = () => {
               ))}
             </select>
           </div>
-        ) : (
-          <p className="mt-5 mb-6 text-lg text-center">
-            Intervjulengde: {selectedTimeslot}min
-          </p>
         )}
         <div className="mx-20">
           <FullCalendar
