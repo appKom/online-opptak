@@ -46,6 +46,11 @@ export const ApplicationForm = (props: Props) => {
         ...props.applicationData,
         feminIt: "no",
       });
+    } else if (isFeminITAvailable && committeesToDisplay.length <= 2) {
+      props.setApplicationData({
+        ...props.applicationData,
+        feminIt: "yes",
+      });
     }
   }, [props.availableCommittees, props.applicationData.feminIt]);
 
@@ -58,7 +63,6 @@ export const ApplicationForm = (props: Props) => {
           props.setApplicationData({ ...props.applicationData, email: value })
         }
       />
-
       <TextInput
         label={"Fullt navn"}
         defaultValue={props.applicationData.name}
@@ -66,7 +70,6 @@ export const ApplicationForm = (props: Props) => {
           props.setApplicationData({ ...props.applicationData, name: value })
         }
       />
-
       <TextInput
         label={"Telefonummer"}
         defaultValue={props.applicationData.phone}
@@ -74,7 +77,6 @@ export const ApplicationForm = (props: Props) => {
           props.setApplicationData({ ...props.applicationData, phone: value })
         }
       />
-
       <SelectInput
         required
         defaultValue={
@@ -98,7 +100,6 @@ export const ApplicationForm = (props: Props) => {
         }
       />
       <Line />
-
       <TextAreaInput
         label={"Skriv litt om deg selv"}
         updateInputValues={(value: any) =>
@@ -106,7 +107,6 @@ export const ApplicationForm = (props: Props) => {
         }
       />
       <Line />
-
       <div className="flex justify-center">
         <label className="inline-block mt-6 text-gray-700 form-label">
           {committeesToDisplay.length > 2
@@ -114,7 +114,6 @@ export const ApplicationForm = (props: Props) => {
             : "Velg komite"}
         </label>
       </div>
-
       <SelectInput
         required
         values={committeesToDisplay}
@@ -126,6 +125,7 @@ export const ApplicationForm = (props: Props) => {
           })
         }
       />
+
       {committeesToDisplay.length > 2 && (
         <SelectInput
           values={committeesToDisplay}
@@ -157,7 +157,6 @@ export const ApplicationForm = (props: Props) => {
         />
       )}
       <Line />
-
       <RadioInput
         values={[
           ["Ja", "yes"],
