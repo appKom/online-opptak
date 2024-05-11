@@ -7,6 +7,11 @@ interface Props {
 }
 
 const SelectInput = (props: Props) => {
+  const handleChange = (event: any) => {
+    const newValue = event.target.value;
+    props.updateInputValues(newValue);
+  };
+
   return (
     <div className="max-w-xs mx-auto my-6">
       <div className="relative">
@@ -15,8 +20,8 @@ const SelectInput = (props: Props) => {
           aria-label={props.label}
           required={props.required}
           id="selectComponent"
-          defaultValue=""
-          onChange={(e) => props.updateInputValues(e)}
+          defaultValue={props.defaultValue || ""}
+          onChange={handleChange}
         >
           <option value="" disabled>
             Velg
