@@ -3,6 +3,7 @@ import Navbar from "../../../components/Navbar";
 import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
+import NotFound from "../../404";
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -88,7 +89,7 @@ const Admin = () => {
   useEffect(() => {}, [applications, committees]);
 
   if (!session || session.user?.role !== "admin") {
-    return <p>Access Denied. You must be an admin to view this page.</p>;
+    return <NotFound />;
   }
 
   return (

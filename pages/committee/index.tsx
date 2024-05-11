@@ -8,6 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
 import SelectInput from "../../components/form/SelectInput";
+import NotFound from "../404";
 
 interface Interview {
   start: string;
@@ -355,7 +356,7 @@ const Committee: NextPage = () => {
   };
 
   if (!session || !session.user?.isCommitee) {
-    return <p>Access Denied. You must be in a commitee to view this page.</p>;
+    return <NotFound />;
   }
 
   if (isLoading) {

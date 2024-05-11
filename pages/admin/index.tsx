@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { periodType } from "../../lib/types/types";
 import { formatDate } from "../../lib/utils/dateUtils";
+import NotFound from "../404";
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -54,7 +55,7 @@ const Admin = () => {
   ];
 
   if (!session || session.user?.role !== "admin") {
-    return <p>Access Denied. You must be an admin to view this page.</p>;
+    return <NotFound />;
   }
 
   return (
