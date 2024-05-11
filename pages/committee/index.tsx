@@ -28,6 +28,8 @@ const Committee: NextPage = () => {
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
     committeeInterviewType[]
   >([]);
@@ -157,6 +159,7 @@ const Committee: NextPage = () => {
         } else {
           console.warn("No suitable interview period found.");
         }
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
       }
@@ -353,6 +356,16 @@ const Committee: NextPage = () => {
 
   if (!session || !session.user?.isCommitee) {
     return <p>Access Denied. You must be in a commitee to view this page.</p>;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex text-center justify-center">
+        <h2 className="text-2xl font-semibold text-online-darkBlue">
+          Vent litt...
+        </h2>
+      </div>
+    );
   }
 
   if (periods.length === 0) {
