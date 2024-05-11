@@ -11,6 +11,7 @@ const Home = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [currentPeriods, setCurrentPeriods] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchPeriods = async () => {
@@ -18,7 +19,6 @@ const Home = () => {
         const res = await fetch("/api/periods");
         const data = await res.json();
         const today = new Date();
-        console.log(data);
 
         setCurrentPeriods(
           data.periods.filter((period: periodType) => {
@@ -28,15 +28,24 @@ const Home = () => {
             return startDate <= today && endDate >= today;
           })
         );
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch application periods:", error);
       }
     };
 
-    console.log(session?.user?.committees);
-    // console.log(session?.user?.isCommitee);
     fetchPeriods();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex text-center justify-center">
+        <h2 className="text-2xl font-semibold text-online-darkBlue">
+          Vent litt...
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col justify-between min-h-screen overflow-x-hidden">
