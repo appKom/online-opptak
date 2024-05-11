@@ -1,5 +1,4 @@
 import { useSession } from "next-auth/react";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
 import { useEffect, useState } from "react";
@@ -7,7 +6,6 @@ import { periodType } from "../lib/types/types";
 import { useRouter } from "next/router";
 import PeriodCard from "../components/PeriodCard";
 import Button from "../components/Button";
-import { access } from "fs";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -42,8 +40,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col justify-between min-h-screen overflow-x-hidden">
-      <Navbar />
-      <div className="flex items-center justify-center flex-col gap-5 px-5 my-10">
+      <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
         {session ? (
           currentPeriods.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-5">
@@ -82,7 +79,6 @@ const Home = () => {
           </div>
         ) : null}
       </div>
-      <Footer />
     </div>
   );
 };

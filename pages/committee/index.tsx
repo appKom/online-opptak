@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
-import { BaseSyntheticEvent, useEffect } from "react";
-import Navbar from "../../components/Navbar";
+import { BaseSyntheticEvent, ChangeEvent, useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import FullCalendar from "@fullcalendar/react";
@@ -8,11 +7,14 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
+import SelectInput from "../../components/form/SelectInput";
 
 interface Interview {
   start: string;
   end: string;
 }
+
+const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
 const Committee: NextPage = () => {
   const { data: session } = useSession();
@@ -161,10 +163,9 @@ const Committee: NextPage = () => {
     };
 
     fetchPeriods();
-    // console.log(periods);
   }, []);
 
-  function createInterval(selectionInfo: any) {
+  const createInterval = (selectionInfo: any) => {
     const event = {
       title: "",
       start: selectionInfo.start,
@@ -175,9 +176,9 @@ const Committee: NextPage = () => {
       selectionInfo.start.toISOString(),
       selectionInfo.end.toISOString(),
     ]);
-  }
+  };
 
-  async function submit(e: BaseSyntheticEvent) {
+  const submit = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
     const formattedEvents = formatEventsForExport(markedCells);
     if (formattedEvents.length === 0) {
@@ -220,26 +221,26 @@ const Committee: NextPage = () => {
     } catch (error) {
       toast.error("Kunne ikke sende inn!");
     }
-  }
+  };
 
-  function removeCell(event: any) {
+  const removeCell = (event: any) => {
     setMarkedCells((prevCells) =>
       prevCells.filter(
         (cell) => cell.start !== event.startStr && cell.end !== event.endStr
       )
     );
     event.remove();
-  }
+  };
 
-  function addCell(cell: string[]) {
+  const addCell = (cell: string[]) => {
     setMarkedCells([...markedCells, { start: cell[0], end: cell[1] }]);
-  }
+  };
 
-  function updateInterviewInterval(e: BaseSyntheticEvent) {
+  const updateInterviewInterval = (e: BaseSyntheticEvent) => {
     setInterviewInterval(parseInt(e.target.value));
-  }
+  };
 
-  function renderEventContent(eventContent: any) {
+  const renderEventContent = (eventContent: any) => {
     return (
       <div>
         <span>{eventContent.timeText}</span>
@@ -266,7 +267,7 @@ const Committee: NextPage = () => {
         )}
       </div>
     );
-  }
+  };
 
   const handleCommitteeSelection = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -293,7 +294,7 @@ const Committee: NextPage = () => {
     }
   };
 
-  function formatEventsForExport(events: any[]) {
+  const formatEventsForExport = (events: any[]) => {
     return events
       .map((event) => {
         const startDateTimeString = `${event.start}`;
@@ -307,7 +308,7 @@ const Committee: NextPage = () => {
         };
       })
       .filter((event) => event !== null);
-  }
+  };
 
   const filterPeriodsByCommittee = (periods: periodType[]) => {
     const userCommittees = session?.user?.committees || [];
@@ -340,7 +341,6 @@ const Committee: NextPage = () => {
         throw new Error("Failed to delete data");
       }
 
-      const result = await response.json();
       toast.success("Innsendingen er slettet!");
 
       setHasAlreadySubmitted(false);
@@ -357,56 +357,37 @@ const Committee: NextPage = () => {
 
   if (periods.length === 0) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <h2 className="text-3xl font-bold mt-5 mb-6">Ingen aktive opptakk!</h2>
+      <div className="flex items-center justify-center h-screen">
+        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptakk!</h2>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col">
-      <Navbar />
-      <header className="text-center">
-        <h2 className="text-5xl font-bold mt-5 mb-6">
-          Legg inn ledige tider for intervjuer
-        </h2>
-      </header>
-      <div className="flex flex-row pt-10 text-center justify-center">
-        <div className="px-5">
-          <label htmlFor="">Velg opptak: </label>
-          <select
-            id="period-select"
-            onChange={handlePeriodSelection}
-            value={selectedPeriod}
-          >
-            {periods.map((period) => (
-              <option key={period._id.toString()} value={period._id.toString()}>
-                {period.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="px-5">
-          <label>Velg komitee: </label>
-          <select onChange={handleCommitteeSelection}>
-            {filteredCommittees.map((committee) => (
-              <option key={committee} value={committee}>
-                {committee}
-              </option>
-            ))}
-          </select>
-        </div>
+    <div className="flex flex-col items-center">
+      <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
+        Legg inn ledige tider for intervjuer
+      </h2>
+      <div className="flex gap-10 text-center w-max">
+        <SelectInput
+          updateInputValues={handlePeriodSelection}
+          label="Velg opptak"
+          values={periods.map((period) => [period.name, period._id.toString()])}
+        />
+        <SelectInput
+          updateInputValues={handleCommitteeSelection}
+          label="Velg komité"
+          values={filteredCommittees.map((committee) => [committee, committee])}
+        />
       </div>
 
-      <div>
-        <p className="text-center text-lg mt-5 mb-6">
-          Velg ledige tider ved å trykke på eller dra over flere celler.
-          <br></br>Intervjuene vil bli satt opp etter hverandre fra første
-          ledige tid.
-        </p>
-      </div>
-      <form className="text-center flex flex-col">
-        {!hasAlreadySubmitted && (
+      <p className="my-5 text-lg text-center">
+        Velg ledige tider ved å trykke på eller dra over flere celler.
+        <br></br>Intervjuene vil bli satt opp etter hverandre fra første ledige
+        tid.
+      </p>
+      <form className="flex flex-col text-center">
+        {hasAlreadySubmitted ? (
           <div className="pt-10">
             <label htmlFor="">Intervjulengde: </label>
             <select
@@ -417,61 +398,56 @@ const Committee: NextPage = () => {
               name=""
               id=""
             >
-              <option value={"15"} key={"15"}>
-                15 min
-              </option>
-              <option value={"20"} key={"20"}>
-                20 min
-              </option>
-              <option value={"30"} key={"30"}>
-                30 min
-              </option>
+              {INTERVIEW_TIME_OPTIONS.map((time) => (
+                <option key={time} value={time}>
+                  {time} min
+                </option>
+              ))}
             </select>
           </div>
+        ) : (
+          <p className="mt-5 mb-6 text-lg text-center">
+            Intervjulengde: {selectedTimeslot}min
+          </p>
         )}
-        {hasAlreadySubmitted && (
-          <div>
-            <p className="text-center text-lg mt-5 mb-6">
-              Intervjulengde: {selectedTimeslot}min
-            </p>
-          </div>
-        )}
+        <div className="mx-20">
+          <FullCalendar
+            plugins={[timeGridPlugin, interactionPlugin]}
+            initialView="timeGridWeek"
+            headerToolbar={{ start: "today prev,next", center: "", end: "" }}
+            events={calendarEvents}
+            selectable={hasAlreadySubmitted ? false : true}
+            selectMirror={true}
+            height="auto"
+            select={createInterval}
+            slotDuration={`00:${interviewInterval}`}
+            businessHours={{ startTime: "08:00", endTime: "18:00" }}
+            weekends={false} //Skal helger være skrudd av?
+            slotMinTime="08:00"
+            slotMaxTime="18:00"
+            validRange={visibleRange}
+            eventContent={renderEventContent}
+            eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
+            selectAllow={(selectInfo) => {
+              const start = selectInfo.start;
+              const end = selectInfo.end;
+              const startHour = start.getHours();
+              const endHour = end.getHours();
 
-        <FullCalendar
-          plugins={[timeGridPlugin, interactionPlugin]}
-          initialView="timeGridWeek"
-          headerToolbar={{ start: "today prev,next", center: "", end: "" }}
-          events={calendarEvents}
-          selectable={hasAlreadySubmitted ? false : true}
-          selectMirror={true}
-          height="auto"
-          select={createInterval}
-          slotDuration={`00:${interviewInterval}`}
-          businessHours={{ startTime: "08:00", endTime: "18:00" }}
-          weekends={false} //Skal helger være skrudd av?
-          slotMinTime="08:00"
-          slotMaxTime="18:00"
-          validRange={visibleRange}
-          eventContent={renderEventContent}
-          eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
-          selectAllow={(selectInfo) => {
-            const start = selectInfo.start;
-            const end = selectInfo.end;
-            const startHour = start.getHours();
-            const endHour = end.getHours();
+              const isSameDay = start.toDateString() === end.toDateString();
 
-            const isSameDay = start.toDateString() === end.toDateString();
+              return isSameDay && startHour >= 8 && endHour <= 18;
+            }}
+            slotLabelFormat={{
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            }}
+          />
+        </div>
 
-            return isSameDay && startHour >= 8 && endHour <= 18;
-          }}
-          slotLabelFormat={{
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: false,
-          }}
-        />
         {!hasAlreadySubmitted && (
-          <label className="block mb-2 mt-5 text-m font-medium text-black">
+          <label className="block mt-5 mb-2 font-medium text-black text-m">
             Fyll ut ledige tider før du sender.
           </label>
         )}
