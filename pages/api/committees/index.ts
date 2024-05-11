@@ -10,7 +10,14 @@ import { authOptions } from "../auth/[...nextauth]";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
 
+  if (!session) {
+    return res.status(403).json({ error: "Access denied, no session" });
+  }
+
   if (req.method === "GET") {
+    if (!session.user?.isCommitee) {
+      return res.status(403).json({ error: "Access denied, unauthorized" });
+    }
     try {
       const { committees, error } = await getCommittees();
       if (error) throw new Error(error);
@@ -22,6 +29,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === "POST") {
+    if (!session.user?.isCommitee) {
+      return res.status(403).json({ error: "Access denied, unauthorized" });
+    }
     const committeeData = req.body;
     try {
       const { committee, error } = await createCommittee(committeeData);
@@ -34,6 +44,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === "DELETE") {
+    if (!session.user?.isCommitee) {
+      return res.status(403).json({ error: "Access denied, unauthorized" });
+    }
     const committee = req.query.committee as string;
     const periodId = req.query.periodId as string;
 
