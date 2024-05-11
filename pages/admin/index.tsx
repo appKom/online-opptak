@@ -34,8 +34,9 @@ const Admin = () => {
               " til " +
               formatDate(period.interviewPeriod.end),
             committees: period.committees,
+            link: `/admin/${period._id}`,
           };
-        }),
+        })
       );
     } catch (error) {
       console.error("Failed to fetch application periods:", error);
