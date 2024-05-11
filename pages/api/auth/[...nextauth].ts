@@ -17,8 +17,10 @@ export const authOptions: NextAuthOptions = {
         bgDark: "#fff",
         textDark: "#161b22",
       },
+
       async profile(profile, tokens) {
         const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
+
         const headers = {
           Authorization: `Bearer ${tokens.access_token}`,
         };
@@ -30,7 +32,20 @@ export const authOptions: NextAuthOptions = {
         }
 
         const userInfo = await response.json();
-        // console.log(userInfo);
+
+        const commiteeUrl = `https://old.online.ntnu.no/api/v1/group/online-groups/?members__user=${userInfo.id}`;
+        const committeeResponse = await fetch(commiteeUrl, { headers });
+        if (!committeeResponse.ok)
+          throw new Error("Failed to fetch committees");
+
+        const committeeData = await committeeResponse.json();
+
+        // const committees = committee.results.map((committee: any) => ({
+        //   name: committee.name_short,
+        //   id: committee.id,
+        // }));
+
+        // console.log(committee);
 
         return {
           id: userInfo.id,
@@ -39,6 +54,10 @@ export const authOptions: NextAuthOptions = {
           email: userInfo.email,
           //phone: userInfo.phone_number,
           //grade: userInfo.year,
+          committees: committeeData.results.map((committee: any) =>
+            committee.name_short.toLowerCase()
+          ),
+          isCommitee: userInfo.is_committee,
         };
       },
     }),
@@ -55,6 +74,8 @@ export const authOptions: NextAuthOptions = {
         token.phone = user.phone;
         token.grade = user.grade;
         token.subId = user.subId;
+        token.committees = user.committees;
+        token.isCommitee = user.isCommitee;
         token.role = adminEmails.includes(user.email) ? "admin" : "user";
       }
       return token;
@@ -69,6 +90,8 @@ export const authOptions: NextAuthOptions = {
         session.user.phone = token.phone as string;
         session.user.grade = token.grade as number;
         session.user.id = token.id as string;
+        session.user.committees = token.committees as string[];
+        session.user.isCommitee = token.isCommitee as boolean;
       }
       return session;
     },

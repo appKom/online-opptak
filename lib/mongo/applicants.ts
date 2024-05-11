@@ -74,6 +74,21 @@ export const getApplication = async (
   }
 };
 
+export const getApplications = async (periodId: string) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants
+      .find({ periodId: periodId }) // No ObjectId conversion needed
+      .toArray();
+
+    return { applications: result, exists: result.length > 0 };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch applications" };
+  }
+};
+
 export const deleteApplication = async (
   owId: string,
   periodId: string | ObjectId

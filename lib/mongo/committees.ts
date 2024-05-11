@@ -48,13 +48,13 @@ export const getCommittee = async (id: string) => {
 
 export const updateAvailableTimes = async (
   id: string,
-  times: [{ start: string; end: string }],
+  times: [{ start: string; end: string }]
 ) => {
   try {
     if (!committees) await init();
     const result = await committees.updateOne(
       { _id: new ObjectId(id) },
-      { $set: { availableTimes: times } },
+      { $set: { availableTimes: times } }
     );
     if (result.matchedCount > 0) {
       return { message: "Available times updated successfully" };
@@ -70,7 +70,6 @@ export const createCommittee = async (committeeData: commiteeType) => {
   try {
     if (!committees) await init();
 
-    // Parse committeeData if it's a string
     const parsedCommitteeData =
       typeof committeeData === "string"
         ? JSON.parse(committeeData)
@@ -91,5 +90,40 @@ export const createCommittee = async (committeeData: commiteeType) => {
     }
   } catch (error) {
     return { error: "Failed to create committee" };
+  }
+};
+export const deleteCommittee = async (committee: string, periodId: string) => {
+  try {
+    if (!committees) await init();
+
+    let validPeriodId = periodId;
+    if (typeof periodId === "string") {
+      if (!ObjectId.isValid(periodId)) {
+        console.error("Invalid ObjectId:", periodId);
+        return { error: "Invalid ObjectId format" };
+      }
+      validPeriodId = periodId;
+    }
+
+    const count = await committees.countDocuments({
+      committee: committee,
+      periodId: validPeriodId,
+    });
+    if (count === 0) {
+      return { error: "Committee not found or already deleted" };
+    }
+
+    const result = await committees.deleteOne({
+      committee: committee,
+      periodId: validPeriodId,
+    });
+
+    if (result.deletedCount === 1) {
+      return { message: "Committee deleted successfully" };
+    } else {
+      return { error: "Committee not found or already deleted" };
+    }
+  } catch (error) {
+    return { error: "Failed to delete committee" };
   }
 };
