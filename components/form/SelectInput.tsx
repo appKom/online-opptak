@@ -7,13 +7,6 @@ interface Props {
 }
 
 const SelectInput = (props: Props) => {
-  const handleInputChange = (e: React.BaseSyntheticEvent) => {
-    const value = isNaN(e.target.value)
-      ? e.target.value
-      : Number(e.target.value);
-    props.updateInputValues(value);
-  };
-
   return (
     <div className="max-w-xs mx-auto my-6">
       <div className="relative">
@@ -23,10 +16,10 @@ const SelectInput = (props: Props) => {
           required={props.required}
           id="selectComponent"
           defaultValue=""
-          onChange={handleInputChange}
+          onChange={(e) => props.updateInputValues(e)}
         >
           <option value="" disabled>
-            Velg trinn
+            Velg
           </option>
           {props.values.map((option) => (
             <option key={option[1]} value={option[1]}>

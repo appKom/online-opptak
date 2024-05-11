@@ -57,3 +57,16 @@ export type periodType = {
   };
   committees: string[];
 };
+
+export type AvailableTime = {
+  start: string;
+  end: string;
+};
+
+export type committeeInterviewType = {
+  periodId: string;
+  period_name: string;
+  committee: string;
+  availabletimes: AvailableTime[];
+  timeslot: string;
+};
