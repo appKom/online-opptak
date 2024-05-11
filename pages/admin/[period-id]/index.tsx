@@ -75,7 +75,9 @@ const Admin = () => {
     const committeeMatch =
       !selectedCommittee ||
       [first, second, third].some(
-        (pref) => pref && pref.toLowerCase() === selectedCommittee.toLowerCase()
+        (pref) =>
+          displayPreference(pref).toLowerCase() ===
+          selectedCommittee.toLowerCase()
       );
 
     const nameMatch =
@@ -85,6 +87,16 @@ const Admin = () => {
     return committeeMatch && nameMatch;
   });
 
+  function displayPreference(pref: any) {
+    if (typeof pref === "string") {
+      return pref;
+    }
+    if (pref && typeof pref === "object" && pref.name) {
+      return pref.name;
+    }
+    return "";
+  }
+
   useEffect(() => {}, [applications, committees]);
 
   if (!session || session.user?.role !== "admin") {
@@ -93,7 +105,6 @@ const Admin = () => {
 
   return (
     <div style={{ marginBottom: "50px" }}>
-      <Navbar />
       <div className="flex justify-center">
         {isLoading ? (
           <p className="animate-pulse">Vent litt...</p>
@@ -140,7 +151,7 @@ const Admin = () => {
                     <th className="p-2 border">2. Komitee</th>
                     <th className="p-2 border">3. Komitee</th>
                     <th className="p-2 border">Dato</th>
-                    <th className="p-2 border">Klasse</th>
+                    <th className="p-2 border">Kalasse</th>
                     <th className="p-2 border">Telefon</th>
                   </tr>
                 </thead>
@@ -149,14 +160,15 @@ const Admin = () => {
                     <tr key={index}>
                       <td className="p-2 border">{applicant.name}</td>
                       <td className="p-2 border">
-                        {applicant.preferences.first}
+                        {displayPreference(applicant.preferences.first)}
                       </td>
                       <td className="p-2 border">
-                        {applicant.preferences.second}
+                        {displayPreference(applicant.preferences.second)}
                       </td>
                       <td className="p-2 border">
-                        {applicant.preferences.third}
+                        {displayPreference(applicant.preferences.third)}
                       </td>
+
                       <td className="p-2 border">
                         {new Date(applicant.date).toLocaleDateString()}
                       </td>
