@@ -55,16 +55,15 @@ const Navbar = () => {
             Logget inn som{" "}
             <span className="font-medium">{session.user?.name}</span>
           </div>
-          {!session ||
-            (session.user?.role === "admin" && (
-              <Button
-                title="Admin"
-                color="blue"
-                size="small"
-                icon={<AdminIcon className="w-4 h-4" fill={""} />}
-                onClick={() => router.push("/admin")}
-              />
-            ))}
+          {session.user?.role === "admin" && (
+            <Button
+              title="Admin"
+              color="blue"
+              size="small"
+              icon={<AdminIcon className="w-4 h-4" fill={""} />}
+              onClick={() => router.push("/admin")}
+            />
+          )}
           <Button
             title="Logg ut"
             color="white"
