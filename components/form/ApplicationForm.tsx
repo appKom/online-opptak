@@ -15,7 +15,7 @@ interface Props {
 export const ApplicationForm = (props: Props) => {
   const availableCommittees = [["Ingen", ""]];
   const committeesToDisplay: string[][] = [];
-  const committessToRemove = ["FeminIT", "Fond"];
+  const committessToRemove = ["FeminIT"];
 
   props.availableCommittees.forEach((committee) => {
     if (!availableCommittees.some((item) => item[1] === committee)) {
@@ -174,7 +174,7 @@ export const ApplicationForm = (props: Props) => {
           })
         }
       />
-      {isFeminITAvailable && (
+      {isFeminITAvailable && committeesToDisplay.length > 2 && (
         <RadioInput
           values={[
             ["Ja", "yes"],
