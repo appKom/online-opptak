@@ -38,17 +38,20 @@ const PeriodCard = ({ period }: Props) => {
 
   return (
     <div className="w-full max-w-md mx-auto break-words bg-white rounded-lg shadow">
-      <div className="p-4">
-        <h3 className="text-xl font-medium text-gray-900">{period.name}</h3>
-        <p className="w-full mt-1 text-gray-500">{period.description}</p>
-        <p className="mt-1 text-sm text-gray-500">
-          Søknadsperiode: {formatDateNorwegian(period.applicationPeriod.start)}{" "}
-          - {formatDateNorwegian(period.applicationPeriod.end)}
-        </p>
-        <p className="mt-1 text-sm text-gray-500">
-          Intervjuperiode: {formatDateNorwegian(period.interviewPeriod.start)} -{" "}
-          {formatDateNorwegian(period.interviewPeriod.end)}
-        </p>
+      <div className="p-4 flex flex-col justify-between h-full">
+        <div>
+          <h3 className="text-xl font-medium text-gray-900">{period.name}</h3>
+          <p className="w-full mt-1 text-gray-500">{period.description}</p>
+          <p className="mt-1 text-sm text-gray-500">
+            Søknadsperiode:{" "}
+            {formatDateNorwegian(period.applicationPeriod.start)} -{" "}
+            {formatDateNorwegian(period.applicationPeriod.end)}
+          </p>
+          <p className="mt-1 text-sm text-gray-500">
+            Intervjuperiode: {formatDateNorwegian(period.interviewPeriod.start)}{" "}
+            - {formatDateNorwegian(period.interviewPeriod.end)}
+          </p>
+        </div>
         <div className="flex justify-center mt-4">
           <Button
             onClick={hasApplied ? handleButtonOnClick : handleButtonOnClick}
