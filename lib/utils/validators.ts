@@ -9,7 +9,7 @@ export const isApplicantType = (data: any): data is applicantType => {
     typeof data.name === "string" &&
     typeof data.email === "string" &&
     typeof data.phone === "string" &&
-    typeof data.grade === "number" &&
+    typeof data.grade === "string" &&
     typeof data.about === "string" &&
     typeof data.bankom === "string" &&
     (data.bankom === "yes" ||
