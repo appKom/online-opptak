@@ -30,7 +30,6 @@ export default function Schedule({
   const timeSlots = getTimeSlots(interviewLength);
   const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
   const [selectedCells, setSelectedCells] = useState<TimeSlot[]>([]);
-  const [isoTimeSlots, setIsoTimeSlots] = useState<IsoTimeSlot[]>([]);
 
   const weekdayMap: { [key: string]: number } = {
     Man: 1,
