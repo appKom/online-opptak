@@ -1,7 +1,7 @@
 const ApplicationOverview = ({ application }: { application: any }) => {
   return (
-    <div className="p-4 bg-white shadow rounded-lg">
-      <ul className=" space-y-2">
+    <div className="p-4 bg-white rounded-lg shadow">
+      <ul className="space-y-2 ">
         <li>
           <strong>Navn:</strong>{" "}
           {application.application.name || "Not provided"}

@@ -11,7 +11,7 @@ import CalendarIcon from "../../components/icons/icons/CalendarIcon";
 import { Tabs } from "../../components/Tabs";
 import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
 import { useRouter } from "next/router";
-import ApplicationOverview from "../../components/applicantoverview/application_overview";
+import ApplicationOverview from "../../components/applicantoverview/ApplicationOverview";
 
 const Application: NextPage = () => {
   const { data: session } = useSession();
