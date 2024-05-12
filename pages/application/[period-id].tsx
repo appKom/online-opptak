@@ -194,7 +194,7 @@ const Application: NextPage = () => {
               Du vil få enda en e-post med intervjutider når søknadsperioden er
               over.
             </p>
-            <div className="flex-grid">
+            <div className="flex gap-5">
               <Button
                 title="Trekk tilbake søknad"
                 color="white"
