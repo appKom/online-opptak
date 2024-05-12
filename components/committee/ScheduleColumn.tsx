@@ -5,40 +5,36 @@ import getTimeSlots from "../../utils/getTimeSlots";
 interface Props {
   weekDay: string;
   interviewLength: number;
+  onToggleAvailability: (
+    weekDay: string,
+    time: string,
+    isAvailable: boolean
+  ) => void;
 }
 
-export default function ScheduleColumn(props: Props) {
+export default function ScheduleColumn({
+  weekDay,
+  interviewLength,
+  onToggleAvailability,
+}: Props) {
   const [isDragging, setDragging] = useState(false);
-  const timeSlots = getTimeSlots(props.interviewLength);
-
-  function handleMouseDown(event: React.MouseEvent<HTMLDivElement>) {
-    event.preventDefault();
-    setDragging(true);
-  }
-
-  function handleMouseUp(event: React.MouseEvent<HTMLDivElement>) {
-    event.preventDefault();
-    setDragging(false);
-  }
-
-  function handleMouseLeave() {
-    setDragging(false);
-  }
+  const timeSlots = getTimeSlots(interviewLength);
 
   return (
     <div
       className="w-12 border-l border-gray-500 sm:w-24 md:w-28 lg:w-32 xl:w-36"
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseLeave}
+      onMouseDown={() => setDragging(true)}
+      onMouseUp={() => setDragging(false)}
+      onMouseLeave={() => setDragging(false)}
     >
-      <div className="flex justify-center">{props.weekDay}</div>
+      <div className="flex justify-center">{weekDay}</div>
       {timeSlots.map((time, index) => (
         <ScheduleCell
-          interviewLength={props.interviewLength}
-          isDragging={isDragging}
-          weekDay={props.weekDay}
+          weekDay={weekDay}
           time={time}
+          interviewLength={interviewLength}
+          isDragging={isDragging}
+          onToggleAvailability={onToggleAvailability}
           key={index}
         />
       ))}

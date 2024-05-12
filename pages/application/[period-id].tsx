@@ -205,7 +205,10 @@ const Application: NextPage = () => {
                 icon: <CalendarIcon className="w-5 h-5" />,
                 content: (
                   <div className="flex flex-col items-center justify-center">
-                    <Schedule interviewLength={Number(30)} />
+                    <Schedule
+                      interviewLength={Number(30)}
+                      periodTime={period?.interviewPeriod}
+                    />
                     <div className="flex justify-center w-full mt-10">
                       <Button
                         title="Send inn søknad"

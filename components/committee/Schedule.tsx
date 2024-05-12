@@ -1,13 +1,118 @@
 import ScheduleColumn from "./ScheduleColumn";
 import getTimeSlots from "../../utils/getTimeSlots";
+import { useState } from "react";
 
 interface Props {
   interviewLength: number;
+  periodTime: any;
 }
 
-export default function Schedule(props: Props) {
-  const timeSlots = getTimeSlots(props.interviewLength);
+interface TimeSlot {
+  weekDay: string;
+  time: string;
+  available: boolean;
+}
+
+interface IsoTimeSlot {
+  start: string;
+  end: string;
+}
+
+export default function Schedule({ interviewLength, periodTime }: Props) {
+  const timeSlots = getTimeSlots(interviewLength);
   const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
+  const [selectedCells, setSelectedCells] = useState<TimeSlot[]>([]);
+  const [isoTimeSlots, setIsoTimeSlots] = useState<IsoTimeSlot[]>([]);
+
+  const weekdayMap: { [key: string]: number } = {
+    Man: 1,
+    Tir: 2,
+    Ons: 3,
+    Tor: 4,
+    Fre: 5,
+  };
+  const convertToIso = (weekDay: string, timeSlot: string): IsoTimeSlot => {
+    const dayOffset = weekdayMap[weekDay];
+    const periodStart = new Date(periodTime.start);
+    const weekdayDate = new Date(periodStart);
+    weekdayDate.setDate(weekdayDate.getDate() + dayOffset);
+
+    const [startTimeStr, endTimeStr] = timeSlot.split(" - ");
+    const startTime = new Date(
+      weekdayDate.getFullYear(),
+      weekdayDate.getMonth(),
+      weekdayDate.getDate(),
+      ...parseTime(startTimeStr)
+    );
+    const endTime = new Date(
+      weekdayDate.getFullYear(),
+      weekdayDate.getMonth(),
+      weekdayDate.getDate(),
+      ...parseTime(endTimeStr)
+    );
+
+    return {
+      start: startTime.toISOString(),
+      end: endTime.toISOString(),
+    };
+  };
+
+  const parseTime = (time: string): [number, number] => {
+    const [timeStr, period] = time.split(" ");
+    let [hour, minute] = timeStr.split(":").map(Number);
+
+    if (period === "PM" && hour !== 12) {
+      hour += 12;
+    } else if (period === "AM" && hour === 12) {
+      hour = 0;
+    }
+
+    return [hour, minute];
+  };
+
+  const exportSchedule = () => {
+    const selectedSet = new Set(
+      selectedCells.map((cell) => `${cell.weekDay}-${cell.time}`)
+    );
+
+    const dataToSend: { weekDay: string; time: string }[] = [];
+    weekDays.forEach((weekDay) => {
+      timeSlots.forEach((time) => {
+        const slotKey = `${weekDay}-${time}`;
+        if (!selectedSet.has(slotKey)) {
+          dataToSend.push({ weekDay, time });
+        }
+      });
+    });
+
+    const isoTimeSlots = dataToSend.map((slot) =>
+      convertToIso(slot.weekDay, slot.time)
+    );
+
+    console.log("ISO Data to Send:", isoTimeSlots);
+    setIsoTimeSlots(isoTimeSlots);
+  };
+
+  const handleToggleAvailability = (
+    weekDay: string,
+    time: string,
+    available: boolean
+  ) => {
+    setSelectedCells((prevCells) => {
+      const index = prevCells.findIndex(
+        (cell) => cell.weekDay === weekDay && cell.time === time
+      );
+      const updatedCell = { weekDay, time, available };
+
+      if (index !== -1) {
+        const newCells = [...prevCells];
+        newCells[index] = updatedCell;
+        return newCells;
+      } else {
+        return [...prevCells, updatedCell];
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col items-center">
@@ -56,11 +161,13 @@ export default function Schedule(props: Props) {
         {weekDays.map((weekDay, index) => (
           <ScheduleColumn
             weekDay={weekDay}
-            interviewLength={props.interviewLength}
+            interviewLength={interviewLength}
+            onToggleAvailability={handleToggleAvailability}
             key={index}
           />
         ))}
       </div>
+      <button onClick={exportSchedule}>Export Schedule</button>
     </div>
   );
 }
