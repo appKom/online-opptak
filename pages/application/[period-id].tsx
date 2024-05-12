@@ -208,6 +208,8 @@ const Application: NextPage = () => {
                     <Schedule
                       interviewLength={Number(30)}
                       periodTime={period?.interviewPeriod}
+                      setApplicationData={setApplicationData}
+                      applicationData={applicationData}
                     />
                     <div className="flex justify-center w-full mt-10">
                       <Button

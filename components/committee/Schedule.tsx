@@ -1,10 +1,13 @@
 import ScheduleColumn from "./ScheduleColumn";
 import getTimeSlots from "../../utils/getTimeSlots";
 import { useState } from "react";
+import { DeepPartial, applicantType } from "../../lib/types/types";
 
 interface Props {
   interviewLength: number;
   periodTime: any;
+  setApplicationData: Function;
+  applicationData: DeepPartial<applicantType>;
 }
 
 interface TimeSlot {
@@ -18,7 +21,12 @@ interface IsoTimeSlot {
   end: string;
 }
 
-export default function Schedule({ interviewLength, periodTime }: Props) {
+export default function Schedule({
+  interviewLength,
+  periodTime,
+  setApplicationData,
+  applicationData,
+}: Props) {
   const timeSlots = getTimeSlots(interviewLength);
   const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
   const [selectedCells, setSelectedCells] = useState<TimeSlot[]>([]);
@@ -85,12 +93,13 @@ export default function Schedule({ interviewLength, periodTime }: Props) {
       });
     });
 
-    const isoTimeSlots = dataToSend.map((slot) =>
+    const isoTimeSlotsForExport = dataToSend.map((slot) =>
       convertToIso(slot.weekDay, slot.time)
     );
-
-    console.log("ISO Data to Send:", isoTimeSlots);
-    setIsoTimeSlots(isoTimeSlots);
+    setApplicationData({
+      ...applicationData,
+      selectedTimes: isoTimeSlotsForExport,
+    });
   };
 
   const handleToggleAvailability = (
@@ -104,13 +113,35 @@ export default function Schedule({ interviewLength, periodTime }: Props) {
       );
       const updatedCell = { weekDay, time, available };
 
+      let newCells;
       if (index !== -1) {
-        const newCells = [...prevCells];
+        newCells = [...prevCells];
         newCells[index] = updatedCell;
-        return newCells;
       } else {
-        return [...prevCells, updatedCell];
+        newCells = [...prevCells, updatedCell];
       }
+      const selectedSet = new Set(
+        newCells.map((cell) => `${cell.weekDay}-${cell.time}`)
+      );
+      const dataToSend: { weekDay: string; time: string }[] = [];
+      weekDays.forEach((day) => {
+        timeSlots.forEach((slot) => {
+          const slotKey = `${day}-${slot}`;
+          if (!selectedSet.has(slotKey)) {
+            dataToSend.push({ weekDay: day, time: slot });
+          }
+        });
+      });
+
+      const isoTimeSlotsForExport = dataToSend.map((slot) =>
+        convertToIso(slot.weekDay, slot.time)
+      );
+      setApplicationData({
+        ...applicationData,
+        selectedTimes: isoTimeSlotsForExport,
+      });
+
+      return newCells;
     });
   };
 
@@ -167,7 +198,6 @@ export default function Schedule({ interviewLength, periodTime }: Props) {
           />
         ))}
       </div>
-      <button onClick={exportSchedule}>Export Schedule</button>
     </div>
   );
 }
