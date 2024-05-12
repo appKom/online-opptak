@@ -1,8 +1,6 @@
-import { applicantType } from "../types/types";
+import { applicantType, commiteeType } from "../types/types";
 
 export const isApplicantType = (data: any): data is applicantType => {
-  console.log("data");
-  console.log(data);
   // Check for each basic property type
   const hasBasicFields =
     typeof data.owId === "string" &&
@@ -45,4 +43,19 @@ export const isApplicantType = (data: any): data is applicantType => {
   // Combine all checks to determine if the data conforms to the applicantType
   return hasBasicFields && hasPreferencesFields /* && hasSelectedTimesFields */;
   // TODO: Uncomment the last check when the selectedTimes field is added to the applicantType
+};
+
+export const isCommitteeType = (data: any): data is commiteeType => {
+  console.log(data);
+  const hasBasicFields =
+    typeof data.period_name === "string" &&
+    typeof data.committee === "string" &&
+    typeof data.timeslot === "string" &&
+    Array.isArray(data.availabletimes) &&
+    data.availabletimes.every(
+      (time: { start: string; end: string }) =>
+        typeof time.start === "string" && typeof time.end === "string"
+    );
+
+  return hasBasicFields;
 };
