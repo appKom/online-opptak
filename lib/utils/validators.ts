@@ -1,4 +1,4 @@
-import { applicantType, commiteeType } from "../types/types";
+import { applicantType, commiteeType, periodType } from "../types/types";
 
 export const isApplicantType = (data: any): data is applicantType => {
   // Check for each basic property type
@@ -55,6 +55,54 @@ export const isCommitteeType = (data: any): data is commiteeType => {
     data.availabletimes.every(
       (time: { start: string; end: string }) =>
         typeof time.start === "string" && typeof time.end === "string"
+    );
+
+  return hasBasicFields;
+};
+export const isPeriodType = (data: any): data is periodType => {
+  const isDateString = (str: any): boolean => {
+    return typeof str === "string" && !isNaN(Date.parse(str));
+  };
+
+  const isValidPeriod = (period: any): boolean => {
+    return (
+      typeof period === "object" &&
+      period !== null &&
+      isDateString(period.start) &&
+      isDateString(period.end)
+    );
+  };
+
+  const isChronological = (start: string, end: string): boolean => {
+    return new Date(start) <= new Date(end);
+  };
+
+  const arePeriodsValid = (
+    preparationPeriod: any,
+    applicationPeriod: any,
+    interviewPeriod: any
+  ): boolean => {
+    return (
+      isChronological(preparationPeriod.start, preparationPeriod.end) &&
+      isChronological(applicationPeriod.start, applicationPeriod.end) &&
+      isChronological(interviewPeriod.start, interviewPeriod.end) &&
+      new Date(preparationPeriod.end) <= new Date(applicationPeriod.start) &&
+      new Date(applicationPeriod.end) <= new Date(interviewPeriod.start)
+    );
+  };
+
+  const hasBasicFields =
+    typeof data.name === "string" &&
+    typeof data.description === "string" &&
+    isValidPeriod(data.preparationPeriod) &&
+    isValidPeriod(data.applicationPeriod) &&
+    isValidPeriod(data.interviewPeriod) &&
+    Array.isArray(data.committees) &&
+    data.committees.every((committee: any) => typeof committee === "string") &&
+    arePeriodsValid(
+      data.preparationPeriod,
+      data.applicationPeriod,
+      data.interviewPeriod
     );
 
   return hasBasicFields;
