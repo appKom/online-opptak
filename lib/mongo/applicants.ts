@@ -26,6 +26,15 @@ export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
+    const existingApplicant = await applicants.findOne({
+      owId: applicantData.owId,
+      periodId: applicantData.periodId,
+    });
+
+    if (existingApplicant) {
+      return { error: "409 Application already exists for this period" };
+    }
+
     const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
       const insertedApplicant = await applicants.findOne({
@@ -64,7 +73,7 @@ export const getApplication = async (
 
     const result = await applicants.findOne({
       owId: id,
-      periodId: new ObjectId(periodId),
+      periodId: periodId,
     });
 
     return { application: result, exists: !!result };
@@ -98,7 +107,7 @@ export const deleteApplication = async (
 
     const result = await applicants.deleteOne({
       owId: owId,
-      periodId: new ObjectId(periodId),
+      periodId: periodId,
     });
 
     if (result.deletedCount === 1) {
