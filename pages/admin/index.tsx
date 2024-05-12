@@ -1,5 +1,4 @@
 import { useSession } from "next-auth/react";
-import Navbar from "../../components/Navbar";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
 import { useRouter } from "next/router";
@@ -34,8 +33,9 @@ const Admin = () => {
               " til " +
               formatDate(period.interviewPeriod.end),
             committees: period.committees,
+            link: `/admin/${period._id}`,
           };
-        }),
+        })
       );
     } catch (error) {
       console.error("Failed to fetch application periods:", error);
@@ -59,7 +59,6 @@ const Admin = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center justify-center py-5">
         <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
           Opptaksperioder

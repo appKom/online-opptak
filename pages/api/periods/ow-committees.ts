@@ -19,7 +19,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let groups = [];
     let page = 1;
     let hasMorePages = true;
-    const excludedCommitteeNames = ["HS", "Komiteledere", "Pangkom", "Bankom"];
+    const excludedCommitteeNames = [
+      "HS",
+      "Komiteledere",
+      "Pangkom",
+      "Bankom",
+      "Fond",
+    ];
 
     while (hasMorePages) {
       const response = await fetch(`${baseUrl}?page=${page}`);

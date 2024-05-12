@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import ApplicationForm from "../../components/form/ApplicationForm";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
 import { useSession } from "next-auth/react";
 import validator from "validator";
 import toast from "react-hot-toast";
@@ -147,7 +145,6 @@ const Application: NextPage = () => {
 
   return (
     <div>
-      <Navbar />
       <div className="flex flex-col items-center justify-center py-5">
         {periodExists && period && (
           <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
@@ -224,7 +221,6 @@ const Application: NextPage = () => {
           />
         )}
       </div>
-      <Footer />
     </div>
   );
 };

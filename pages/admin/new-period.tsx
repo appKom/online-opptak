@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Button from "../../components/Button";
-import Navbar from "../../components/Navbar";
 import TextInput from "../../components/form/TextInput";
 import { DeepPartial, periodType } from "../../lib/types/types";
 import CheckboxInput from "../../components/form/CheckboxInput";
@@ -134,7 +133,6 @@ const NewPeriod = () => {
 
   return (
     <>
-      <Navbar />
       <div className="flex flex-col items-center justify-center py-5">
         <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
           Ny søknadsperiode
