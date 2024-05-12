@@ -146,7 +146,7 @@ const Admin = () => {
                     <th className="p-2 border">2. Komitee</th>
                     <th className="p-2 border">3. Komitee</th>
                     <th className="p-2 border">Dato</th>
-                    <th className="p-2 border">Kalasse</th>
+                    <th className="p-2 border">Trinn</th>
                     <th className="p-2 border">Telefon</th>
                   </tr>
                 </thead>
