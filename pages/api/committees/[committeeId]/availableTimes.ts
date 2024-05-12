@@ -1,7 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { updateAvailableTimes } from "../../../../lib/mongo/committees";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]";
+import { hasSession } from "../../../../lib/utils/apiChecks";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const session = await getServerSession(req, res, authOptions);
+
+  if (!hasSession(res, session)) return;
+
+  // TODO: check if in committee
+
   const { committeeId } = req.query;
 
   if (typeof committeeId !== "string") {

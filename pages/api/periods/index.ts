@@ -3,16 +3,15 @@ import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { periodType } from "../../../lib/types/types";
 import { createPeriod, getPeriods } from "../../../lib/mongo/periods";
+import { hasSession, isAdmin } from "../../../lib/utils/apiChecks";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session) {
-    return res.status(403).json({ error: "Access denied, no session" });
-  }
+  if (!hasSession(res, session)) return;
 
   try {
-    if (req.method === "GET") { 
+    if (req.method === "GET") {
       const { periods, error } = await getPeriods();
 
       if (error) throw new Error(error);
@@ -21,9 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "POST") {
-      if (session.user?.role !== "admin") {
-        return res.status(403).json({ error: "Access denied, unauthorized" });
-      }
+      if (!isAdmin(res, session)) return;
       const period = req.body as periodType;
 
       const { error } = await createPeriod(period);

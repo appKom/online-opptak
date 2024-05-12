@@ -5,13 +5,16 @@ import {
 } from "../../../../lib/mongo/applicants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
+import {
+  hasSession,
+  isAdmin,
+  checkOwId,
+} from "../../../../lib/utils/apiChecks";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session) {
-    return res.status(403).json({ error: "Access denied, no session" });
-  }
+  if (!hasSession(res, session)) return;
 
   const id = req.query.id;
   const periodId = req.query["period-id"];
@@ -20,9 +23,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: "Invalid format" });
   }
 
-  if (session?.user?.role !== "admin" && session.user?.owId !== id) {
-    return res.status(403).json({ error: "Access denied, unauthorized" });
-  }
+  if (!isAdmin(res, session)) return;
+  if (!checkOwId(res, session, id)) return;
 
   try {
     if (req.method === "GET") {

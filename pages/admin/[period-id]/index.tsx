@@ -1,13 +1,14 @@
 import { useSession } from "next-auth/react";
-import Navbar from "../../../components/Navbar";
 import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
 
 const Admin = () => {
-  const { data: session } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
   const periodId = router.query["period-id"];
+
+  const { data: session } = useSession();
+
+  const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState<periodType>();
 
   const [applications, setApplications] = useState<applicantType[] | null>(
@@ -23,9 +24,6 @@ const Admin = () => {
 
   useEffect(() => {
     const fetchPeriod = async () => {
-      if (!session || session.user?.role !== "admin") {
-        return;
-      }
       if (periodId === undefined) return;
       setIsLoading(true);
       try {
@@ -45,9 +43,6 @@ const Admin = () => {
     };
 
     const fetchApplications = async () => {
-      if (!session || session.user?.role !== "admin") {
-        return;
-      }
       if (periodId === undefined) return;
       setIsLoading(true);
       try {

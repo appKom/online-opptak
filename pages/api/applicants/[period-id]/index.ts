@@ -1,18 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  deleteApplication,
-  getApplication,
-  getApplications,
-} from "../../../../lib/mongo/applicants";
+import { getApplications } from "../../../../lib/mongo/applicants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
+import { hasSession, isAdmin } from "../../../../lib/utils/apiChecks";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!session) {
-    return res.status(403).json({ error: "Access denied, no session" });
-  }
+  if (!hasSession(res, session)) return;
 
   const periodId = req.query["period-id"];
 
@@ -20,9 +15,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: "Invalid format" });
   }
 
-  if (session?.user?.role !== "admin") {
-    return res.status(403).json({ error: "Access denied, unauthorized" });
-  }
+  if (!isAdmin(res, session)) return;
 
   try {
     if (req.method === "GET") {
