@@ -7,6 +7,7 @@ import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
 import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
+import CommitteeIcon from "./icons/icons/CommitteeIcon";
 
 const Navbar = () => {
   const router = useRouter();
@@ -58,11 +59,22 @@ const Navbar = () => {
           {session.user?.role === "admin" && (
             <Button
               title="Admin"
-              color="blue"
+              color="orange"
               size="small"
               icon={<AdminIcon className="w-4 h-4" fill={""} />}
               onClick={() => router.push("/admin")}
             />
+          )}
+          {session?.user?.isCommitee && ( //Sjekker hvorvidt man er i en komite
+            <div className="flex flex-col gap-20 ">
+              <Button
+                title="For komiteer"
+                color="blue"
+                size="small"
+                icon={<CommitteeIcon className="w-4 h-4" fill={""} />}
+                onClick={() => router.push("/committee")}
+              />
+            </div>
           )}
           <Button
             title="Logg ut"
