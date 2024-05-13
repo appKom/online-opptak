@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { Router } from "next/router";
 
 export default function CreateEvent({ closeModal }: any) {
   const [name, setName] = useState("");
@@ -44,13 +45,12 @@ export default function CreateEvent({ closeModal }: any) {
       eventPassword: showPasswordInput ? "password" : "",
     };
 
-    console.log(periodData);
-
     try {
       const response = await axios.post("/api/periods", periodData);
       if (response.status === 201) {
         console.log("Period created successfully");
         closeModal();
+        Router.push("/events");
       } else {
         setError("Failed to create the period.");
       }

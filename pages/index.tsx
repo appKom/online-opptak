@@ -1,41 +1,83 @@
-"use client";
-import Image from "next/image";
-import Navbar from "../components/navbar";
-import Button from "../components/button";
-import { useState } from "react";
-import CreateEvent from "../components/create_event";
+import { useSession } from "next-auth/react";
+import Footer from "../components/Footer";
+import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
+import { useEffect, useState } from "react";
+import { periodType } from "../lib/types/types";
+import { useRouter } from "next/router";
+import PeriodCard from "../components/PeriodCard";
+import Button from "../components/Button";
 
-export default function Home() {
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const Home = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [currentPeriods, setCurrentPeriods] = useState([]);
 
-  const openModal = () => setIsModalVisible(true);
-  const closeModal = () => setIsModalVisible(false);
+  useEffect(() => {
+    const fetchPeriods = async () => {
+      try {
+        const res = await fetch("/api/periods");
+        const data = await res.json();
+        const today = new Date();
+
+        setCurrentPeriods(
+          data.periods.filter((period: periodType) => {
+            const startDate = new Date(period.applicationPeriod.start || "");
+            const endDate = new Date(period.applicationPeriod.end || "");
+
+            return startDate <= today && endDate >= today;
+          })
+        );
+      } catch (error) {
+        console.error("Failed to fetch application periods:", error);
+      }
+    };
+
+    fetchPeriods();
+  }, []);
 
   return (
-    <main className="flex flex-col">
-      <div>
-        <div className="flex flex-col p-10 text-center">
-          <h1 className="text-4xl font-bold">Organize and plan events!</h1>
-          <p className="text-lg mt-4 ">
-            {
-              "Choose a date, time, and location for your event. Invite your friends and family to join you. Share your event on social media. Let's meet!"
-            }
-          </p>
-
-          <div className="flex justify-center mt-10">
-            <Image
-              src="/social_icon.svg"
-              alt="Social Icon"
-              width={400}
-              height={400}
+    <div className="flex flex-col justify-between min-h-screen overflow-x-hidden">
+      <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
+        {session ? (
+          currentPeriods.length === 0 ? (
+            <div className="flex flex-col items-center justify-center gap-5">
+              <p className="text-lg">
+                Det er ingen aktive søknadsperioder for øyeblikket, kom tilbake
+                senere!
+              </p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-10">
+              <h3 className="text-xl font-semibold text-center text-online-darkBlue">
+                Nåværende søknadsperioder
+              </h3>
+              <div className="flex flex-row gap-5">
+                {currentPeriods.map((period: periodType, index: number) => (
+                  <PeriodCard key={index} period={period} />
+                ))}
+              </div>
+            </div>
+          )
+        ) : (
+          <div className="flex flex-col items-center justify-center gap-5">
+            <AuthenticationIllustration className="h-52" />
+            <p className="text-lg">
+              Vennligst logg inn for å få tilgang til opptakssystemet
+            </p>
+          </div>
+        )}
+        {session?.user?.isCommitee && currentPeriods.length !== 0 ? ( //Sjekker hvorvidt man er i en komite
+          <div className="flex flex-col gap-20 ">
+            <Button
+              title="Se eller administrer komiteens intervjutider"
+              color="blue"
+              onClick={() => router.push(`/committee/`)}
             />
           </div>
-          <div className="text-center p-10">
-            <Button title="Get Started" color="white" onClick={openModal} />
-          </div>
-        </div>
-        {isModalVisible && <CreateEvent closeModal={closeModal} />}
+        ) : null}
       </div>
-    </main>
+    </div>
   );
-}
+};
+
+export default Home;
