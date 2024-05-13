@@ -64,19 +64,8 @@ export const getCurrentPeriods = async () => {
     const filter = {
       $or: [
         {
-          // Check if current ISO date string is within the preparation period
-          "preparationPeriod.start": { $lte: currentDate },
-          "preparationPeriod.end": { $gte: currentDate },
-        },
-        {
-          // Check if current ISO date string is within the application period
-          "applicationPeriod.start": { $lte: currentDate },
-          "applicationPeriod.end": { $gte: currentDate },
-        },
-        {
-          // Check if current ISO date string is within the interview period
-          "interviewPeriod.start": { $lte: currentDate },
-          "interviewPeriod.end": { $gte: currentDate },
+          "timePeriod.start": { $lte: currentDate },
+          "timePeriod.end": { $gte: currentDate },
         },
       ],
     };
@@ -104,6 +93,7 @@ export const getPeriodById = async (id: string | ObjectId) => {
     if (period) {
       return { exists: true, period };
     } else {
+      console.log("Period not found");
       return { exists: false };
     }
   } catch (error) {

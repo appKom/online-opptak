@@ -5,8 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "../components/navbar";
 
 const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -50,7 +49,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
         <Toaster />
         <Navbar />
         <Component {...pageProps} />
-        <Footer />
       </SessionHandler>
     </SessionProvider>
   );
