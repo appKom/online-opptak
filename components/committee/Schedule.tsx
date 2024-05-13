@@ -28,8 +28,32 @@ export default function Schedule({
   applicationData,
 }: Props) {
   const timeSlots = getTimeSlots(interviewLength);
-  const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
+
   const [selectedCells, setSelectedCells] = useState<TimeSlot[]>([]);
+
+  const getWeekdays = (periodTime: any): string[] => {
+    const startDate = new Date(periodTime.start);
+    startDate.setHours(startDate.getHours() + 2); // Add 2 hours to get to correct timezone
+    const endDate = new Date(periodTime.end);
+    endDate.setHours(endDate.getHours() + 2); // Add 2 hours to get to correct timezone
+    console.log(startDate, endDate);
+    const weekdays: string[] = [];
+    const dayNames = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      const dayIndex = currentDate.getUTCDay();
+      if (dayIndex !== 0 && dayIndex !== 6) {
+        weekdays.push(dayNames[dayIndex]);
+      }
+      currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+    }
+
+    return weekdays;
+  };
+
+  const weekDays = getWeekdays(periodTime);
 
   const weekdayMap: { [key: string]: number } = {
     Man: 1,
