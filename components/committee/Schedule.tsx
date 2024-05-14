@@ -35,22 +35,22 @@ export default function Schedule({
     periodTime: any
   ): { [date: string]: string } => {
     const startDate = new Date(periodTime.start);
-    startDate.setHours(startDate.getHours() + 2); // Adjust to correct timezone
+    startDate.setHours(startDate.getHours() + 2);
     const endDate = new Date(periodTime.end);
-    endDate.setHours(endDate.getHours() + 2); // Adjust to correct timezone
+    endDate.setHours(endDate.getHours() + 2);
     const dates: { [date: string]: string } = {};
     const dayNames = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
 
     let currentDate = new Date(startDate);
 
     while (currentDate <= endDate) {
-      const dayIndex = currentDate.getUTCDay();
+      const dayIndex = currentDate.getDay();
       if (dayIndex !== 0 && dayIndex !== 6) {
         // Exclude Sundays and Saturdays
         const dateStr = currentDate.toISOString().split("T")[0];
         dates[dateStr] = dayNames[dayIndex];
       }
-      currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
     return dates;
@@ -59,13 +59,16 @@ export default function Schedule({
   const convertToIso = (date: string, timeSlot: string): IsoTimeSlot => {
     const [startTimeStr, endTimeStr] = timeSlot.split(" - ");
     const [year, month, day] = date.split("-").map(Number);
+
+    const [startHour, startMinute] = parseTime(startTimeStr);
     const startTime = new Date(
-      year,
-      month - 1,
-      day,
-      ...parseTime(startTimeStr)
+      Date.UTC(year, month - 1, day, startHour, startMinute)
     );
-    const endTime = new Date(year, month - 1, day, ...parseTime(endTimeStr));
+
+    const [endHour, endMinute] = parseTime(endTimeStr);
+    const endTime = new Date(
+      Date.UTC(year, month - 1, day, endHour, endMinute)
+    );
 
     return {
       start: startTime.toISOString(),
