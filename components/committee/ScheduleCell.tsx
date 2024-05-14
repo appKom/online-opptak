@@ -1,12 +1,12 @@
 import { useState, BaseSyntheticEvent } from "react";
 
 interface Props {
-  weekDay: string;
+  date: string;
   time: string;
   interviewLength: number;
   isDragging: boolean;
   onToggleAvailability: (
-    weekDay: string,
+    date: string,
     time: string,
     isAvailable: boolean
   ) => void;
@@ -18,7 +18,7 @@ export default function ScheduleCell(props: Props) {
   const handleToggle = () => {
     setAvailable((prevAvailable) => {
       const newAvailable = !prevAvailable;
-      props.onToggleAvailability(props.weekDay, props.time, newAvailable);
+      props.onToggleAvailability(props.date, props.time, newAvailable);
       return newAvailable;
     });
   };

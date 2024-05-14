@@ -1,6 +1,6 @@
 import ScheduleColumn from "./ScheduleColumn";
 import getTimeSlots from "../../utils/getTimeSlots";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DeepPartial, applicantType } from "../../lib/types/types";
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 interface TimeSlot {
-  weekDay: string;
+  date: string;
   time: string;
   available: boolean;
 }
@@ -31,13 +31,14 @@ export default function Schedule({
 
   const [selectedCells, setSelectedCells] = useState<TimeSlot[]>([]);
 
-  const getWeekdays = (periodTime: any): string[] => {
+  const getDatesWithinPeriod = (
+    periodTime: any
+  ): { [date: string]: string } => {
     const startDate = new Date(periodTime.start);
-    startDate.setHours(startDate.getHours() + 2); // Add 2 hours to get to correct timezone
+    startDate.setHours(startDate.getHours() + 2); // Adjust to correct timezone
     const endDate = new Date(periodTime.end);
-    endDate.setHours(endDate.getHours() + 2); // Add 2 hours to get to correct timezone
-    console.log(startDate, endDate);
-    const weekdays: string[] = [];
+    endDate.setHours(endDate.getHours() + 2); // Adjust to correct timezone
+    const dates: { [date: string]: string } = {};
     const dayNames = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
 
     let currentDate = new Date(startDate);
@@ -45,42 +46,26 @@ export default function Schedule({
     while (currentDate <= endDate) {
       const dayIndex = currentDate.getUTCDay();
       if (dayIndex !== 0 && dayIndex !== 6) {
-        weekdays.push(dayNames[dayIndex]);
+        // Exclude Sundays and Saturdays
+        const dateStr = currentDate.toISOString().split("T")[0];
+        dates[dateStr] = dayNames[dayIndex];
       }
       currentDate.setUTCDate(currentDate.getUTCDate() + 1);
     }
 
-    return weekdays;
+    return dates;
   };
 
-  const weekDays = getWeekdays(periodTime);
-
-  const weekdayMap: { [key: string]: number } = {
-    Man: 1,
-    Tir: 2,
-    Ons: 3,
-    Tor: 4,
-    Fre: 5,
-  };
-  const convertToIso = (weekDay: string, timeSlot: string): IsoTimeSlot => {
-    const dayOffset = weekdayMap[weekDay];
-    const periodStart = new Date(periodTime.start);
-    const weekdayDate = new Date(periodStart);
-    weekdayDate.setDate(weekdayDate.getDate() + dayOffset);
-
+  const convertToIso = (date: string, timeSlot: string): IsoTimeSlot => {
     const [startTimeStr, endTimeStr] = timeSlot.split(" - ");
+    const [year, month, day] = date.split("-").map(Number);
     const startTime = new Date(
-      weekdayDate.getFullYear(),
-      weekdayDate.getMonth(),
-      weekdayDate.getDate(),
+      year,
+      month - 1,
+      day,
       ...parseTime(startTimeStr)
     );
-    const endTime = new Date(
-      weekdayDate.getFullYear(),
-      weekdayDate.getMonth(),
-      weekdayDate.getDate(),
-      ...parseTime(endTimeStr)
-    );
+    const endTime = new Date(year, month - 1, day, ...parseTime(endTimeStr));
 
     return {
       start: startTime.toISOString(),
@@ -101,64 +86,65 @@ export default function Schedule({
     return [hour, minute];
   };
 
-  const exportSchedule = () => {
-    const selectedSet = new Set(
-      selectedCells.map((cell) => `${cell.weekDay}-${cell.time}`)
-    );
+  useEffect(() => {
+    const dates = getDatesWithinPeriod(periodTime);
+    const allAvailableTimes: { date: string; time: string }[] = [];
 
-    const dataToSend: { weekDay: string; time: string }[] = [];
-    weekDays.forEach((weekDay) => {
+    Object.keys(dates).forEach((date) => {
       timeSlots.forEach((time) => {
-        const slotKey = `${weekDay}-${time}`;
-        if (!selectedSet.has(slotKey)) {
-          dataToSend.push({ weekDay, time });
-        }
+        allAvailableTimes.push({ date, time });
       });
     });
 
-    const isoTimeSlotsForExport = dataToSend.map((slot) =>
-      convertToIso(slot.weekDay, slot.time)
+    const isoTimeSlotsForExport = allAvailableTimes.map((slot) =>
+      convertToIso(slot.date, slot.time)
     );
+
     setApplicationData({
       ...applicationData,
       selectedTimes: isoTimeSlotsForExport,
     });
-  };
+  }, []);
 
   const handleToggleAvailability = (
-    weekDay: string,
+    date: string,
     time: string,
     available: boolean
   ) => {
     setSelectedCells((prevCells) => {
       const index = prevCells.findIndex(
-        (cell) => cell.weekDay === weekDay && cell.time === time
+        (cell) => cell.date === date && cell.time === time
       );
-      const updatedCell = { weekDay, time, available };
 
       let newCells;
       if (index !== -1) {
         newCells = [...prevCells];
-        newCells[index] = updatedCell;
+        newCells[index] = { date, time, available };
       } else {
-        newCells = [...prevCells, updatedCell];
+        newCells = [...prevCells, { date, time, available }];
       }
+
       const selectedSet = new Set(
-        newCells.map((cell) => `${cell.weekDay}-${cell.time}`)
+        newCells
+          .filter((cell) => !cell.available)
+          .map((cell) => `${cell.date}-${cell.time}`)
       );
-      const dataToSend: { weekDay: string; time: string }[] = [];
-      weekDays.forEach((day) => {
+
+      const dates = getDatesWithinPeriod(periodTime);
+      const dataToSend: { date: string; time: string }[] = [];
+      Object.keys(dates).forEach((date) => {
         timeSlots.forEach((slot) => {
-          const slotKey = `${day}-${slot}`;
+          const slotKey = `${date}-${slot}`;
           if (!selectedSet.has(slotKey)) {
-            dataToSend.push({ weekDay: day, time: slot });
+            dataToSend.push({ date, time: slot });
           }
         });
       });
 
       const isoTimeSlotsForExport = dataToSend.map((slot) =>
-        convertToIso(slot.weekDay, slot.time)
+        convertToIso(slot.date, slot.time)
       );
+
       setApplicationData({
         ...applicationData,
         selectedTimes: isoTimeSlotsForExport,
@@ -167,6 +153,8 @@ export default function Schedule({
       return newCells;
     });
   };
+
+  const dates = getDatesWithinPeriod(periodTime);
 
   return (
     <div className="flex flex-col items-center">
@@ -212,9 +200,10 @@ export default function Schedule({
             </div>
           ))}
         </div>
-        {weekDays.map((weekDay, index) => (
+        {Object.keys(dates).map((date, index) => (
           <ScheduleColumn
-            weekDay={weekDay}
+            date={date}
+            weekDay={dates[date]}
             interviewLength={interviewLength}
             onToggleAvailability={handleToggleAvailability}
             key={index}

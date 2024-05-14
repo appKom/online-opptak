@@ -3,16 +3,18 @@ import { useState } from "react";
 import getTimeSlots from "../../utils/getTimeSlots";
 
 interface Props {
+  date: string;
   weekDay: string;
   interviewLength: number;
   onToggleAvailability: (
-    weekDay: string,
+    date: string,
     time: string,
     isAvailable: boolean
   ) => void;
 }
 
 export default function ScheduleColumn({
+  date,
   weekDay,
   interviewLength,
   onToggleAvailability,
@@ -30,7 +32,7 @@ export default function ScheduleColumn({
       <div className="flex justify-center">{weekDay}</div>
       {timeSlots.map((time, index) => (
         <ScheduleCell
-          weekDay={weekDay}
+          date={date}
           time={time}
           interviewLength={interviewLength}
           isDragging={isDragging}
