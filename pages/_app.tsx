@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { ThemeProvider } from "../styles/darkmode/theme-context";
+import GlobalStyle from "../styles/darkmode/global-styles";
 
 const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -42,16 +44,19 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
 function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
   return (
     <SessionProvider session={session}>
-      <Head>
-        <link rel="icon" href="/Online_hvit_o.svg" />
-        <title>Online Komitéopptak</title>
-      </Head>
-      <SessionHandler>
-        <Toaster />
-        <Navbar />
-        <Component {...pageProps} />
-        <Footer />
-      </SessionHandler>
+      <ThemeProvider>
+        <Head>
+          <link rel="icon" href="/Online_hvit_o.svg" />
+          <title>Online Komitéopptak</title>
+        </Head>
+        <SessionHandler>
+          <Toaster />
+          <Navbar />
+          <GlobalStyle />
+          <Component {...pageProps} />
+          <Footer />
+        </SessionHandler>
+      </ThemeProvider>
     </SessionProvider>
   );
 }

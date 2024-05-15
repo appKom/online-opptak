@@ -7,10 +7,13 @@ import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
 import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
+import ThemeToggle from "./ThemeToggle";
+import { useTheme } from "../styles/darkmode/theme-context";
 
 const Navbar = () => {
   const router = useRouter();
   const { data: session } = useSession();
+  const { theme } = useTheme();
 
   const handleLogout = () => {
     signOut();
@@ -25,16 +28,20 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex justify-between w-full px-5 py-5 text--online-white sm:items-center border-b-[1px] border-gray-200">
+    <div
+      className={`flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] ${
+        theme === "dark" ? "border-gray-600" : "border-gray-200"
+      }`}
+    >
       <Link href="/" passHref>
         <a
           className={isLinkActive("/") ? "active" : ""}
           aria-label="Online logo"
         >
           <Image
-            src="/Online_bla.svg"
-            width={100}
-            height={30}
+            src={theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg"}
+            width={100 * 1.5}
+            height={30 * 1.5}
             alt="Online logo"
             className="transition-all cursor-pointer hover:opacity-60"
           />
@@ -50,8 +57,16 @@ const Navbar = () => {
           onClick={handleLogin}
         />
       ) : (
-        <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal">
-          <div className="text-right">
+        <div
+          className={`flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center ${
+            theme === "dark" ? "text-white" : "text-online-darkTeal"
+          }`}
+        >
+          <div
+            className={`text-right ${
+              theme === "dark" ? "text-white" : "text-online-darkTeal"
+            }`}
+          >
             Logget inn som{" "}
             <span className="font-medium">{session.user?.name}</span>
           </div>
@@ -71,6 +86,7 @@ const Navbar = () => {
             icon={<LogOutIcon className="w-4 h-4" />}
             onClick={handleLogout}
           />
+          <ThemeToggle />
         </div>
       )}
     </div>

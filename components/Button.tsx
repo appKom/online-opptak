@@ -1,3 +1,5 @@
+import { useTheme } from "../styles/darkmode/theme-context";
+
 interface Props {
   title: string;
   color: "blue" | "white";
@@ -7,15 +9,20 @@ interface Props {
 }
 
 const Button = (props: Props) => {
+  const { theme } = useTheme();
   let colorClasses = "";
   let sizeClasses = "";
 
   if (props.color === "blue") {
     colorClasses =
-      "bg-online-darkTeal text-online-snowWhite hover:text-online-orange";
+      theme === "dark"
+        ? "bg-gray-900 text-online-snowWhite hover:text-online-orange"
+        : "bg-online-darkTeal text-online-snowWhite hover:text-online-orange";
   } else if (props.color === "white") {
     colorClasses =
-      "hover:border-online-orange bg-online-white text-online-darkTeal hover:text-online-orange border";
+      theme === "dark"
+        ? "hover:border-online-orange bg-online-black text-white hover:text-online-orange border"
+        : "hover:border-online-orange bg-online-white text-online-darkTeal hover:text-online-orange border";
   }
 
   if (props.size === "small") {

@@ -1,3 +1,5 @@
+import { useTheme } from "../../styles/darkmode/theme-context";
+
 interface Props {
   updateInputValues: Function;
   label: string;
@@ -5,9 +7,12 @@ interface Props {
 }
 
 const TextAreaInput = (props: Props) => {
+  const { theme } = useTheme();
+
   const handleInputChange = (e: HTMLTextAreaElement) => {
     props.updateInputValues(e.value);
   };
+
   return (
     <div className="justify-center w-full max-w-xs mx-auto my-6">
       <div className="relative">
@@ -16,7 +21,11 @@ const TextAreaInput = (props: Props) => {
           rows={6}
           id="textAreaComponent"
           placeholder={props.placeholder}
-          className="block w-full px-3 py-2 m-0 text-base font-normal text-gray-700 transition ease-in-out bg-white border border-gray-300 rounded shadow-sm peer bg-clip-padding focus:text-gray-700 focus:outline-none placeholder:text-sm"
+          className={`block w-full px-3 py-2 m-0 text-base font-normal transition ease-in-out border rounded shadow-sm peer bg-clip-padding focus:outline-none placeholder:text-sm ${
+            theme === "dark"
+              ? "bg-gray-800 text-white border-gray-700"
+              : "bg-white text-gray-700 border-gray-300"
+          }`}
           onChange={(e) => {
             handleInputChange(e.target);
           }}
@@ -24,7 +33,11 @@ const TextAreaInput = (props: Props) => {
         ></textarea>
         <label
           htmlFor="textAreaComponent"
-          className="absolute z-10 px-1 text-xs text-gray-500 bg-white -top-2 left-2"
+          className={`absolute z-10 px-1 text-xs -top-2 left-2 ${
+            theme === "dark"
+              ? "text-gray-400 bg-gray-800"
+              : "text-gray-500 bg-white"
+          }`}
         >
           {props.label}
         </label>

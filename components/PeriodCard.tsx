@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { periodType } from "../lib/types/types";
 import { formatDateNorwegian } from "../lib/utils/dateUtils";
 import Button from "./Button";
+import { useTheme } from "../styles/darkmode/theme-context";
 
 interface Props {
   period: periodType;
@@ -9,20 +10,43 @@ interface Props {
 
 const PeriodCard = (props: Props) => {
   const router = useRouter();
+  const { theme } = useTheme();
 
   return (
-    <div className="w-full max-w-md mx-auto break-words bg-white rounded-lg shadow">
+    <div
+      className={`w-full max-w-md mx-auto break-words ${
+        theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"
+      } rounded-lg shadow`}
+    >
       <div className="p-4">
-        <h3 className="text-xl font-medium text-gray-900">
+        <h3
+          className={`text-xl font-medium ${
+            theme === "dark" ? "text-white" : "text-gray-900"
+          }`}
+        >
           {props.period.name}
         </h3>
-        <p className="w-full mt-1 text-gray-500">{props.period.description}</p>
-        <p className="mt-1 text-sm text-gray-500">
+        <p
+          className={`w-full mt-1 ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
+          {props.period.description}
+        </p>
+        <p
+          className={`mt-1 text-sm ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
           Søknadsperiode:{" "}
           {formatDateNorwegian(props.period.applicationPeriod.start)} -{" "}
           {formatDateNorwegian(props.period.applicationPeriod.end)}
         </p>
-        <p className="mt-1 text-sm text-gray-500">
+        <p
+          className={`mt-1 text-sm ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
           Intervjuperiode:{" "}
           {formatDateNorwegian(props.period.interviewPeriod.start)} -{" "}
           {formatDateNorwegian(props.period.interviewPeriod.end)}
