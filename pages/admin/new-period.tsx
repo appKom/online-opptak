@@ -7,9 +7,11 @@ import DatePickerInput from "../../components/form/DatePickerInput";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import TextAreaInput from "../../components/form/TextAreaInput";
+import { useTheme } from "../../styles/darkmode/theme-context";
 
 const NewPeriod = () => {
   const router = useRouter();
+  const { theme } = useTheme();
 
   const [periodData, setPeriodData] = useState<DeepPartial<periodType>>({
     name: "",
@@ -134,7 +136,11 @@ const NewPeriod = () => {
   return (
     <>
       <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+        <h1
+          className={`my-10 text-3xl font-semibold text-center ${
+            theme === "dark" ? " text-white" : " text-online-darkBlue"
+          }`}
+        >
           Ny søknadsperiode
         </h1>
 

@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
+import { useTheme } from "../../../styles/darkmode/theme-context";
 
 const Admin = () => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const periodId = router.query["period-id"];
   const [period, setPeriod] = useState<periodType>();
+  const { theme } = useTheme();
 
   const [applications, setApplications] = useState<applicantType[] | null>(
     null
@@ -93,7 +95,11 @@ const Admin = () => {
   }
 
   return (
-    <div style={{ marginBottom: "50px" }}>
+    <div
+      className={`${
+        theme === "dark" ? " text-white" : "bg-white text-black"
+      } min-h-screen`}
+    >
       <Navbar />
       <div className="flex justify-center">
         {isLoading ? (
@@ -101,17 +107,29 @@ const Admin = () => {
         ) : (
           <div className="flex flex-col">
             <div className="flex flex-col py-2">
-              <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+              <h1
+                className={`my-10 text-3xl font-semibold text-center ${
+                  theme === "dark" ? "text-gray-200" : "text-online-darkBlue"
+                }`}
+              >
                 {period?.name}
               </h1>
-              <h2 className="text-xl font-semibold text-center text-online-darkBlue">
+              <h2
+                className={`text-xl font-semibold text-center ${
+                  theme === "dark" ? "text-gray-200" : "text-online-darkBlue"
+                }`}
+              >
                 {filteredApplications?.length} Søknader
               </h2>
             </div>
             {committees && (
               <div className="flex flex-row py-5 pt-10">
                 <select
-                  className=""
+                  className={`p-2 border ${
+                    theme === "dark"
+                      ? "bg-gray-800 text-white border-gray-600"
+                      : "bg-white text-black border-gray-300"
+                  }`}
                   value={selectedCommittee ?? ""}
                   onChange={(e) => setSelectedCommittee(e.target.value)}
                 >
@@ -127,42 +145,113 @@ const Admin = () => {
                   placeholder="Søk etter navn"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="p-2 ml-5 border"
+                  className={`p-2 ml-5 border ${
+                    theme === "dark"
+                      ? "bg-gray-800 text-white border-gray-600"
+                      : "bg-white text-black border-gray-300"
+                  }`}
                 />
               </div>
             )}
 
             {applicationsExist && filteredApplications?.length ? (
-              <table className="min-w-full bg-white border border-collapse border-gray-200">
+              <table
+                className={`min-w-full border border-collapse ${
+                  theme === "dark"
+                    ? "bg-gray-800 border-gray-700"
+                    : "bg-white border-gray-200"
+                }`}
+              >
                 <thead>
                   <tr>
-                    <th className="p-2 border">Navn</th>
-                    <th className="p-2 border">1. Komitee</th>
-                    <th className="p-2 border">2. Komitee</th>
-                    <th className="p-2 border">3. Komitee</th>
-                    <th className="p-2 border">Dato</th>
-                    <th className="p-2 border">Klasse</th>
-                    <th className="p-2 border">Telefon</th>
+                    {[
+                      "Navn",
+                      "1. Komitee",
+                      "2. Komitee",
+                      "3. Komitee",
+                      "Dato",
+                      "Klasse",
+                      "Telefon",
+                    ].map((header) => (
+                      <th
+                        key={header}
+                        className={`p-2 border ${
+                          theme === "dark"
+                            ? "border-gray-700"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        {header}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
                   {filteredApplications.map((applicant, index) => (
                     <tr key={index}>
-                      <td className="p-2 border">{applicant.name}</td>
-                      <td className="p-2 border">
+                      <td
+                        className={`p-2 border ${
+                          theme === "dark"
+                            ? "border-gray-700"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        {applicant.name}
+                      </td>
+                      <td
+                        className={`p-2 border ${
+                          theme === "dark"
+                            ? "border-gray-700"
+                            : "border-gray-200"
+                        }`}
+                      >
                         {applicant.preferences.first}
                       </td>
-                      <td className="p-2 border">
+                      <td
+                        className={`p-2 border ${
+                          theme === "dark"
+                            ? "border-gray-700"
+                            : "border-gray-200"
+                        }`}
+                      >
                         {applicant.preferences.second}
                       </td>
-                      <td className="p-2 border">
+                      <td
+                        className={`p-2 border ${
+                          theme === "dark"
+                            ? "border-gray-700"
+                            : "border-gray-200"
+                        }`}
+                      >
                         {applicant.preferences.third}
                       </td>
-                      <td className="p-2 border">
+                      <td
+                        className={`p-2 border ${
+                          theme === "dark"
+                            ? "border-gray-700"
+                            : "border-gray-200"
+                        }`}
+                      >
                         {new Date(applicant.date).toLocaleDateString()}
                       </td>
-                      <td className="p-2 border">{applicant.grade}</td>
-                      <td className="p-2 border">{applicant.phone}</td>
+                      <td
+                        className={`p-2 border ${
+                          theme === "dark"
+                            ? "border-gray-700"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        {applicant.grade}
+                      </td>
+                      <td
+                        className={`p-2 border ${
+                          theme === "dark"
+                            ? "border-gray-700"
+                            : "border-gray-200"
+                        }`}
+                      >
+                        {applicant.phone}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

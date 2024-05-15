@@ -6,10 +6,12 @@ import { useEffect, useState } from "react";
 import { periodType } from "../../lib/types/types";
 import { formatDate } from "../../lib/utils/dateUtils";
 import NotFound from "../404";
+import { useTheme } from "../../styles/darkmode/theme-context";
 
 const Admin = () => {
   const { data: session } = useSession();
   const router = useRouter();
+  const { theme } = useTheme();
 
   const [periods, setPeriods] = useState([]);
 
@@ -59,9 +61,15 @@ const Admin = () => {
   }
 
   return (
-    <div>
+    <div
+      className={`${theme === "dark" ? " text-white" : "bg-white text-black"}`}
+    >
       <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+        <h1
+          className={`my-10 text-3xl font-semibold text-center ${
+            theme === "dark" ? "text-gray-200" : "text-online-darkBlue"
+          }`}
+        >
           Opptaksperioder
         </h1>
 

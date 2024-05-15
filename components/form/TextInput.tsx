@@ -2,13 +2,17 @@ import { useTheme } from "../../styles/darkmode/theme-context";
 
 interface TextInputProps {
   label: string;
+  disabled?: boolean;
+  placeholder?: string;
   defaultValue?: string;
   updateInputValues: (value: string) => void;
 }
 
 const TextInput = ({
   label,
+  disabled,
   defaultValue,
+  placeholder,
   updateInputValues,
 }: TextInputProps) => {
   const { theme } = useTheme();
@@ -23,8 +27,12 @@ const TextInput = ({
         {label}
       </label>
       <input
+        disabled={disabled}
+        required
         type="text"
-        defaultValue={defaultValue}
+        id="inputComponent"
+        placeholder={placeholder}
+        value={defaultValue}
         onChange={(e) => updateInputValues(e.target.value)}
         className={`w-full px-3 py-2 border rounded-md focus:outline-none ${
           theme === "dark"

@@ -56,7 +56,7 @@ const Home = () => {
   return (
     <div
       className={`flex flex-col justify-between min-h-screen overflow-x-hidden ${
-        theme === "dark" ? " text-white" : "bg-white text-black"
+        theme === "dark" ? " text-white" : "bg-white text-online-darkBlue"
       }`}
     >
       <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
