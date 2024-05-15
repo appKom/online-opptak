@@ -11,14 +11,18 @@ import CalendarIcon from "../../components/icons/icons/CalendarIcon";
 import { Tabs } from "../../components/Tabs";
 import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
 import { useRouter } from "next/router";
+import ApplicationOverview from "../../components/applicantoverview/ApplicationOverview";
 
 const Application: NextPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
-  const periodId = router.query["period-id"];
+  const periodId = router.query["period-id"] as string;
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
   const [periodExists, setPeriodExists] = useState(false);
+  const [fetchedApplicationData, setFetchedApplicationData] = useState(null);
+
+  const [shouldShowListView, setShouldShowListView] = useState(true);
 
   const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,50 +43,43 @@ const Application: NextPage = () => {
   const [period, setPeriod] = useState<periodType>();
 
   useEffect(() => {
-    const checkPeriod = async () => {
-      if (periodId === undefined) return;
+    const checkPeriodAndApplicationStatus = async () => {
+      if (!periodId || !session?.user?.owId) {
+        return;
+      }
+
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/periods/${periodId}`);
-        const data = await response.json();
-        if (response.ok) {
-          setPeriod(data.period);
-          setPeriodExists(data.exists);
+        const periodResponse = await fetch(`/api/periods/${periodId}`);
+        const periodData = await periodResponse.json();
+        if (periodResponse.ok) {
+          setPeriod(periodData.period);
+          setPeriodExists(periodData.exists);
         } else {
-          throw new Error(data.error || "Unknown error");
+          throw new Error(periodData.error || "Unknown error");
         }
       } catch (error) {
         console.error("Error checking period:", error);
+      }
+
+      try {
+        const applicationResponse = await fetch(
+          `/api/applicants/${periodId}/${session.user.owId}`
+        );
+        const applicationData = await applicationResponse.json();
+        if (applicationResponse.ok) {
+          setHasAlreadySubmitted(applicationData.exists);
+        } else {
+          throw new Error(applicationData.error || "Unknown error");
+        }
+      } catch (error) {
+        console.error("Error checking application status:", error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    const checkApplicationStatus = async () => {
-      setIsLoading(true);
-      if (session?.user?.owId) {
-        try {
-          const response = await fetch(
-            `/api/applicants/${periodId}/${session.user.owId}`
-          );
-          const data = await response.json();
-          if (response.ok) {
-            setHasAlreadySubmitted(data.exists);
-          } else {
-            throw new Error(data.error || "Unknown error");
-          }
-        } catch (error) {
-          console.error("Error checking application status:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
-      }
-    };
-
-    checkPeriod();
-    checkApplicationStatus();
+    checkPeriodAndApplicationStatus();
   }, [session?.user?.owId, periodId]);
 
   const handleSubmitApplication = async () => {
@@ -99,14 +96,49 @@ const Application: NextPage = () => {
         body: JSON.stringify(applicationData),
       });
 
-      if (!response.ok) {
-        throw new Error(`Error creating applicant: ${response.statusText}`);
-      }
+      const responseData = await response.json();
 
-      toast.success("Søknad sendt inn");
-      setHasAlreadySubmitted(true);
+      if (response.ok) {
+        toast.success("Søknad sendt inn");
+        setHasAlreadySubmitted(true);
+      } else {
+        if (
+          responseData.error ===
+          "409 Application already exists for this period"
+        ) {
+          toast.error("Du har allerede søkt for denne perioden");
+        } else {
+          throw new Error(`Error creating applicant: ${response.statusText}`);
+        }
+      }
     } catch (error) {
-      toast.error("Det skjedde en feil, vennligst prøv igjen");
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Det skjedde en feil, vennligst prøv igjen");
+      }
+    }
+  };
+  const fetchApplicationData = async () => {
+    if (!session?.user?.owId || !periodId) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/applicants/${periodId}/${session.user.owId}`
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setFetchedApplicationData(data);
+      } else {
+        throw new Error(data.error || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error fetching application data:", error);
+      toast.error("Failed to fetch application data.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -162,11 +194,24 @@ const Application: NextPage = () => {
               Du vil få enda en e-post med intervjutider når søknadsperioden er
               over.
             </p>
-            <Button
-              title="Trekk tilbake søknad"
-              color="white"
-              onClick={handleDeleteApplication}
-            />
+            <div className="flex gap-5">
+              <Button
+                title="Trekk tilbake søknad"
+                color="white"
+                onClick={handleDeleteApplication}
+              />
+              <Button
+                title={shouldShowListView ? "Se søknad" : "Skjul søknad"}
+                color="blue"
+                onClick={() => {
+                  fetchApplicationData();
+                  setShouldShowListView(!shouldShowListView);
+                }}
+              />
+            </div>
+            {fetchedApplicationData && !shouldShowListView && (
+              <ApplicationOverview application={fetchedApplicationData} />
+            )}
           </div>
         ) : (
           <Tabs
