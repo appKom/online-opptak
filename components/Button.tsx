@@ -18,7 +18,7 @@ const Button = (props: Props) => {
       "hover:border-online-orange bg-online-white text-online-darkTeal hover:text-online-orange border dark:bg-online-darkBlue dark:text-white dark:hover:text-online-orange";
   } else if (props.color === "orange") {
     colorClasses =
-      "hover:border-online-darkTeal bg-online-orange text-online-snowWhite hover:text-online-darkTeal border dark:bg-orange-900 dark:text-white dark:hover:text-online-orange";
+      "hover:border-online-darkTeal bg-online-orange text-online-snowWhite hover:text-online-darkTeal border dark:bg-orange-900 dark:text-white dark:hover:text-online-orange dark:hover:border-online-orange";
   }
 
   if (props.size === "small") {

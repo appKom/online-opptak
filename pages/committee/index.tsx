@@ -482,7 +482,7 @@ const Committee: NextPage = () => {
           <button
             type="reset"
             onClick={deleteSubmission}
-            className="text-white mt-1 bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+            className="hover:border-online-orange bg-online-orange text-online-snowWhite hover:text-online-darkTeal border dark:bg-orange-900 dark:text-white dark:hover:text-online-orange "
           >
             Slett innsending
           </button>

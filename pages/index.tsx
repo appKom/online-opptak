@@ -48,14 +48,38 @@ const Home = () => {
   }
 
   return (
-    <div className="flex flex-col justify-between min-h-screen overflow-x-hidden text-online-darkBlue dark:text-white">
+    <div className="flex flex-col justify-between overflow-x-hidden text-online-darkBlue dark:text-white">
       <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
         {session ? (
           currentPeriods.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-5">
-              <p className="text-lg">
-                Det er ingen aktive søknadsperioder for øyeblikket, kom tilbake
-                senere!
+            <div className="flex flex-col items-center justify-center gap-8">
+              <h1 className="text-3xl ">Ingen åpne opptak for øyeblikket</h1>
+              <p className="text-md w-10/12 max-w-2xl text-center ">
+                Opptak til{" "}
+                <a
+                  href="https://online.ntnu.no/applications"
+                  className="text-online-darkBlue dark:text-white underline hover:text-online-orange dark:hover:text-online-orange"
+                >
+                  komiteene
+                </a>{" "}
+                skjer vanligvis i august etter fadderuka. Noen komiteer har
+                vanligvis suppleringsopptak i februar.{<br></br>} <br></br> Følg
+                med på{" "}
+                <a
+                  href="https://online.ntnu.no"
+                  className="text-online-darkBlue dark:text-white underline hover:text-online-orange dark:hover:text-online-orange"
+                >
+                  online.ntnu.no
+                </a>{" "}
+                eller på vår{""}
+                <a
+                  href="https://www.facebook.com/groups/1547182375336132"
+                  className="text-online-darkBlue dark:text-white underline hover:text-online-orange dark:hover:text-online-orange"
+                >
+                  {" "}
+                  Facebook
+                </a>{" "}
+                side for kunngjøringer!
               </p>
             </div>
           ) : (
@@ -82,5 +106,4 @@ const Home = () => {
     </div>
   );
 };
-
 export default Home;

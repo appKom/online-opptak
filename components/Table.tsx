@@ -37,7 +37,7 @@ const Table = ({ rows, columns }: TableProps) => {
             <Link key={"link-" + row.id} href={row.link || ""}>
               <tr
                 key={"tr-" + row.id}
-                className="relative hover: bg-gray-50 dark:bg-online-darkBlue cursor-pointer"
+                className="relative hover: bg-gray-50 dark:bg-online-darkBlue cursor-pointer hover:text-online-orange"
               >
                 {columns.map((column) => (
                   <td
