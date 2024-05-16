@@ -5,12 +5,12 @@ import Image from "next/image";
 
 export default function Custom404() {
   return (
-    <div className="flex flex-col text-center p-20">
-      <h2 className="text-5xl font-bold text-center text-online-darkBlue">
+    <div className="flex flex-col text-center p-10">
+      <h2 className="text-5xl font-bold text-center text-online-darkBlue dark:text-white">
         404
       </h2>
 
-      <p className="py-10 text-lg">{"Denne siden finnes ikke"}</p>
+      <p className="py-5 text-lg">{"Denne siden finnes ikke"}</p>
       <div style={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}>
         <Image
           src="/404.gif"
@@ -21,7 +21,7 @@ export default function Custom404() {
         />
       </div>
 
-      <div>
+      <div className="py-10">
         <Button
           title="Gå tilbake til hjem siden"
           color="blue"
