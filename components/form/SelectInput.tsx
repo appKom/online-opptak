@@ -34,7 +34,7 @@ const SelectInput = (props: Props) => {
         </select>
         <label
           htmlFor="selectComponent"
-          className="absolute z-10 px-1 text-xs -top-2 left-2 text-gray-500 dark:-text-gray-400 dark:bg-online-darkBlue"
+          className="absolute z-10 px-1 text-xs -top-2 left-2 text-gray-500 dark:text-white dark:-text-gray-400 dark:bg-online-darkBlue"
         >
           {props.label}
         </label>
