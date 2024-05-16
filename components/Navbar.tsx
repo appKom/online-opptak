@@ -71,13 +71,25 @@ const Navbar = () => {
         </Link>
 
         {!session ? (
-          <Button
-            title="Logg inn"
-            color="blue"
-            size="small"
-            icon={<LoginIcon className="w-4 h-4" />}
-            onClick={handleLogin}
-          />
+          <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal dark:text-white">
+            <ThemeToggle />
+            <Button
+              title="Logg inn"
+              color="blue"
+              size="small"
+              icon={<LoginIcon className="w-4 h-4" />}
+              onClick={handleLogin}
+            />
+
+            <Image
+              onClick={() => router.push("https://www.bekk.no/")}
+              src={theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg"}
+              width={100}
+              height={30 * 1.5}
+              alt="Online logo"
+              className="transition-all cursor-pointer hover:opacity-60"
+            />
+          </div>
         ) : (
           <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal dark:text-white">
             <div className="text-right">
@@ -101,23 +113,35 @@ const Navbar = () => {
               onClick={handleLogout}
             />
             <ThemeToggle />
-          </div>
-        )}
-      </div>
-      <div className="relative md:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
-        <Link href="/" passHref>
-          <a aria-label="Online logo">
             <Image
-              src={
-                theme === "dark" ? "/Online_hvit_o.svg" : "/Online_bla_o.svg"
-              }
-              width={60}
+              onClick={() => router.push("https://www.bekk.no/")}
+              src={theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg"}
+              width={100}
               height={30 * 1.5}
               alt="Online logo"
               className="transition-all cursor-pointer hover:opacity-60"
             />
-          </a>
-        </Link>
+          </div>
+        )}
+      </div>
+      <div className="relative md:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
+        <Image
+          onClick={() => router.push("/")}
+          src={theme === "dark" ? "/Online_hvit_o.svg" : "/Online_bla_o.svg"}
+          width={60}
+          height={30 * 1.5}
+          alt="Online logo"
+          className="transition-all cursor-pointer hover:opacity-60"
+        />
+
+        <Image
+          onClick={() => router.push("https://www.bekk.no/")}
+          src={theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg"}
+          width={100}
+          height={30 * 1.5}
+          alt="Online logo"
+          className="transition-all cursor-pointer hover:opacity-60"
+        />
         <div className="relative">
           <button onClick={toggleDropdown} className="flex justify-end">
             {isDropdownOpen ? (
