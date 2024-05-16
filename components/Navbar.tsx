@@ -100,10 +100,19 @@ const Navbar = () => {
             {session.user?.role === "admin" && (
               <Button
                 title="Admin"
-                color="blue"
+                color="orange"
                 size="small"
                 icon={<AdminIcon className="w-4 h-4" fill={""} />}
                 onClick={() => router.push("/admin")}
+              />
+            )}
+            {session.user?.isCommitee && (
+              <Button
+                title="For komiteer"
+                color="blue"
+                size="small"
+                icon={<CommitteeIcon fill="" className="w-4 h-4" />}
+                onClick={() => router.push("/committee")}
               />
             )}
             <Button
@@ -178,6 +187,18 @@ const Navbar = () => {
                       className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Admin
+                    </a>
+                  )}
+
+                  {session.user?.isCommitee && (
+                    <a
+                      onClick={() => {
+                        router.push("/committee");
+                        toggleDropdown();
+                      }}
+                      className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      For komiteer
                     </a>
                   )}
                   <ThemeToggle />
