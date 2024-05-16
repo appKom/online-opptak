@@ -153,12 +153,15 @@ const Navbar = () => {
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 py-2 w-48 rounded-lg shadow-xl bg-white dark:bg-online-darkBlue border-t border-gray-200 dark:border-gray-600">
               {!session ? (
-                <a
-                  onClick={handleLogin}
-                  className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  Logg inn
-                </a>
+                <div>
+                  <ThemeToggle />
+                  <a
+                    onClick={handleLogin}
+                    className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Logg inn
+                  </a>
+                </div>
               ) : (
                 <>
                   <div className="px-4 py-2 text-sm text-gray-700 dark:text-white">
@@ -176,6 +179,7 @@ const Navbar = () => {
                       Admin
                     </a>
                   )}
+                  <ThemeToggle />
                   <a
                     onClick={() => {
                       handleLogout();
@@ -185,7 +189,6 @@ const Navbar = () => {
                   >
                     Logg ut
                   </a>
-                  <ThemeToggle />
                 </>
               )}
             </div>
