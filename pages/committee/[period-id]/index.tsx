@@ -86,14 +86,16 @@ const CommitteeApplicantOverView: NextPage = () => {
         <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
           <thead>
             <tr>
-              {["Navn", "Beskrivelse", "Klasse", "Telefon"].map((header) => (
-                <th
-                  key={header}
-                  className="p-2 border border-gray-200 dark:border-gray-700"
-                >
-                  {header}
-                </th>
-              ))}
+              {["Navn", "Beskrivelse", "Bankom", "Klasse", "Telefon"].map(
+                (header) => (
+                  <th
+                    key={header}
+                    className="p-2 border border-gray-200 dark:border-gray-700"
+                  >
+                    {header}
+                  </th>
+                )
+              )}
             </tr>
           </thead>
           <tbody>
@@ -104,6 +106,9 @@ const CommitteeApplicantOverView: NextPage = () => {
                 </td>
                 <td className="p-2 border border-gray-200 dark:border-gray-700">
                   {applicant.about}
+                </td>
+                <td className="p-2 border border-gray-200 dark:border-gray-700">
+                  {applicant.bankom}
                 </td>
                 <td className="p-2 border border-gray-200 dark:border-gray-700">
                   {applicant.grade}
