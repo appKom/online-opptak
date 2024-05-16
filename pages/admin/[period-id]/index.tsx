@@ -110,7 +110,7 @@ const Admin = () => {
             {committees && (
               <div className="flex flex-row py-5 pt-10">
                 <select
-                  className="p-2 border text-black border-gray-300 dark:bg-gray-800 dark:text-white dark-border-gray-600"
+                  className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark-border-gray-600"
                   value={selectedCommittee ?? ""}
                   onChange={(e) => setSelectedCommittee(e.target.value)}
                 >
@@ -126,13 +126,13 @@ const Admin = () => {
                   placeholder="Søk etter navn"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="p-2 ml-5 border text-black border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                  className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                 />
               </div>
             )}
 
             {applicationsExist && filteredApplications?.length ? (
-              <table className="min-w-full border border-collapse border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+              <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
                 <thead>
                   <tr>
                     {[

@@ -405,6 +405,7 @@ const Committee: NextPage = () => {
           <div className="pt-10">
             <label htmlFor="">Intervjulengde: </label>
             <select
+              className="dark:bg-online-darkBlue dark:text-white"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => [
                 updateInterviewInterval(e),
                 handleTimeslotSelection(e),
@@ -426,6 +427,7 @@ const Committee: NextPage = () => {
         )}
         <div className="mx-20">
           <FullCalendar
+            eventClassNames={"dark:bg-online-darkBlue"}
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
             headerToolbar={{ start: "today prev,next", center: "", end: "" }}
