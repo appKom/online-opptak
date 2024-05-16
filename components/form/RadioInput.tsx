@@ -25,7 +25,7 @@ const RadioInput = (props: Props) => {
                 value={option[1]}
                 name={props.label}
               />
-              <label className="inline-block text-gray-800 dark:text-whit">
+              <label className="inline-block text-gray-800 dark:text-white">
                 {option[0]}
               </label>
             </div>
