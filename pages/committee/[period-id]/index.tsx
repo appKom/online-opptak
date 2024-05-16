@@ -36,7 +36,7 @@ const CommitteeApplicantOverView: NextPage = () => {
         const data = await response.json();
         console.log("Fetched applicants:", data.applicants);
         setApplicants(data.applicants);
-        setFilteredApplicants(data.applicants); // Initially show all applicants
+        setFilteredApplicants(data.applicants);
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -48,7 +48,6 @@ const CommitteeApplicantOverView: NextPage = () => {
   }, [session, periodId]);
 
   useEffect(() => {
-    // Filter applicants based on the search query
     if (searchQuery) {
       setFilteredApplicants(
         applicants.filter((applicant) =>
@@ -56,7 +55,7 @@ const CommitteeApplicantOverView: NextPage = () => {
         )
       );
     } else {
-      setFilteredApplicants(applicants); // Reset to all applicants if search query is empty
+      setFilteredApplicants(applicants);
     }
     console.log("Filtered applicants:", filteredApplicants);
   }, [searchQuery, applicants]);
