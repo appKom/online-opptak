@@ -151,7 +151,7 @@ const Navbar = () => {
             )}
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 py-2 w-48 rounded-lg shadow-xl bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600">
+            <div className="absolute right-0 mt-2 py-2 w-48 rounded-lg shadow-xl bg-white dark:bg-online-darkBlue border-t border-gray-200 dark:border-gray-600">
               {!session ? (
                 <a
                   onClick={handleLogin}

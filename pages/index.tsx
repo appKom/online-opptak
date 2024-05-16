@@ -63,7 +63,7 @@ const Home = () => {
               <h3 className="text-xl font-semibold text-center text-online-darkBlue dark:text-white">
                 Nåværende søknadsperioder
               </h3>
-              <div className="flex flex-row gap-5">
+              <div className="flex flex-wrap gap-5 justify-center max-w-full">
                 {currentPeriods.map((period: periodType, index: number) => (
                   <PeriodCard key={index} period={period} />
                 ))}
