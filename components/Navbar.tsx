@@ -10,6 +10,7 @@ import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Make sure you have the XMarkIcon
 import ThemeToggle from "./ThemeToggle";
+import CommitteeIcon from "./icons/icons/CommitteeIcon";
 
 const Navbar = () => {
   const router = useRouter();

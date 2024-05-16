@@ -78,16 +78,6 @@ const Home = () => {
             </p>
           </div>
         )}
-
-        {session?.user?.isCommitee && currentPeriods.length !== 0 ? (
-          <div className="flex flex-col gap-20">
-            <Button
-              title="Se eller administrer komiteens intervjutider"
-              color="blue"
-              onClick={() => router.push(`/committee/`)}
-            />
-          </div>
-        ) : null}
       </div>
     </div>
   );
