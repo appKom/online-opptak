@@ -1,6 +1,6 @@
 const ApplicationOverview = ({ application }: { application: any }) => {
   return (
-    <div className="p-4 bg-white rounded-lg shadow">
+    <div className="p-4 dark:bg-online-darkBlue rounded-lg shadow">
       <ul className="space-y-2 ">
         <li>
           <strong>Navn:</strong>{" "}

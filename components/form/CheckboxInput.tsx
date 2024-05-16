@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useTheme } from "../../styles/darkmode/theme-context";
-
 interface CheckboxOption {
   name: string;
   value: string;
@@ -15,7 +13,6 @@ interface Props {
 }
 
 const CheckboxInput = (props: Props) => {
-  const { theme } = useTheme();
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
 
   const handleInputChange = (e: React.BaseSyntheticEvent) => {
@@ -53,21 +50,13 @@ const CheckboxInput = (props: Props) => {
   return (
     <div className="max-w-xs w-full mx-auto my-6">
       <div className="relative">
-        <label
-          className={`block text-sm font-medium ${
-            theme === "dark" ? "text-gray-200" : "text-gray-700"
-          }`}
-        >
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
           {props.label}
         </label>
         <button
           type="button"
           onClick={handleCheckAll}
-          className={`mt-2 text-xs ${
-            theme === "dark"
-              ? "text-blue-400 hover:text-blue-600"
-              : "text-blue-500 hover:text-blue-700"
-          }`}
+          className="mt-2 text-xs text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600"
         >
           Velg alle
         </button>
@@ -75,9 +64,7 @@ const CheckboxInput = (props: Props) => {
           {props.values.map((option, index) => (
             <div
               key={index}
-              className={`flex items-center space-x-2 rounded p-2 ${
-                theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-100"
-              }`}
+              className="flex items-center space-x-2 rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               <input
                 id={`checkbox-${index}`}
@@ -86,26 +73,16 @@ const CheckboxInput = (props: Props) => {
                 value={option.value}
                 onChange={handleInputChange}
                 checked={checkedItems.includes(option.value)}
-                className={`h-4 w-4 rounded ${
-                  theme === "dark"
-                    ? "border-gray-600 text-primary-400 focus:ring-primary-300 shadow-sm cursor-pointer"
-                    : "border-gray-300 text-primary-600 focus:ring-primary-500 shadow-sm cursor-pointer"
-                }`}
+                className="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500 shadow-sm cursor-pointer dark:border-gray-600 dark:text-primary-400 dark:focus:ring-primary-300"
                 required={props.required}
               />
               <label
                 htmlFor={`checkbox-${index}`}
-                className={`flex w-full space-x-2 text-sm cursor-pointer ${
-                  theme === "dark" ? "text-gray-200" : "text-gray-700"
-                }`}
+                className="flex w-full space-x-2 text-sm cursor-pointer text-gray-700 dark:text-gray-200"
               >
                 <span>{option.name}</span>
                 {option.description && (
-                  <span
-                    className={`${
-                      theme === "dark" ? "text-gray-400" : "text-gray-500"
-                    }`}
-                  >
+                  <span className="text-gray-500 dark:text-gray-400">
                     ({option.description})
                   </span>
                 )}

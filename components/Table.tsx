@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { useTheme } from "../styles/darkmode/theme-context";
 
 type ColumnType = {
   label: string;
@@ -18,49 +17,27 @@ interface TableProps {
 }
 
 const Table = ({ rows, columns }: TableProps) => {
-  const { theme } = useTheme();
-
   return (
-    <div
-      className={`overflow-hidden rounded-lg border shadow-md ${
-        theme === "dark" ? "border-gray-700" : "border-gray-200"
-      }`}
-    >
-      <table
-        className={`w-full border-collapse ${
-          theme === "dark"
-            ? "bg-gray-800 text-gray-200"
-            : "bg-white text-gray-500"
-        }`}
-      >
-        <thead className={`${theme === "dark" ? "bg-gray-700" : "bg-gray-50"}`}>
+    <div className="overflow-hidden rounded-lg border shadow-md border-gray-200 dark:border-gray-700">
+      <table className="w-full border-collapse bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-200">
+        <thead className="bg-gray-50 dark:bg-online-darkBlue">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.label}
-                className={`px-6 py-4 font-medium ${
-                  theme === "dark" ? "text-gray-200" : "text-gray-900"
-                }`}
+                className="px-6 py-4 font-medium  text-gray-900 dark:text-gray-200"
               >
                 {column.label}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody
-          className={`${
-            theme === "dark"
-              ? "divide-gray-600 border-t border-gray-600"
-              : "divide-gray-100 border-t border-gray-100"
-          }`}
-        >
+        <tbody className="divide-gray-100 border-t border-gray-100 dark:divide-gray-600 dark:border-t border-gray-60">
           {rows.map((row) => (
             <Link key={"link-" + row.id} href={row.link || ""}>
               <tr
                 key={"tr-" + row.id}
-                className={`relative hover:${
-                  theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                } cursor-pointer`}
+                className="relative hover: bg-gray-50 dark:bg-online-darkBlue cursor-pointer"
               >
                 {columns.map((column) => (
                   <td

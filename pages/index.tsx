@@ -6,14 +6,12 @@ import { periodType } from "../lib/types/types";
 import { useRouter } from "next/router";
 import PeriodCard from "../components/PeriodCard";
 import Button from "../components/Button";
-import { useTheme } from "../styles/darkmode/theme-context";
 
 const Home = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { theme } = useTheme();
 
   useEffect(() => {
     const fetchPeriods = async () => {
@@ -42,11 +40,7 @@ const Home = () => {
   if (isLoading) {
     return (
       <div className="flex text-center justify-center">
-        <h2
-          className={`text-2xl font-semibold ${
-            theme === "dark" ? "text-white" : "text-online-darkBlue"
-          }`}
-        >
+        <h2 className="text-2xl font-semibold text-online-darkBlue dark:text-white">
           Vent litt...
         </h2>
       </div>
@@ -54,11 +48,7 @@ const Home = () => {
   }
 
   return (
-    <div
-      className={`flex flex-col justify-between min-h-screen overflow-x-hidden ${
-        theme === "dark" ? " text-white" : "bg-white text-online-darkBlue"
-      }`}
-    >
+    <div className="flex flex-col justify-between min-h-screen overflow-x-hidden bg-white dark:bg-gray-900 text-online-darkBlue dark:text-white">
       <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
         {session ? (
           currentPeriods.length === 0 ? (
@@ -70,11 +60,7 @@ const Home = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-10">
-              <h3
-                className={`text-xl font-semibold text-center ${
-                  theme === "dark" ? "text-white" : "text-online-darkBlue"
-                }`}
-              >
+              <h3 className="text-xl font-semibold text-center text-online-darkBlue dark:text-white">
                 Nåværende søknadsperioder
               </h3>
               <div className="flex flex-row gap-5">
@@ -103,7 +89,6 @@ const Home = () => {
           </div>
         ) : null}
       </div>
-      <Footer />
     </div>
   );
 };

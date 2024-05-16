@@ -175,19 +175,19 @@ const Application: NextPage = () => {
   };
 
   return (
-    <div>
+    <div className="dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center py-5">
         {periodExists && period && (
-          <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+          <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
             {period?.name}
           </h1>
         )}
         {isLoading ? (
-          <p className="animate-pulse">Vent litt...</p>
+          <p className="animate-pulse dark:text-white">Vent litt...</p>
         ) : !periodExists ? (
-          <p>Perioden finnes ikke</p>
+          <p className="dark:text-white">Perioden finnes ikke</p>
         ) : hasAlreadySubmitted ? (
-          <div className="flex flex-col items-center justify-center gap-5 px-6 md:px-40 lg:px-80">
+          <div className="flex flex-col items-center justify-center gap-5 px-6 md:px-40 lg:px-80 dark:text-white">
             <WellDoneIllustration className="h-32" />
             <p className="text-lg text-center">
               Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!

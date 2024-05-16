@@ -5,7 +5,6 @@ import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
 import { useEffect } from "react";
-import { useTheme } from "../../styles/darkmode/theme-context";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -17,7 +16,6 @@ export const ApplicationForm = (props: Props) => {
   const availableCommittees = [["Ingen", ""]];
   const committeesToDisplay: string[][] = [];
   const committessToRemove = ["FeminIT"];
-  const { theme } = useTheme();
 
   props.availableCommittees.forEach((committee) => {
     if (!availableCommittees.some((item) => item[1] === committee)) {
@@ -55,11 +53,7 @@ export const ApplicationForm = (props: Props) => {
   }, [props.availableCommittees, props.applicationData.feminIt]);
 
   return (
-    <form
-      className={`px-5 ${
-        theme === "dark" ? " text-white" : "bg-white text-black"
-      }`}
-    >
+    <form className="px-5 bg-white text-online-darkBlue dark:text-white dark:bg-online-darkBlue">
       <TextInput
         label={"E-postadresse"}
         defaultValue={props.applicationData.email}
@@ -112,11 +106,7 @@ export const ApplicationForm = (props: Props) => {
       />
       <Line />
       <div className="flex justify-center">
-        <label
-          className={`inline-block mt-6 ${
-            theme === "dark" ? "text-white" : "text-gray-700"
-          } form-label`}
-        >
+        <label className="inline-block mt-6 text-gray-700 dark:text-white form-label ">
           {committeesToDisplay.length > 2
             ? `Velg opp til ${committeesToDisplay.length - 1} komiteer`
             : "Velg komite"}

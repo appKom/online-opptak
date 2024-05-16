@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { useTheme } from "../../styles/darkmode/theme-context";
-
 interface Props {
   label?: string;
   updateDates: (dates: { start: string; end: string }) => void;
 }
 
 const DatePickerInput = (props: Props) => {
-  const { theme } = useTheme();
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
@@ -19,11 +16,7 @@ const DatePickerInput = (props: Props) => {
 
   return (
     <div className="w-full max-w-xs mx-auto my-3">
-      <label
-        className={`block mb-2 text-sm font-medium ${
-          theme === "dark" ? "text-gray-200" : "text-gray-700"
-        }`}
-      >
+      <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-200">
         {props.label}
       </label>
       <div className="flex items-center">
@@ -33,30 +26,16 @@ const DatePickerInput = (props: Props) => {
           name={`${props.label}-from`}
           value={fromDate}
           onChange={(e) => setFromDate(e.target.value)}
-          className={`border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
-            theme === "dark"
-              ? "border-gray-600 bg-gray-700 text-gray-200"
-              : "border-gray-300 bg-white text-gray-900"
-          }`}
+          className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-300 bg-white text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
         />
-        <span
-          className={`mx-4 ${
-            theme === "dark" ? "text-gray-300" : "text-gray-500"
-          }`}
-        >
-          til
-        </span>
+        <span className="mx-4 text-gray-500 dark:text-gray-300">til</span>
         <input
           type="date"
           id={`${props.label}-to`}
           name={`${props.label}-to`}
           value={toDate}
           onChange={(e) => setToDate(e.target.value)}
-          className={`border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ${
-            theme === "dark"
-              ? "border-gray-600 bg-gray-700 text-gray-200"
-              : "border-gray-300 bg-white text-gray-900"
-          }`}
+          className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-300 bg-white text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
         />
       </div>
     </div>

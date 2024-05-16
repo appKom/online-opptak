@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import React from "react";
 import Image from "next/image";
@@ -8,12 +9,33 @@ import LogOutIcon from "./icons/icons/LogOutIcon";
 import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
 import ThemeToggle from "./ThemeToggle";
-import { useTheme } from "../styles/darkmode/theme-context";
 
 const Navbar = () => {
   const router = useRouter();
   const { data: session } = useSession();
-  const { theme } = useTheme();
+  const [theme, setTheme] = useState("light");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") || "light";
+    setTheme(storedTheme);
+
+    const handleThemeChange = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setTheme(isDark ? "dark" : "light");
+    };
+
+    handleThemeChange(); // Check the initial theme
+
+    const observer = new MutationObserver(handleThemeChange);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   const handleLogout = () => {
     signOut();
@@ -28,11 +50,7 @@ const Navbar = () => {
   };
 
   return (
-    <div
-      className={`flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] ${
-        theme === "dark" ? "border-gray-600" : "border-gray-200"
-      }`}
-    >
+    <div className="flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-gray-600 dark:bg-gray-900">
       <Link href="/" passHref>
         <a
           className={isLinkActive("/") ? "active" : ""}
@@ -57,16 +75,8 @@ const Navbar = () => {
           onClick={handleLogin}
         />
       ) : (
-        <div
-          className={`flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center ${
-            theme === "dark" ? "text-white" : "text-online-darkTeal"
-          }`}
-        >
-          <div
-            className={`text-right ${
-              theme === "dark" ? "text-white" : "text-online-darkTeal"
-            }`}
-          >
+        <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal dark:text-white">
+          <div className="text-right">
             Logget inn som{" "}
             <span className="font-medium">{session.user?.name}</span>
           </div>

@@ -1,5 +1,3 @@
-import { useTheme } from "../../styles/darkmode/theme-context";
-
 interface Props {
   updateInputValues: Function;
   label: string;
@@ -9,8 +7,6 @@ interface Props {
 }
 
 const SelectInput = (props: Props) => {
-  const { theme } = useTheme();
-
   const handleChange = (event: any) => {
     const newValue = event.target.value;
     props.updateInputValues(newValue);
@@ -20,11 +16,7 @@ const SelectInput = (props: Props) => {
     <div className="max-w-xs mx-auto my-6">
       <div className="relative">
         <select
-          className={`appearance-none block w-full px-3 py-1.5 text-base border rounded cursor-pointer focus:outline-none ${
-            theme === "dark"
-              ? "bg-gray-800 text-white border-gray-700 focus:border-blue-600"
-              : "bg-white text-black border-gray-300 focus:border-blue-600"
-          }`}
+          className="appearance-none block w-full px-3 py-1.5 text-base border rounded cursor-pointer focus:outline-none bg-white text-black border-gray-300 focus:border-blue-600 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:focus:border-blue-600"
           aria-label={props.label}
           required={props.required}
           id="selectComponent"
@@ -42,11 +34,7 @@ const SelectInput = (props: Props) => {
         </select>
         <label
           htmlFor="selectComponent"
-          className={`absolute z-10 px-1 text-xs -top-2 left-2 ${
-            theme === "dark"
-              ? "text-gray-400 bg-gray-800"
-              : "text-gray-500 bg-white"
-          }`}
+          className="absolute z-10 px-1 text-xs -top-2 left-2 text-gray-500 bg-white dark:-text-gray-400 dark:bg-gray-800"
         >
           {props.label}
         </label>
