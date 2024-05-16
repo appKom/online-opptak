@@ -19,7 +19,7 @@ interface TableProps {
 const Table = ({ rows, columns }: TableProps) => {
   return (
     <div className="overflow-hidden rounded-lg border shadow-md border-gray-200 dark:border-gray-700">
-      <table className="w-full border-collapse bg-white text-gray-500 dark:bg-gray-800 dark:text-gray-200">
+      <table className="w-full border-collapse  text-gray-500 dark:bg-online-darkBlue dark:text-gray-200">
         <thead className="bg-gray-50 dark:bg-online-darkBlue">
           <tr>
             {columns.map((column) => (

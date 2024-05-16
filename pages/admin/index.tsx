@@ -59,7 +59,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="text-black bg-white dark:text-white dark:bg-gray-900">
+    <div className="text-black">
       <div className="flex flex-col items-center justify-center py-5">
         <h1 className="my-10 text-3xl font-semibold text-center dark:text-gray-200 text-online-darkBlue">
           Opptaksperioder

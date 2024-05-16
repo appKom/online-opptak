@@ -53,7 +53,7 @@ export const ApplicationForm = (props: Props) => {
   }, [props.availableCommittees, props.applicationData.feminIt]);
 
   return (
-    <form className="px-5 bg-white text-online-darkBlue dark:text-white dark:bg-online-darkBlue">
+    <form className="px-5 text-online-darkBlue dark:text-white dark:bg-online-darkBlue">
       <TextInput
         label={"E-postadresse"}
         defaultValue={props.applicationData.email}

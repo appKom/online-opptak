@@ -175,7 +175,7 @@ const Application: NextPage = () => {
   };
 
   return (
-    <div className="dark:bg-gray-900">
+    <div>
       <div className="flex flex-col items-center justify-center py-5">
         {periodExists && period && (
           <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">

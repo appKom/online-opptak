@@ -48,7 +48,7 @@ const Home = () => {
   }
 
   return (
-    <div className="flex flex-col justify-between min-h-screen overflow-x-hidden bg-white dark:bg-gray-900 text-online-darkBlue dark:text-white">
+    <div className="flex flex-col justify-between min-h-screen overflow-x-hidden text-online-darkBlue dark:text-white">
       <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
         {session ? (
           currentPeriods.length === 0 ? (

@@ -93,7 +93,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="bg-white text-black dark:text-white dark:bg-gray-900">
+    <div>
       <div className="flex justify-center">
         {isLoading ? (
           <p className="animate-pulse">Vent litt...</p>
@@ -110,7 +110,7 @@ const Admin = () => {
             {committees && (
               <div className="flex flex-row py-5 pt-10">
                 <select
-                  className="p-2 border bg-white text-black border-gray-300 dark:bg-gray-800 dark:text-white dark-border-gray-600"
+                  className="p-2 border text-black border-gray-300 dark:bg-gray-800 dark:text-white dark-border-gray-600"
                   value={selectedCommittee ?? ""}
                   onChange={(e) => setSelectedCommittee(e.target.value)}
                 >
@@ -126,13 +126,13 @@ const Admin = () => {
                   placeholder="Søk etter navn"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="p-2 ml-5 border bg-white text-black border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                  className="p-2 ml-5 border text-black border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
                 />
               </div>
             )}
 
             {applicationsExist && filteredApplications?.length ? (
-              <table className="min-w-full border border-collapse bg-white border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+              <table className="min-w-full border border-collapse border-gray-200 dark:bg-gray-800 dark:border-gray-700">
                 <thead>
                   <tr>
                     {[

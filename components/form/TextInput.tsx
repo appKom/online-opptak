@@ -26,7 +26,7 @@ const TextInput = ({
         placeholder={placeholder}
         value={defaultValue}
         onChange={(e) => updateInputValues(e.target.value)}
-        className="w-full px-3 py-2 border rounded-md focus:outline-none bg-white text-black border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-700"
+        className="w-full px-3 py-2 border rounded-md focus:outline-none  text-black border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-700"
       />
     </div>
   );

@@ -20,7 +20,7 @@ const RadioInput = (props: Props) => {
             <div key={index} className="flex">
               <input
                 required
-                className="float-left w-4 h-4 mt-1 mr-2 align-top transition duration-200 bg-center bg-no-repeat bg-contain border rounded-full appearance-none cursor-pointer focus:outline-none bg-white border-gray-300 checked:bg-online-darkTeal dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-online-darkTeal"
+                className="float-left w-4 h-4 mt-1 mr-2 align-top transition duration-200 bg-center bg-no-repeat bg-contain border rounded-full appearance-none cursor-pointer focus:outline-none border-gray-300 checked:bg-online-darkTeal dark:bg-gray-800 dark:border-gray-700 dark:checked:bg-online-darkTeal"
                 type="radio"
                 value={option[1]}
                 name={props.label}

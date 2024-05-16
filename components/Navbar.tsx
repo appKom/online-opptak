@@ -50,7 +50,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-gray-600 dark:bg-gray-900">
+    <div className="flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-gray-600">
       <Link href="/" passHref>
         <a
           className={isLinkActive("/") ? "active" : ""}

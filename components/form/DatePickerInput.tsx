@@ -26,7 +26,7 @@ const DatePickerInput = (props: Props) => {
           name={`${props.label}-from`}
           value={fromDate}
           onChange={(e) => setFromDate(e.target.value)}
-          className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-300 bg-white text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+          className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-300  text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
         />
         <span className="mx-4 text-gray-500 dark:text-gray-300">til</span>
         <input
@@ -35,7 +35,7 @@ const DatePickerInput = (props: Props) => {
           name={`${props.label}-to`}
           value={toDate}
           onChange={(e) => setToDate(e.target.value)}
-          className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-300 bg-white text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+          className="border text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 border-gray-300 text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
         />
       </div>
     </div>
