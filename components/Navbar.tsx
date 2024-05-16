@@ -8,12 +8,15 @@ import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
 import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Make sure you have the XMarkIcon
 import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const [theme, setTheme] = useState("light");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("theme") || "light";
@@ -50,55 +53,121 @@ const Navbar = () => {
   };
 
   return (
-    <div className="flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-gray-600">
-      <Link href="/" passHref>
-        <a
-          className={isLinkActive("/") ? "active" : ""}
-          aria-label="Online logo"
-        >
-          <Image
-            src={theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg"}
-            width={100 * 1.5}
-            height={30 * 1.5}
-            alt="Online logo"
-            className="transition-all cursor-pointer hover:opacity-60"
-          />
-        </a>
-      </Link>
-
-      {!session ? (
-        <Button
-          title="Logg inn"
-          color="blue"
-          size="small"
-          icon={<LoginIcon className="w-4 h-4" />}
-          onClick={handleLogin}
-        />
-      ) : (
-        <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal dark:text-white">
-          <div className="text-right">
-            Logget inn som{" "}
-            <span className="font-medium">{session.user?.name}</span>
-          </div>
-          {session.user?.role === "admin" && (
-            <Button
-              title="Admin"
-              color="blue"
-              size="small"
-              icon={<AdminIcon className="w-4 h-4" fill={""} />}
-              onClick={() => router.push("/admin")}
+    <div>
+      <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-gray-600">
+        <Link href="/" passHref>
+          <a
+            className={isLinkActive("/") ? "active" : ""}
+            aria-label="Online logo"
+          >
+            <Image
+              src={theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg"}
+              width={100 * 1.5}
+              height={30 * 1.5}
+              alt="Online logo"
+              className="transition-all cursor-pointer hover:opacity-60"
             />
-          )}
+          </a>
+        </Link>
+
+        {!session ? (
           <Button
-            title="Logg ut"
-            color="white"
+            title="Logg inn"
+            color="blue"
             size="small"
-            icon={<LogOutIcon className="w-4 h-4" />}
-            onClick={handleLogout}
+            icon={<LoginIcon className="w-4 h-4" />}
+            onClick={handleLogin}
           />
-          <ThemeToggle />
+        ) : (
+          <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal dark:text-white">
+            <div className="text-right">
+              Logget inn som{" "}
+              <span className="font-medium">{session.user?.name}</span>
+            </div>
+            {session.user?.role === "admin" && (
+              <Button
+                title="Admin"
+                color="blue"
+                size="small"
+                icon={<AdminIcon className="w-4 h-4" fill={""} />}
+                onClick={() => router.push("/admin")}
+              />
+            )}
+            <Button
+              title="Logg ut"
+              color="white"
+              size="small"
+              icon={<LogOutIcon className="w-4 h-4" />}
+              onClick={handleLogout}
+            />
+            <ThemeToggle />
+          </div>
+        )}
+      </div>
+      <div className="relative md:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
+        <Link href="/" passHref>
+          <a aria-label="Online logo">
+            <Image
+              src={
+                theme === "dark" ? "/Online_hvit_o.svg" : "/Online_bla_o.svg"
+              }
+              width={60}
+              height={30 * 1.5}
+              alt="Online logo"
+              className="transition-all cursor-pointer hover:opacity-60"
+            />
+          </a>
+        </Link>
+        <div className="relative">
+          <button onClick={toggleDropdown} className="flex justify-end">
+            {isDropdownOpen ? (
+              <XMarkIcon className="h-10 w-10 text-gray-500 dark:text-white transition-transform transform rotate-45" />
+            ) : (
+              <Bars3Icon className="h-10 w-10 text-gray-500 dark:text-white transition-transform transform" />
+            )}
+          </button>
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 py-2 w-48 rounded-lg shadow-xl bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-600">
+              {!session ? (
+                <a
+                  onClick={handleLogin}
+                  className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  Logg inn
+                </a>
+              ) : (
+                <>
+                  <div className="px-4 py-2 text-sm text-gray-700 dark:text-white">
+                    Logget inn som{" "}
+                    <span className="font-medium">{session.user?.name}</span>
+                  </div>
+                  {session.user?.role === "admin" && (
+                    <a
+                      onClick={() => {
+                        router.push("/admin");
+                        toggleDropdown();
+                      }}
+                      className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
+                      Admin
+                    </a>
+                  )}
+                  <a
+                    onClick={() => {
+                      handleLogout();
+                      toggleDropdown();
+                    }}
+                    className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Logg ut
+                  </a>
+                  <ThemeToggle />
+                </>
+              )}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

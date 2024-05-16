@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { MoonIcon as MoonIconSolid } from "@heroicons/react/24/solid";
-import { MoonIcon as MoonIconOutline } from "@heroicons/react/24/outline";
+import { SunIcon as SunIconSolid } from "@heroicons/react/24/solid";
 
 const ThemeToggle = () => {
   const [theme, setTheme] = useState(() => {
@@ -13,11 +13,7 @@ const ThemeToggle = () => {
 
   useEffect(() => {
     const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
+    root.classList.toggle("dark", theme === "dark");
 
     if (typeof window !== "undefined" && window.localStorage) {
       window.localStorage.setItem("theme", theme);
@@ -29,13 +25,28 @@ const ThemeToggle = () => {
   };
 
   return (
-    <button className="group" onClick={toggleTheme}>
-      {theme === "dark" ? (
-        <MoonIconSolid className="h-10 w-10 text-white group-hover:fill-current" />
-      ) : (
-        <MoonIconOutline className="h-10 w-10 text-black group-hover:fill-current" />
-      )}
-    </button>
+    <div>
+      <div className="md:block hidden">
+        <button
+          className="group p-2 rounded-full transition duration-300 ease-in-out"
+          onClick={toggleTheme}
+        >
+          {theme === "dark" ? (
+            <MoonIconSolid className="h-10 w-10 text-online-orange group-hover:scale-110 transition-transform duration-300 ease-in-out" />
+          ) : (
+            <SunIconSolid className="h-10 w-10 text-online-orange group-hover:scale-110 transition-transform duration-300 ease-in-out" />
+          )}
+        </button>
+      </div>
+      <div className="md:hidden">
+        <button
+          className="group p-2 rounded-full transition duration-300 ease-in-out cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+          onClick={toggleTheme}
+        >
+          {theme === "dark" ? <p>Lightmode</p> : <p>Darkmode</p>}
+        </button>
+      </div>
+    </div>
   );
 };
 
