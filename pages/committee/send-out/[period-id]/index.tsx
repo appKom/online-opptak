@@ -25,9 +25,6 @@ const CommitteeApplicantOverView: NextPage = () => {
   const [period, setPeriod] = useState<periodType | null>(null);
   const [committeeTimes, setCommitteeTimes] = useState<any[]>([]);
   const [exists, setExists] = useState<boolean>(false);
-  const [matchingTimes, setMatchingTimes] = useState<
-    { start: string; end: string }[]
-  >([]);
   const [interviewSchedule, setInterviewSchedule] = useState<{
     [key: string]: string;
   }>({});
@@ -100,74 +97,51 @@ const CommitteeApplicantOverView: NextPage = () => {
     }
   }, [period, session]);
 
-  // Find matching interview times
-  useEffect(() => {
-    if (filteredApplicants.length > 0 && committeeTimes.length > 0 && exists) {
-      const timeslot = 30; // Interview timeslot duration in minutes
+  const findMatchingTimes = (
+    applicantTimes: { start: string; end: string }[],
+    committeeTimes: { start: string; end: string }[],
+    timeslot: number
+  ) => {
+    const matchingTimes: { start: string; end: string }[] = [];
 
-      const findMatchingTimes = (
-        applicantTimes: { start: string; end: string }[],
-        committeeTimes: { start: string; end: string }[],
-        timeslot: number
-      ) => {
-        const matchingTimes: { start: string; end: string }[] = [];
+    applicantTimes.forEach((appTime) => {
+      const appStart = new Date(appTime.start);
+      const appEnd = new Date(appTime.end);
 
-        applicantTimes.forEach((appTime) => {
-          const appStart = new Date(appTime.start);
-          const appEnd = new Date(appTime.end);
+      committeeTimes.forEach((commTime) => {
+        const commStart = new Date(commTime.start);
+        const commEnd = new Date(commTime.end);
 
-          committeeTimes.forEach((commTime) => {
-            const commStart = new Date(commTime.start);
-            const commEnd = new Date(commTime.end);
+        const overlapStart = new Date(
+          Math.max(appStart.getTime(), commStart.getTime())
+        );
+        const overlapEnd = new Date(
+          Math.min(appEnd.getTime(), commEnd.getTime())
+        );
 
-            const overlapStart = new Date(
-              Math.max(appStart.getTime(), commStart.getTime())
+        if (overlapStart < overlapEnd) {
+          let currentStart = overlapStart;
+
+          while (currentStart < overlapEnd) {
+            const currentEnd = new Date(
+              currentStart.getTime() + timeslot * 60000
             );
-            const overlapEnd = new Date(
-              Math.min(appEnd.getTime(), commEnd.getTime())
-            );
 
-            if (overlapStart < overlapEnd) {
-              let currentStart = overlapStart;
-
-              while (currentStart < overlapEnd) {
-                const currentEnd = new Date(
-                  currentStart.getTime() + timeslot * 60000
-                );
-
-                if (currentEnd <= overlapEnd) {
-                  matchingTimes.push({
-                    start: currentStart.toISOString(),
-                    end: currentEnd.toISOString(),
-                  });
-                }
-
-                currentStart = currentEnd;
-              }
+            if (currentEnd <= overlapEnd) {
+              matchingTimes.push({
+                start: currentStart.toISOString(),
+                end: currentEnd.toISOString(),
+              });
             }
-          });
-        });
 
-        return matchingTimes;
-      };
-
-      let allMatchingTimes: { start: string; end: string }[] = [];
-      filteredApplicants.forEach((applicant) => {
-        if (applicant.selectedTimes && applicant.selectedTimes.length > 0) {
-          const applicantTimes = applicant.selectedTimes;
-          const committeeAvailableTimes = committeeTimes;
-
-          const matches = findMatchingTimes(
-            applicantTimes,
-            committeeAvailableTimes,
-            timeslot
-          );
-          allMatchingTimes = [...allMatchingTimes, ...matches];
+            currentStart = currentEnd;
+          }
         }
       });
-      setMatchingTimes(allMatchingTimes);
-    }
-  }, [filteredApplicants, committeeTimes, exists]);
+    });
+
+    return matchingTimes;
+  };
 
   const scheduleInterview = (applicantId: string, time: string) => {
     setInterviewSchedule((prevSchedule) => ({
@@ -199,51 +173,59 @@ const CommitteeApplicantOverView: NextPage = () => {
   return (
     <div className="flex flex-col items-center">
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">{`${period?.name}`}</h2>
-      <p>{`Period ID: ${periodId}`}</p>
       <div className="w-full max-w-4xl">
-        <h3 className="mt-4 text-xl font-semibold">Applicants:</h3>
+        <h3 className="mt-4 text-xl font-semibold">Søkere:</h3>
         <ul>
-          {filteredApplicants.map((applicant) => (
-            <li key={applicant.owId} className="mb-4 border p-4 rounded-md">
-              <p className="font-bold">{`Name: ${applicant.name}`}</p>
-              <p>{`Email: ${applicant.email}`}</p>
-              <p>{`Selected Times: ${
-                applicant.selectedTimes && applicant.selectedTimes.length > 0
-                  ? applicant.selectedTimes
-                      .map(
-                        (time) =>
-                          `(${new Date(
-                            time.start
-                          ).toLocaleString()} - ${new Date(
-                            time.end
-                          ).toLocaleString()})`
-                      )
-                      .join(", ")
-                  : "No times selected"
-              }`}</p>
-              <div className="mt-2">
-                <label className="block text-sm font-semibold">
-                  Set Interview Time:
-                </label>
-                <select
-                  value={interviewSchedule[applicant.owId] || ""}
-                  onChange={(e) =>
-                    scheduleInterview(applicant.owId, e.target.value)
-                  }
-                  className="appearance-none block w-full px-3 py-1.5 text-base border rounded cursor-pointer focus:outline-none text-black border-gray-300 focus:border-blue-600 dark:bg-online-darkBlue dark:text-white dark:border-gray-700 dark:focus:border-blue-600"
-                >
-                  <option value="">Select a time</option>
-                  {matchingTimes.map((time, index) => (
-                    <option key={index} value={time.start}>{`${new Date(
-                      time.start
-                    ).toLocaleString()} - ${new Date(
-                      time.end
-                    ).toLocaleString()}`}</option>
-                  ))}
-                </select>
-              </div>
-            </li>
-          ))}
+          {filteredApplicants.map((applicant) => {
+            const applicantTimes = applicant.selectedTimes || [];
+            const matches = findMatchingTimes(
+              applicantTimes,
+              committeeTimes,
+              30
+            );
+
+            return (
+              <li key={applicant.owId} className="mb-4 border p-4 rounded-md">
+                <p className="font-bold">{`Navn: ${applicant.name}`}</p>
+                <p>{`Email: ${applicant.email}`}</p>
+                <p>{`Selected Times: ${
+                  applicant.selectedTimes && applicant.selectedTimes.length > 0
+                    ? applicant.selectedTimes
+                        .map(
+                          (time) =>
+                            `(${new Date(
+                              time.start
+                            ).toLocaleString()} - ${new Date(
+                              time.end
+                            ).toLocaleString()})`
+                        )
+                        .join(", ")
+                    : "No times selected"
+                }`}</p>
+                <div className="mt-2">
+                  <label className="block text-sm font-semibold">
+                    Set Interview Time:
+                  </label>
+                  <select
+                    value={interviewSchedule[applicant.owId] || ""}
+                    onChange={(e) =>
+                      scheduleInterview(applicant.owId, e.target.value)
+                    }
+                    className="appearance-none block w-full px-3 py-1.5 text-base border rounded cursor-pointer focus:outline-none text-black border-gray-300 focus:border-blue-600 dark:bg-online-darkBlue dark:text-white dark:border-gray-700 dark:focus:border-blue-600"
+                  >
+                    <option value="">Select a time</option>
+                    {matches.map((time, index) => (
+                      <option key={index} value={time.start}>{`${new Date(
+                        time.start
+                      ).toLocaleString()} - ${new Date(
+                        time.end
+                      ).toLocaleString()}`}</option>
+                    ))}
+                  </select>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>

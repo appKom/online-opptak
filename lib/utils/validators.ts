@@ -46,7 +46,6 @@ export const isApplicantType = (data: any): data is applicantType => {
 };
 
 export const isCommitteeType = (data: any): data is commiteeType => {
-  console.log(data);
   const hasBasicFields =
     typeof data.period_name === "string" &&
     typeof data.committee === "string" &&

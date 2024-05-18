@@ -40,13 +40,6 @@ export const authOptions: NextAuthOptions = {
 
         const committeeData = await committeeResponse.json();
 
-        // const committees = committee.results.map((committee: any) => ({
-        //   name: committee.name_short,
-        //   id: committee.id,
-        // }));
-
-        // console.log(committee);
-
         return {
           id: userInfo.id,
           subId: profile.sub,
