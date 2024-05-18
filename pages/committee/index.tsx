@@ -48,7 +48,7 @@ const Committee: NextPage = () => {
             icon: <InboxIcon className="w-5 h-5" />,
             content: (
               <>
-                <CommitteeApplicants routeString={"/committee/applications/"} />
+                <CommitteeApplicants routeString={"/committee/send-out/"} />
               </>
             ),
           },

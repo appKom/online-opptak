@@ -100,7 +100,6 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   useEffect(() => {
     if (filteredApplicants.length > 0 && committeeTimes.length > 0 && exists) {
-      console.log(filteredApplicants);
       const applicantTimes = filteredApplicants[0]?.selectedTimes || [];
       const committeeAvailableTimes = committeeTimes.flatMap(
         (ct) => ct.availableTimes || []
@@ -113,13 +112,10 @@ const CommitteeApplicantOverView: NextPage = () => {
         timeslot: number
       ) => {
         const matchingTimes: { start: string; end: string }[] = [];
-        console.log(applicantTimes);
+
         applicantTimes.forEach((appTime) => {
           const appStart = new Date(appTime.start);
           const appEnd = new Date(appTime.end);
-          console.log("sdifo");
-
-          console.log(`commite times: ${committeeTimes}`);
 
           committeeTimes.forEach((commTime) => {
             const commStart = new Date(commTime.start);

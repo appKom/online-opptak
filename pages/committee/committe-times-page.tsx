@@ -8,7 +8,6 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
 import SelectInput from "../../components/form/SelectInput";
-import NotFound from "../404";
 
 interface Interview {
   start: string;
@@ -28,8 +27,6 @@ const CommitteeTimesPage: NextPage = () => {
 
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
-
-  const [isLoading, setIsLoading] = useState(true);
 
   const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
     committeeInterviewType[]
@@ -160,7 +157,6 @@ const CommitteeTimesPage: NextPage = () => {
         } else {
           console.warn("No suitable interview period found.");
         }
-        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
       }
@@ -356,17 +352,7 @@ const CommitteeTimesPage: NextPage = () => {
   };
 
   if (!session || !session.user?.isCommitee) {
-    return <NotFound />;
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex text-center justify-center">
-        <h2 className="text-2xl font-semibold text-online-darkBlue">
-          Vent litt...
-        </h2>
-      </div>
-    );
+    return <p>Access Denied. You must be in a commitee to view this page.</p>;
   }
 
   if (periods.length === 0) {
@@ -382,17 +368,35 @@ const CommitteeTimesPage: NextPage = () => {
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
         Legg inn ledige tider for intervjuer
       </h2>
-      <div className="flex gap-10 text-center w-max">
-        <SelectInput
-          updateInputValues={handlePeriodSelection}
-          label="Velg opptak"
-          values={periods.map((period) => [period.name, period._id.toString()])}
-        />
-        <SelectInput
-          updateInputValues={handleCommitteeSelection}
-          label="Velg komité"
-          values={filteredCommittees.map((committee) => [committee, committee])}
-        />
+      <div className="flex gap-10  w-max">
+        <div className="px-5 flex flex-col">
+          <label htmlFor="">Velg opptak: </label>
+          <select
+            className="appearance-none block w-full px-3 py-1.5 text-base border rounded cursor-pointer focus:outline-none text-black border-gray-300 focus:border-blue-600 dark:bg-online-darkBlue dark:text-white dark:border-gray-700 dark:focus:border-blue-600"
+            id="period-select"
+            onChange={handlePeriodSelection}
+            value={selectedPeriod}
+          >
+            {periods.map((period) => (
+              <option key={period._id.toString()} value={period._id.toString()}>
+                {period.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="px-5 flex flex-col">
+          <label>Velg komitee: </label>
+          <select
+            className="appearance-none block w-full px-3 py-1.5 text-base border rounded cursor-pointer focus:outline-none text-black border-gray-300 focus:border-blue-600 dark:bg-online-darkBlue dark:text-white dark:border-gray-700 dark:focus:border-blue-600"
+            onChange={handleCommitteeSelection}
+          >
+            {filteredCommittees.map((committee) => (
+              <option key={committee} value={committee}>
+                {committee}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <p className="my-5 text-lg text-center">
@@ -402,6 +406,10 @@ const CommitteeTimesPage: NextPage = () => {
       </p>
       <form className="flex flex-col text-center">
         {hasAlreadySubmitted ? (
+          <p className="mt-5 mb-6 text-lg text-center">
+            Intervjulengde: {selectedTimeslot}min
+          </p>
+        ) : (
           <div className="pt-10">
             <label htmlFor="">Intervjulengde: </label>
             <select
@@ -420,10 +428,6 @@ const CommitteeTimesPage: NextPage = () => {
               ))}
             </select>
           </div>
-        ) : (
-          <p className="mt-5 mb-6 text-lg text-center">
-            Intervjulengde: {selectedTimeslot}min
-          </p>
         )}
         <div className="mx-20">
           <FullCalendar
