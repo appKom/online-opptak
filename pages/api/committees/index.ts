@@ -6,9 +6,14 @@ import {
 } from "../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { hasSession, isInCommitee } from "../../../lib/utils/apiChecks";
+import { isCommitteeType } from "../../../lib/utils/validators";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
+
+  if (!hasSession(res, session)) return;
+  if (!isInCommitee(res, session)) return;
 
   if (req.method === "GET") {
     try {
@@ -23,6 +28,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === "POST") {
     const committeeData = req.body;
+
+    if (!isCommitteeType(req.body)) {
+      return res.status(400).json({ error: "Invalid data format" });
+    }
+
     try {
       const { committee, error } = await createCommittee(committeeData);
       if (error) throw new Error(error);

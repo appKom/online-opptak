@@ -1,14 +1,15 @@
 import { useSession } from "next-auth/react";
-import Navbar from "../../../components/Navbar";
 import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
 
 const Admin = () => {
-  const { data: session } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
   const periodId = router.query["period-id"];
+
+  const { data: session } = useSession();
+
+  const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState<periodType>();
 
   const [applications, setApplications] = useState<applicantType[] | null>(
@@ -24,9 +25,6 @@ const Admin = () => {
 
   useEffect(() => {
     const fetchPeriod = async () => {
-      if (!session || session.user?.role !== "admin") {
-        return;
-      }
       if (periodId === undefined) return;
       setIsLoading(true);
       try {
@@ -46,9 +44,6 @@ const Admin = () => {
     };
 
     const fetchApplications = async () => {
-      if (!session || session.user?.role !== "admin") {
-        return;
-      }
       if (periodId === undefined) return;
       setIsLoading(true);
       try {
@@ -76,7 +71,9 @@ const Admin = () => {
     const committeeMatch =
       !selectedCommittee ||
       [first, second, third].some(
-        (pref) => pref && pref.toLowerCase() === selectedCommittee.toLowerCase()
+        (pref) =>
+          displayPreference(pref).toLowerCase() ===
+          selectedCommittee.toLowerCase()
       );
 
     const nameMatch =
@@ -85,6 +82,16 @@ const Admin = () => {
 
     return committeeMatch && nameMatch;
   });
+
+  function displayPreference(pref: any) {
+    if (typeof pref === "string") {
+      return pref;
+    }
+    if (pref && typeof pref === "object" && pref.name) {
+      return pref.name;
+    }
+    return "";
+  }
 
   useEffect(() => {}, [applications, committees]);
 

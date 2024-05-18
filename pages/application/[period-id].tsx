@@ -34,6 +34,7 @@ const Application: NextPage = () => {
     email: session?.user?.email,
     phone: session?.user?.phone || "",
     grade: session?.user?.grade,
+    about: "",
     preferences: {
       first: "",
       second: "",
