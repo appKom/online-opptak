@@ -37,21 +37,21 @@ const PeriodCard = ({ period }: Props) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto break-words dark:bg-online-darkBlue text-black dark:text-white rounded-lg shadow">
+    <div className="w-full max-w-md mx-auto break-words dark:bg-online-darkBlue text-black dark:text-white rounded-lg shadow border border-white">
       <div className="p-4 flex flex-col justify-between h-full">
         <div>
-          <h3 className="text-xl font-medium text-gray-900 dark:text-white">
+          <h3 className="text-xl font-medium text-gray-900 dark:text-online-snowWhite">
             {period.name}
           </h3>
-          <p className="w-full mt-1 text-gray-500 dark:text-gray-400">
+          <p className="w-full mt-1 text-gray-500 dark:text-gray-200">
             {period.description}
           </p>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-200">
             Søknadsperiode:{" "}
             {formatDateNorwegian(period.applicationPeriod.start)} -{" "}
             {formatDateNorwegian(period.applicationPeriod.end)}
           </p>
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-200">
             Intervjuperiode: {formatDateNorwegian(period.interviewPeriod.start)}{" "}
             - {formatDateNorwegian(period.interviewPeriod.end)}
           </p>

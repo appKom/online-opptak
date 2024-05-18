@@ -12,13 +12,13 @@ const Button = (props: Props) => {
 
   if (props.color === "blue") {
     colorClasses =
-      "hover:border-online-orange border bg-online-darkTeal text-online-snowWhite hover:text-online-orange dark:bg-green-900 dark:text-white dark:hover:text-online-orange";
+      "hover:border-online-orange border bg-online-darkTeal text-online-snowWhite hover:text-online-orange dark:bg-gray-900 dark:text-green-500 dark:hover:text-online-orange dark:border-green-500 dark:hover:border-online-orange";
   } else if (props.color === "white") {
     colorClasses =
-      "hover:border-online-orange bg-online-white text-online-darkTeal hover:text-online-orange border dark:bg-online-darkBlue dark:text-white dark:hover:text-online-orange";
+      "hover:border-online-orange bg-online-white text-online-darkTeal hover:text-online-orange border dark:bg-gray-900 dark:text-white dark:hover:text-online-orange";
   } else if (props.color === "orange") {
     colorClasses =
-      "hover:border-online-darkTeal bg-online-orange text-online-snowWhite hover:text-online-darkTeal border dark:bg-orange-900 dark:text-white dark:hover:text-online-orange dark:hover:border-online-orange";
+      "hover:border-online-darkTeal bg-online-orange text-online-snowWhite hover:text-online-darkTeal border dark:bg-gray-900 dark:text-orange-500 dark:hover:text-online-orange dark:hover:border-online-orange dark:border-orange-500 dark:hover:border-online-orange";
   }
 
   if (props.size === "small") {
