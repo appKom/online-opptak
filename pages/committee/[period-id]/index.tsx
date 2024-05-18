@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import NotFound from "../../404";
@@ -21,7 +21,7 @@ const CommitteeApplicantOverView: NextPage = () => {
   const [selectedCommittee, setSelectedCommittee] = useState<string | null>(
     null
   );
-  const [selectedYear, setSelectedYear] = useState<string>(""); // Initialize with empty string
+  const [selectedYear, setSelectedYear] = useState<string>("");
   const [years, setYears] = useState<string[]>([]);
 
   useEffect(() => {
@@ -73,8 +73,31 @@ const CommitteeApplicantOverView: NextPage = () => {
     fetchPeriod();
   }, [session, periodId]);
 
+  function isCommitteePreferences(
+    preferences:
+      | { first: string; second: string; third: string }
+      | { committee: string }[]
+  ): preferences is { committee: string }[] {
+    return (
+      Array.isArray(preferences) && preferences.every((p) => "committee" in p)
+    );
+  }
+
   useEffect(() => {
     let filtered = applicants;
+
+    if (selectedCommittee) {
+      filtered = filtered.filter((applicant) => {
+        if (isCommitteePreferences(applicant.preferences)) {
+          return applicant.preferences.some(
+            (preference) =>
+              preference.committee.toLowerCase() ===
+              selectedCommittee.toLowerCase()
+          );
+        }
+        return false;
+      });
+    }
 
     if (selectedYear) {
       filtered = filtered.filter(
@@ -89,7 +112,7 @@ const CommitteeApplicantOverView: NextPage = () => {
     }
 
     setFilteredApplicants(filtered);
-  }, [selectedYear, searchQuery, applicants]);
+  }, [selectedCommittee, selectedYear, searchQuery, applicants]);
 
   useEffect(() => {
     if (period && session) {

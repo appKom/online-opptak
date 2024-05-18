@@ -22,11 +22,9 @@ export type applicantType = {
   phone: string;
   grade: number;
   about: string;
-  preferences: {
-    first: string;
-    second: string;
-    third: string;
-  };
+  preferences:
+    | { first: string; second: string; third: string }
+    | { committee: string }[];
   bankom: "yes" | "no" | "maybe";
   feminIt: "yes" | "no";
   selectedTimes: [

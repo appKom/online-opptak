@@ -37,9 +37,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       groups.push(
         ...data.results
-          .filter(
-            (group: { group_type: string }) => group.group_type === "committee"
-          )
+          // .filter(
+          //   (group: { group_type: string }) => group.group_type === "committee"
+          // )
           .filter(
             (group: { name_short: string }) =>
               !excludedCommitteeNames.includes(group.name_short) // Exclude committees by name_short
