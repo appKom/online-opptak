@@ -70,7 +70,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
   return (
     <SessionProvider session={session}>
       <Head>
-        <link rel="icon" href="/Online_hvit_o.svg" />
+        <link rel="icon" href="/Online_bla_o.svg" />
         <title>Online Komitéopptak</title>
       </Head>
       <div className="bg-white dark:bg-gray-900 min-h-screen dark:text-white">
