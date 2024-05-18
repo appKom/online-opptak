@@ -21,6 +21,8 @@ const CommitteeApplicantOverView: NextPage = () => {
   const [selectedCommittee, setSelectedCommittee] = useState<string | null>(
     null
   );
+  const [selectedYear, setSelectedYear] = useState<string | null>(null);
+  const [years, setYears] = useState<string[]>([]);
 
   useEffect(() => {
     if (!session || !periodId) return;
@@ -49,9 +51,17 @@ const CommitteeApplicantOverView: NextPage = () => {
         }
 
         const data = await response.json();
-        console.log("Fetched applicants:", data.applicants);
         setApplicants(data.applicants);
         setFilteredApplicants(data.applicants);
+
+        const uniqueYears: string[] = Array.from(
+          new Set(
+            data.applicants.map((applicant: applicantType) =>
+              applicant.grade.toString()
+            )
+          )
+        );
+        setYears(uniqueYears);
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -73,20 +83,30 @@ const CommitteeApplicantOverView: NextPage = () => {
     } else {
       setFilteredApplicants(applicants);
     }
-    console.log("Filtered applicants:", filteredApplicants);
   }, [searchQuery, applicants]);
 
   useEffect(() => {
     if (period && session) {
       const userCommittees = session.user!.committees;
       const periodCommittees = period.committees;
-      console.log(userCommittees, periodCommittees);
       const filteredCommittees = periodCommittees.filter(
         (committee) => userCommittees?.includes(committee.toLowerCase())
       );
       setCommittees(filteredCommittees);
     }
   }, [period, session]);
+
+  useEffect(() => {
+    let filtered = applicants;
+
+    if (selectedYear !== "") {
+      filtered = filtered.filter(
+        (applicant) => applicant.grade.toString() === selectedYear
+      );
+    }
+
+    setFilteredApplicants(filtered);
+  }, [selectedYear, applicants]);
 
   if (!session || !session.user?.isCommitee) {
     return <NotFound />;
@@ -110,7 +130,7 @@ const CommitteeApplicantOverView: NextPage = () => {
             value={selectedCommittee ?? ""}
             onChange={(e) => setSelectedCommittee(e.target.value)}
           >
-            <option>Velg</option>
+            <option value="">Velg komite</option>
             {committees.map((committee, index) => (
               <option key={index} value={committee}>
                 {committee}
@@ -125,22 +145,41 @@ const CommitteeApplicantOverView: NextPage = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
         />
+        <div className="px-5">
+          <select
+            className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            value={selectedYear ?? ""}
+            onChange={(e) => setSelectedYear(e.target.value)}
+          >
+            <option value="">Velg klasse</option>
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}. Klasse
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       {filteredApplicants.length > 0 ? (
         <div className="min-w-full px-20 py-10">
           <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
             <thead>
               <tr>
-                {["Navn", "Beskrivelse", "Bankom", "Klasse", "Telefon"].map(
-                  (header) => (
-                    <th
-                      key={header}
-                      className="p-2 border border-gray-200 dark:border-gray-700"
-                    >
-                      {header}
-                    </th>
-                  )
-                )}
+                {[
+                  "Navn",
+                  "Beskrivelse",
+                  "Bankom",
+                  "Klasse",
+                  "Telefon",
+                  "E-Post",
+                ].map((header) => (
+                  <th
+                    key={header}
+                    className="p-2 border border-gray-200 dark:border-gray-700"
+                  >
+                    {header}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -161,12 +200,15 @@ const CommitteeApplicantOverView: NextPage = () => {
                   <td className="p-2 border border-gray-200 dark:border-gray-700">
                     {applicant.phone}
                   </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.email}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
           <div className="flex justify-end items-end py-5 px-10">
-            <p className="just">{`${applicants.length} resultater`}</p>
+            <p>{`${filteredApplicants.length} resultater`}</p>
           </div>
         </div>
       ) : (

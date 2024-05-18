@@ -22,7 +22,6 @@ const CommitteeApplicants: NextPage = () => {
           userCommittees.includes(committee.toLowerCase())
         )
       );
-      console.log(userCommittees);
 
       setPeriods(
         filteredPeriods.map((period: periodType) => {
