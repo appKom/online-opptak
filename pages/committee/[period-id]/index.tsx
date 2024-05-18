@@ -138,7 +138,7 @@ const CommitteeApplicantOverView: NextPage = () => {
       <div className="flex flex-row py-5 pt-10">
         {committees && (
           <select
-            className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 border text-black border-gray-300" // dark:bg-online-darkBlue dark:text-white dark:border-gray-600
             value={selectedCommittee ?? ""}
             onChange={(e) => setSelectedCommittee(e.target.value)}
           >
@@ -155,11 +155,11 @@ const CommitteeApplicantOverView: NextPage = () => {
           placeholder="Søk etter navn"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+          className="p-2 ml-5 border text-black border-gray-300" // dark:bg-online-darkBlue dark:text-white dark:border-gray-600
         />
         <div className="px-5">
           <select
-            className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 border text-black border-gray-300" // dark:bg-online-darkBlue dark:text-white dark:border-gray-600
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
           >
@@ -174,7 +174,8 @@ const CommitteeApplicantOverView: NextPage = () => {
       </div>
       {filteredApplicants.length > 0 ? (
         <div className="min-w-full px-20 py-10">
-          <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
+          <table className="min-w-full border border-collapse border-gray-200">
+            {/* dark:bg-online-darkBlue dark:border-gray-700 */}
             <thead>
               <tr>
                 {[
