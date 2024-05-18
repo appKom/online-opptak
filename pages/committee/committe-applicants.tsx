@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import NotFound from "../404";
@@ -6,7 +6,11 @@ import Table from "../../components/Table";
 import { formatDate } from "../../lib/utils/dateUtils";
 import { periodType } from "../../lib/types/types";
 
-const CommitteeApplicants: NextPage = () => {
+interface Props {
+  routeString: string;
+}
+
+const CommitteeApplicants: NextPage<Props> = ({ routeString }) => {
   const { data: session } = useSession();
   const [periods, setPeriods] = useState([]);
 
@@ -16,7 +20,7 @@ const CommitteeApplicants: NextPage = () => {
       const data = await response.json();
       const userCommittees = session?.user?.committees || [];
 
-      //Viser bare aktuelle perioder
+      // Viser bare aktuelle perioder
       const filteredPeriods = data.periods.filter((period: periodType) =>
         period.committees.some((committee: string) =>
           userCommittees.includes(committee.toLowerCase())
@@ -40,7 +44,7 @@ const CommitteeApplicants: NextPage = () => {
               " til " +
               formatDate(period.interviewPeriod.end),
             committees: period.committees,
-            link: `/committee/${period._id}`,
+            link: `${routeString}/${period._id}`,
           };
         })
       );

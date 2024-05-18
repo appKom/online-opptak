@@ -7,6 +7,7 @@ export type DeepPartial<T> = {
 export type commiteeType = {
   name: string;
   email: string;
+  periodId: string;
   availableTimes: [
     {
       start: string;

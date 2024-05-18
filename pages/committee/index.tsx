@@ -3,7 +3,11 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import NotFound from "../404";
 import CommitteeTimesPage from "./committe-times-page";
-import { CheckIcon, CalendarIcon } from "@heroicons/react/24/outline";
+import {
+  CheckIcon,
+  CalendarIcon,
+  InboxIcon,
+} from "@heroicons/react/24/outline";
 import { Tabs } from "../../components/Tabs";
 import CommitteeApplicants from "./committe-applicants";
 
@@ -26,7 +30,7 @@ const Committee: NextPage = () => {
             icon: <CheckIcon className="w-5 h-5" />,
             content: (
               <>
-                <CommitteeApplicants />
+                <CommitteeApplicants routeString={"/committee/applications/"} />
               </>
             ),
           },
@@ -36,6 +40,15 @@ const Committee: NextPage = () => {
             content: (
               <>
                 <CommitteeTimesPage />
+              </>
+            ),
+          },
+          {
+            title: "Intervjutider",
+            icon: <InboxIcon className="w-5 h-5" />,
+            content: (
+              <>
+                <CommitteeApplicants routeString={"/committee/applications/"} />
               </>
             ),
           },

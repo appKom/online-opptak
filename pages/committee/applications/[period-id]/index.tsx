@@ -1,11 +1,11 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import NotFound from "../../404";
+import NotFound from "../../../404";
 import {
   applicantTypeForCommittees,
   periodType,
-} from "../../../lib/types/types";
+} from "../../../../lib/types/types";
 import { useRouter } from "next/router";
 
 const CommitteeApplicantOverView: NextPage = () => {
