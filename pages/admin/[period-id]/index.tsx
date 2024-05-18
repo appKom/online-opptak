@@ -92,101 +92,108 @@ const Admin = () => {
     return <NotFound />;
   }
 
-  return (
-    <div>
-      <div className="flex justify-center">
-        {isLoading ? (
-          <p className="animate-pulse">Vent litt...</p>
-        ) : (
-          <div className="flex flex-col">
-            <div className="flex flex-col py-2">
-              <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
-                {period?.name}
-              </h1>
-              <h2 className="text-xl font-semibold text-center text-online-darkBlue dark:text-gray-200">
-                {filteredApplications?.length} Søknader
-              </h2>
-            </div>
-            {committees && (
-              <div className="flex flex-row py-5 pt-10">
-                <select
-                  className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark-border-gray-600"
-                  value={selectedCommittee ?? ""}
-                  onChange={(e) => setSelectedCommittee(e.target.value)}
-                >
-                  <option value="">Alle komiteer</option>
-                  {committees.map((committee, index) => (
-                    <option key={index} value={committee}>
-                      {committee}
-                    </option>
-                  ))}
-                </select>
-                <input
-                  type="text"
-                  placeholder="Søk etter navn"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-                />
-              </div>
-            )}
+  if (isLoading) {
+    return <p className="animate-pulse">Vent litt...</p>;
+  }
 
-            {applicationsExist && filteredApplications?.length ? (
-              <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
-                <thead>
-                  <tr>
-                    {[
-                      "Navn",
-                      "1. Komitee",
-                      "2. Komitee",
-                      "3. Komitee",
-                      "Dato",
-                      "Klasse",
-                      "Telefon",
-                    ].map((header) => (
-                      <th
-                        key={header}
-                        className="p-2 border border-gray-200 dark:border-gray-700"
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredApplications.map((applicant, index) => (
-                    <tr key={index}>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.name}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.preferences.first}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.preferences.second}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.preferences.third}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {new Date(applicant.date).toLocaleDateString()}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.grade}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.phone}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>Ingen søknader.</p>
-            )}
+  return (
+    <div className="">
+      <div className="flex flex-col py-2">
+        <h1 className="my-5 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
+          {period?.name}
+        </h1>
+        {/* <h2 className="text-xl font-semibold text-center text-online-darkBlue dark:text-gray-200">
+          {filteredApplications?.length} Søknader
+        </h2> */}
+      </div>
+      <div className="flex justify-center items-center">
+        {committees && (
+          <div className="flex flex-row py-5 pt-10 space-x-5">
+            <select
+              className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark-border-gray-600"
+              value={selectedCommittee ?? ""}
+              onChange={(e) => setSelectedCommittee(e.target.value)}
+            >
+              <option value="">Alle komiteer</option>
+              {committees.map((committee, index) => (
+                <option key={index} value={committee}>
+                  {committee}
+                </option>
+              ))}
+            </select>
+            <input
+              type="text"
+              placeholder="Søk etter navn"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark-border-gray-600"
+            />
           </div>
         )}
       </div>
+
+      {applicationsExist && filteredApplications?.length ? (
+        <div className="min-w-200 px-20 py-10">
+          <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
+            <thead>
+              <tr>
+                {[
+                  "Navn",
+                  "1. Komitee",
+                  "2. Komitee",
+                  "3. Komitee",
+                  "Dato",
+                  "Klasse",
+                  "E-post",
+                  "Telefon",
+                ].map((header) => (
+                  <th
+                    key={header}
+                    className="p-2 border border-gray-200 dark:border-gray-700"
+                  >
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filteredApplications.map((applicant, index) => (
+                <tr key={index}>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.name}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.preferences.first}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.preferences.second}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.preferences.third}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {new Date(applicant.date).toLocaleDateString()}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.grade}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.email}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.phone}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="flex justify-end items-end py-5 px-10">
+            <p>{`${filteredApplications.length} resultater`}</p>
+          </div>
+        </div>
+      ) : (
+        <p>Ingen søknader.</p>
+      )}
     </div>
   );
 };

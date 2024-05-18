@@ -2,15 +2,20 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import NotFound from "../../404";
-import { applicantType, periodType } from "../../../lib/types/types";
+import {
+  applicantTypeForCommittees,
+  periodType,
+} from "../../../lib/types/types";
 import { useRouter } from "next/router";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
-  const [applicants, setApplicants] = useState<applicantType[]>([]);
-  const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
+  const [applicants, setApplicants] = useState<applicantTypeForCommittees[]>(
     []
   );
+  const [filteredApplicants, setFilteredApplicants] = useState<
+    applicantTypeForCommittees[]
+  >([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +61,7 @@ const CommitteeApplicantOverView: NextPage = () => {
 
         const uniqueYears: string[] = Array.from(
           new Set(
-            data.applicants.map((applicant: applicantType) =>
+            data.applicants.map((applicant: applicantTypeForCommittees) =>
               applicant.grade.toString()
             )
           )
@@ -73,30 +78,17 @@ const CommitteeApplicantOverView: NextPage = () => {
     fetchPeriod();
   }, [session, periodId]);
 
-  function isCommitteePreferences(
-    preferences:
-      | { first: string; second: string; third: string }
-      | { committee: string }[]
-  ): preferences is { committee: string }[] {
-    return (
-      Array.isArray(preferences) && preferences.every((p) => "committee" in p)
-    );
-  }
-
   useEffect(() => {
     let filtered = applicants;
     // console.log(filtered);
 
     if (selectedCommittee) {
       filtered = filtered.filter((applicant) => {
-        if (isCommitteePreferences(applicant.preferences)) {
-          return applicant.preferences.some(
-            (preference) =>
-              preference.committee.toLowerCase() ===
-              selectedCommittee.toLowerCase()
-          );
-        }
-        return false;
+        return applicant.preferences.some(
+          (preference) =>
+            preference.committee.toLowerCase() ===
+            selectedCommittee.toLowerCase()
+        );
       });
     }
 
@@ -189,7 +181,7 @@ const CommitteeApplicantOverView: NextPage = () => {
                   "Bankom",
                   "Klasse",
                   "Telefon",
-                  "E-Post",
+                  "E-post",
                 ].map((header) => (
                   <th
                     key={header}
