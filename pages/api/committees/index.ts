@@ -17,7 +17,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === "GET") {
     try {
-      const { committees, error } = await getCommittees();
+      const { committees, error } = await getCommittees(
+        session!.user?.committees ?? []
+      );
       if (error) throw new Error(error);
 
       return res.status(200).json({ committees });
@@ -34,7 +36,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-      const { committee, error } = await createCommittee(committeeData);
+      const { committee, error } = await createCommittee(
+        committeeData,
+        session!.user?.committees ?? []
+      );
       if (error) throw new Error(error);
 
       return res.status(201).json({ committee });
@@ -52,7 +57,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-      const { error } = await deleteCommittee(committee, periodId);
+      const { error } = await deleteCommittee(
+        committee,
+        periodId,
+        session!.user?.committees ?? []
+      );
       if (error) throw new Error(error);
 
       return res

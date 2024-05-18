@@ -52,6 +52,7 @@ const Committee: NextPage = () => {
       try {
         const res = await fetch("/api/committees");
         const data = await res.json();
+        console.log(data);
 
         if (data && Array.isArray(data.committees)) {
           setCommitteeInterviewTimes(data.committees);
@@ -216,6 +217,7 @@ const Committee: NextPage = () => {
       }
 
       const result = await response.json();
+
       toast.success("Tidene er sendt inn!");
       setHasAlreadySubmitted(true);
     } catch (error) {
