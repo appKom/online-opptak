@@ -104,7 +104,6 @@ export const getPeriodById = async (id: string | ObjectId) => {
     if (period) {
       return { exists: true, period };
     } else {
-      console.log("Period not found");
       return { exists: false };
     }
   } catch (error) {
