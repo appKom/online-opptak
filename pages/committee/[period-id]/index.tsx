@@ -21,7 +21,7 @@ const CommitteeApplicantOverView: NextPage = () => {
   const [selectedCommittee, setSelectedCommittee] = useState<string | null>(
     null
   );
-  const [selectedYear, setSelectedYear] = useState<string | null>(null);
+  const [selectedYear, setSelectedYear] = useState<string>(""); // Initialize with empty string
   const [years, setYears] = useState<string[]>([]);
 
   useEffect(() => {
@@ -74,16 +74,22 @@ const CommitteeApplicantOverView: NextPage = () => {
   }, [session, periodId]);
 
   useEffect(() => {
-    if (searchQuery) {
-      setFilteredApplicants(
-        applicants.filter((applicant) =>
-          applicant.name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+    let filtered = applicants;
+
+    if (selectedYear) {
+      filtered = filtered.filter(
+        (applicant) => applicant.grade.toString() === selectedYear
       );
-    } else {
-      setFilteredApplicants(applicants);
     }
-  }, [searchQuery, applicants]);
+
+    if (searchQuery) {
+      filtered = filtered.filter((applicant) =>
+        applicant.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setFilteredApplicants(filtered);
+  }, [selectedYear, searchQuery, applicants]);
 
   useEffect(() => {
     if (period && session) {
@@ -95,18 +101,6 @@ const CommitteeApplicantOverView: NextPage = () => {
       setCommittees(filteredCommittees);
     }
   }, [period, session]);
-
-  useEffect(() => {
-    let filtered = applicants;
-
-    if (selectedYear !== "") {
-      filtered = filtered.filter(
-        (applicant) => applicant.grade.toString() === selectedYear
-      );
-    }
-
-    setFilteredApplicants(filtered);
-  }, [selectedYear, applicants]);
 
   if (!session || !session.user?.isCommitee) {
     return <NotFound />;
@@ -148,7 +142,7 @@ const CommitteeApplicantOverView: NextPage = () => {
         <div className="px-5">
           <select
             className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-            value={selectedYear ?? ""}
+            value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
           >
             <option value="">Velg klasse</option>
