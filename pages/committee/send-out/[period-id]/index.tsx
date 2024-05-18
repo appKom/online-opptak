@@ -97,57 +97,46 @@ const CommitteeApplicantOverView: NextPage = () => {
     }
   }, [period, session]);
 
-  const findMatchingTimes = (
-    applicantTimes: { start: string; end: string }[],
-    committeeTimes: { start: string; end: string }[],
-    timeslot: number
-  ) => {
-    const matchingTimes: { start: string; end: string }[] = [];
-
-    applicantTimes.forEach((appTime) => {
-      const appStart = new Date(appTime.start);
-      const appEnd = new Date(appTime.end);
-
-      committeeTimes.forEach((commTime) => {
-        const commStart = new Date(commTime.start);
-        const commEnd = new Date(commTime.end);
-
-        const overlapStart = new Date(
-          Math.max(appStart.getTime(), commStart.getTime())
-        );
-        const overlapEnd = new Date(
-          Math.min(appEnd.getTime(), commEnd.getTime())
-        );
-
-        if (overlapStart < overlapEnd) {
-          let currentStart = overlapStart;
-
-          while (currentStart < overlapEnd) {
-            const currentEnd = new Date(
-              currentStart.getTime() + timeslot * 60000
-            );
-
-            if (currentEnd <= overlapEnd) {
-              matchingTimes.push({
-                start: currentStart.toISOString(),
-                end: currentEnd.toISOString(),
-              });
-            }
-
-            currentStart = currentEnd;
-          }
-        }
-      });
-    });
-
-    return matchingTimes;
-  };
-
   const scheduleInterview = (applicantId: string, time: string) => {
-    setInterviewSchedule((prevSchedule) => ({
-      ...prevSchedule,
+    setInterviewSchedule((prev) => ({
+      ...prev,
       [applicantId]: time,
     }));
+  };
+
+  const findMatchingTimes = (
+    applicantTimes: any[],
+    committeeTimes: any[],
+    duration: number
+  ) => {
+    const matches: any[] = [];
+
+    // Convert duration from minutes to milliseconds
+    const durationMs = duration * 60 * 1000;
+
+    // Iterate through each applicant time slot
+    for (const applicantTime of applicantTimes) {
+      const applicantStart = new Date(applicantTime.start).getTime();
+      const applicantEnd = new Date(applicantTime.end).getTime();
+
+      // Iterate through each committee time slot
+      for (const committeeTime of committeeTimes) {
+        const committeeStart = new Date(committeeTime.start).getTime();
+        const committeeEnd = new Date(committeeTime.end).getTime();
+
+        // Check if the time slots overlap and if they can accommodate the duration
+        const start = Math.max(applicantStart, committeeStart);
+        const end = Math.min(applicantEnd, committeeEnd);
+        if (end - start >= durationMs) {
+          matches.push({
+            start: new Date(start).toISOString(),
+            end: new Date(start + durationMs).toISOString(),
+          });
+        }
+      }
+    }
+
+    return matches;
   };
 
   if (!session || !session.user?.isCommitee) {

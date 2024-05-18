@@ -1,11 +1,18 @@
-from typing import TypedDict
+from urllib import request
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from mip_matching.TimeInterval import TimeInterval
 from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
+from flask import Flask, request, jsonify
+from datetime import datetime, timedelta
+import mip
+from typing import TypedDict, List, Dict, Any
 
-from typing import TypedDict
+
 
 
 class MeetingMatch(TypedDict):
@@ -81,3 +88,37 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
     }
 
     return match_object
+
+app = Flask(__name__)
+
+@app.route('/api/interview', methods=['POST'])
+def match():
+    data = request.json
+    if data is None:
+        return jsonify({'error': 'Invalid JSON data'})
+
+    applicants_data = data['applicants']
+    committees_data = data['committees']
+    duration = timedelta(minutes=data['duration'])
+
+    committees = [Committee(comm['name'], timedelta(minutes=comm['interview_length'])) for comm in committees_data]
+    for comm, comm_data in zip(committees, committees_data):
+        for slot in comm_data['slots']:
+            comm.add_interval(TimeInterval(datetime.fromisoformat(slot['start']), datetime.fromisoformat(slot['end'])), comm_data['capacity'])
+
+    committees_dict = {comm.name: comm for comm in committees}
+
+    applicants = [Applicant(app['name']) for app in applicants_data]
+    for app, app_data in zip(applicants, applicants_data):
+        for slot in app_data['slots']:
+            app.add_interval(TimeInterval(datetime.fromisoformat(slot['start']), datetime.fromisoformat(slot['end'])))
+        for committee_name in app_data['committees']:
+            if committee_name in committees_dict:
+                app.add_committee(committees_dict[committee_name])
+
+    match_result = match_meetings(set(applicants), set(committees))
+    return jsonify(match_result)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

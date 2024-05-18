@@ -1,17 +1,10 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "python.testing.unittestArgs": [
-    "-v",
-    "-s",
-    "./algorithm",
-    "-p",
-    "*test.py"
-  ],
+  "python.testing.unittestArgs": ["-v", "-s", "./algorithm", "-p", "*test.py"],
   "python.analysis.typeCheckingMode": "standard",
   "python.testing.unittestEnabled": true,
   "python.testing.pytestEnabled": false,
-  "conventionalCommits.scopes": [
-    "algorithm"
-  ],
+  "conventionalCommits.scopes": ["algorithm"],
+  "python.analysis.extraPaths": ["./algorithm"]
 }
