@@ -112,23 +112,29 @@ export const getApplicantsForCommittee = async (
     //Fjerner prioriterings informasjon
     const filteredApplicants = result
       .map((applicant) => {
-        const preferencesArray = [
-          applicant.preferences.first,
-          applicant.preferences.second,
-          applicant.preferences.third,
-        ];
+        // Check if preferences are in the form of first, second, third
+        let preferencesArray: { committee: string }[];
+        if ("first" in applicant.preferences) {
+          preferencesArray = [
+            { committee: applicant.preferences.first },
+            { committee: applicant.preferences.second },
+            { committee: applicant.preferences.third },
+          ];
+        } else {
+          preferencesArray = applicant.preferences as { committee: string }[];
+        }
 
         //Sjekker om brukerens komite er blant søkerens komiteer
         const hasCommonCommittees = preferencesArray.some((preference) =>
-          userCommittees.includes(preference)
+          userCommittees.includes(preference.committee)
         );
 
         if (hasCommonCommittees) {
           // Fjerner prioriteringer
           const { preferences, ...rest } = applicant;
-          const filteredPreferences = preferencesArray
-            .filter((preference) => userCommittees.includes(preference))
-            .map((committee) => ({ committee }));
+          const filteredPreferences = preferencesArray.filter((preference) =>
+            userCommittees.includes(preference.committee)
+          );
 
           return { ...rest, preferences: filteredPreferences };
         }

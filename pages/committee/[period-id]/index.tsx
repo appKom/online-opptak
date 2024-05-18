@@ -85,6 +85,7 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   useEffect(() => {
     let filtered = applicants;
+    // console.log(filtered);
 
     if (selectedCommittee) {
       filtered = filtered.filter((applicant) => {
