@@ -38,6 +38,7 @@ export type applicantType = {
 };
 
 export type applicantTypeForCommittees = {
+  _id: ObjectId;
   owId: string;
   name: string;
   email: string;
