@@ -98,6 +98,51 @@ export const getApplications = async (periodId: string) => {
   }
 };
 
+export const getApplicantsForCommittee = async (
+  periodId: string,
+  userCommittees: string[]
+) => {
+  try {
+    if (!applicants) await init();
+
+    // Henter alle søkere for perioden
+    const result = await applicants.find({ periodId: periodId }).toArray();
+
+    //Filtrerer søkerne slik at kun brukere som er i komiteen som har blitt søkt på ser søkeren
+    //Fjerner prioriterings informasjon
+    const filteredApplicants = result
+      .map((applicant) => {
+        const preferencesArray = [
+          applicant.preferences.first,
+          applicant.preferences.second,
+          applicant.preferences.third,
+        ];
+
+        //Sjekker om brukerens komite er blant søkerens komiteer
+        const hasCommonCommittees = preferencesArray.some((preference) =>
+          userCommittees.includes(preference)
+        );
+
+        if (hasCommonCommittees) {
+          // Fjerner prioriteringer
+          const { preferences, ...rest } = applicant;
+          const filteredPreferences = preferencesArray
+            .filter((preference) => userCommittees.includes(preference))
+            .map((committee) => ({ committee }));
+
+          return { ...rest, preferences: filteredPreferences };
+        }
+        return null;
+      })
+      .filter((applicant) => applicant !== null);
+
+    return { applicants: filteredApplicants };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch applicants" };
+  }
+};
+
 export const deleteApplication = async (
   owId: string,
   periodId: string | ObjectId

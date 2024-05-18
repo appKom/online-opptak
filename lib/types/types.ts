@@ -63,6 +63,27 @@ export type AvailableTime = {
   end: string;
 };
 
+export type applicantTypeForCommittees = {
+  _id: ObjectId;
+  owId: string;
+  name: string;
+  email: string;
+  phone: string;
+  grade: number;
+  about: string;
+  preferences: { committee: string }[];
+  bankom: "yes" | "no" | "maybe";
+  feminIt: "yes" | "no";
+  selectedTimes: [
+    {
+      start: string;
+      end: string;
+    },
+  ];
+  date: Date;
+  periodId: string | ObjectId;
+};
+
 export type committeeInterviewType = {
   periodId: string;
   period_name: string;
