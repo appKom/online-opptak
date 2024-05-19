@@ -18,7 +18,6 @@ const Home = () => {
         const res = await fetch("/api/periods");
         const data = await res.json();
         const today = new Date();
-        console.log(data);
 
         setCurrentPeriods(
           data.periods.filter((period: periodType) => {
@@ -33,8 +32,6 @@ const Home = () => {
       }
     };
 
-    console.log(session?.user?.committees);
-    // console.log(session?.user?.isCommitee);
     fetchPeriods();
   }, []);
 
