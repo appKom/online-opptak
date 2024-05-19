@@ -13,6 +13,7 @@ export type commiteeType = {
       end: string;
     },
   ];
+  timeslot: string;
 };
 
 export type applicantType = {

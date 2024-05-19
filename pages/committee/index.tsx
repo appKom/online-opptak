@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Tabs } from "../../components/Tabs";
 import CommitteeApplicants from "../../components/committee/committe-applicants";
+import CommitteeInterviewPeriod from "../../components/committee/committee-interview-period";
 
 const Committee: NextPage = () => {
   const { data: session } = useSession();
@@ -39,6 +40,15 @@ const Committee: NextPage = () => {
             content: (
               <>
                 <CommitteeApplicants routeString={"/committee/applications/"} />
+              </>
+            ),
+          },
+          {
+            title: "Intervju",
+            icon: <CheckIcon className="w-5 h-5" />,
+            content: (
+              <>
+                <CommitteeInterviewPeriod />
               </>
             ),
           },
