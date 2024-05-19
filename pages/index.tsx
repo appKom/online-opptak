@@ -1,15 +1,11 @@
 import { useSession } from "next-auth/react";
-import Footer from "../components/Footer";
 import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
 import { useEffect, useState } from "react";
 import { periodType } from "../lib/types/types";
-import { useRouter } from "next/router";
 import PeriodCard from "../components/PeriodCard";
-import Button from "../components/Button";
 
 const Home = () => {
   const { data: session } = useSession();
-  const router = useRouter();
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -39,7 +35,7 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="flex text-center justify-center">
+      <div className="flex justify-center text-center">
         <h2 className="text-2xl font-semibold text-online-darkBlue dark:text-white">
           Vent litt...
         </h2>
@@ -54,11 +50,11 @@ const Home = () => {
           currentPeriods.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-8">
               <h1 className="text-3xl ">Ingen åpne opptak for øyeblikket</h1>
-              <p className="text-md w-10/12 max-w-2xl text-center ">
+              <p className="w-10/12 max-w-2xl text-center text-md ">
                 Opptak til{" "}
                 <a
                   href="https://online.ntnu.no/applications"
-                  className="text-online-darkBlue dark:text-white underline hover:text-online-orange dark:hover:text-online-orange"
+                  className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
                 >
                   komiteene
                 </a>{" "}
@@ -67,16 +63,15 @@ const Home = () => {
                 med på{" "}
                 <a
                   href="https://online.ntnu.no"
-                  className="text-online-darkBlue dark:text-white underline hover:text-online-orange dark:hover:text-online-orange"
+                  className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
                 >
                   online.ntnu.no
                 </a>{" "}
-                eller på vår{""}
+                eller på vår{" "}
                 <a
                   href="https://www.facebook.com/groups/1547182375336132"
-                  className="text-online-darkBlue dark:text-white underline hover:text-online-orange dark:hover:text-online-orange"
+                  className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
                 >
-                  {" "}
                   Facebook
                 </a>{" "}
                 side for kunngjøringer!
@@ -87,7 +82,7 @@ const Home = () => {
               <h3 className="text-xl font-semibold text-center text-online-darkBlue dark:text-white">
                 Nåværende søknadsperioder
               </h3>
-              <div className="flex flex-wrap gap-5 justify-center max-w-full">
+              <div className="flex flex-wrap justify-center max-w-full gap-5">
                 {currentPeriods.map((period: periodType, index: number) => (
                   <PeriodCard key={index} period={period} />
                 ))}

@@ -8,7 +8,7 @@ import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
 import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Make sure you have the XMarkIcon
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import ThemeToggle from "./ThemeToggle";
 import CommitteeIcon from "./icons/icons/CommitteeIcon";
 
@@ -55,7 +55,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-gray-600">
+      <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-0 dark:bg-gray-800">
         <Link href="/" passHref>
           <a
             className={isLinkActive("/") ? "active" : ""}
@@ -111,7 +111,7 @@ const Navbar = () => {
                 title="For komiteer"
                 color="blue"
                 size="small"
-                icon={<CommitteeIcon fill="" className="w-4 h-4" />}
+                /* icon={<CommitteeIcon fill="" className="w-4 h-4" />} */
                 onClick={() => router.push("/committee")}
               />
             )}
@@ -149,25 +149,25 @@ const Navbar = () => {
           src={theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg"}
           width={100}
           height={30 * 1.5}
-          alt="Online logo"
+          alt="Bekk logo"
           className="transition-all cursor-pointer hover:opacity-60"
         />
         <div className="relative">
           <button onClick={toggleDropdown} className="flex justify-end">
             {isDropdownOpen ? (
-              <XMarkIcon className="h-10 w-10 text-gray-500 dark:text-white transition-transform transform rotate-45" />
+              <XMarkIcon className="w-10 h-10 text-gray-500 transition-transform transform rotate-45 dark:text-white" />
             ) : (
-              <Bars3Icon className="h-10 w-10 text-gray-500 dark:text-white transition-transform transform" />
+              <Bars3Icon className="w-10 h-10 text-gray-500 transition-transform transform dark:text-white" />
             )}
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 py-2 w-48 rounded-lg shadow-xl bg-white dark:bg-online-darkBlue border-t border-gray-200 dark:border-gray-600">
+            <div className="absolute right-0 w-48 py-2 mt-2 bg-white border-t border-gray-200 rounded-lg shadow-xl dark:bg-online-darkBlue dark:border-gray-600">
               {!session ? (
                 <div>
                   <ThemeToggle />
                   <a
                     onClick={handleLogin}
-                    className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     Logg inn
                   </a>
@@ -184,7 +184,7 @@ const Navbar = () => {
                         router.push("/admin");
                         toggleDropdown();
                       }}
-                      className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Admin
                     </a>
@@ -196,7 +196,7 @@ const Navbar = () => {
                         router.push("/committee");
                         toggleDropdown();
                       }}
-                      className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       For komiteer
                     </a>
@@ -207,7 +207,7 @@ const Navbar = () => {
                       handleLogout();
                       toggleDropdown();
                     }}
-                    className="cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
                     Logg ut
                   </a>

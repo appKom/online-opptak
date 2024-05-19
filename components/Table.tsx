@@ -18,26 +18,26 @@ interface TableProps {
 
 const Table = ({ rows, columns }: TableProps) => {
   return (
-    <div className="overflow-hidden rounded-lg border shadow-md border-gray-200 dark:border-gray-700">
-      <table className="w-full border-collapse  text-gray-500 dark:bg-online-darkBlue dark:text-gray-200">
-        <thead className="bg-gray-50 dark:bg-online-darkBlue">
+    <div className="overflow-hidden border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
+      <table className="w-full text-gray-500 border-collapse dark:bg-online-darkBlue dark:text-gray-200">
+        <thead className="bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.label}
-                className="px-6 py-4 font-medium  text-gray-900 dark:text-gray-200"
+                className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
               >
                 {column.label}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-gray-100 border-t border-gray-100 dark:divide-gray-600 dark:border-t border-gray-60">
+        <tbody className="border-t border-gray-100 dark:border-0">
           {rows.map((row) => (
             <Link key={"link-" + row.id} href={row.link || ""}>
               <tr
                 key={"tr-" + row.id}
-                className="relative hover: bg-gray-50 dark:bg-online-darkBlue cursor-pointer hover:text-online-orange"
+                className="relative cursor-pointer hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-900 dark:border-gray-700"
               >
                 {columns.map((column) => (
                   <td
