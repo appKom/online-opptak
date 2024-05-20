@@ -16,6 +16,12 @@ export type commiteeType = {
   timeslot: string;
 };
 
+export type Event = {
+  id: string;
+  start: string;
+  applicant: applicantTypeForCommittees | null;
+};
+
 export type applicantType = {
   owId: string;
   name: string;
