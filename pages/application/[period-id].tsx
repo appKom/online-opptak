@@ -84,6 +84,7 @@ const Application: NextPage = () => {
   }, [session?.user?.owId, periodId]);
 
   const handleSubmitApplication = async () => {
+    console.log(applicationData);
     if (!validateApplication(applicationData)) {
       return;
     }
@@ -187,33 +188,6 @@ const Application: NextPage = () => {
           <p className="animate-pulse">Vent litt...</p>
         ) : !periodExists ? (
           <p>Perioden finnes ikke</p>
-        ) : hasAlreadySubmitted ? (
-          <div className="flex flex-col items-center justify-center gap-5 px-6 md:px-40 lg:px-80">
-            <WellDoneIllustration className="h-32" />
-            <p className="text-lg text-center">
-              Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!
-              Du vil få enda en e-post med intervjutider når søknadsperioden er
-              over.
-            </p>
-            <div className="flex gap-5">
-              <Button
-                title="Trekk tilbake søknad"
-                color="white"
-                onClick={handleDeleteApplication}
-              />
-              <Button
-                title={shouldShowListView ? "Se søknad" : "Skjul søknad"}
-                color="blue"
-                onClick={() => {
-                  fetchApplicationData();
-                  setShouldShowListView(!shouldShowListView);
-                }}
-              />
-            </div>
-            {fetchedApplicationData && !shouldShowListView && (
-              <ApplicationOverview application={fetchedApplicationData} />
-            )}
-          </div>
         ) : (
           <Tabs
             activeTab={activeTab}
@@ -330,10 +304,10 @@ const validateApplication = (applicationData: any) => {
   }
 
   // Check if FeminIT interest is specified
-  if (applicationData.feminIt === undefined) {
-    toast.error("Velg om du er interessert i FeminIT");
-    return false;
-  }
+  // if (applicationData.feminIt === undefined) {
+  //   toast.error("Velg om du er interessert i FeminIT");
+  //   return false;
+  // }
 
   // Validate selected times
   if (applicationData.selectedTimes.length === 0) {

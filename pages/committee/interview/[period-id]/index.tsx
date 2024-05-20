@@ -13,15 +13,14 @@ import {
 
 type Event = {
   id: string;
-  start: string;
-  day: string;
+  start: string; // ISO string in local time
   applicant: applicantTypeForCommittees | null;
 };
 
 type CalendarProps = {
   events: Event[];
-  moveEvent: (id: string, start: string, day: string) => void;
-  addEvent: (start: string, day: string) => void;
+  moveEvent: (id: string, start: string) => void;
+  addEvent: (start: string) => void;
   deleteEvent: (id: string) => void;
   timePeriod: number;
   interviewPeriod: { start: Date; end: Date };
@@ -57,7 +56,6 @@ const CommitteeInterviewPage: NextPage = () => {
         const res = await fetch(`/api/periods/${periodId}`);
         const data = await res.json();
         setPeriod(data.period);
-        console.log(data.period);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
       }
@@ -71,7 +69,6 @@ const CommitteeInterviewPage: NextPage = () => {
         const filteredCommittees = data.committees.filter(
           (committee: { periodId: any }) => committee.periodId === periodId
         );
-        console.log(filteredCommittees);
         setCommittee(filteredCommittees[0]);
         setTimePeriod(filteredCommittees[0].timeslot);
       } catch (error) {
@@ -119,16 +116,14 @@ const CommitteeInterviewPage: NextPage = () => {
     fetchPeriod();
   }, [session, periodId]);
 
-  const moveEvent = useCallback((id: string, start: string, day: string) => {
+  const moveEvent = useCallback((id: string, start: string) => {
     setEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event.id === id ? { ...event, start, day } : event
-      )
+      prevEvents.map((event) => (event.id === id ? { ...event, start } : event))
     );
   }, []);
 
   const addEvent = useCallback(
-    (start: string, day: string) => {
+    (start: string) => {
       if (
         events.length >= maxEvents ||
         assignedApplicants.size >= applicants.length
@@ -148,7 +143,7 @@ const CommitteeInterviewPage: NextPage = () => {
 
       setEvents((prevEvents) => [
         ...prevEvents,
-        { id: uuidv4(), start, day, applicant },
+        { id: uuidv4(), start, applicant },
       ]);
     },
     [events, maxEvents, applicants, assignedApplicants]
@@ -174,7 +169,7 @@ const CommitteeInterviewPage: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-3xl font-bold p-10">Planleg intervju</h1>
+      <h1 className="text-3xl font-bold p-10">Planlegg intervju</h1>
       <div className="mb-4 flex flex-row gap-20">
         <p>Intervjulengde: {timePeriod}min</p>
         <div className="items-end justify-end">
@@ -188,7 +183,7 @@ const CommitteeInterviewPage: NextPage = () => {
           <Calendar
             events={events}
             moveEvent={moveEvent}
-            addEvent={(start: string, day: string) => addEvent(start, day)}
+            addEvent={(start: string) => addEvent(start)}
             deleteEvent={deleteEvent}
             timePeriod={timePeriod}
             interviewPeriod={{
@@ -218,7 +213,12 @@ const Calendar: React.FC<CalendarProps> = ({
     const slots = [];
     for (let hour = startHour; hour < endHour; hour++) {
       for (let minutes = 0; minutes < 60; minutes += period) {
-        const time = `${hour}:${minutes === 0 ? "00" : minutes}`;
+        let formattedMinutes = minutes.toString().padStart(2, "0");
+        if (formattedMinutes === "030") {
+          formattedMinutes = "30";
+        }
+        let formattedHour = hour.toString().padStart(2, "0");
+        const time = `${formattedHour}:${formattedMinutes}`;
         slots.push(time);
       }
     }
@@ -227,10 +227,10 @@ const Calendar: React.FC<CalendarProps> = ({
 
   const hours = generateTimeSlots(8, 17, timePeriod);
 
-  //Eksluderer helg
+  // Exclude weekends
   const generateDates = (startDate: Date, endDate: Date) => {
     const dates = [];
-    let currentDate = startDate;
+    let currentDate = new Date(startDate);
     while (currentDate <= endDate) {
       const dayOfWeek = currentDate.getDay();
       if (dayOfWeek !== 0 && dayOfWeek !== 6) {
@@ -262,11 +262,12 @@ const Calendar: React.FC<CalendarProps> = ({
               <HourRow
                 key={`${date.toDateString()}-${hour}`}
                 hour={hour}
-                day={date.toDateString()}
+                date={date}
                 events={events}
                 moveEvent={moveEvent}
                 addEvent={addEvent}
                 deleteEvent={deleteEvent}
+                timePeriod={timePeriod}
               />
             ))}
           </div>
@@ -278,40 +279,62 @@ const Calendar: React.FC<CalendarProps> = ({
 
 type HourRowProps = {
   hour: string;
-  day: string;
+  date: Date;
   events: Event[];
-  moveEvent: (id: string, start: string, day: string) => void;
-  addEvent: (start: string, day: string) => void;
+  moveEvent: (id: string, start: string) => void;
+  addEvent: (start: string) => void;
   deleteEvent: (id: string) => void;
+  timePeriod: number;
 };
 
 const HourRow: React.FC<HourRowProps> = ({
   hour,
-  day,
+  date,
   events,
   moveEvent,
   addEvent,
   deleteEvent,
+  timePeriod,
 }) => {
   const [, drop] = useDrop({
     accept: "event",
-    drop: (item: { id: string }) => moveEvent(item.id, hour, day),
+    drop: (item: { id: string }) => {
+      const start = new Date(date);
+      const [hours, minutes] = hour.split(":").map(Number);
+      start.setHours(hours, minutes, 0, 0);
+      moveEvent(item.id, start.toISOString());
+    },
   });
 
   return (
     <div
       ref={drop}
       className="flex items-center justify-between h-12 p-2 cursor-pointer"
-      onClick={() => addEvent(hour, day)}
+      onClick={() => {
+        const start = new Date(date);
+        const [hours, minutes] = hour.split(":").map(Number);
+        start.setHours(hours, minutes, 0, 0);
+        addEvent(start.toISOString());
+      }}
     >
       <div className="flex-1 flex items-center space-x-2">
         {events
-          .filter((event) => event.start === hour && event.day === day)
+          .filter(
+            (event) =>
+              new Date(event.start).getTime() ===
+              new Date(date).setHours(
+                parseInt(hour.split(":")[0]),
+                parseInt(hour.split(":")[1]),
+                0,
+                0
+              )
+          )
           .map((event) => (
             <EventBlock
               key={event.id}
               event={event}
               deleteEvent={deleteEvent}
+              timePeriod={timePeriod}
             />
           ))}
       </div>
@@ -322,9 +345,14 @@ const HourRow: React.FC<HourRowProps> = ({
 type EventBlockProps = {
   event: Event;
   deleteEvent: (id: string) => void;
+  timePeriod: number;
 };
 
-const EventBlock: React.FC<EventBlockProps> = ({ event, deleteEvent }) => {
+const EventBlock: React.FC<EventBlockProps> = ({
+  event,
+  deleteEvent,
+  timePeriod,
+}) => {
   const [, drag] = useDrag({
     type: "event",
     item: { id: event.id },
@@ -335,12 +363,31 @@ const EventBlock: React.FC<EventBlockProps> = ({ event, deleteEvent }) => {
     deleteEvent(event.id);
   };
 
+  const isAvailable = (applicant: applicantTypeForCommittees, event: Event) => {
+    const eventStart = new Date(event.start).toISOString();
+    const eventEnd = new Date(
+      new Date(event.start).getTime() + timePeriod * 60000
+    ).toISOString();
+
+    return applicant.selectedTimes.some(
+      (time) => time.start <= eventStart && time.end >= eventEnd
+    );
+  };
+
+  const applicant = event.applicant;
+  const available = applicant ? isAvailable(applicant, event) : false;
+  const backgroundColor = available ? "bg-blue-500" : "bg-red-500";
+
   return (
     <div
       ref={drag}
-      className="bg-blue-500 text-white p-2 rounded flex items-center"
+      className={`${backgroundColor} text-white p-2 rounded flex items-center`}
     >
-      <span>{event.applicant ? event.applicant.name : "No Applicant"}</span>
+      <span>
+        {applicant
+          ? applicant.name + " " + event.start.slice(11, 16)
+          : "No Applicant"}
+      </span>
       <button onClick={handleDelete} className="ml-2 text-red-500">
         ✕
       </button>
