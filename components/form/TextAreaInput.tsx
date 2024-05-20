@@ -8,7 +8,6 @@ const TextAreaInput = (props: Props) => {
   const handleInputChange = (e: HTMLTextAreaElement) => {
     props.updateInputValues(e.value);
   };
-
   return (
     <div className="justify-center w-full max-w-xs mx-auto my-6">
       <div className="relative">
@@ -17,7 +16,7 @@ const TextAreaInput = (props: Props) => {
           rows={6}
           id="textAreaComponent"
           placeholder={props.placeholder}
-          className="block w-full px-3 py-2 m-0 text-base font-normal transition ease-in-out border rounded shadow-sm peer bg-clip-padding focus:outline-none placeholder:text-sm text-gray-700 border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-700"
+          className="block w-full px-3 py-2 m-0 text-base font-normal text-gray-700 transition ease-in-out bg-white border border-gray-300 rounded shadow-sm peer bg-clip-padding focus:text-gray-700 focus:outline-none placeholder:text-sm dark:bg-online-darkBlue"
           onChange={(e) => {
             handleInputChange(e.target);
           }}
@@ -25,7 +24,7 @@ const TextAreaInput = (props: Props) => {
         ></textarea>
         <label
           htmlFor="textAreaComponent"
-          className="absolute z-10 px-1 text-xs -top-2 left-2 text-gray-500 dark:text-white dark:bg-online-darkBlue"
+          className="absolute z-10 px-1 text-xs text-gray-500 bg-white -top-2 left-2 dark:bg-online-darkBlue dark:text-gray-200"
         >
           {props.label}
         </label>

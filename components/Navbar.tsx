@@ -10,7 +10,7 @@ import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import ThemeToggle from "./ThemeToggle";
-import CommitteeIcon from "./icons/icons/CommitteeIcon";
+import DropdownMenu from "./DropdownMenu";
 
 const Navbar = () => {
   const router = useRouter();
@@ -111,7 +111,6 @@ const Navbar = () => {
                 title="For komiteer"
                 color="blue"
                 size="small"
-                /* icon={<CommitteeIcon fill="" className="w-4 h-4" />} */
                 onClick={() => router.push("/committee")}
               />
             )}
@@ -161,59 +160,13 @@ const Navbar = () => {
             )}
           </button>
           {isDropdownOpen && (
-            <div className="absolute right-0 w-48 py-2 mt-2 bg-white border-t border-gray-200 rounded-lg shadow-xl dark:bg-online-darkBlue dark:border-gray-600">
-              {!session ? (
-                <div>
-                  <ThemeToggle />
-                  <a
-                    onClick={handleLogin}
-                    className="block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    Logg inn
-                  </a>
-                </div>
-              ) : (
-                <>
-                  <div className="px-4 py-2 text-sm text-gray-700 dark:text-white">
-                    Logget inn som{" "}
-                    <span className="font-medium">{session.user?.name}</span>
-                  </div>
-                  {session.user?.role === "admin" && (
-                    <a
-                      onClick={() => {
-                        router.push("/admin");
-                        toggleDropdown();
-                      }}
-                      className="block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      Admin
-                    </a>
-                  )}
-
-                  {session.user?.isCommitee && (
-                    <a
-                      onClick={() => {
-                        router.push("/committee");
-                        toggleDropdown();
-                      }}
-                      className="block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                    >
-                      For komiteer
-                    </a>
-                  )}
-                  <ThemeToggle />
-                  <a
-                    onClick={() => {
-                      handleLogout();
-                      toggleDropdown();
-                    }}
-                    className="block px-4 py-2 text-sm text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    Logg ut
-                  </a>
-                </>
-              )}
-            </div>
+            <DropdownMenu
+              session={session}
+              handleLogin={handleLogin}
+              handleLogout={handleLogout}
+              router={router}
+              toggleDropdown={toggleDropdown}
+            />
           )}
         </div>
       </div>
