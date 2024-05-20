@@ -170,6 +170,18 @@ const CommitteeInterviewPage: NextPage = () => {
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-3xl font-bold p-10">Planlegg intervju</h1>
+      <div className="flex justify-center gap-10 text-gray-700 py-10">
+        <div className="flex items-center gap-2">
+          <div className="w-16 h-8 bg-green-500 border border-gray-300 rounded-sm"></div>
+          Kandidaten er ledig
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-16 h-8 bg-red-500 border border-gray-300 rounded-sm"></div>
+          <div>
+            Kandidaten er <span className="font-bold">ikke</span> ledig
+          </div>
+        </div>
+      </div>
       <div className="mb-4 flex flex-row gap-20">
         <p>Intervjulengde: {timePeriod}min</p>
         <div className="items-end justify-end">
@@ -376,7 +388,7 @@ const EventBlock: React.FC<EventBlockProps> = ({
 
   const applicant = event.applicant;
   const available = applicant ? isAvailable(applicant, event) : false;
-  const backgroundColor = available ? "bg-blue-500" : "bg-red-500";
+  const backgroundColor = available ? "bg-green-500" : "bg-red-500";
 
   return (
     <div
@@ -388,7 +400,7 @@ const EventBlock: React.FC<EventBlockProps> = ({
           ? applicant.name + " " + event.start.slice(11, 16)
           : "No Applicant"}
       </span>
-      <button onClick={handleDelete} className="ml-2 text-red-500">
+      <button onClick={handleDelete} className="ml-2 text-white">
         ✕
       </button>
     </div>
