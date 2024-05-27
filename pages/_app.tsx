@@ -73,11 +73,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
         <link rel="icon" href="/Online_bla_o.svg" />
         <title>Online Komitéopptak</title>
       </Head>
-      <div className="bg-white dark:bg-gray-900 min-h-screen dark:text-white">
+      <div className="flex flex-col min-h-screen text-white bg-white dark:bg-gray-900">
         <SessionHandler>
           <Toaster />
           <Navbar />
-          <Component {...pageProps} />
+          <div className="flex-grow">
+            <Component {...pageProps} />
+          </div>
           <Footer />
         </SessionHandler>
       </div>
