@@ -10,17 +10,20 @@ type Props = {
 
 const DropdownMenu = (props: Props) => {
   return (
-    <div className="absolute right-0 w-48 py-2 mt-2 bg-white border-t border-gray-200 rounded-lg shadow-xl dark:bg-online-darkBlue dark:border-gray-600 text-gray-700 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 text-sm">
+    <div className="absolute right-0 w-48 py-2 mt-2 text-gray-700 bg-white border-t border-gray-200 rounded-lg shadow-xl cursor-pointer dark:bg-online-darkBlue dark:border-gray-600 dark:text-whitetext-sm">
       {!props.session ? (
         <div>
           <ThemeToggle />
-          <a onClick={props.handleLogin} className="block px-4 py-2">
+          <a
+            onClick={props.handleLogin}
+            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
             Logg inn
           </a>
         </div>
       ) : (
         <>
-          <div className="px-4 py-2">
+          <div className="px-4 py-2 cursor-default">
             Logget inn som{" "}
             <span className="font-medium">{props.session.user?.name}</span>
           </div>
@@ -30,7 +33,7 @@ const DropdownMenu = (props: Props) => {
                 props.router.push("/admin");
                 props.toggleDropdown();
               }}
-              className="block px-4 py-2"
+              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               Admin
             </a>
@@ -42,7 +45,7 @@ const DropdownMenu = (props: Props) => {
                 props.router.push("/committee");
                 props.toggleDropdown();
               }}
-              className="block px-4 py-2 "
+              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
             >
               For komiteer
             </a>
@@ -53,7 +56,7 @@ const DropdownMenu = (props: Props) => {
               props.handleLogout();
               props.toggleDropdown();
             }}
-            className="block px-4 py-2"
+            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             Logg ut
           </a>
