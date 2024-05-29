@@ -7,11 +7,12 @@ import PeriodCard from "../components/PeriodCard";
 const Home = () => {
   const { data: session } = useSession();
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchPeriods = async () => {
       try {
+        setIsLoading(true);
         const res = await fetch("/api/periods");
         const data = await res.json();
         const today = new Date();
@@ -30,8 +31,8 @@ const Home = () => {
       }
     };
 
-    fetchPeriods();
-  }, []);
+    session && fetchPeriods();
+  }, [session]);
 
   if (isLoading) {
     return (
