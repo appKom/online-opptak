@@ -29,7 +29,7 @@ export const Tabs = (props: TabsProps) => {
     return (
       defaultTabClass +
       (tabIndex === props.activeTab
-        ? "relative text-online-darkTeal after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-online-orange hover:text-online-darkTeal dark:text-online-orange"
+        ? "relative text-online-darkTeal after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-online-darkTeal dark:after:bg-online-orange hover:text-online-darkTeal dark:text-online-orange"
         : "text-gray-500 hover:text-online-darkTeal dark:text-gray-200 dark:hover:text-online-orange")
     );
   };

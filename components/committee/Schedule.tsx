@@ -180,7 +180,7 @@ export default function Schedule({
         Flere ledige tider øker sjansen for automatisk tildeling av
         intervjutider!
       </div>
-      <div className="flex justify-center gap-10 text-gray-700">
+      <div className="flex justify-center gap-10 text-gray-700 dark:text-white">
         <div className="flex items-center gap-2">
           <div className="w-16 h-8 bg-green-200 border border-gray-300 rounded-sm"></div>
           Jeg er ledig
@@ -192,7 +192,7 @@ export default function Schedule({
           </div>
         </div>
       </div>
-      <div className="flex px-5 pt-2 pb-4 mt-5 border border-gray-300 rounded-md shadow w-max">
+      <div className="flex px-5 py-4 mt-5 border border-gray-200 rounded-md shadow w-max dark:bg-gray-800 dark:border-gray-700">
         <div className="flex flex-col justify-end">
           {timeSlots.map((time, index) => (
             <div
