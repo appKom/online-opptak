@@ -1,15 +1,14 @@
 import { useSession } from "next-auth/react";
+import Navbar from "../../../components/Navbar";
 import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
 
 const Admin = () => {
-  const periodId = router.query["period-id"];
-
   const { data: session } = useSession();
-
   const [isLoading, setIsLoading] = useState(true);
+  const periodId = router.query["period-id"];
   const [period, setPeriod] = useState<periodType>();
 
   const [applications, setApplications] = useState<applicantType[] | null>(
@@ -25,6 +24,9 @@ const Admin = () => {
 
   useEffect(() => {
     const fetchPeriod = async () => {
+      if (!session || session.user?.role !== "admin") {
+        return;
+      }
       if (periodId === undefined) return;
       setIsLoading(true);
       try {
@@ -44,6 +46,9 @@ const Admin = () => {
     };
 
     const fetchApplications = async () => {
+      if (!session || session.user?.role !== "admin") {
+        return;
+      }
       if (periodId === undefined) return;
       setIsLoading(true);
       try {
@@ -71,9 +76,7 @@ const Admin = () => {
     const committeeMatch =
       !selectedCommittee ||
       [first, second, third].some(
-        (pref) =>
-          displayPreference(pref).toLowerCase() ===
-          selectedCommittee.toLowerCase()
+        (pref) => pref && pref.toLowerCase() === selectedCommittee.toLowerCase()
       );
 
     const nameMatch =
@@ -83,16 +86,6 @@ const Admin = () => {
     return committeeMatch && nameMatch;
   });
 
-  function displayPreference(pref: any) {
-    if (typeof pref === "string") {
-      return pref;
-    }
-    if (pref && typeof pref === "object" && pref.name) {
-      return pref.name;
-    }
-    return "";
-  }
-
   useEffect(() => {}, [applications, committees]);
 
   if (!session || session.user?.role !== "admin") {
@@ -100,7 +93,7 @@ const Admin = () => {
   }
 
   return (
-    <div style={{ marginBottom: "50px" }}>
+    <div>
       <div className="flex justify-center">
         {isLoading ? (
           <p className="animate-pulse">Vent litt...</p>
@@ -163,18 +156,19 @@ const Admin = () => {
                 <tbody>
                   {filteredApplications.map((applicant, index) => (
                     <tr key={index}>
-                      <td className="p-2 border">{applicant.name}</td>
-                      <td className="p-2 border">
-                        {displayPreference(applicant.preferences.first)}
+                      <td className="p-2 border border-gray-200 dark:border-gray-700">
+                        {applicant.name}
                       </td>
-                      <td className="p-2 border">
-                        {displayPreference(applicant.preferences.second)}
+                      <td className="p-2 border border-gray-200 dark:border-gray-700">
+                        {applicant.preferences.first}
                       </td>
-                      <td className="p-2 border">
-                        {displayPreference(applicant.preferences.third)}
+                      <td className="p-2 border border-gray-200 dark:border-gray-700">
+                        {applicant.preferences.second}
                       </td>
-
-                      <td className="p-2 border">
+                      <td className="p-2 border border-gray-200 dark:border-gray-700">
+                        {applicant.preferences.third}
+                      </td>
+                      <td className="p-2 border border-gray-200 dark:border-gray-700">
                         {new Date(applicant.date).toLocaleDateString()}
                       </td>
                       <td className="p-2 border border-gray-200 dark:border-gray-700">
