@@ -59,24 +59,20 @@ const Admin = () => {
   }
 
   return (
-    <div className="text-black">
-      <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center dark:text-gray-200 text-online-darkBlue">
-          Opptaksperioder
-        </h1>
+    <div className="flex flex-col items-center justify-center py-5">
+      <h1 className="my-10 text-3xl font-semibold text-center dark:text-gray-200 text-online-darkBlue">
+        Opptaksperioder
+      </h1>
 
-        <div className="pb-10">
-          <Button
-            title="Ny opptaksperiode"
-            color="blue"
-            onClick={() => router.push("/admin/new-period")}
-          />
-        </div>
-
-        {periods.length > 0 && (
-          <Table columns={periodsColumns} rows={periods} />
-        )}
+      <div className="pb-10">
+        <Button
+          title="Ny opptaksperiode"
+          color="blue"
+          onClick={() => router.push("/admin/new-period")}
+        />
       </div>
+
+      {periods.length > 0 && <Table columns={periodsColumns} rows={periods} />}
     </div>
   );
 };
