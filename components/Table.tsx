@@ -18,26 +18,26 @@ interface TableProps {
 
 const Table = ({ rows, columns }: TableProps) => {
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 shadow-md">
-      <table className="w-full border-collapse bg-white text-left text-sm text-gray-500">
-        <thead className="bg-gray-50">
+    <div className="overflow-hidden border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
+      <table className="w-full text-gray-500 border-collapse dark:bg-online-darkBlue dark:text-gray-200">
+        <thead className="bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             {columns.map((column) => (
               <th
                 key={column.label}
-                className="px-6 py-4 font-medium text-gray-900"
+                className="px-6 py-4 font-medium text-gray-900 dark:text-gray-200"
               >
                 {column.label}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-100 border-t border-gray-100">
+        <tbody className="border-t border-gray-100 dark:border-0">
           {rows.map((row) => (
             <Link key={"link-" + row.id} href={row.link || ""}>
               <tr
                 key={"tr-" + row.id}
-                className="relative hover:bg-gray-50 cursor-pointer"
+                className="relative cursor-pointer hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-900 dark:border-gray-700"
               >
                 {columns.map((column) => (
                   <td
