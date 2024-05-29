@@ -27,19 +27,13 @@ const Committee: NextPage = () => {
           {
             title: "Intervjutider",
             icon: <CalendarIcon className="w-5 h-5" />,
-            content: (
-              <>
-                <CommitteeInterViewTimes />
-              </>
-            ),
+            content: <CommitteeInterViewTimes />,
           },
           {
             title: "Søkere",
             icon: <CheckIcon className="w-5 h-5" />,
             content: (
-              <>
-                <CommitteeApplicants routeString={"/committee/applications/"} />
-              </>
+              <CommitteeApplicants routeString={"/committee/applications/"} />
             ),
           },
         ]}
