@@ -24,10 +24,33 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       "Pangkom",
       "Bankom",
       "Fond",
+      "Æresmedlemmer",
+      "Bed&Fagkom",
+      "Bekk_påmeldte",
+      "booking",
+      "Buddy",
+      "CAG",
+      "Eksgruppa",
+      "Eldsterådet",
+      "Ex-Komiteer",
+      "interessegrupper",
+      "ITEX",
+      "ITEX-påmeldte",
+      "kobKom",
+      "Komiteer",
+      "Redaksjonen",
+      "Riddere",
+      "techtalks",
+      "Ex-Hovedstyret",
+      "Tillitsvalgte",
+      "Wiki - Komiteer access permissions",
+      "Wiki - Online edit permissions",
+      "X-Sport",
     ];
 
     while (hasMorePages) {
       const response = await fetch(`${baseUrl}?page=${page}`);
+
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }
@@ -36,9 +59,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       groups.push(
         ...data.results
-          .filter(
-            (group: { group_type: string }) => group.group_type === "committee"
-          )
+          // .filter(
+          //   (group: { group_type: string }) => group.group_type === "committee"
+          // )
           .filter(
             (group: { name_short: string }) =>
               !excludedCommitteeNames.includes(group.name_short) // Exclude committees by name_short

@@ -7,9 +7,11 @@ import DatePickerInput from "../../components/form/DatePickerInput";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import TextAreaInput from "../../components/form/TextAreaInput";
+import ApplicationForm from "../../components/form/ApplicationForm";
 
 const NewPeriod = () => {
   const router = useRouter();
+  const [showPreview, setShowPreview] = useState(false);
 
   const [periodData, setPeriodData] = useState<DeepPartial<periodType>>({
     name: "",
@@ -131,10 +133,14 @@ const NewPeriod = () => {
     }
   };
 
+  const handlePreviewPeriod = () => {
+    setShowPreview((prev) => !prev);
+  };
+
   return (
     <>
       <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
           Ny søknadsperiode
         </h1>
 
@@ -192,14 +198,33 @@ const NewPeriod = () => {
             />
           )}
         </div>
-
-        <div className="pb-10">
-          <Button
-            title="Opprett søknadsperiode"
-            color="blue"
-            onClick={handleAddPeriod}
-          />
+        <div>
+          <div className="flex gap-5 pb-10">
+            <Button
+              title={
+                showPreview ? "Skjul forhåndsvisning" : "Se forhåndsvisning"
+              }
+              color="white"
+              onClick={handlePreviewPeriod}
+            />
+            <Button
+              title="Opprett søknadsperiode"
+              color="blue"
+              onClick={handleAddPeriod}
+            />
+          </div>
         </div>
+        {showPreview && (
+          <div className="w-full max-w-lg p-5 mx-auto mt-5 border border-gray-200 rounded-lg shadow dark:border-gray-700">
+            <ApplicationForm
+              applicationData={periodData}
+              setApplicationData={() => {}}
+              availableCommittees={
+                (periodData.committees?.filter(Boolean) as string[]) || []
+              }
+            />
+          </div>
+        )}
       </div>
     </>
   );

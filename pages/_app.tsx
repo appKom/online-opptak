@@ -23,7 +23,7 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
 
   if (status === "loading" || (!session && router.pathname !== "/")) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-10">
+      <div className="flex flex-col items-center justify-center h-screen gap-10 bg-white dark:bg-gray-900">
         <Image
           src="/Online_bla.svg"
           width={300}
@@ -31,7 +31,7 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
           alt="Online logo"
           className="animate-pulse"
         />
-        <div className="text-xl">Vent litt...</div>
+        <div className="text-xl text-black dark:text-white">Vent litt...</div>
       </div>
     );
   }
@@ -40,18 +40,49 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
 };
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
+  useEffect(() => {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      document.documentElement.classList.add("dark");
+    }
+
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (e.matches) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+    };
+
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", handleChange);
+
+    return () => {
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", handleChange);
+    };
+  }, []);
+
   return (
     <SessionProvider session={session}>
       <Head>
         <link rel="icon" href="/Online_hvit_o.svg" />
         <title>Online Komitéopptak</title>
       </Head>
-      <SessionHandler>
-        <Toaster />
-        <Navbar />
-        <Component {...pageProps} />
-        <Footer />
-      </SessionHandler>
+      <div className="flex flex-col min-h-screen bg-white dark:text-white dark:bg-gray-900">
+        <SessionHandler>
+          <Toaster />
+          <Navbar />
+          <div className="flex-grow">
+            <Component {...pageProps} />
+          </div>
+          <Footer />
+        </SessionHandler>
+      </div>
     </SessionProvider>
   );
 }

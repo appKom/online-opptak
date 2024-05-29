@@ -2,6 +2,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
+import NotFound from "../../404";
 
 const Admin = () => {
   const periodId = router.query["period-id"];
@@ -95,7 +96,7 @@ const Admin = () => {
   useEffect(() => {}, [applications, committees]);
 
   if (!session || session.user?.role !== "admin") {
-    return <p>Access Denied. You must be an admin to view this page.</p>;
+    return <NotFound />;
   }
 
   return (
@@ -106,17 +107,17 @@ const Admin = () => {
         ) : (
           <div className="flex flex-col">
             <div className="flex flex-col py-2">
-              <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+              <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
                 {period?.name}
               </h1>
-              <h2 className="text-xl font-semibold text-center text-online-darkBlue">
+              <h2 className="text-xl font-semibold text-center text-online-darkBlue dark:text-gray-200">
                 {filteredApplications?.length} Søknader
               </h2>
             </div>
             {committees && (
               <div className="flex flex-row py-5 pt-10">
                 <select
-                  className=""
+                  className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark-border-gray-600"
                   value={selectedCommittee ?? ""}
                   onChange={(e) => setSelectedCommittee(e.target.value)}
                 >
@@ -132,22 +133,31 @@ const Admin = () => {
                   placeholder="Søk etter navn"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="p-2 ml-5 border"
+                  className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                 />
               </div>
             )}
 
             {applicationsExist && filteredApplications?.length ? (
-              <table className="min-w-full bg-white border border-collapse border-gray-200">
+              <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
                 <thead>
                   <tr>
-                    <th className="p-2 border">Navn</th>
-                    <th className="p-2 border">1. Komitee</th>
-                    <th className="p-2 border">2. Komitee</th>
-                    <th className="p-2 border">3. Komitee</th>
-                    <th className="p-2 border">Dato</th>
-                    <th className="p-2 border">Trinn</th>
-                    <th className="p-2 border">Telefon</th>
+                    {[
+                      "Navn",
+                      "1. Komitee",
+                      "2. Komitee",
+                      "3. Komitee",
+                      "Dato",
+                      "Klasse",
+                      "Telefon",
+                    ].map((header) => (
+                      <th
+                        key={header}
+                        className="p-2 border border-gray-200 dark:border-gray-700"
+                      >
+                        {header}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
@@ -167,8 +177,12 @@ const Admin = () => {
                       <td className="p-2 border">
                         {new Date(applicant.date).toLocaleDateString()}
                       </td>
-                      <td className="p-2 border">{applicant.grade}</td>
-                      <td className="p-2 border">{applicant.phone}</td>
+                      <td className="p-2 border border-gray-200 dark:border-gray-700">
+                        {applicant.grade}
+                      </td>
+                      <td className="p-2 border border-gray-200 dark:border-gray-700">
+                        {applicant.phone}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

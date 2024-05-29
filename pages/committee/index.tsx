@@ -8,6 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
 import SelectInput from "../../components/form/SelectInput";
+import NotFound from "../404";
 
 interface Interview {
   start: string;
@@ -27,6 +28,8 @@ const Committee: NextPage = () => {
 
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
     committeeInterviewType[]
@@ -158,6 +161,7 @@ const Committee: NextPage = () => {
         } else {
           console.warn("No suitable interview period found.");
         }
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
       }
@@ -354,7 +358,15 @@ const Committee: NextPage = () => {
   };
 
   if (!session || !session.user?.isCommitee) {
-    return <p>Access Denied. You must be in a commitee to view this page.</p>;
+    return <NotFound />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-5 text-center">
+        <p className="animate-pulse dark:text-white">Vent litt...</p>
+      </div>
+    );
   }
 
   if (periods.length === 0) {
@@ -411,6 +423,7 @@ const Committee: NextPage = () => {
           <div className="pt-10">
             <label htmlFor="">Intervjulengde: </label>
             <select
+              className="dark:bg-online-darkBlue dark:text-white"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => [
                 updateInterviewInterval(e),
                 handleTimeslotSelection(e),
@@ -428,6 +441,7 @@ const Committee: NextPage = () => {
         )}
         <div className="mx-20">
           <FullCalendar
+            eventClassNames={"dark:bg-online-darkBlue"}
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
             headerToolbar={{ start: "today prev,next", center: "", end: "" }}
@@ -463,7 +477,7 @@ const Committee: NextPage = () => {
         </div>
 
         {!hasAlreadySubmitted && (
-          <label className="block mt-5 mb-2 font-medium text-black text-m">
+          <label className="block mt-5 mb-2 font-medium text-m">
             Fyll ut ledige tider før du sender.
           </label>
         )}
@@ -473,7 +487,7 @@ const Committee: NextPage = () => {
             onClick={(e: BaseSyntheticEvent) => {
               submit(e);
             }}
-            className="text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            className="dark:text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           >
             Lagre og send
           </button>
@@ -482,7 +496,7 @@ const Committee: NextPage = () => {
           <button
             type="reset"
             onClick={deleteSubmission}
-            className="text-white mt-1 bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
+            className="border hover:border-online-orange bg-online-orange text-online-snowWhite hover:text-online-darkTeal dark:bg-orange-900 dark:text-white dark:hover:text-online-orange "
           >
             Slett innsending
           </button>
