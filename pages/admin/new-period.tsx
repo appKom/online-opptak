@@ -199,9 +199,11 @@ const NewPeriod = () => {
           )}
         </div>
         <div>
-          <div className="pb-10 flex gap-5">
+          <div className="flex gap-5 pb-10">
             <Button
-              title="Forhåndsvisning"
+              title={
+                showPreview ? "Skjul forhåndsvisning" : "Se forhåndsvisning"
+              }
               color="white"
               onClick={handlePreviewPeriod}
             />
@@ -213,7 +215,7 @@ const NewPeriod = () => {
           </div>
         </div>
         {showPreview && (
-          <div className="w-full max-w-lg mx-auto p-5 bg-gray-100 rounded-lg shadow-md mt-5">
+          <div className="w-full max-w-lg p-5 mx-auto mt-5 border border-gray-200 rounded-lg shadow dark:border-gray-700">
             <ApplicationForm
               applicationData={periodData}
               setApplicationData={() => {}}
