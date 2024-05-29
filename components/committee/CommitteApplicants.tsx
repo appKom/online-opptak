@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import Table from "../../components/Table";
+import Table from "../Table";
 import { formatDate } from "../../lib/utils/dateUtils";
 import { periodType } from "../../lib/types/types";
 

@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
-import SelectInput from "../../components/form/SelectInput";
+import SelectInput from "../form/SelectInput";
 import NotFound from "../../pages/404";
 import Button from "../Button";
 
@@ -381,12 +381,12 @@ const CommitteeInterviewTimes: NextPage = () => {
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
         Legg inn ledige tider for intervjuer
       </h2>
-      <div className="flex gap-10  w-max ">
-        <div className="px-5 flex flex-col ">
+      <div className="flex gap-10 w-max ">
+        <div className="flex flex-col px-5 ">
           <label htmlFor="">Velg opptak: </label>
           <select
             id="period-select"
-            className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handlePeriodSelection}
             value={selectedPeriod}
           >
@@ -397,10 +397,10 @@ const CommitteeInterviewTimes: NextPage = () => {
             ))}
           </select>
         </div>
-        <div className="px-5 flex flex-col">
+        <div className="flex flex-col px-5">
           <label className="">Velg komitee: </label>
           <select
-            className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
           >
             {filteredCommittees.map((committee) => (

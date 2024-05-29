@@ -1,14 +1,14 @@
 import type { NextPage } from "next";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import CommitteeInterViewTimes from "../../components/committee/Committee-Interview-Times";
+import CommitteeInterViewTimes from "../../components/committee/CommitteeInterviewTimes";
 import {
   CheckIcon,
   CalendarIcon,
   InboxIcon,
 } from "@heroicons/react/24/outline";
 import { Tabs } from "../../components/Tabs";
-import CommitteeApplicants from "../../components/committee/committe-applicants";
+import CommitteeApplicants from "../../components/committee/CommitteApplicants";
 
 const Committee: NextPage = () => {
   const { data: session } = useSession();
