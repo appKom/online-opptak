@@ -22,7 +22,7 @@
     "@tailwindcss/typography": "github:tailwindcss/typography",
     "@tanstack/react-query": "^4.36.1",
     "@types/mongodb": "^4.0.7",
-    "axios": "^0.27.2",
+    "axios": "^0.28.0",
     "babel-plugin-styled-components": "^2.1.4",
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
