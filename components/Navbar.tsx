@@ -23,7 +23,7 @@ const Navbar = () => {
   const handleLogin = () => signIn("auth0");
   const isLinkActive = (uri: string) => router.pathname === uri;
   const smallOnlineLogoSrc =
-    theme === "dark" ? "/Online_hvit_o.svg" : "Online_bla_o.svg";
+    theme === "dark" ? "/Online_hvit_o.svg" : "/Online_bla_o.svg";
   const onlineLogoSrc =
     theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg";
   const bekkLogoSrc = theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg";
