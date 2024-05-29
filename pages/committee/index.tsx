@@ -370,7 +370,7 @@ const Committee: NextPage = () => {
   if (periods.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptakk!</h2>
+        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptak!</h2>
       </div>
     );
   }
@@ -380,12 +380,12 @@ const Committee: NextPage = () => {
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
         Legg inn ledige tider for intervjuer
       </h2>
-      <div className="flex gap-10  w-max ">
-        <div className="px-5 flex flex-col ">
+      <div className="flex gap-10 w-max ">
+        <div className="flex flex-col px-5 ">
           <label htmlFor="">Velg opptak: </label>
           <select
             id="period-select"
-            className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handlePeriodSelection}
             value={selectedPeriod}
           >
@@ -396,10 +396,10 @@ const Committee: NextPage = () => {
             ))}
           </select>
         </div>
-        <div className="px-5 flex flex-col">
+        <div className="flex flex-col px-5">
           <label className="">Velg komitee: </label>
           <select
-            className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
           >
             {filteredCommittees.map((committee) => (
