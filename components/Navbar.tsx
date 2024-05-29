@@ -61,14 +61,14 @@ const Navbar = () => {
               )}
               {session.user?.isCommitee && (
                 <Button
-                  title="For Committees"
+                  title="For komiteer"
                   color="blue"
                   size="small"
                   onClick={() => router.push("/committee")}
                 />
               )}
               <Button
-                title="Log Out"
+                title="Logg ut"
                 color="white"
                 size="small"
                 icon={<LogOutIcon className="w-4 h-4" />}
@@ -78,7 +78,7 @@ const Navbar = () => {
           ) : (
             <>
               <Button
-                title="Log In"
+                title="Logg inn"
                 color="blue"
                 size="small"
                 icon={<LoginIcon className="w-4 h-4" />}
