@@ -26,6 +26,15 @@ export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
+    const existingApplicant = await applicants.findOne({
+      owId: applicantData.owId,
+      periodId: applicantData.periodId,
+    });
+
+    if (existingApplicant) {
+      return { error: "409 Application already exists for this period" };
+    }
+
     const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
       const insertedApplicant = await applicants.findOne({
@@ -64,13 +73,28 @@ export const getApplication = async (
 
     const result = await applicants.findOne({
       owId: id,
-      periodId: new ObjectId(periodId),
+      periodId: periodId,
     });
 
     return { application: result, exists: !!result };
   } catch (error) {
     console.error(error);
     return { error: "Failed to fetch application", exists: false };
+  }
+};
+
+export const getApplications = async (periodId: string) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants
+      .find({ periodId: periodId }) // No ObjectId conversion needed
+      .toArray();
+
+    return { applications: result, exists: result.length > 0 };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch applications" };
   }
 };
 
@@ -83,7 +107,7 @@ export const deleteApplication = async (
 
     const result = await applicants.deleteOne({
       owId: owId,
-      periodId: new ObjectId(periodId),
+      periodId: periodId,
     });
 
     if (result.deletedCount === 1) {

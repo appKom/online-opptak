@@ -36,7 +36,7 @@ export type applicantType = {
     },
   ];
   date: Date;
-  periodId: ObjectId;
+  periodId: string | ObjectId;
 };
 
 export type periodType = {
@@ -56,4 +56,17 @@ export type periodType = {
     end: Date;
   };
   committees: string[];
+};
+
+export type AvailableTime = {
+  start: string;
+  end: string;
+};
+
+export type committeeInterviewType = {
+  periodId: string;
+  period_name: string;
+  committee: string;
+  availabletimes: AvailableTime[];
+  timeslot: string;
 };

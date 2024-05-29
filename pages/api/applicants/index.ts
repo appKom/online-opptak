@@ -33,7 +33,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       applicantData.date = new Date(new Date().getTime() + 60 * 60 * 1000); // add date with norwegain time (GMT+1)
 
-      const period = (await getPeriodById(applicantData.periodId)).period;
+      const period = (await getPeriodById(String(applicantData.periodId)))
+        .period;
 
       if (!period) {
         return res.status(400).json({ error: "Invalid period id" });
