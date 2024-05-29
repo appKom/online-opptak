@@ -1,40 +1,47 @@
 const ApplicationOverview = ({ application }: { application: any }) => {
+  const titleStyle = "font-semibold";
+
   return (
-    <div className="p-4 dark:bg-online-darkBlue rounded-lg shadow">
+    <div className="px-6 py-4 border border-gray-200 rounded-lg shadow dark:border-gray-700 dark:bg-gray-800">
       <ul className="space-y-2 ">
         <li>
-          <strong>Navn:</strong>{" "}
+          <span className={titleStyle}>Navn:</span>{" "}
           {application.application.name || "Not provided"}
         </li>
         <li>
-          <strong>Email:</strong>{" "}
+          <span className={titleStyle}>Epost:</span>{" "}
           {application.application.email || "Not provided"}
         </li>
         <li>
-          <strong>Om:</strong> {application.application.about || "Not provided"}
+          <span className={titleStyle}>Om:</span>{" "}
+          {application.application.about || "Not provided"}
         </li>
         <li>
-          <strong>Klasse:</strong>{" "}
+          <span className={titleStyle}>Trinn:</span>{" "}
           {application.application.grade
             ? `${application.application.grade}`
             : "Not provided"}
         </li>
         <li>
-          <strong> Komite ønsker</strong>:
+          <span className={titleStyle}>Komiteønsker:</span>
         </li>
         <li> {`1. ${application.application.preferences.first}`}</li>
-        <li> {`2. ${application.application.preferences.second}`}</li>
-        <li> {`3. ${application.application.preferences.third}`}</li>
+        {application.application.references?.second && (
+          <li> {`2. ${application.application.preferences.second}`}</li>
+        )}
+        {application.application.references?.third && (
+          <li> {`3. ${application.application.preferences.third}`}</li>
+        )}
         <li>
-          <strong>Ønsker Bankom:</strong>{" "}
+          <span className={titleStyle}>Ønsker Bankom:</span>{" "}
           {application.application.bankom || "Not provided"}
         </li>
         <li>
-          <strong>Ønsker FeminIT:</strong>{" "}
+          <span className={titleStyle}>Ønsker FeminIT:</span>{" "}
           {application.application.feminIt || "Not provided"}
         </li>
         <li>
-          <strong>Dato:</strong>{" "}
+          <span className={titleStyle}>Dato:</span>{" "}
           {application.application.date
             ? new Date(application.application.date).toLocaleDateString()
             : "Not provided"}
