@@ -11,6 +11,7 @@ import CalendarIcon from "../../components/icons/icons/CalendarIcon";
 import { Tabs } from "../../components/Tabs";
 import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
 import { useRouter } from "next/router";
+import Schedule from "../../components/committee/Schedule";
 import ApplicationOverview from "../../components/applicantoverview/ApplicationOverview";
 
 const Application: NextPage = () => {
@@ -178,16 +179,16 @@ const Application: NextPage = () => {
     <div>
       <div className="flex flex-col items-center justify-center py-5">
         {periodExists && period && (
-          <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+          <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
             {period?.name}
           </h1>
         )}
         {isLoading ? (
-          <p className="animate-pulse">Vent litt...</p>
+          <p className="animate-pulse dark:text-white">Vent litt...</p>
         ) : !periodExists ? (
-          <p>Perioden finnes ikke</p>
+          <p className="dark:text-white">Perioden finnes ikke</p>
         ) : hasAlreadySubmitted ? (
-          <div className="flex flex-col items-center justify-center gap-5 px-6 md:px-40 lg:px-80">
+          <div className="flex flex-col items-center justify-center gap-5 px-6 md:px-40 lg:px-80 dark:text-white">
             <WellDoneIllustration className="h-32" />
             <p className="text-lg text-center">
               Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!
@@ -248,9 +249,14 @@ const Application: NextPage = () => {
                 title: "Intervjutider",
                 icon: <CalendarIcon className="w-5 h-5" />,
                 content: (
-                  <>
-                    <div>when2meet</div>
-                    <div className="flex justify-center w-full">
+                  <div className="flex flex-col items-center justify-center">
+                    <Schedule
+                      interviewLength={Number(30)}
+                      periodTime={period?.interviewPeriod}
+                      setApplicationData={setApplicationData}
+                      applicationData={applicationData}
+                    />
+                    <div className="flex justify-center w-full mt-10">
                       <Button
                         title="Send inn søknad"
                         color="blue"
@@ -258,7 +264,7 @@ const Application: NextPage = () => {
                         size="small"
                       />
                     </div>
-                  </>
+                  </div>
                 ),
               },
             ]}
@@ -272,53 +278,81 @@ const Application: NextPage = () => {
 export default Application;
 
 const validateApplication = (applicationData: any) => {
+  // Check if email is valid
   if (!validator.isEmail(applicationData.email)) {
     toast.error("Fyll inn en gyldig e-postadresse");
     return false;
   }
+
+  // Check if phone number is valid
   if (!validator.isMobilePhone(applicationData.phone, "nb-NO")) {
     toast.error("Fyll inn et gyldig mobilnummer");
     return false;
   }
+
+  // Check if grade is valid
   if (applicationData.grade == 0) {
     toast.error("Velg et trinn");
     return false;
   }
-  if (applicationData.about == "") {
+
+  // Check if about section is filled
+  if (applicationData.about === "") {
     toast.error("Skriv litt om deg selv");
     return false;
   }
+
+  // Check if at least one preference is selected
   if (
-    applicationData.preferences.first == "" &&
-    applicationData.preferences.second == "" &&
-    applicationData.preferences.third == ""
+    !applicationData.preferences.first &&
+    !applicationData.preferences.second &&
+    !applicationData.preferences.third
   ) {
     toast.error("Velg minst én komité");
     return false;
   }
+
+  // Check for duplicate committee preferences
+  const { first, second, third } = applicationData.preferences;
   if (
-    (applicationData.preferences.first &&
-      applicationData.preferences.second &&
-      applicationData.preferences.first ===
-        applicationData.preferences.second) ||
-    (applicationData.preferences.first &&
-      applicationData.preferences.third &&
-      applicationData.preferences.first ===
-        applicationData.preferences.third) ||
-    (applicationData.preferences.second &&
-      applicationData.preferences.third &&
-      applicationData.preferences.second === applicationData.preferences.third)
+    (first && second && first === second) ||
+    (first && third && first === third) ||
+    (second && third && second === third)
   ) {
     toast.error("Du kan ikke velge samme komité flere ganger");
     return false;
   }
+
+  // Check if Bankom interest is specified
   if (applicationData.bankom === undefined) {
     toast.error("Velg om du er interessert i Bankom");
     return false;
   }
+
+  // Check if FeminIT interest is specified
   if (applicationData.feminIt === undefined) {
     toast.error("Velg om du er interessert i FeminIT");
     return false;
   }
+
+  // Validate selected times
+  if (applicationData.selectedTimes.length === 0) {
+    toast.error("Velg minst én tilgjengelig tid");
+    return false;
+  }
+
+  for (const time of applicationData.selectedTimes) {
+    const startTime = new Date(time.start);
+    const endTime = new Date(time.end);
+    if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+      toast.error("Ugyldig start- eller sluttid");
+      return false;
+    }
+    if (startTime >= endTime) {
+      toast.error("Starttid må være før sluttid");
+      return false;
+    }
+  }
+
   return true;
 };

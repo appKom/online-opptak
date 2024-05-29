@@ -16,7 +16,7 @@ const TextAreaInput = (props: Props) => {
           rows={6}
           id="textAreaComponent"
           placeholder={props.placeholder}
-          className="block w-full px-3 py-2 m-0 text-base font-normal text-gray-700 transition ease-in-out bg-white border border-gray-300 rounded shadow-sm peer bg-clip-padding focus:text-gray-700 focus:outline-none placeholder:text-sm"
+          className="block w-full px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600"
           onChange={(e) => {
             handleInputChange(e.target);
           }}
@@ -24,7 +24,7 @@ const TextAreaInput = (props: Props) => {
         ></textarea>
         <label
           htmlFor="textAreaComponent"
-          className="absolute z-10 px-1 text-xs text-gray-500 bg-white -top-2 left-2"
+          className="absolute z-10 px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200"
         >
           {props.label}
         </label>
