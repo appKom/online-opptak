@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import Table from "../../components/Table";
+import Table, { RowType } from "../../components/Table";
 import Button from "../../components/Button";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ const Admin = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const [periods, setPeriods] = useState([]);
+  const [periods, setPeriods] = useState<RowType[]>([]);
 
   const fetchPeriods = async () => {
     try {
@@ -20,6 +20,7 @@ const Admin = () => {
       setPeriods(
         data.periods.map((period: periodType) => {
           return {
+            id: period.name,
             name: period.name,
             preparation:
               formatDate(period.preparationPeriod.start) +
