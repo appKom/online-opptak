@@ -381,9 +381,9 @@ const CommitteeInterviewTimes: NextPage = () => {
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
         Legg inn ledige tider for intervjuer
       </h2>
-      <div className="flex gap-10 w-max ">
+      <div className="flex gap-10 w-max">
         <div className="flex flex-col px-5 ">
-          <label htmlFor="">Velg opptak: </label>
+          <label>Velg opptak:</label>
           <select
             id="period-select"
             className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
@@ -398,7 +398,7 @@ const CommitteeInterviewTimes: NextPage = () => {
           </select>
         </div>
         <div className="flex flex-col px-5">
-          <label className="">Velg komitee: </label>
+          <label>Velg komitee:</label>
           <select
             className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
@@ -461,7 +461,7 @@ const CommitteeInterviewTimes: NextPage = () => {
             validRange={visibleRange}
             eventContent={renderEventContent}
             eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
-            selectAllow={(selectInfo) => {
+            selectAllow={(selectInfo: { start: Date; end: Date }) => {
               const start = selectInfo.start;
               const end = selectInfo.end;
               const startHour = start.getHours();
