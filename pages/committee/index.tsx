@@ -7,8 +7,8 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
-import SelectInput from "../../components/form/SelectInput";
 import NotFound from "../404";
+import Button from "../../components/Button";
 
 interface Interview {
   start: string;
@@ -55,7 +55,6 @@ const Committee: NextPage = () => {
       try {
         const res = await fetch("/api/committees");
         const data = await res.json();
-        console.log(data);
 
         if (data && Array.isArray(data.committees)) {
           setCommitteeInterviewTimes(data.committees);
@@ -221,7 +220,6 @@ const Committee: NextPage = () => {
       }
 
       const result = await response.json();
-
       toast.success("Tidene er sendt inn!");
       setHasAlreadySubmitted(true);
     } catch (error) {
@@ -382,11 +380,12 @@ const Committee: NextPage = () => {
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
         Legg inn ledige tider for intervjuer
       </h2>
-      <div className="flex gap-10  w-max">
-        <div className="px-5 flex flex-col">
+      <div className="flex gap-10  w-max ">
+        <div className="px-5 flex flex-col ">
           <label htmlFor="">Velg opptak: </label>
           <select
             id="period-select"
+            className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handlePeriodSelection}
             value={selectedPeriod}
           >
@@ -398,8 +397,11 @@ const Committee: NextPage = () => {
           </select>
         </div>
         <div className="px-5 flex flex-col">
-          <label>Velg komitee: </label>
-          <select onChange={handleCommitteeSelection}>
+          <label className="">Velg komitee: </label>
+          <select
+            className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            onChange={handleCommitteeSelection}
+          >
             {filteredCommittees.map((committee) => (
               <option key={committee} value={committee}>
                 {committee}
@@ -481,29 +483,20 @@ const Committee: NextPage = () => {
             Fyll ut ledige tider før du sender.
           </label>
         )}
-        {!hasAlreadySubmitted && (
-          <button
-            type="submit"
-            onClick={(e: BaseSyntheticEvent) => {
-              submit(e);
-            }}
-            className="dark:text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-          >
-            Lagre og send
-          </button>
-        )}
-        {hasAlreadySubmitted && (
-          <button
-            type="reset"
-            onClick={deleteSubmission}
-            className="border hover:border-online-orange bg-online-orange text-online-snowWhite hover:text-online-darkTeal dark:bg-orange-900 dark:text-white dark:hover:text-online-orange "
-          >
-            Slett innsending
-          </button>
-        )}
+        <div className="pt-10">
+          <Button
+            title={hasAlreadySubmitted ? "Slett innsending" : "Lagre og send"}
+            onClick={
+              hasAlreadySubmitted
+                ? deleteSubmission
+                : (e: BaseSyntheticEvent) => {
+                    submit(e);
+                  }
+            }
+            color={hasAlreadySubmitted ? "orange" : "blue"}
+          />
+        </div>
       </form>
-
-      {/* {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)} */}
     </div>
   );
 };
