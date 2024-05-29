@@ -16,7 +16,7 @@ const SelectInput = (props: Props) => {
     <div className="max-w-xs mx-auto my-6">
       <div className="relative">
         <select
-          className="appearance-none block w-full px-3 py-1.5 text-base border border-solid border-gray-300 rounded cursor-pointer focus:border-blue-600 focus:outline-none dark:bg-online-darkBlue"
+          className="appearance-none block w-full px-3 py-1.5 text-base border border-solid border-gray-300 rounded transition cursor-pointer focus:border-blue-600 focus:outline-none dark:bg-gray-900 dark:border-gray-600"
           aria-label={props.label}
           required={props.required}
           id="selectComponent"
@@ -34,7 +34,7 @@ const SelectInput = (props: Props) => {
         </select>
         <label
           htmlFor="selectComponent"
-          className="absolute z-10 px-1 text-xs text-gray-500 bg-white -top-2 left-2 dark:text-gray-200 dark:bg-online-darkBlue"
+          className="absolute z-10 px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:text-gray-200 dark:bg-gray-900"
         >
           {props.label}
         </label>
