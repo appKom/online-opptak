@@ -8,6 +8,8 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
 import SelectInput from "../../components/form/SelectInput";
+import NotFound from "../../pages/404";
+import Button from "../Button";
 
 interface Interview {
   start: string;
@@ -16,7 +18,7 @@ interface Interview {
 
 const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
-const CommitteeInterViewTimes: NextPage = () => {
+const CommitteeInterviewTimes: NextPage = () => {
   const { data: session } = useSession();
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(20);
@@ -27,6 +29,8 @@ const CommitteeInterViewTimes: NextPage = () => {
 
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
     committeeInterviewType[]
@@ -157,6 +161,7 @@ const CommitteeInterViewTimes: NextPage = () => {
         } else {
           console.warn("No suitable interview period found.");
         }
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
       }
@@ -352,7 +357,15 @@ const CommitteeInterViewTimes: NextPage = () => {
   };
 
   if (!session || !session.user?.isCommitee) {
-    return <p>Access Denied. You must be in a commitee to view this page.</p>;
+    return <NotFound />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-5 text-center">
+        <p className="animate-pulse dark:text-white">Vent litt...</p>
+      </div>
+    );
   }
 
   if (periods.length === 0) {
@@ -368,17 +381,35 @@ const CommitteeInterViewTimes: NextPage = () => {
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
         Legg inn ledige tider for intervjuer
       </h2>
-      <div className="flex gap-10 text-center w-max">
-        <SelectInput
-          updateInputValues={handlePeriodSelection}
-          label="Velg opptak"
-          values={periods.map((period) => [period.name, period._id.toString()])}
-        />
-        <SelectInput
-          updateInputValues={handleCommitteeSelection}
-          label="Velg komité"
-          values={filteredCommittees.map((committee) => [committee, committee])}
-        />
+      <div className="flex gap-10  w-max ">
+        <div className="px-5 flex flex-col ">
+          <label htmlFor="">Velg opptak: </label>
+          <select
+            id="period-select"
+            className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            onChange={handlePeriodSelection}
+            value={selectedPeriod}
+          >
+            {periods.map((period) => (
+              <option key={period._id.toString()} value={period._id.toString()}>
+                {period.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="px-5 flex flex-col">
+          <label className="">Velg komitee: </label>
+          <select
+            className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            onChange={handleCommitteeSelection}
+          >
+            {filteredCommittees.map((committee) => (
+              <option key={committee} value={committee}>
+                {committee}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <p className="my-5 text-lg text-center">
@@ -388,9 +419,14 @@ const CommitteeInterViewTimes: NextPage = () => {
       </p>
       <form className="flex flex-col text-center">
         {hasAlreadySubmitted ? (
+          <p className="mt-5 mb-6 text-lg text-center">
+            Intervjulengde: {selectedTimeslot}min
+          </p>
+        ) : (
           <div className="pt-10">
             <label htmlFor="">Intervjulengde: </label>
             <select
+              className="dark:bg-online-darkBlue dark:text-white"
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) => [
                 updateInterviewInterval(e),
                 handleTimeslotSelection(e),
@@ -405,13 +441,10 @@ const CommitteeInterViewTimes: NextPage = () => {
               ))}
             </select>
           </div>
-        ) : (
-          <p className="mt-5 mb-6 text-lg text-center">
-            Intervjulengde: {selectedTimeslot}min
-          </p>
         )}
         <div className="mx-20">
           <FullCalendar
+            eventClassNames={"dark:bg-online-darkBlue"}
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
             headerToolbar={{ start: "today prev,next", center: "", end: "" }}
@@ -447,30 +480,23 @@ const CommitteeInterViewTimes: NextPage = () => {
         </div>
 
         {!hasAlreadySubmitted && (
-          <label className="block mt-5 mb-2 font-medium text-black text-m">
+          <label className="block mt-5 mb-2 font-medium text-m">
             Fyll ut ledige tider før du sender.
           </label>
         )}
-        {!hasAlreadySubmitted && (
-          <button
-            type="submit"
-            onClick={(e: BaseSyntheticEvent) => {
-              submit(e);
-            }}
-            className="text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-          >
-            Lagre og send
-          </button>
-        )}
-        {hasAlreadySubmitted && (
-          <button
-            type="reset"
-            onClick={deleteSubmission}
-            className="text-white mt-1 bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800"
-          >
-            Slett innsending
-          </button>
-        )}
+        <div className="pt-10">
+          <Button
+            title={hasAlreadySubmitted ? "Slett innsending" : "Lagre og send"}
+            onClick={
+              hasAlreadySubmitted
+                ? deleteSubmission
+                : (e: BaseSyntheticEvent) => {
+                    submit(e);
+                  }
+            }
+            color={hasAlreadySubmitted ? "orange" : "blue"}
+          />
+        </div>
       </form>
 
       {/* {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)} */}
@@ -478,4 +504,4 @@ const CommitteeInterViewTimes: NextPage = () => {
   );
 };
 
-export default CommitteeInterViewTimes;
+export default CommitteeInterviewTimes;
