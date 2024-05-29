@@ -47,7 +47,7 @@ const Navbar = () => {
           {session ? (
             <>
               <div className="text-right">
-                Logged in as{" "}
+                Logget inn som{" "}
                 <span className="font-medium">{session.user?.name}</span>
               </div>
               {session.user?.role === "admin" && (
