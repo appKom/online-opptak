@@ -12,7 +12,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    if (req.method === "GET") { 
+    if (req.method === "GET") {
       const { periods, error } = await getPeriods();
 
       if (error) throw new Error(error);
