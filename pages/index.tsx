@@ -35,10 +35,8 @@ const Home = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center text-center">
-        <h2 className="text-2xl font-semibold text-online-darkBlue dark:text-white">
-          Vent litt...
-        </h2>
+      <div className="flex justify-center py-5 text-center">
+        <p className="animate-pulse dark:text-white">Vent litt...</p>
       </div>
     );
   }

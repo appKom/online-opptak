@@ -361,10 +361,8 @@ const Committee: NextPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex text-center justify-center">
-        <h2 className="text-2xl font-semibold text-online-darkBlue">
-          Vent litt...
-        </h2>
+      <div className="flex justify-center py-5 text-center">
+        <p className="animate-pulse dark:text-white">Vent litt...</p>
       </div>
     );
   }
@@ -463,7 +461,7 @@ const Committee: NextPage = () => {
         </div>
 
         {!hasAlreadySubmitted && (
-          <label className="block mt-5 mb-2 font-medium  text-m">
+          <label className="block mt-5 mb-2 font-medium text-m">
             Fyll ut ledige tider før du sender.
           </label>
         )}
@@ -482,7 +480,7 @@ const Committee: NextPage = () => {
           <button
             type="reset"
             onClick={deleteSubmission}
-            className="hover:border-online-orange bg-online-orange text-online-snowWhite hover:text-online-darkTeal border dark:bg-orange-900 dark:text-white dark:hover:text-online-orange "
+            className="border hover:border-online-orange bg-online-orange text-online-snowWhite hover:text-online-darkTeal dark:bg-orange-900 dark:text-white dark:hover:text-online-orange "
           >
             Slett innsending
           </button>
