@@ -7,6 +7,10 @@ import { createPeriod, getPeriods } from "../../../lib/mongo/periods";
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
 
+  if (!session) {
+    return res.status(403).json({ error: "Access denied, no session" });
+  }
+
   try {
     if (req.method === "GET") {
       const { periods, error } = await getPeriods();
@@ -17,10 +21,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "POST") {
-      if (!session) {
-        return res.status(403).json({ error: "Access denied, no session" });
-      }
-
       if (session.user?.role !== "admin") {
         return res.status(403).json({ error: "Access denied, unauthorized" });
       }
