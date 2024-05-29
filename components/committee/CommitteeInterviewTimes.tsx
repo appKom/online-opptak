@@ -386,7 +386,7 @@ const CommitteeInterviewTimes: NextPage = () => {
           <label>Velg opptak:</label>
           <select
             id="period-select"
-            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="w-full mt-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handlePeriodSelection}
             value={selectedPeriod}
           >
@@ -400,7 +400,7 @@ const CommitteeInterviewTimes: NextPage = () => {
         <div className="flex flex-col px-5">
           <label>Velg komitee:</label>
           <select
-            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="w-full mt-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
           >
             {filteredCommittees.map((committee) => (
