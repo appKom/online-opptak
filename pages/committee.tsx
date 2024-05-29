@@ -1,13 +1,7 @@
 import type { NextPage } from "next";
 
-import Navbar from "../components/Navbar";
-
 const Committee: NextPage = () => {
-  return (
-    <>
-      <Navbar />
-    </>
-  );
+  return <></>;
 };
 
 export default Committee;
