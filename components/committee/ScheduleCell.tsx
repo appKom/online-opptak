@@ -31,8 +31,8 @@ export default function ScheduleCell(props: Props) {
   };
 
   const bgColorClass = available
-    ? "bg-green-200 hover:bg-green-100"
-    : "bg-red-200 hover:bg-red-100";
+    ? "bg-green-300 hover:bg-green-200"
+    : "bg-red-300 hover:bg-red-200";
 
   return (
     <div

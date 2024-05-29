@@ -161,7 +161,7 @@ export default function Schedule({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex max-w-full p-4 mb-5 text-sm text-yellow-500 rounded-md bg-yellow-50">
+      <div className="flex max-w-full p-4 mx-5 mb-5 text-sm text-yellow-500 rounded-md dark:text-online-orange bg-yellow-50 dark:bg-gray-800">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
@@ -174,21 +174,23 @@ export default function Schedule({
             clipRule="evenodd"
           />
         </svg>
-        <b className="mr-2">Valgfritt</b>
-        Legg til tider du&nbsp;
-        <span className="font-semibold">IKKE</span>&nbsp;er ledig for intervju.
-        Flere ledige tider øker sjansen for automatisk tildeling av
-        intervjutider!
+        <div>
+          <b className="mr-2">Valgfritt</b>
+          Legg til tider du&nbsp;
+          <span className="font-semibold">IKKE</span>&nbsp;er ledig for
+          intervju. Flere ledige tider øker sjansen for automatisk tildeling av
+          intervjutider!
+        </div>
       </div>
       <div className="flex justify-center gap-10 text-gray-700 dark:text-white">
         <div className="flex items-center gap-2">
-          <div className="w-16 h-8 bg-green-200 border border-gray-300 rounded-sm"></div>
+          <div className="w-16 h-8 bg-green-300 border border-gray-300 rounded-sm dark:border-gray-700"></div>
           Jeg er ledig
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-16 h-8 bg-red-200 border border-gray-300 rounded-sm"></div>
+          <div className="w-16 h-8 bg-red-300 border border-gray-300 rounded-sm dark:border-gray-700"></div>
           <div>
-            Jeg er <span className="font-bold">ikke</span> ledig
+            Jeg er <span className="font-bold">IKKE</span> ledig
           </div>
         </div>
       </div>
