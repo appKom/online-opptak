@@ -140,7 +140,7 @@ const NewPeriod = () => {
   return (
     <>
       <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
+        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
           Ny søknadsperiode
         </h1>
 

@@ -27,3 +27,10 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.fc-col-header-cell {
+  @apply bg-white dark:bg-gray-900;
+}
+.fc-timegrid-axis {
+  @apply bg-white dark:bg-gray-900;
+}
