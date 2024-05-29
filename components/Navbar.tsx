@@ -22,6 +22,8 @@ const Navbar = () => {
   const handleLogout = () => signOut();
   const handleLogin = () => signIn("auth0");
   const isLinkActive = (uri: string) => router.pathname === uri;
+  const smallOnlineLogoSrc =
+    theme === "dark" ? "/Online_hvit_o.svg" : "Online_bla_o.svg";
   const onlineLogoSrc =
     theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg";
   const bekkLogoSrc = theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg";
@@ -99,7 +101,7 @@ const Navbar = () => {
       </div>
       <div className="relative md:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
         <Image
-          src={onlineLogoSrc}
+          src={smallOnlineLogoSrc}
           width={60}
           height={30 * 1.5}
           alt="Online logo"
