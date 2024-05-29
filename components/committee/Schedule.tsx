@@ -1,13 +1,163 @@
 import ScheduleColumn from "./ScheduleColumn";
 import getTimeSlots from "../../utils/getTimeSlots";
+import { useState, useEffect } from "react";
+import { DeepPartial, applicantType } from "../../lib/types/types";
 
 interface Props {
   interviewLength: number;
+  periodTime: any;
+  setApplicationData: Function;
+  applicationData: DeepPartial<applicantType>;
 }
 
-export default function Schedule(props: Props) {
-  const timeSlots = getTimeSlots(props.interviewLength);
-  const weekDays = ["Man", "Tir", "Ons", "Tor", "Fre"];
+interface TimeSlot {
+  date: string;
+  time: string;
+  available: boolean;
+}
+
+interface IsoTimeSlot {
+  start: string;
+  end: string;
+}
+
+export default function Schedule({
+  interviewLength,
+  periodTime,
+  setApplicationData,
+  applicationData,
+}: Props) {
+  const timeSlots = getTimeSlots(interviewLength);
+
+  const [selectedCells, setSelectedCells] = useState<TimeSlot[]>([]);
+
+  const getDatesWithinPeriod = (
+    periodTime: any
+  ): { [date: string]: string } => {
+    const startDate = new Date(periodTime.start);
+    startDate.setHours(startDate.getHours() + 2);
+    const endDate = new Date(periodTime.end);
+    endDate.setHours(endDate.getHours() + 2);
+    const dates: { [date: string]: string } = {};
+    const dayNames = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];
+
+    let currentDate = new Date(startDate);
+
+    while (currentDate <= endDate) {
+      const dayIndex = currentDate.getDay();
+      if (dayIndex !== 0 && dayIndex !== 6) {
+        // Exclude Sundays and Saturdays
+        const dateStr = currentDate.toISOString().split("T")[0];
+        dates[dateStr] = dayNames[dayIndex];
+      }
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dates;
+  };
+
+  const convertToIso = (date: string, timeSlot: string): IsoTimeSlot => {
+    const [startTimeStr, endTimeStr] = timeSlot.split(" - ");
+    const [year, month, day] = date.split("-").map(Number);
+
+    const [startHour, startMinute] = parseTime(startTimeStr);
+    const startTime = new Date(
+      Date.UTC(year, month - 1, day, startHour, startMinute)
+    );
+
+    const [endHour, endMinute] = parseTime(endTimeStr);
+    const endTime = new Date(
+      Date.UTC(year, month - 1, day, endHour, endMinute)
+    );
+
+    return {
+      start: startTime.toISOString(),
+      end: endTime.toISOString(),
+    };
+  };
+
+  const parseTime = (time: string): [number, number] => {
+    const [timeStr, period] = time.split(" ");
+    let [hour, minute] = timeStr.split(":").map(Number);
+
+    if (period === "PM" && hour !== 12) {
+      hour += 12;
+    } else if (period === "AM" && hour === 12) {
+      hour = 0;
+    }
+
+    return [hour, minute];
+  };
+
+  useEffect(() => {
+    const dates = getDatesWithinPeriod(periodTime);
+    const allAvailableTimes: { date: string; time: string }[] = [];
+
+    Object.keys(dates).forEach((date) => {
+      timeSlots.forEach((time) => {
+        allAvailableTimes.push({ date, time });
+      });
+    });
+
+    const isoTimeSlotsForExport = allAvailableTimes.map((slot) =>
+      convertToIso(slot.date, slot.time)
+    );
+
+    setApplicationData({
+      ...applicationData,
+      selectedTimes: isoTimeSlotsForExport,
+    });
+  }, []);
+
+  const handleToggleAvailability = (
+    date: string,
+    time: string,
+    available: boolean
+  ) => {
+    setSelectedCells((prevCells) => {
+      const index = prevCells.findIndex(
+        (cell) => cell.date === date && cell.time === time
+      );
+
+      let newCells;
+      if (index !== -1) {
+        newCells = [...prevCells];
+        newCells[index] = { date, time, available };
+      } else {
+        newCells = [...prevCells, { date, time, available }];
+      }
+
+      const selectedSet = new Set(
+        newCells
+          .filter((cell) => !cell.available)
+          .map((cell) => `${cell.date}-${cell.time}`)
+      );
+
+      const dates = getDatesWithinPeriod(periodTime);
+      const dataToSend: { date: string; time: string }[] = [];
+      Object.keys(dates).forEach((date) => {
+        timeSlots.forEach((slot) => {
+          const slotKey = `${date}-${slot}`;
+          if (!selectedSet.has(slotKey)) {
+            dataToSend.push({ date, time: slot });
+          }
+        });
+      });
+
+      const isoTimeSlotsForExport = dataToSend.map((slot) =>
+        convertToIso(slot.date, slot.time)
+      );
+
+      setApplicationData({
+        ...applicationData,
+        selectedTimes: isoTimeSlotsForExport,
+      });
+
+      return newCells;
+    });
+  };
+
+  const dates = getDatesWithinPeriod(periodTime);
 
   return (
     <div className="flex flex-col items-center">
@@ -53,10 +203,12 @@ export default function Schedule(props: Props) {
             </div>
           ))}
         </div>
-        {weekDays.map((weekDay, index) => (
+        {Object.keys(dates).map((date, index) => (
           <ScheduleColumn
-            weekDay={weekDay}
-            interviewLength={props.interviewLength}
+            date={date}
+            weekDay={dates[date]}
+            interviewLength={interviewLength}
+            onToggleAvailability={handleToggleAvailability}
             key={index}
           />
         ))}

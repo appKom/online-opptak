@@ -250,7 +250,12 @@ const Application: NextPage = () => {
                 icon: <CalendarIcon className="w-5 h-5" />,
                 content: (
                   <div className="flex flex-col items-center justify-center">
-                    <Schedule interviewLength={Number(30)} />
+                    <Schedule
+                      interviewLength={Number(30)}
+                      periodTime={period?.interviewPeriod}
+                      setApplicationData={setApplicationData}
+                      applicationData={applicationData}
+                    />
                     <div className="flex justify-center w-full mt-10">
                       <Button
                         title="Send inn søknad"
@@ -273,53 +278,81 @@ const Application: NextPage = () => {
 export default Application;
 
 const validateApplication = (applicationData: any) => {
+  // Check if email is valid
   if (!validator.isEmail(applicationData.email)) {
     toast.error("Fyll inn en gyldig e-postadresse");
     return false;
   }
+
+  // Check if phone number is valid
   if (!validator.isMobilePhone(applicationData.phone, "nb-NO")) {
     toast.error("Fyll inn et gyldig mobilnummer");
     return false;
   }
+
+  // Check if grade is valid
   if (applicationData.grade == 0) {
     toast.error("Velg et trinn");
     return false;
   }
-  if (applicationData.about == "") {
+
+  // Check if about section is filled
+  if (applicationData.about === "") {
     toast.error("Skriv litt om deg selv");
     return false;
   }
+
+  // Check if at least one preference is selected
   if (
-    applicationData.preferences.first == "" &&
-    applicationData.preferences.second == "" &&
-    applicationData.preferences.third == ""
+    !applicationData.preferences.first &&
+    !applicationData.preferences.second &&
+    !applicationData.preferences.third
   ) {
     toast.error("Velg minst én komité");
     return false;
   }
+
+  // Check for duplicate committee preferences
+  const { first, second, third } = applicationData.preferences;
   if (
-    (applicationData.preferences.first &&
-      applicationData.preferences.second &&
-      applicationData.preferences.first ===
-        applicationData.preferences.second) ||
-    (applicationData.preferences.first &&
-      applicationData.preferences.third &&
-      applicationData.preferences.first ===
-        applicationData.preferences.third) ||
-    (applicationData.preferences.second &&
-      applicationData.preferences.third &&
-      applicationData.preferences.second === applicationData.preferences.third)
+    (first && second && first === second) ||
+    (first && third && first === third) ||
+    (second && third && second === third)
   ) {
     toast.error("Du kan ikke velge samme komité flere ganger");
     return false;
   }
+
+  // Check if Bankom interest is specified
   if (applicationData.bankom === undefined) {
     toast.error("Velg om du er interessert i Bankom");
     return false;
   }
+
+  // Check if FeminIT interest is specified
   if (applicationData.feminIt === undefined) {
     toast.error("Velg om du er interessert i FeminIT");
     return false;
   }
+
+  // Validate selected times
+  if (applicationData.selectedTimes.length === 0) {
+    toast.error("Velg minst én tilgjengelig tid");
+    return false;
+  }
+
+  for (const time of applicationData.selectedTimes) {
+    const startTime = new Date(time.start);
+    const endTime = new Date(time.end);
+    if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+      toast.error("Ugyldig start- eller sluttid");
+      return false;
+    }
+    if (startTime >= endTime) {
+      toast.error("Starttid må være før sluttid");
+      return false;
+    }
+  }
+
   return true;
 };

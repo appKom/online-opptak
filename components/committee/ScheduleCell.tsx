@@ -1,40 +1,34 @@
 import { useState, BaseSyntheticEvent } from "react";
 
 interface Props {
-  weekDay: String;
-  time: String;
+  date: string;
+  time: string;
   interviewLength: number;
   isDragging: boolean;
+  onToggleAvailability: (
+    date: string,
+    time: string,
+    isAvailable: boolean
+  ) => void;
 }
 
 export default function ScheduleCell(props: Props) {
   const [available, setAvailable] = useState(true);
 
-  function handleSetAvailable() {
+  const handleToggle = () => {
     setAvailable((prevAvailable) => {
       const newAvailable = !prevAvailable;
-      // console.log(`${props.weekDay} ${props.time} ${newAvailable}`);
+      props.onToggleAvailability(props.date, props.time, newAvailable);
       return newAvailable;
     });
-  }
+  };
 
-  function changeColor(e: BaseSyntheticEvent) {
-    let cell: HTMLDivElement = e.target;
-    if (available) {
-      handleSetAvailable();
-    } else if (!available) {
-      handleSetAvailable();
-    } else {
-      return;
-    }
-  }
-
-  function handleMouseEvent(e: BaseSyntheticEvent, dragging: boolean) {
+  const handleMouseEvent = (e: BaseSyntheticEvent, dragging: boolean) => {
     if (dragging && !props.isDragging) {
       return;
     }
-    changeColor(e);
-  }
+    handleToggle();
+  };
 
   const bgColorClass = available
     ? "bg-green-200 hover:bg-green-100"
@@ -45,6 +39,6 @@ export default function ScheduleCell(props: Props) {
       className={`flex h-8 ${bgColorClass} border-t border-gray-500 cursor-pointer odd:border-dotted`}
       onMouseEnter={(e: BaseSyntheticEvent) => handleMouseEvent(e, true)}
       onMouseDown={(e: BaseSyntheticEvent) => handleMouseEvent(e, false)}
-    ></div>
+    />
   );
 }

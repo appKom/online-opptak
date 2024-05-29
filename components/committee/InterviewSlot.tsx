@@ -23,7 +23,7 @@ export default function InterviewSlot(props: Props) {
     } else {
       if (props.slot === 1) {
         cell.style.backgroundColor = markedColor1;
-      } else if (props.slot === 2) {  
+      } else if (props.slot === 2) {
         cell.style.backgroundColor = markedColor2;
       } else {
         cell.style.backgroundColor = markedColor3;
@@ -38,7 +38,6 @@ export default function InterviewSlot(props: Props) {
     changeColor(e);
     setAvailable((prevAvailable) => {
       const newAvailable = !prevAvailable;
-      console.log(`${props.weekDay} ${props.time} number ${props.slot} ${newAvailable}`);
       return newAvailable;
     });
   }
@@ -55,7 +54,8 @@ export default function InterviewSlot(props: Props) {
   }
 
   return (
-    <div className="w-10 h-8"
+    <div
+      className="w-10 h-8"
       onMouseEnter={(e: BaseSyntheticEvent) => handleSetAvailable(e, true)}
       onMouseDown={(e: BaseSyntheticEvent) => handleSetAvailable(e, false)}
       onMouseOver={handleMouseOver}
