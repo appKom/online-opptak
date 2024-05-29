@@ -10,7 +10,7 @@ type Props = {
 
 const DropdownMenu = (props: Props) => {
   return (
-    <div className="absolute right-0 w-48 py-2 mt-2 text-gray-700 bg-white border-t border-gray-200 rounded-lg shadow-xl cursor-pointer dark:bg-online-darkBlue dark:border-gray-600 dark:text-whitetext-sm">
+    <div className="absolute right-0 z-10 w-48 py-2 mt-2 text-gray-700 bg-white border border-gray-200 rounded-lg shadow-xl cursor-pointer dark:bg-online-darkBlue dark:border-gray-600 dark:text-whitetext-sm">
       {!props.session ? (
         <div>
           <ThemeToggle />
