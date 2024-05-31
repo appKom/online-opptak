@@ -28,14 +28,13 @@ const AdminCard = ({
               <p className="mt-1 text-sm">Telefon: {applicant.phone}</p>
               <p className="mt-1 text-sm">E-post: {applicant.email}</p>
               <p className="mt-1 text-sm">Bankom: {applicant.bankom}</p>
-              if (includePreferences){" "}
-              {
+              {includePreferences && (
                 <p className="mt-1 text-sm">
                   1. {applicant.preferences.first}, 2.{" "}
                   {applicant.preferences.second}, 3.{" "}
                   {applicant.preferences.third}
                 </p>
-              }
+              )}
               <p className="mt-1 text-sm">
                 Dato: {new Date(applicant.date).toLocaleDateString()}
               </p>
