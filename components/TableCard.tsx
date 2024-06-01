@@ -8,8 +8,6 @@ const TableCard = ({ period }: { period: any }) => {
     router.push(period.link);
   };
 
-  console.log(period);
-
   return (
     <div className="flex flex-col justify-between h-full p-4 border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700">
       <div>
