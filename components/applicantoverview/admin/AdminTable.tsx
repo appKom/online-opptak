@@ -11,7 +11,7 @@ const AdminTable = ({ filteredApplications, applicationsExist }: Props) => {
     return (
       <div>
         <div className="hidden md:flex">
-          <table className=" min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
+          <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
             <thead>
               <tr>
                 {[
@@ -61,7 +61,7 @@ const AdminTable = ({ filteredApplications, applicationsExist }: Props) => {
             </tbody>
           </table>
         </div>
-        <div className="md:hidden flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 md:hidden">
           <AdminCard
             filteredApplications={filteredApplications}
             applicationsExist={applicationsExist}

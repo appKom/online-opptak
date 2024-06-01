@@ -37,7 +37,7 @@ const PeriodCard = ({ period }: Props) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white ">
+    <div className="w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white">
       <div className="flex flex-col justify-between h-full p-4">
         <div>
           <h3 className="text-xl font-medium text-gray-900 dark:text-online-snowWhite">
