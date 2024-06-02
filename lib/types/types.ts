@@ -56,6 +56,7 @@ export type periodType = {
     end: Date;
   };
   committees: string[];
+  optionalCommittees: string[];
 };
 
 export type AvailableTime = {
