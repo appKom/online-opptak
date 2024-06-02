@@ -242,6 +242,10 @@ const NewPeriod = () => {
               availableCommittees={
                 (periodData.committees?.filter(Boolean) as string[]) || []
               }
+              optionalCommittees={
+                (periodData.optionalCommittees?.filter(Boolean) as string[]) ||
+                []
+              }
             />
           </div>
         )}

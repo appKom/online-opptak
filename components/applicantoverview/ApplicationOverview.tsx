@@ -6,45 +6,46 @@ const ApplicationOverview = ({ application }: { application: any }) => {
       <ul className="space-y-2 ">
         <li>
           <span className={titleStyle}>Navn:</span>{" "}
-          {application.application.name || "Not provided"}
+          {application.application.name || "Ingen"}
         </li>
         <li>
           <span className={titleStyle}>Epost:</span>{" "}
-          {application.application.email || "Not provided"}
+          {application.application.email || "Ingen"}
         </li>
         <li>
           <span className={titleStyle}>Om:</span>{" "}
-          {application.application.about || "Not provided"}
+          {application.application.about || "Ingen"}
         </li>
         <li>
           <span className={titleStyle}>Trinn:</span>{" "}
           {application.application.grade
             ? `${application.application.grade}`
-            : "Not provided"}
+            : "Ingen"}
         </li>
         <li>
           <span className={titleStyle}>Komiteønsker:</span>
         </li>
         <li> {`1. ${application.application.preferences.first}`}</li>
-        {application.application.references?.second && (
-          <li> {`2. ${application.application.preferences.second}`}</li>
-        )}
-        {application.application.references?.third && (
-          <li> {`3. ${application.application.preferences.third}`}</li>
-        )}
+
+        <li> {`2. ${application.application.preferences.second}`}</li>
+
+        <li> {`3. ${application.application.preferences.third}`}</li>
+
         <li>
           <span className={titleStyle}>Ønsker Bankom:</span>{" "}
-          {application.application.bankom || "Not provided"}
+          {application.application.bankom || "Ingen"}
         </li>
         <li>
-          <span className={titleStyle}>Ønsker FeminIT:</span>{" "}
-          {application.application.feminIt || "Not provided"}
+          <span className={titleStyle}>Valgfrie komiteer:</span>{" "}
+          {application.application.optionalCommittees
+            ? application.application.optionalCommittees.join(", ")
+            : "Ingen"}
         </li>
         <li>
           <span className={titleStyle}>Dato:</span>{" "}
           {application.application.date
             ? new Date(application.application.date).toLocaleDateString()
-            : "Not provided"}
+            : "Ingen"}
         </li>
       </ul>
     </div>

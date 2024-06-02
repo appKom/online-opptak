@@ -28,7 +28,7 @@ export type applicantType = {
     third: string;
   };
   bankom: "yes" | "no" | "maybe";
-  feminIt: "yes" | "no";
+  optionalCommittees: string[];
   selectedTimes: [
     {
       start: string;

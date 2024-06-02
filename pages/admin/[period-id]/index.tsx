@@ -140,6 +140,7 @@ const Admin = () => {
                       "1. Komitee",
                       "2. Komitee",
                       "3. Komitee",
+                      "Valfrie Komiteer",
                       "Dato",
                       "Klasse",
                       "Telefon",
@@ -167,6 +168,11 @@ const Admin = () => {
                       </td>
                       <td className="p-2 border border-gray-200 dark:border-gray-700">
                         {applicant.preferences.third}
+                      </td>
+                      <td className="p-2 border border-gray-200 dark:border-gray-700">
+                        {applicant.optionalCommittees
+                          ? applicant.optionalCommittees.join(", ")
+                          : "Ingen"}{" "}
                       </td>
                       <td className="p-2 border border-gray-200 dark:border-gray-700">
                         {new Date(applicant.date).toLocaleDateString()}
