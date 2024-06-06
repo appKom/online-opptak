@@ -45,7 +45,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           fromEmail: "opptak@online.ntnu.no",
           toEmails: [applicantData.email],
           subject: "Vi har mottatt din søknad!",
-          htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br>E-post: ${applicantData.email}<br><br>Fullt navn: ${applicantData.name}<br><br>Telefonnummer: ${applicantData.phone}<br><br>Trinn: ${applicantData.grade}<br><br>Komiteer søkt: ${applicantData.preferences.first}, ${applicantData.preferences.second}, ${applicantData.preferences.third}<br><br>Ønsker du å være økonomiansvarlig: ${applicantData.bankom}<br><br>Ønsker du å søke FeminIT: ${applicantData.feminIt}<br><br>Kort om deg selv:<br>${applicantData.about}`
+          htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br><strong>E-post:</strong> ${applicantData.email}<br><br><strong>Fullt navn:</strong> ${applicantData.name}<br><br><strong>Telefonnummer:</strong> ${applicantData.phone}<br><br><strong>Trinn:</strong> ${applicantData.grade}<br><br><strong>Komiteer søkt:</strong> ${applicantData.preferences.first}, ${applicantData.preferences.second}, ${applicantData.preferences.third}<br><br><strong>Ønsker du å være økonomiansvarlig:</strong> ${applicantData.bankom}<br><br><strong>Ønsker du å søke FeminIT:</strong> ${applicantData.feminIt}<br><br><strong>Kort om deg selv:</strong><br>${applicantData.about}`
         })
 
         console.log("Email sent to: ", applicantData.email);
