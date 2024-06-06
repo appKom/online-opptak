@@ -36,6 +36,20 @@ export type applicantType = {
   date: Date;
 };
 
+// applicantType modified to fit email content
+export type emailDataType = {
+  name: string;
+  emails: string[];
+  phone: string;
+  grade: number;
+  about: string;
+  firstChoice: string;
+  secondChoice: string;
+  thirdChoice: string;
+  bankom: "Ja" | "Nei" | "Kanskje";
+  feminIt: "Ja" | "Nei";
+};
+
 export type periodType = {
   _id: string;
   name: string;
