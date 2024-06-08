@@ -1,13 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { createApplicant, getApplicants } from "../../../lib/mongo/applicants";
 import { authOptions } from "../auth/[...nextauth]";
+import { getPeriodById } from "../../../lib/mongo/periods";
 import { getServerSession } from "next-auth";
 import { applicantType, emailDataType } from "../../../lib/types/types";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import capitalizeFirstLetter from "../../../utils/capitalizeFirstLetter";
 import sendEmail from "../../../utils/sendEmail";
-import { applicantType } from "../../../lib/types/types";
-import { getPeriodById } from "../../../lib/mongo/periods";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
