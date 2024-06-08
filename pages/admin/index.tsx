@@ -1,11 +1,11 @@
 import { useSession } from "next-auth/react";
-import Navbar from "../../components/Navbar";
 import Table from "../../components/Table";
 import Button from "../../components/Button";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { periodType } from "../../lib/types/types";
 import { formatDate } from "../../lib/utils/dateUtils";
+import NotFound from "../404";
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -34,8 +34,9 @@ const Admin = () => {
               " til " +
               formatDate(period.interviewPeriod.end),
             committees: period.committees,
+            link: `/admin/${period._id}`,
           };
-        }),
+        })
       );
     } catch (error) {
       console.error("Failed to fetch application periods:", error);
@@ -54,29 +55,24 @@ const Admin = () => {
   ];
 
   if (!session || session.user?.role !== "admin") {
-    return <p>Access Denied. You must be an admin to view this page.</p>;
+    return <NotFound />;
   }
 
   return (
-    <div>
-      <Navbar />
-      <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue">
-          Opptaksperioder
-        </h1>
+    <div className="flex flex-col items-center justify-center py-5">
+      <h1 className="my-10 text-3xl font-semibold text-center dark:text-gray-200 text-online-darkBlue">
+        Opptaksperioder
+      </h1>
 
-        <div className="pb-10">
-          <Button
-            title="Ny opptaksperiode"
-            color="blue"
-            onClick={() => router.push("/admin/new-period")}
-          />
-        </div>
-
-        {periods.length > 0 && (
-          <Table columns={periodsColumns} rows={periods} />
-        )}
+      <div className="pb-10">
+        <Button
+          title="Ny opptaksperiode"
+          color="blue"
+          onClick={() => router.push("/admin/new-period")}
+        />
       </div>
+
+      {periods.length > 0 && <Table columns={periodsColumns} rows={periods} />}
     </div>
   );
 };

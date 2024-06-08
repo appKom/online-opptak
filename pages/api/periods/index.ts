@@ -13,9 +13,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     if (req.method === "GET") {
-      if (session.user?.role !== "admin") {
-        return res.status(403).json({ error: "Access denied, unauthorized" });
-      }
       const { periods, error } = await getPeriods();
 
       if (error) throw new Error(error);

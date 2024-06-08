@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
@@ -34,6 +36,7 @@ export type applicantType = {
     },
   ];
   date: Date;
+  periodId: string | ObjectId;
 };
 
 // applicantType modified to fit email content
@@ -51,7 +54,7 @@ export type emailDataType = {
 };
 
 export type periodType = {
-  _id: string;
+  _id: ObjectId;
   name: string;
   description: string;
   preparationPeriod: {
@@ -67,4 +70,17 @@ export type periodType = {
     end: Date;
   };
   committees: string[];
+};
+
+export type AvailableTime = {
+  start: string;
+  end: string;
+};
+
+export type committeeInterviewType = {
+  periodId: string;
+  period_name: string;
+  committee: string;
+  availabletimes: AvailableTime[];
+  timeslot: string;
 };

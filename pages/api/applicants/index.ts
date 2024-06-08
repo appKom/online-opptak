@@ -6,6 +6,8 @@ import { applicantType, emailDataType } from "../../../lib/types/types";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import capitalizeFirstLetter from "../../../utils/capitalizeFirstLetter";
 import sendEmail from "../../../utils/sendEmail";
+import { applicantType } from "../../../lib/types/types";
+import { getPeriodById } from "../../../lib/mongo/periods";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -34,6 +36,24 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       applicantData.date = new Date(new Date().getTime() + 60 * 60 * 1000); // add date with norwegain time (GMT+1)
+
+      const period = (await getPeriodById(String(applicantData.periodId)))
+        .period;
+
+      if (!period) {
+        return res.status(400).json({ error: "Invalid period id" });
+      }
+
+      const now = new Date();
+      const applicationStart = period.applicationPeriod.start;
+      const applicationEnd = period.applicationPeriod.end;
+
+      // Check if the current time is within the application period
+      if (now < applicationStart || now > applicationEnd) {
+        return res
+          .status(400)
+          .json({ error: "Not within the application period" });
+      }
 
       const { applicant, error } = await createApplicant(applicantData);
       if (error) throw new Error(error);
