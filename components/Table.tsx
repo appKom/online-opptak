@@ -6,7 +6,7 @@ type ColumnType = {
   field: string;
 };
 
-type RowType = {
+export type RowType = {
   id: string;
   link?: string;
   [key: string]: any;
