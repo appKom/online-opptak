@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import LoadingPage from "../components/LoadingPage";
 
 const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -22,18 +23,7 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   }, [session, status, router]);
 
   if (status === "loading" || (!session && router.pathname !== "/")) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen gap-10 bg-white dark:bg-gray-900">
-        <Image
-          src="/Online_bla.svg"
-          width={300}
-          height={100}
-          alt="Online logo"
-          className="animate-pulse"
-        />
-        <div className="text-xl text-black dark:text-white">Vent litt...</div>
-      </div>
-    );
+    return <LoadingPage />;
   }
 
   return <>{children}</>;
