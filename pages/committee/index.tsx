@@ -7,8 +7,8 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
-import SelectInput from "../../components/form/SelectInput";
 import NotFound from "../404";
+import Button from "../../components/Button";
 
 interface Interview {
   start: string;
@@ -39,6 +39,8 @@ const Committee: NextPage = () => {
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
     useState<boolean>(false);
+
+  const [countdown, setCountdown] = useState<string>("");
 
   const filterCommittees = (period: periodType) => {
     const userCommittees = session?.user?.committees || [];
@@ -355,6 +357,48 @@ const Committee: NextPage = () => {
     }
   };
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const deadline = getSubmissionDeadline();
+      setCountdown(deadline);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [selectedPeriod, periods]);
+
+  const getSubmissionDeadline = (): string => {
+    const deadlineIso = periods.find(
+      (period) => period._id.toString() === selectedPeriod
+    )?.interviewPeriod.start;
+
+    if (deadlineIso != null) {
+      const deadlineDate = new Date(deadlineIso);
+      const now = new Date();
+
+      let delta = Math.floor((deadlineDate.getTime() - now.getTime()) / 1000);
+
+      const days = Math.floor(delta / 86400);
+      delta -= days * 86400;
+
+      const hours = Math.floor(delta / 3600) % 24;
+      delta -= hours * 3600;
+
+      const minutes = Math.floor(delta / 60) % 60;
+      delta -= minutes * 60;
+
+      const seconds = delta % 60;
+
+      let result = "";
+      if (days > 0) result += `${days} dager, `;
+      if (hours > 0) result += `${hours} timer, `;
+      if (minutes > 0) result += `${minutes} minutter, `;
+      result += `${seconds} sekunder`;
+
+      return result;
+    }
+
+    return "";
+  };
+
   if (!session || !session.user?.isCommitee) {
     return <NotFound />;
   }
@@ -370,27 +414,63 @@ const Committee: NextPage = () => {
   if (periods.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptakk!</h2>
+        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptak!</h2>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
-        Legg inn ledige tider for intervjuer
-      </h2>
-      <div className="flex gap-10 text-center w-max">
-        <SelectInput
-          updateInputValues={handlePeriodSelection}
-          label="Velg opptak"
-          values={periods.map((period) => [period.name, period._id.toString()])}
-        />
-        <SelectInput
-          updateInputValues={handleCommitteeSelection}
-          label="Velg komité"
-          values={filteredCommittees.map((committee) => [committee, committee])}
-        />
+      <div className="flex flex-row gap-2 mt-5 mb-6 text-3xl font-bold text-center">
+        <h2 className="">Legg inn ledige tider for intervjuer</h2>
+      </div>
+      <div className="flex max-w-full p-4 mx-5 mb-5 text-sm text-yellow-500 rounded-md dark:text-online-orange bg-yellow-50 dark:bg-gray-800">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          className="flex-shrink-0 w-5 h-5 mr-3"
+        >
+          <path
+            fillRule="evenodd"
+            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <div>
+          <b className="mr-2">NB!</b>
+          Fristen for å legge inn tider er {countdown}
+        </div>
+      </div>
+      <div className="flex gap-10 w-max ">
+        <div className="flex flex-col px-5 ">
+          <label htmlFor="">Velg opptak: </label>
+          <select
+            id="period-select"
+            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            onChange={handlePeriodSelection}
+            value={selectedPeriod}
+          >
+            {periods.map((period) => (
+              <option key={period._id.toString()} value={period._id.toString()}>
+                {period.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-col px-5">
+          <label className="">Velg komitee: </label>
+          <select
+            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            onChange={handleCommitteeSelection}
+          >
+            {filteredCommittees.map((committee) => (
+              <option key={committee} value={committee}>
+                {committee}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <p className="my-5 text-lg text-center">
@@ -400,6 +480,10 @@ const Committee: NextPage = () => {
       </p>
       <form className="flex flex-col text-center">
         {hasAlreadySubmitted ? (
+          <p className="mt-5 mb-6 text-lg text-center">
+            Intervjulengde: {selectedTimeslot}min
+          </p>
+        ) : (
           <div className="pt-10">
             <label htmlFor="">Intervjulengde: </label>
             <select
@@ -418,10 +502,6 @@ const Committee: NextPage = () => {
               ))}
             </select>
           </div>
-        ) : (
-          <p className="mt-5 mb-6 text-lg text-center">
-            Intervjulengde: {selectedTimeslot}min
-          </p>
         )}
         <div className="mx-20">
           <FullCalendar
@@ -465,29 +545,20 @@ const Committee: NextPage = () => {
             Fyll ut ledige tider før du sender.
           </label>
         )}
-        {!hasAlreadySubmitted && (
-          <button
-            type="submit"
-            onClick={(e: BaseSyntheticEvent) => {
-              submit(e);
-            }}
-            className="dark:text-white mt-1 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-          >
-            Lagre og send
-          </button>
-        )}
-        {hasAlreadySubmitted && (
-          <button
-            type="reset"
-            onClick={deleteSubmission}
-            className="border hover:border-online-orange bg-online-orange text-online-snowWhite hover:text-online-darkTeal dark:bg-orange-900 dark:text-white dark:hover:text-online-orange "
-          >
-            Slett innsending
-          </button>
-        )}
+        <div className="pt-10">
+          <Button
+            title={hasAlreadySubmitted ? "Slett innsending" : "Lagre og send"}
+            onClick={
+              hasAlreadySubmitted
+                ? deleteSubmission
+                : (e: BaseSyntheticEvent) => {
+                    submit(e);
+                  }
+            }
+            color={hasAlreadySubmitted ? "orange" : "blue"}
+          />
+        </div>
       </form>
-
-      {/* {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)} */}
     </div>
   );
 };
