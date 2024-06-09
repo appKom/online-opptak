@@ -7,7 +7,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
-import SelectInput from "../form/SelectInput";
 import NotFound from "../../pages/404";
 import Button from "../Button";
 
@@ -40,6 +39,8 @@ const CommitteeInterviewTimes: NextPage = () => {
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
     useState<boolean>(false);
+
+  const [countdown, setCountdown] = useState<string>("");
 
   const filterCommittees = (period: periodType) => {
     const userCommittees = session?.user?.committees || [];
@@ -356,6 +357,48 @@ const CommitteeInterviewTimes: NextPage = () => {
     }
   };
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const deadline = getSubmissionDeadline();
+      setCountdown(deadline);
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [selectedPeriod, periods]);
+
+  const getSubmissionDeadline = (): string => {
+    const deadlineIso = periods.find(
+      (period) => period._id.toString() === selectedPeriod
+    )?.interviewPeriod.start;
+
+    if (deadlineIso != null) {
+      const deadlineDate = new Date(deadlineIso);
+      const now = new Date();
+
+      let delta = Math.floor((deadlineDate.getTime() - now.getTime()) / 1000);
+
+      const days = Math.floor(delta / 86400);
+      delta -= days * 86400;
+
+      const hours = Math.floor(delta / 3600) % 24;
+      delta -= hours * 3600;
+
+      const minutes = Math.floor(delta / 60) % 60;
+      delta -= minutes * 60;
+
+      const seconds = delta % 60;
+
+      let result = "";
+      if (days > 0) result += `${days} dager, `;
+      if (hours > 0) result += `${hours} timer, `;
+      if (minutes > 0) result += `${minutes} minutter, `;
+      result += `${seconds} sekunder`;
+
+      return result;
+    }
+
+    return "";
+  };
+
   if (!session || !session.user?.isCommitee) {
     return <NotFound />;
   }
@@ -371,22 +414,40 @@ const CommitteeInterviewTimes: NextPage = () => {
   if (periods.length === 0) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptakk!</h2>
+        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptak!</h2>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="mt-5 mb-6 text-3xl font-bold text-center">
-        Legg inn ledige tider for intervjuer
-      </h2>
-      <div className="flex gap-10 w-max">
+      <div className="flex flex-row gap-2 mt-5 mb-6 text-3xl font-bold text-center">
+        <h2 className="">Legg inn ledige tider for intervjuer</h2>
+      </div>
+      <div className="flex max-w-full p-4 mx-5 mb-5 text-sm text-yellow-500 rounded-md dark:text-online-orange bg-yellow-50 dark:bg-gray-800">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          className="flex-shrink-0 w-5 h-5 mr-3"
+        >
+          <path
+            fillRule="evenodd"
+            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+            clipRule="evenodd"
+          />
+        </svg>
+        <div>
+          <b className="mr-2">NB!</b>
+          Fristen for å legge inn tider er {countdown}
+        </div>
+      </div>
+      <div className="flex gap-10 w-max ">
         <div className="flex flex-col px-5 ">
-          <label>Velg opptak:</label>
+          <label htmlFor="">Velg opptak: </label>
           <select
             id="period-select"
-            className="w-full mt-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handlePeriodSelection}
             value={selectedPeriod}
           >
@@ -398,9 +459,9 @@ const CommitteeInterviewTimes: NextPage = () => {
           </select>
         </div>
         <div className="flex flex-col px-5">
-          <label>Velg komitee:</label>
+          <label className="">Velg komitee: </label>
           <select
-            className="w-full mt-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
           >
             {filteredCommittees.map((committee) => (
@@ -461,7 +522,7 @@ const CommitteeInterviewTimes: NextPage = () => {
             validRange={visibleRange}
             eventContent={renderEventContent}
             eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
-            selectAllow={(selectInfo: { start: Date; end: Date }) => {
+            selectAllow={(selectInfo) => {
               const start = selectInfo.start;
               const end = selectInfo.end;
               const startHour = start.getHours();
@@ -498,8 +559,6 @@ const CommitteeInterviewTimes: NextPage = () => {
           />
         </div>
       </form>
-
-      {/* {isLoading ? <p>Loading...</p> : handleValidDatesRequest(data)} */}
     </div>
   );
 };
