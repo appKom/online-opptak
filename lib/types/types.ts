@@ -5,14 +5,16 @@ export type DeepPartial<T> = {
 };
 
 export type commiteeType = {
-  name: string;
-  email: string;
+  periodId: string;
+  period_name: string;
+  committee: string;
   availableTimes: [
     {
       start: string;
       end: string;
     },
   ];
+  timeslot: string;
 };
 
 export type applicantType = {
