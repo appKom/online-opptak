@@ -3,7 +3,7 @@ import { createApplicant, getApplicants } from "../../../lib/mongo/applicants";
 import { authOptions } from "../auth/[...nextauth]";
 import { getPeriodById } from "../../../lib/mongo/periods";
 import { getServerSession } from "next-auth";
-import { applicantType, emailDataType } from "../../../lib/types/types";
+import { emailDataType } from "../../../lib/types/types";
 import { isApplicantType } from "../../../lib/utils/validators";
 import { isAdmin, hasSession, checkOwId } from "../../../lib/utils/apiChecks";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
@@ -58,32 +58,34 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const sesClient = new SESClient({ region: "eu-north-1" });
 
-      const emailData : emailDataType = {
-        name: applicantData.name,
-        emails: [applicantData.email],
-        phone: applicantData.phone,
-        grade: applicantData.grade,
-        about: applicantData.about,
-        firstChoice: applicantData.preferences.first == undefined ? "Tom" : applicantData.preferences.first == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicantData.preferences.first),
-        secondChoice: applicantData.preferences.second == undefined ? "Tom" : applicantData.preferences.second == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicantData.preferences.second),
-        thirdChoice: applicantData.preferences.third == undefined ? "Tom" : applicantData.preferences.third == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicantData.preferences.third),
-        bankom: applicantData.bankom == "yes" ? "Ja" : applicantData.bankom == "no" ? "Nei" : "Kanskje",
-        feminIt: applicantData.feminIt == "yes" ? "Ja" : "Nei"
-      };
+      if (applicant != null) {
+        const emailData : emailDataType = {
+          name: applicant.name,
+          emails: [applicant.email],
+          phone: applicant.phone,
+          grade: applicant.grade,
+          about: applicant.about,
+          firstChoice: applicant.preferences.first == undefined ? "Tom" : applicant.preferences.first == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicant.preferences.first),
+          secondChoice: applicant.preferences.second == undefined ? "Tom" : applicant.preferences.second == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicant.preferences.second),
+          thirdChoice: applicant.preferences.third == undefined ? "Tom" : applicant.preferences.third == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicant.preferences.third),
+          bankom: applicant.bankom == "yes" ? "Ja" : applicant.bankom == "no" ? "Nei" : "Kanskje",
+          feminIt: applicant.feminIt == "yes" ? "Ja" : "Nei"
+        };
 
-      try {
-        await sendEmail({
-          sesClient: sesClient,
-          fromEmail: "opptak@online.ntnu.no",
-          toEmails: emailData.emails,
-          subject: "Vi har mottatt din søknad!",
-          htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br><strong>E-post:</strong> ${emailData.emails[0]}<br><br><strong>Fullt navn:</strong> ${emailData.name}<br><br><strong>Telefonnummer:</strong> ${emailData.phone}<br><br><strong>Trinn:</strong> ${emailData.grade}<br><br><strong>Førstevalg:</strong> ${emailData.firstChoice}<br><br><strong>Andrevalg:</strong> ${emailData.secondChoice}<br><br><strong>Tredjevalg:</strong> ${emailData.thirdChoice}<br><br><strong>Ønsker du å være økonomiansvarlig:</strong> ${emailData.bankom}<br><br><strong>Ønsker du å søke FeminIT:</strong> ${emailData.feminIt}<br><br><strong>Kort om deg selv:</strong><br>${emailData.about}`
-        })
+        try {
+          await sendEmail({
+            sesClient: sesClient,
+            fromEmail: "opptak@online.ntnu.no",
+            toEmails: emailData.emails,
+            subject: "Vi har mottatt din søknad!",
+            htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br><strong>E-post:</strong> ${emailData.emails[0]}<br><br><strong>Fullt navn:</strong> ${emailData.name}<br><br><strong>Telefonnummer:</strong> ${emailData.phone}<br><br><strong>Trinn:</strong> ${emailData.grade}<br><br><strong>Førstevalg:</strong> ${emailData.firstChoice}<br><br><strong>Andrevalg:</strong> ${emailData.secondChoice}<br><br><strong>Tredjevalg:</strong> ${emailData.thirdChoice}<br><br><strong>Ønsker du å være økonomiansvarlig:</strong> ${emailData.bankom}<br><br><strong>Ønsker du å søke FeminIT:</strong> ${emailData.feminIt}<br><br><strong>Kort om deg selv:</strong><br>${emailData.about}`
+          })
 
-        console.log("Email sent to: ", emailData.emails);
-      } catch (error) {
-        console.error("Error sending email: ", error);
-        throw error;
+          console.log("Email sent to: ", emailData.emails);
+        } catch (error) {
+          console.error("Error sending email: ", error);
+          throw error;
+        }
       }
 
       return res.status(201).json({ applicant });
