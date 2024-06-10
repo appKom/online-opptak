@@ -22,10 +22,28 @@ async function init() {
   await init();
 })();
 
-export const getCommittees = async () => {
+const userHasAccessList = (
+  userCommittees: string[],
+  dbCommittees: string[]
+) => {
+  return dbCommittees.some((dbCommittee) =>
+    userCommittees.includes(dbCommittee)
+  );
+};
+
+const userHasAccessCommittee = (
+  userCommittees: string[],
+  dbCommittees: string
+) => {
+  return userCommittees.includes(dbCommittees);
+};
+
+export const getCommittees = async (userCommittees: string[]) => {
   try {
     if (!committees) await init();
-    const result = await committees.find({}).toArray();
+    const result = await committees
+      .find({ committee: { $in: userCommittees } })
+      .toArray();
     return { committees: result };
   } catch (error) {
     return { error: "Failed to fetch committees" };
@@ -46,29 +64,15 @@ export const getCommittee = async (id: string) => {
   }
 };
 
-export const updateAvailableTimes = async (
-  id: string,
-  times: [{ start: string; end: string }]
+export const createCommittee = async (
+  committeeData: commiteeType,
+  userCommittes: string[]
 ) => {
   try {
     if (!committees) await init();
-    const result = await committees.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { availableTimes: times } }
-    );
-    if (result.matchedCount > 0) {
-      return { message: "Available times updated successfully" };
-    } else {
-      return { error: "No committee found with the specified ID" };
+    if (!userHasAccessCommittee(userCommittes, committeeData.committee)) {
+      return { error: "User does not have access to this committee" };
     }
-  } catch (error) {
-    return { error: "Failed to update availableTimes" };
-  }
-};
-
-export const createCommittee = async (committeeData: commiteeType) => {
-  try {
-    if (!committees) await init();
 
     const parsedCommitteeData =
       typeof committeeData === "string"
@@ -92,9 +96,16 @@ export const createCommittee = async (committeeData: commiteeType) => {
     return { error: "Failed to create committee" };
   }
 };
-export const deleteCommittee = async (committee: string, periodId: string) => {
+export const deleteCommittee = async (
+  committee: string,
+  periodId: string,
+  userCommittees: string[]
+) => {
   try {
     if (!committees) await init();
+    if (!userHasAccessCommittee(userCommittees, committee)) {
+      return { error: "User does not have access to this committee" };
+    }
 
     let validPeriodId = periodId;
     if (typeof periodId === "string") {

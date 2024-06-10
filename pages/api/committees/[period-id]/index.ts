@@ -1,29 +1,35 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getApplications } from "../../../../lib/mongo/applicants";
+import { getApplicantsForCommittee } from "../../../../lib/mongo/applicants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
-import { hasSession, isAdmin } from "../../../../lib/utils/apiChecks";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
 
-  if (!hasSession(res, session)) return;
+  if (!session) {
+    return res.status(403).json({ error: "Access denied, no session" });
+  }
 
-  const periodId = req.query["period-id"];
+  const periodId = req.query["period-id"] as string;
 
-  if (typeof periodId !== "string") {
+  if (!periodId) {
     return res.status(400).json({ error: "Invalid format" });
   }
 
-  if (!isAdmin(res, session)) return;
+  if (!session.user?.isCommitee || !session.user.committees) {
+    return res.status(403).json({ error: "Access denied, unauthorized" });
+  }
 
   try {
     if (req.method === "GET") {
-      const { applications, exists, error } = await getApplications(periodId);
+      const { applicants, error } = await getApplicantsForCommittee(
+        periodId,
+        session.user.committees
+      );
       if (error) {
         return res.status(500).json({ error });
       }
-      return res.status(200).json({ exists, applications });
+      return res.status(200).json({ applicants });
     }
   } catch (error) {
     if (error instanceof Error) {

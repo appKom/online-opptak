@@ -1,26 +1,34 @@
-import { useSession } from "next-auth/react";
-import Table, { RowType } from "../../components/Table";
-import Button from "../../components/Button";
-import { useRouter } from "next/router";
+import { NextPage } from "next";
 import { useEffect, useState } from "react";
-import { periodType } from "../../lib/types/types";
+import { useSession } from "next-auth/react";
+import Table from "../Table";
 import { formatDate } from "../../lib/utils/dateUtils";
-import NotFound from "../404";
+import { periodType } from "../../lib/types/types";
 
-const Admin = () => {
+interface Props {
+  routeString: string;
+}
+
+const CommitteeApplicants: NextPage<Props> = ({ routeString }) => {
   const { data: session } = useSession();
-  const router = useRouter();
-
-  const [periods, setPeriods] = useState<RowType[]>([]);
+  const [periods, setPeriods] = useState([]);
 
   const fetchPeriods = async () => {
     try {
       const response = await fetch("/api/periods");
       const data = await response.json();
+      const userCommittees = session?.user?.committees || [];
+
+      // Viser bare aktuelle perioder
+      const filteredPeriods = data.periods.filter((period: periodType) =>
+        period.committees.some((committee: string) =>
+          userCommittees.includes(committee.toLowerCase())
+        )
+      );
+
       setPeriods(
-        data.periods.map((period: periodType) => {
+        filteredPeriods.map((period: periodType) => {
           return {
-            id: period.name,
             name: period.name,
             preparation:
               formatDate(period.preparationPeriod.start) +
@@ -35,7 +43,7 @@ const Admin = () => {
               " til " +
               formatDate(period.interviewPeriod.end),
             committees: period.committees,
-            link: `/admin/${period._id}`,
+            link: `committee/${period._id}`,
           };
         })
       );
@@ -55,27 +63,20 @@ const Admin = () => {
     { label: "Intervju", field: "interview" },
   ];
 
-  if (!session || session.user?.role !== "admin") {
-    return <NotFound />;
+  if (!session || !session.user?.isCommitee) {
+    return <p>Ingen tilgang!</p>;
   }
 
   return (
-    <div className="flex flex-col items-center justify-center py-5">
-      <h1 className="my-10 text-3xl font-semibold text-center dark:text-gray-200 text-online-darkBlue">
-        Opptaksperioder
-      </h1>
-
-      <div className="pb-10">
-        <Button
-          title="Ny opptaksperiode"
-          color="blue"
-          onClick={() => router.push("/admin/new-period")}
-        />
+    <div className="flex flex-col items-center">
+      <h2 className="mt-5 mb-6 text-3xl font-bold text-center">Velg opptak</h2>
+      <div className="py-10">
+        {periods.length > 0 && (
+          <Table columns={periodsColumns} rows={periods} />
+        )}
       </div>
-
-      {periods.length > 0 && <Table columns={periodsColumns} rows={periods} />}
     </div>
   );
 };
 
-export default Admin;
+export default CommitteeApplicants;

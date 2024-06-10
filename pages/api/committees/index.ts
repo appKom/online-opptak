@@ -6,13 +6,20 @@ import {
 } from "../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { hasSession, isInCommitee } from "../../../lib/utils/apiChecks";
+import { isCommitteeType } from "../../../lib/utils/validators";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
 
+  if (!hasSession(res, session)) return;
+  if (!isInCommitee(res, session)) return;
+
   if (req.method === "GET") {
     try {
-      const { committees, error } = await getCommittees();
+      const { committees, error } = await getCommittees(
+        session!.user?.committees ?? []
+      );
       if (error) throw new Error(error);
 
       return res.status(200).json({ committees });
@@ -23,8 +30,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === "POST") {
     const committeeData = req.body;
+
+    if (!isCommitteeType(req.body)) {
+      return res.status(400).json({ error: "Invalid data format" });
+    }
+
     try {
-      const { committee, error } = await createCommittee(committeeData);
+      const { committee, error } = await createCommittee(
+        committeeData,
+        session!.user?.committees ?? []
+      );
       if (error) throw new Error(error);
 
       return res.status(201).json({ committee });
@@ -42,7 +57,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     try {
-      const { error } = await deleteCommittee(committee, periodId);
+      const { error } = await deleteCommittee(
+        committee,
+        periodId,
+        session!.user?.committees ?? []
+      );
       if (error) throw new Error(error);
 
       return res
