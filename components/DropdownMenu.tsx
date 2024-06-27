@@ -27,6 +27,15 @@ const DropdownMenu = (props: Props) => {
             Logget inn som{" "}
             <span className="font-medium">{props.session.user?.name}</span>
           </div>
+          <a
+            onClick={() => {
+              props.router.push("/");
+              props.toggleDropdown();
+            }}
+            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            Hjem
+          </a>
           {props.session.user?.role === "admin" && (
             <a
               onClick={() => {

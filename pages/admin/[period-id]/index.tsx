@@ -1,9 +1,9 @@
 import { useSession } from "next-auth/react";
-import Navbar from "../../../components/Navbar";
 import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
+import AdminTable from "../../../components/applicantoverview/admin/AdminTable";
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -110,7 +110,7 @@ const Admin = () => {
             {committees && (
               <div className="flex flex-row py-5 pt-10">
                 <select
-                  className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark-border-gray-600"
+                  className="w-full p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark-border-gray-600"
                   value={selectedCommittee ?? ""}
                   onChange={(e) => setSelectedCommittee(e.target.value)}
                 >
@@ -126,7 +126,7 @@ const Admin = () => {
                   placeholder="Søk etter navn"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+                  className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                 />
               </div>
             )}
