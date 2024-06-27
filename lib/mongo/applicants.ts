@@ -117,11 +117,20 @@ export const getApplicantsForCommittee = async (
           applicant.preferences.second,
           applicant.preferences.third,
         ];
+        if (applicant.optionalCommittees != null) {
+          if (applicant.optionalCommittees.length > 0) {
+            for (const committee of applicant.optionalCommittees) {
+              preferencesArray.push(committee);
+            }
+          }
+        }
 
         //Sjekker om brukerens komite er blant søkerens komiteer
         const hasCommonCommittees = preferencesArray.some((preference) =>
           userCommittees.includes(preference)
         );
+
+        applicant.optionalCommittees = [];
 
         if (hasCommonCommittees) {
           // Fjerner prioriteringer

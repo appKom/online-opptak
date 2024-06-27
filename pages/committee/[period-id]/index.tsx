@@ -32,7 +32,6 @@ const CommitteeApplicantOverView: NextPage = () => {
     if (!session || !periodId) return;
 
     const fetchPeriod = async () => {
-      console.log("sheesh");
       try {
         const res = await fetch(`/api/periods/${periodId}`);
         const data = await res.json();
@@ -43,7 +42,6 @@ const CommitteeApplicantOverView: NextPage = () => {
     };
 
     const fetchApplicants = async () => {
-      console.log(periodId);
       try {
         const response = await fetch(`/api/committees/${periodId}`, {
           method: "GET",
@@ -57,7 +55,7 @@ const CommitteeApplicantOverView: NextPage = () => {
         }
 
         const data = await response.json();
-        console.log(data);
+
         setApplicants(data.applicants);
         setFilteredApplicants(data.applicants);
 
@@ -82,7 +80,6 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   useEffect(() => {
     let filtered = applicants;
-    // console.log(filtered);
 
     if (selectedCommittee) {
       filtered = filtered.filter((applicant) => {

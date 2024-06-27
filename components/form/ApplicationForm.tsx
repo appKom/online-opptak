@@ -4,7 +4,6 @@ import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
-import { useEffect } from "react";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -49,10 +48,6 @@ export const ApplicationForm = (props: Props) => {
       optionalCommittees: selectedOptionalCommittees,
     });
   };
-
-  useEffect(() => {
-    console.log(props.applicationData);
-  }, [props.applicationData]);
 
   return (
     <form className="px-5 text-online-darkBlue dark:text-white">
