@@ -131,65 +131,10 @@ const Admin = () => {
               </div>
             )}
 
-            {applicationsExist && filteredApplications?.length ? (
-              <table className="min-w-full border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
-                <thead>
-                  <tr>
-                    {[
-                      "Navn",
-                      "1. Komitee",
-                      "2. Komitee",
-                      "3. Komitee",
-                      "Valfrie Komiteer",
-                      "Dato",
-                      "Klasse",
-                      "Telefon",
-                    ].map((header) => (
-                      <th
-                        key={header}
-                        className="p-2 border border-gray-200 dark:border-gray-700"
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredApplications.map((applicant, index) => (
-                    <tr key={index}>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.name}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.preferences.first}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.preferences.second}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.preferences.third}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.optionalCommittees
-                          ? applicant.optionalCommittees.join(", ")
-                          : "Ingen"}{" "}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {new Date(applicant.date).toLocaleDateString()}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.grade}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700">
-                        {applicant.phone}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>Ingen søknader.</p>
-            )}
+            <AdminTable
+              filteredApplications={filteredApplications}
+              applicationsExist={applicationsExist}
+            />
           </div>
         )}
       </div>

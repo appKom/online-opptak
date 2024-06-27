@@ -13,8 +13,6 @@ export const isApplicantType = (data: any): data is applicantType => {
     (data.bankom === "yes" ||
       data.bankom === "no" ||
       data.bankom === "maybe") &&
-    typeof data.feminIt === "string" &&
-    (data.feminIt === "yes" || data.feminIt === "no") &&
     (typeof data.periodId === "string" || typeof data.periodId === "object") &&
     data.date instanceof Date;
 
@@ -40,8 +38,17 @@ export const isApplicantType = (data: any): data is applicantType => {
         typeof time.start === "string" && typeof time.end === "string"
     );
 
+  const hasOptionalFields =
+    data.optionalCommittees &&
+    Array.isArray(data.optionalCommittees) &&
+    data.optionalCommittees.every(
+      (committee: any) => typeof committee === "string"
+    );
+
   // Combine all checks to determine if the data conforms to the applicantType
-  return hasBasicFields && hasPreferencesFields /* && hasSelectedTimesFields */;
+  return hasBasicFields && hasPreferencesFields && hasOptionalFields;
+
+  /* && hasSelectedTimesFields */
   // TODO: Uncomment the last check when the selectedTimes field is added to the applicantType
 };
 

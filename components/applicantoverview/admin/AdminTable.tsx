@@ -19,6 +19,7 @@ const AdminTable = ({ filteredApplications, applicationsExist }: Props) => {
                   "1. Komitee",
                   "2. Komitee",
                   "3. Komitee",
+                  "Valgfrie komiteer",
                   "Dato",
                   "Klasse",
                   "Telefon",
@@ -46,6 +47,9 @@ const AdminTable = ({ filteredApplications, applicationsExist }: Props) => {
                   </td>
                   <td className="p-2 border border-gray-200 dark:border-gray-700">
                     {applicant.preferences.third}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700">
+                    {applicant.optionalCommittees.join(", ")}{" "}
                   </td>
                   <td className="p-2 border border-gray-200 dark:border-gray-700">
                     {new Date(applicant.date).toLocaleDateString()}
