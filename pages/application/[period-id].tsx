@@ -13,7 +13,7 @@ import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
 import { useRouter } from "next/router";
 import Schedule from "../../components/committee/Schedule";
 import ApplicationOverview from "../../components/applicantoverview/ApplicationOverview";
-import { validateApplication } from "../../components/applications/validateApplication";
+import { validateApplication } from "../../lib/utils/validateApplication";
 
 const Application: NextPage = () => {
   const { data: session } = useSession();

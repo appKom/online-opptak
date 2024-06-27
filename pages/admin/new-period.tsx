@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import Button from "../../../components/Button";
-import ApplicationForm from "../../../components/form/ApplicationForm";
-import CheckboxInput from "../../../components/form/CheckboxInput";
-import DatePickerInput from "../../../components/form/DatePickerInput";
-import TextAreaInput from "../../../components/form/TextAreaInput";
-import TextInput from "../../../components/form/TextInput";
-import { DeepPartial, periodType } from "../../../lib/types/types";
-import { validatePeriod } from "../../../components/admin/PeriodValidator";
+import Button from "../../components/Button";
+import ApplicationForm from "../../components/form/ApplicationForm";
+import CheckboxInput from "../../components/form/CheckboxInput";
+import DatePickerInput from "../../components/form/DatePickerInput";
+import TextAreaInput from "../../components/form/TextAreaInput";
+import TextInput from "../../components/form/TextInput";
+import { DeepPartial, periodType } from "../../lib/types/types";
+import { validatePeriod } from "../../lib/utils/PeriodValidator";
 
 const NewPeriod = () => {
   const router = useRouter();

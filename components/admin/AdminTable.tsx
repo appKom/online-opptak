@@ -1,4 +1,4 @@
-import { applicantType } from "../../../lib/types/types";
+import { applicantType } from "../../lib/types/types";
 import AdminCard from "./AdminCard";
 
 interface Props {

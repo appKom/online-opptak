@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { DeepPartial, periodType } from "../../lib/types/types";
+import { DeepPartial, periodType } from "../types/types";
 
 export const validatePeriod = (
   periodData: DeepPartial<periodType>

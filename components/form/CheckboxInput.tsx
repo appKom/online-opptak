@@ -69,8 +69,9 @@ const CheckboxInput = (props: Props) => {
               {showInfo && (
                 <div className="absolute z-10 p-4 bg-white border rounded shadow-lg dark:bg-gray-800 dark:border-gray-700">
                   <p className="text-sm text-gray-700 dark:text-gray-300">
-                    Valgfrie komiteer er komiteer som søkere kan velge i tillegg
-                    til de maksimum 3 komiteene de søke på. Eksempelvis: FeminIT
+                    Valgfrie komiteer er komiteene som søkere kan velge i
+                    tillegg til de maksimum 3 komiteene de kan søke på.
+                    Eksempelvis: FeminIT
                   </p>
                   <button
                     onClick={toggleInfo}
