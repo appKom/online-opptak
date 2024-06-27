@@ -1,4 +1,4 @@
-import { applicantType } from "../../../lib/types/types";
+import { applicantType } from "../../lib/types/types";
 
 interface Props {
   filteredApplications: applicantType[] | undefined;
