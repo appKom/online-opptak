@@ -1,9 +1,10 @@
 const ApplicationOverview = ({ application }: { application: any }) => {
   const titleStyle = "font-semibold";
+  const preferences = application.application.preferences || {};
 
   return (
     <div className="px-6 py-4 border border-gray-200 rounded-lg shadow dark:border-gray-700 dark:bg-gray-800">
-      <ul className="space-y-2 ">
+      <ul className="space-y-2">
         <li>
           <span className={titleStyle}>Navn:</span>{" "}
           {application.application.name || "Ingen"}
@@ -25,12 +26,9 @@ const ApplicationOverview = ({ application }: { application: any }) => {
         <li>
           <span className={titleStyle}>Komiteønsker:</span>
         </li>
-        <li> {`1. ${application.application.preferences.first}`}</li>
-
-        <li> {`2. ${application.application.preferences.second}`}</li>
-
-        <li> {`3. ${application.application.preferences.third}`}</li>
-
+        {Object.keys(preferences).map((key, index) => (
+          <li key={index}>{`${index + 1}. ${preferences[key]}`}</li>
+        ))}
         <li>
           <span className={titleStyle}>Ønsker Bankom:</span>{" "}
           {application.application.bankom || "Ingen"}
