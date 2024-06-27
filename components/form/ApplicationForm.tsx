@@ -15,6 +15,8 @@ interface Props {
 
 export const ApplicationForm = (props: Props) => {
   const availableCommittees = [["Ingen", ""]];
+  const optionalCommittees: string[] = [];
+  const selectedOptionalCommittees: string[] = [];
 
   props.availableCommittees.forEach((committee) => {
     if (!availableCommittees.some((item) => item[1] === committee)) {
@@ -22,17 +24,35 @@ export const ApplicationForm = (props: Props) => {
     }
   });
 
+  if (props.optionalCommittees.length > 0) {
+    for (let i = 0; i < props.optionalCommittees.length; i++) {
+      optionalCommittees.push(props.optionalCommittees[i].toLowerCase());
+    }
+  }
+
   const addOptionalCommittee = (committee: string, value: string) => {
-    const updatedOptionalCommittees =
-      value === "yes"
-        ? [...props.optionalCommittees, committee]
-        : props.optionalCommittees.filter((item) => item !== committee);
+    if (value === "yes" && !selectedOptionalCommittees.includes(committee)) {
+      selectedOptionalCommittees.push(committee);
+    } else if (
+      value === "no" &&
+      selectedOptionalCommittees.includes(committee)
+    ) {
+      for (let i = 0; i < selectedOptionalCommittees.length; i++) {
+        if (selectedOptionalCommittees[i] === committee) {
+          selectedOptionalCommittees.splice(i, 1);
+        }
+      }
+    }
 
     props.setApplicationData({
       ...props.applicationData,
-      optionalCommittees: updatedOptionalCommittees,
+      optionalCommittees: selectedOptionalCommittees,
     });
   };
+
+  useEffect(() => {
+    console.log(props.applicationData);
+  }, [props.applicationData]);
 
   return (
     <form className="px-5 text-online-darkBlue dark:text-white">
@@ -153,14 +173,14 @@ export const ApplicationForm = (props: Props) => {
           })
         }
       />
-      {props.optionalCommittees.map((committee) => (
+      {optionalCommittees.map((committee) => (
         <div key={committee}>
           <RadioInput
             values={[
               ["Ja", "yes"],
               ["Nei", "no"],
             ]}
-            label={`Ønsker du å søke i ${committee} i tillegg?`}
+            label={`Ønsker du å søke ${committee} i tillegg?`}
             updateInputValues={(value: string) =>
               addOptionalCommittee(committee, value)
             }
