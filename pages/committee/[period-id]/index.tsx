@@ -110,6 +110,11 @@ const CommitteeApplicantOverView: NextPage = () => {
     if (period && session) {
       const userCommittees = session.user!.committees;
       const periodCommittees = period.committees;
+
+      if (period.optionalCommittees != null) {
+        periodCommittees.push(...period.optionalCommittees);
+      }
+
       const filteredCommittees = periodCommittees.filter(
         (committee) => userCommittees?.includes(committee.toLowerCase())
       );
