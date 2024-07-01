@@ -1,12 +1,22 @@
-import { applicantType } from "../../lib/types/types";
+import {
+  applicantType,
+  applicantTypeForCommittees,
+} from "../../lib/types/types";
 
 interface Props {
-  filteredApplications: applicantType[] | undefined;
+  filteredApplications:
+    | applicantType[]
+    | applicantTypeForCommittees[]
+    | undefined;
   applicationsExist: boolean;
   includePreferences?: boolean;
 }
 
-const AdminCard = ({
+const isApplicantType = (applicant: any): applicant is applicantType => {
+  return "optionalCommittees" in applicant;
+};
+
+const ApplicantCard = ({
   filteredApplications,
   applicationsExist,
   includePreferences,
@@ -28,12 +38,26 @@ const AdminCard = ({
               <p className="mt-1 text-sm">Telefon: {applicant.phone}</p>
               <p className="mt-1 text-sm">E-post: {applicant.email}</p>
               <p className="mt-1 text-sm">Bankom: {applicant.bankom}</p>
-              {includePreferences && (
-                <p className="mt-1 text-sm">
-                  1. {applicant.preferences.first}, 2.{" "}
-                  {applicant.preferences.second}, 3.{" "}
-                  {applicant.preferences.third}
-                </p>
+
+              {includePreferences && isApplicantType(applicant) && (
+                <div>
+                  <p className="mt-1 text-sm">Komiteer: </p>
+                  <p className="mt-1 text-sm">
+                    1. {applicant.preferences.first}, 2.{" "}
+                    {applicant.preferences.second}, 3.{" "}
+                    {applicant.preferences.third}
+                  </p>
+                  {isApplicantType(applicant) &&
+                    applicant.optionalCommittees != null && (
+                      <div>
+                        <p className="mt-1 text-sm">Valgfrie Komiteer: </p>
+                        <p className="mt-1 text-sm">
+                          {" "}
+                          {applicant.optionalCommittees}
+                        </p>
+                      </div>
+                    )}
+                </div>
               )}
               <p className="mt-1 text-sm">
                 Dato: {new Date(applicant.date).toLocaleDateString()}
@@ -48,4 +72,4 @@ const AdminCard = ({
   return <p>No applications found.</p>;
 };
 
-export default AdminCard;
+export default ApplicantCard;

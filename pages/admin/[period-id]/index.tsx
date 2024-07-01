@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
-import AdminTable from "../../../components/admin/AdminTable";
+import ApplicantTable from "../../../components/admin/ApplicantTable";
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -131,9 +131,11 @@ const Admin = () => {
               </div>
             )}
 
-            <AdminTable
+            <ApplicantTable
               filteredApplications={filteredApplications}
               applicationsExist={applicationsExist}
+              includePreferences={true}
+              optionalCommitteesExist={period?.optionalCommittees != null}
             />
           </div>
         )}

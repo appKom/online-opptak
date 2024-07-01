@@ -6,6 +6,7 @@ import {
   periodType,
 } from "../../../lib/types/types";
 import { useRouter } from "next/router";
+import ApplicantTable from "../../../components/admin/ApplicantTable";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -175,57 +176,12 @@ const CommitteeApplicantOverView: NextPage = () => {
         </div>
       </div>
       {filteredApplicants.length > 0 ? (
-        <div className="min-w-full px-20 py-10">
-          <table className="min-w-full border border-collapse border-gray-200">
-            {/* dark:bg-online-darkBlue dark:border-gray-700 */}
-            <thead>
-              <tr>
-                {[
-                  "Navn",
-                  "Beskrivelse",
-                  "Bankom",
-                  "Klasse",
-                  "Telefon",
-                  "E-post",
-                ].map((header) => (
-                  <th
-                    key={header}
-                    className="p-2 border border-gray-200 dark:border-gray-700"
-                  >
-                    {header}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredApplicants.map((applicant, index) => (
-                <tr key={index} className="">
-                  <td className="p-2 border border-gray-200 dark:border-gray-700">
-                    {applicant.name}
-                  </td>
-                  <td className="p-2 border border-gray-200 dark:border-gray-700">
-                    {applicant.about}
-                  </td>
-                  <td className="p-2 border border-gray-200 dark:border-gray-700">
-                    {applicant.bankom}
-                  </td>
-                  <td className="p-2 border border-gray-200 dark:border-gray-700">
-                    {applicant.grade}
-                  </td>
-                  <td className="p-2 border border-gray-200 dark:border-gray-700">
-                    {applicant.phone}
-                  </td>
-                  <td className="p-2 border border-gray-200 dark:border-gray-700">
-                    {applicant.email}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="flex justify-end items-end py-5 px-10">
-            <p>{`${filteredApplicants.length} resultater`}</p>
-          </div>
-        </div>
+        <ApplicantTable
+          filteredApplications={filteredApplicants}
+          applicationsExist={true}
+          includePreferences={false}
+          optionalCommitteesExist={false}
+        />
       ) : (
         <p>Fant ingen søkere</p>
       )}

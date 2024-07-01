@@ -35,11 +35,6 @@ const Home = () => {
     session && fetchPeriods();
   }, [session]);
 
-  //Tihi
-  useEffect(() => {
-    console.log(Signature);
-  }, []);
-
   if (isLoading) {
     return (
       <div className="flex justify-center py-5 text-center">
