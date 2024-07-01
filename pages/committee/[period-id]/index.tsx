@@ -6,7 +6,7 @@ import {
   periodType,
 } from "../../../lib/types/types";
 import { useRouter } from "next/router";
-import ApplicantTable from "../../../components/admin/ApplicantTable";
+import ApplicantTable from "../../../components/applicantoverview/ApplicantTable";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -184,7 +184,7 @@ const CommitteeApplicantOverView: NextPage = () => {
           />
         </div>
       ) : (
-        <p>Fant ingen søkere</p>
+        <p>Ingen søkere</p>
       )}
     </div>
   );

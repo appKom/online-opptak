@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
-import ApplicantTable from "../../../components/admin/ApplicantTable";
+import ApplicantTable from "../../../components/applicantoverview/ApplicantTable";
 
 const Admin = () => {
   const { data: session } = useSession();

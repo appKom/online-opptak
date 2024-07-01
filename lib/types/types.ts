@@ -41,6 +41,27 @@ export type applicantType = {
   periodId: string | ObjectId;
 };
 
+export type applicantTypeForCommittees = {
+  _id: ObjectId;
+  owId: string;
+  name: string;
+  email: string;
+  phone: string;
+  grade: number;
+  about: string;
+  preferences: { committee: string }[];
+  bankom: "yes" | "no" | "maybe";
+  optionalCommittees: string[];
+  selectedTimes: [
+    {
+      start: string;
+      end: string;
+    },
+  ];
+  date: Date;
+  periodId: string | ObjectId;
+};
+
 export type periodType = {
   _id: ObjectId;
   name: string;
@@ -64,27 +85,6 @@ export type periodType = {
 export type AvailableTime = {
   start: string;
   end: string;
-};
-
-export type applicantTypeForCommittees = {
-  _id: ObjectId;
-  owId: string;
-  name: string;
-  email: string;
-  phone: string;
-  grade: number;
-  about: string;
-  preferences: { committee: string }[];
-  bankom: "yes" | "no" | "maybe";
-  feminIt: "yes" | "no";
-  selectedTimes: [
-    {
-      start: string;
-      end: string;
-    },
-  ];
-  date: Date;
-  periodId: string | ObjectId;
 };
 
 export type committeeInterviewType = {

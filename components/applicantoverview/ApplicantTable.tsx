@@ -15,7 +15,12 @@ interface Props {
 }
 
 const isApplicantType = (applicant: any): applicant is applicantType => {
-  return "optionalCommittees" in applicant;
+  return (
+    applicant.preferences &&
+    typeof applicant.preferences.first === "string" &&
+    typeof applicant.preferences.second === "string" &&
+    typeof applicant.preferences.third === "string"
+  );
 };
 
 const ApplicantTable = ({
@@ -36,8 +41,8 @@ const ApplicantTable = ({
     ];
 
     return (
-      <div>
-        <div className="hidden md:flex">
+      <div className="flex flex-col">
+        <div className="hidden md:flex ">
           <table className="min-w-full text-start border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
             <thead>
               <tr>
@@ -99,6 +104,11 @@ const ApplicantTable = ({
             includePreferences={includePreferences}
           />
         </div>
+        {applicationsExist && (
+          <p className="text-right p-5">
+            {filteredApplications.length} resultater
+          </p>
+        )}
       </div>
     );
   } else {
