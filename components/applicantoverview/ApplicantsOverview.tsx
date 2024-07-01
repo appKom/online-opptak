@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import {
   applicantType,
-  applicantTypeForCommittees,
+  committeePreferenceType,
   periodType,
+  preferencesType,
 } from "../../lib/types/types";
 import ApplicantTable from "./ApplicantTable";
 
 interface Props {
-  applicants: (applicantType | applicantTypeForCommittees)[];
+  applicants: applicantType[];
   period: periodType | null;
   committees: string[] | null;
   years: string[];
@@ -16,10 +17,10 @@ interface Props {
   optionalCommitteesExist: boolean;
 }
 
-const isApplicantTypeForCommittees = (
-  applicant: applicantType | applicantTypeForCommittees
-): applicant is applicantTypeForCommittees => {
-  return (applicant as applicantTypeForCommittees).preferences !== undefined;
+const isPreferencesType = (
+  preferences: preferencesType | committeePreferenceType[]
+): preferences is preferencesType => {
+  return (preferences as preferencesType).first !== undefined;
 };
 
 const ApplicantsOverview = ({
@@ -31,9 +32,9 @@ const ApplicantsOverview = ({
   includePreferences,
   optionalCommitteesExist,
 }: Props) => {
-  const [filteredApplicants, setFilteredApplicants] = useState<
-    applicantType[] | applicantTypeForCommittees[]
-  >([]);
+  const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
+    []
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCommittee, setSelectedCommittee] = useState<string | null>(
     null
@@ -41,18 +42,26 @@ const ApplicantsOverview = ({
   const [selectedYear, setSelectedYear] = useState<string>("");
 
   useEffect(() => {
-    let filtered: (applicantType | applicantTypeForCommittees)[] = applicants;
+    let filtered: applicantType[] = applicants;
 
     if (selectedCommittee) {
       filtered = filtered.filter((applicant) => {
-        if (isApplicantTypeForCommittees(applicant)) {
+        if (isPreferencesType(applicant.preferences)) {
+          return (
+            applicant.preferences.first.toLowerCase() ===
+              selectedCommittee.toLowerCase() ||
+            applicant.preferences.second.toLowerCase() ===
+              selectedCommittee.toLowerCase() ||
+            applicant.preferences.third.toLowerCase() ===
+              selectedCommittee.toLowerCase()
+          );
+        } else {
           return applicant.preferences.some(
             (preference) =>
               preference.committee.toLowerCase() ===
               selectedCommittee.toLowerCase()
           );
         }
-        return false;
       });
     }
 
@@ -68,11 +77,7 @@ const ApplicantsOverview = ({
       );
     }
 
-    if (filtered.every(isApplicantTypeForCommittees)) {
-      setFilteredApplicants(filtered as applicantTypeForCommittees[]);
-    } else {
-      setFilteredApplicants(filtered as applicantType[]);
-    }
+    setFilteredApplicants(filtered);
   }, [selectedCommittee, selectedYear, searchQuery, applicants]);
 
   return (

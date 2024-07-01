@@ -17,6 +17,16 @@ export type commiteeType = {
   timeslot: string;
 };
 
+export type preferencesType = {
+  first: string;
+  second: string;
+  third: string;
+};
+
+export type committeePreferenceType = {
+  committee: string;
+};
+
 export type applicantType = {
   owId: string;
   name: string;
@@ -24,32 +34,7 @@ export type applicantType = {
   phone: string;
   grade: number;
   about: string;
-  preferences: {
-    first: string;
-    second: string;
-    third: string;
-  };
-  bankom: "yes" | "no" | "maybe";
-  optionalCommittees: string[];
-  selectedTimes: [
-    {
-      start: string;
-      end: string;
-    },
-  ];
-  date: Date;
-  periodId: string | ObjectId;
-};
-
-export type applicantTypeForCommittees = {
-  _id: ObjectId;
-  owId: string;
-  name: string;
-  email: string;
-  phone: string;
-  grade: number;
-  about: string;
-  preferences: { committee: string }[];
+  preferences: preferencesType | committeePreferenceType[];
   bankom: "yes" | "no" | "maybe";
   optionalCommittees: string[];
   selectedTimes: [

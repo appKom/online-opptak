@@ -1,18 +1,13 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import {
-  applicantTypeForCommittees,
-  periodType,
-} from "../../../lib/types/types";
+import { applicantType, periodType } from "../../../lib/types/types";
 import { useRouter } from "next/router";
 import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
-  const [applicants, setApplicants] = useState<applicantTypeForCommittees[]>(
-    []
-  );
+  const [applicants, setApplicants] = useState<applicantType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -53,7 +48,7 @@ const CommitteeApplicantOverView: NextPage = () => {
 
         const uniqueYears: string[] = Array.from(
           new Set(
-            data.applicants.map((applicant: applicantTypeForCommittees) =>
+            data.applicants.map((applicant: applicantType) =>
               applicant.grade.toString()
             )
           )
