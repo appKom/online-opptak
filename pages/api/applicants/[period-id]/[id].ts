@@ -23,7 +23,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: "Invalid format" });
   }
 
-  if (!isAdmin(res, session)) return;
   if (!checkOwId(res, session, id)) return;
 
   try {
