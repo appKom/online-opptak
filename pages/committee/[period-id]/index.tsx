@@ -6,27 +6,19 @@ import {
   periodType,
 } from "../../../lib/types/types";
 import { useRouter } from "next/router";
-import ApplicantTable from "../../../components/applicantoverview/ApplicantTable";
+import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
   const [applicants, setApplicants] = useState<applicantTypeForCommittees[]>(
     []
   );
-  const [filteredApplicants, setFilteredApplicants] = useState<
-    applicantTypeForCommittees[]
-  >([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
   const [committees, setCommittees] = useState<string[] | null>(null);
   const [period, setPeriod] = useState<periodType | null>(null);
-  const [selectedCommittee, setSelectedCommittee] = useState<string | null>(
-    null
-  );
-  const [selectedYear, setSelectedYear] = useState<string>("");
   const [years, setYears] = useState<string[]>([]);
 
   useEffect(() => {
@@ -58,7 +50,6 @@ const CommitteeApplicantOverView: NextPage = () => {
         const data = await response.json();
 
         setApplicants(data.applicants);
-        setFilteredApplicants(data.applicants);
 
         const uniqueYears: string[] = Array.from(
           new Set(
@@ -77,35 +68,7 @@ const CommitteeApplicantOverView: NextPage = () => {
 
     fetchApplicants();
     fetchPeriod();
-  }, []);
-
-  useEffect(() => {
-    let filtered = applicants;
-
-    if (selectedCommittee) {
-      filtered = filtered.filter((applicant) => {
-        return applicant.preferences.some(
-          (preference) =>
-            preference.committee.toLowerCase() ===
-            selectedCommittee.toLowerCase()
-        );
-      });
-    }
-
-    if (selectedYear) {
-      filtered = filtered.filter(
-        (applicant) => applicant.grade.toString() === selectedYear
-      );
-    }
-
-    if (searchQuery) {
-      filtered = filtered.filter((applicant) =>
-        applicant.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    setFilteredApplicants(filtered);
-  }, [selectedCommittee, selectedYear, searchQuery, applicants]);
+  }, [session, periodId]);
 
   useEffect(() => {
     if (period && session) {
@@ -136,57 +99,15 @@ const CommitteeApplicantOverView: NextPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <h2 className="mt-5 mb-6 text-3xl font-bold text-center">{`${period?.name}`}</h2>
-      <div className="flex flex-wrap justify-center py-5 pt-10 space-x-5 max-w-full">
-        <input
-          type="text"
-          placeholder="Søk etter navn"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600 mb-4"
-        />
-        {committees && (
-          <select
-            className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600 mb-4"
-            value={selectedCommittee ?? ""}
-            onChange={(e) => setSelectedCommittee(e.target.value)}
-          >
-            <option value="">Velg komite</option>
-            {committees.map((committee, index) => (
-              <option key={index} value={committee}>
-                {committee}
-              </option>
-            ))}
-          </select>
-        )}
-
-        <select
-          className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600 mb-4"
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-        >
-          <option value="">Velg klasse</option>
-          {years.map((year) => (
-            <option key={year} value={year}>
-              {year}. Klasse
-            </option>
-          ))}
-        </select>
-      </div>
-      {filteredApplicants.length > 0 ? (
-        <div className="px-20">
-          <ApplicantTable
-            filteredApplications={filteredApplicants}
-            applicationsExist={true}
-            includePreferences={false}
-            optionalCommitteesExist={false}
-          />
-        </div>
-      ) : (
-        <p>Ingen søkere</p>
-      )}
-    </div>
+    <ApplicantsOverview
+      applicants={applicants}
+      period={period}
+      committees={committees}
+      years={years}
+      applicationsExist={applicants != null}
+      includePreferences={false}
+      optionalCommitteesExist={period!.optionalCommittees != null}
+    />
   );
 };
 
