@@ -33,11 +33,13 @@ const ApplicantCard = ({
               <h3 className="text-xl font-medium text-gray-900 dark:text-online-snowWhite">
                 {applicant.name}
               </h3>
-              <p className="w-full mt-1">Om: {applicant.about}</p>
-              <p className="mt-1 text-sm ">Trinn: {applicant.grade}</p>
-              <p className="mt-1 text-sm">Telefon: {applicant.phone}</p>
-              <p className="mt-1 text-sm">E-post: {applicant.email}</p>
-              <p className="mt-1 text-sm">Bankom: {applicant.bankom}</p>
+              <div className="w-full mt-1 text-sm">
+                <p className="">Om: {applicant.about}</p>
+                <p>Trinn: {applicant.grade}</p>
+                <p>Telefon: {applicant.phone}</p>
+                <p>E-post: {applicant.email}</p>
+                <p>Bankom: {applicant.bankom}</p>
+              </div>
 
               {includePreferences &&
                 isPreferencesType(applicant.preferences) && (
@@ -51,6 +53,7 @@ const ApplicantCard = ({
                   </div>
                 )}
               {isApplicantType(applicant) &&
+                includePreferences &&
                 applicant.optionalCommittees != null && (
                   <div>
                     <p className="mt-1 text-sm">Valgfrie Komiteer: </p>

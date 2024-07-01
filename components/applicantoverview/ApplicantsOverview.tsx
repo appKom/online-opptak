@@ -83,7 +83,7 @@ const ApplicantsOverview = ({
   return (
     <div className="flex flex-col items-center">
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">{`${period?.name}`}</h2>
-      <div className="flex flex-wrap justify-center py-5 pt-10 space-x-5 max-w-full">
+      <div className="flex flex-wrap px-10 justify-center py-5 pt-10 space-x-5 max-w-full">
         <input
           type="text"
           placeholder="Søk etter navn"

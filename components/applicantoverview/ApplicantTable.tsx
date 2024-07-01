@@ -1,25 +1,25 @@
-import {
-  applicantType,
-  applicantTypeForCommittees,
-} from "../../lib/types/types";
+import { applicantType, preferencesType } from "../../lib/types/types";
 import ApplicantCard from "./ApplicantCard";
 
 interface Props {
-  filteredApplications:
-    | applicantType[]
-    | applicantTypeForCommittees[]
-    | undefined;
+  filteredApplications: applicantType[] | undefined;
   applicationsExist: boolean;
   includePreferences: boolean;
   optionalCommitteesExist: boolean;
 }
 
 const isApplicantType = (applicant: any): applicant is applicantType => {
+  return "optionalCommittees" in applicant;
+};
+
+const isPreferencesType = (
+  preferences: any
+): preferences is preferencesType => {
   return (
-    applicant.preferences &&
-    typeof applicant.preferences.first === "string" &&
-    typeof applicant.preferences.second === "string" &&
-    typeof applicant.preferences.third === "string"
+    preferences &&
+    typeof preferences.first === "string" &&
+    typeof preferences.second === "string" &&
+    typeof preferences.third === "string"
   );
 };
 
@@ -34,10 +34,14 @@ const ApplicantTable = ({
       "Navn",
       "Om",
       ...(includePreferences ? ["1. Komitee", "2. Komitee", "3. Komitee"] : []),
-      ...(optionalCommitteesExist ? ["Valgfrie komiteer"] : []),
+      ...(optionalCommitteesExist && includePreferences
+        ? ["Valgfrie komiteer"]
+        : []),
+      "Bankom",
       "Dato",
       "Klasse",
       "Telefon",
+      "E-post",
     ];
 
     return (
@@ -65,24 +69,30 @@ const ApplicantTable = ({
                   <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
                     {applicant.about}
                   </td>
-                  {includePreferences && isApplicantType(applicant) && (
-                    <>
+                  {includePreferences &&
+                    isPreferencesType(applicant.preferences) && (
+                      <>
+                        <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
+                          {applicant.preferences.first}
+                        </td>
+                        <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
+                          {applicant.preferences.second}
+                        </td>
+                        <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
+                          {applicant.preferences.third}
+                        </td>
+                      </>
+                    )}
+                  {optionalCommitteesExist &&
+                    includePreferences &&
+                    isApplicantType(applicant) && (
                       <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
-                        {applicant.preferences.first}
+                        {applicant.optionalCommittees.join(", ")}
                       </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
-                        {applicant.preferences.second}
-                      </td>
-                      <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
-                        {applicant.preferences.third}
-                      </td>
-                    </>
-                  )}
-                  {optionalCommitteesExist && isApplicantType(applicant) && (
-                    <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
-                      {applicant.optionalCommittees.join(", ")}
-                    </td>
-                  )}
+                    )}
+                  <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
+                    {applicant.bankom}
+                  </td>
                   <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
                     {new Date(applicant.date).toLocaleDateString()}
                   </td>
@@ -91,6 +101,9 @@ const ApplicantTable = ({
                   </td>
                   <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
                     {applicant.phone}
+                  </td>
+                  <td className="p-2 border border-gray-200 dark:border-gray-700 align-top">
+                    {applicant.email}
                   </td>
                 </tr>
               ))}
