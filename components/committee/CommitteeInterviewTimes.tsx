@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import { BaseSyntheticEvent, ChangeEvent, useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -15,15 +14,18 @@ interface Interview {
   end: string;
 }
 
+interface Props {
+  period: periodType | null;
+}
+
 const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
-const CommitteeInterviewTimes: NextPage = () => {
+const CommitteeInterviewTimes = ({ period }: Props) => {
   const { data: session } = useSession();
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(20);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
-  const [periods, setPeriods] = useState<periodType[]>([]);
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
+
   const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
 
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
@@ -42,15 +44,22 @@ const CommitteeInterviewTimes: NextPage = () => {
 
   const [countdown, setCountdown] = useState<string>("");
 
-  const filterCommittees = (period: periodType) => {
-    const userCommittees = session?.user?.committees || [];
-    const periodCommittees = period?.committees || [];
-    return userCommittees.filter((committee) =>
-      periodCommittees
-        .map((c) => c.toLowerCase())
-        .includes(committee.toLowerCase())
-    );
-  };
+  useEffect(() => {
+    if (session?.user?.committees && period?.committees) {
+      const userCommittees = session.user.committees.map((committee) =>
+        committee.toLowerCase()
+      );
+      const periodCommittees = period.committees.map((committee) =>
+        committee.toLowerCase()
+      );
+
+      const commonCommittees = userCommittees.filter((committee) =>
+        periodCommittees.includes(committee)
+      );
+
+      setFilteredCommittees(commonCommittees);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchCommitteeInterviewTimes = async () => {
@@ -60,6 +69,7 @@ const CommitteeInterviewTimes: NextPage = () => {
 
         if (data && Array.isArray(data.committees)) {
           setCommitteeInterviewTimes(data.committees);
+          setIsLoading(false);
         } else {
           console.error(
             "Fetched data does not contain an 'committees' array:",
@@ -77,11 +87,7 @@ const CommitteeInterviewTimes: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      selectedPeriod &&
-      selectedCommittee &&
-      Array.isArray(committeeInterviewTimes)
-    ) {
+    if (selectedCommittee && Array.isArray(committeeInterviewTimes)) {
       const cleanString = (input: string) =>
         input
           .replace(/[\x00-\x1F\x7F-\x9F]/g, "")
@@ -89,15 +95,11 @@ const CommitteeInterviewTimes: NextPage = () => {
           .toLowerCase();
 
       const relevantTimes = committeeInterviewTimes.filter((time) => {
-        const cleanPeriodId = cleanString(time.periodId);
         const cleanCommittee = cleanString(time.committee);
-        const cleanSelectedPeriod = cleanString(selectedPeriod);
+
         const cleanSelectedCommittee = cleanString(selectedCommittee);
 
-        return (
-          cleanPeriodId === cleanSelectedPeriod &&
-          cleanCommittee === cleanSelectedCommittee
-        );
+        return cleanCommittee === cleanSelectedCommittee;
       });
 
       if (relevantTimes.length > 0) {
@@ -115,61 +117,9 @@ const CommitteeInterviewTimes: NextPage = () => {
         setCalendarEvents([]);
       }
     }
-  }, [selectedPeriod, selectedCommittee, committeeInterviewTimes]);
+  }, [period, selectedCommittee, committeeInterviewTimes]);
 
   useEffect(() => {}, [committeeInterviewTimes]);
-
-  useEffect(() => {
-    const fetchPeriods = async () => {
-      try {
-        const res = await fetch("/api/periods");
-        const data = await res.json();
-        const today = new Date();
-
-        let availablePeriods = data.periods.filter((p: periodType) => {
-          const interviewStartDate = new Date(p.interviewPeriod.start || "");
-          // const endDate = new Date(p.interviewPeriod.end || "");
-          return interviewStartDate >= today;
-        });
-
-        availablePeriods = filterPeriodsByCommittee(availablePeriods);
-
-        if (availablePeriods.length > 0) {
-          setPeriods(availablePeriods);
-          setSelectedPeriod(availablePeriods[0]._id.toString());
-
-          const committees = filterCommittees(availablePeriods[0]);
-          setFilteredCommittees(committees);
-          if (committees.length > 0) {
-            setSelectedCommittee(committees[0]);
-          }
-          setSelectedTimeslot("15");
-        } else {
-          console.warn("No suitable interview periods found.");
-        }
-
-        const period = availablePeriods.find((p: periodType) => {
-          const interviewStartDate = new Date(p.interviewPeriod.start || "");
-          // const endDate = new Date(p.interviewPeriod.end || "");
-          return interviewStartDate >= today;
-        });
-
-        if (period) {
-          setVisibleRange({
-            start: period.interviewPeriod.start,
-            end: period.interviewPeriod.end,
-          });
-        } else {
-          console.warn("No suitable interview period found.");
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch interview periods:", error);
-      }
-    };
-
-    fetchPeriods();
-  }, []);
 
   const createInterval = (selectionInfo: any) => {
     const event = {
@@ -192,17 +142,9 @@ const CommitteeInterviewTimes: NextPage = () => {
       return;
     }
 
-    const selectedPeriodData = periods.find(
-      (p) => p._id.toString() === selectedPeriod
-    );
-    if (!selectedPeriodData) {
-      toast.error("No period selected or period data is missing");
-      return;
-    }
-
     const dataToSend = {
-      periodId: selectedPeriodData._id,
-      period_name: selectedPeriodData.name,
+      periodId: period!._id,
+      period_name: period!.name,
       committee: selectedCommittee,
       availabletimes: formattedEvents,
       timeslot: `${selectedTimeslot}`,
@@ -281,25 +223,6 @@ const CommitteeInterviewTimes: NextPage = () => {
     setSelectedCommittee(e.target.value);
   };
 
-  const handlePeriodSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newPeriodId = e.target.value;
-    const selectedPeriodData = periods.find(
-      (p) => p._id.toString() === newPeriodId
-    );
-    if (selectedPeriodData) {
-      setSelectedPeriod(newPeriodId);
-      const startDate = new Date(selectedPeriodData.interviewPeriod.start);
-      const endDate = new Date(selectedPeriodData.interviewPeriod.end);
-
-      setVisibleRange({
-        start: startDate.toISOString(),
-        end: endDate.toISOString(),
-      });
-    } else {
-      console.warn("Selected period not found.");
-    }
-  };
-
   const formatEventsForExport = (events: any[]) => {
     return events
       .map((event) => {
@@ -316,17 +239,6 @@ const CommitteeInterviewTimes: NextPage = () => {
       .filter((event) => event !== null);
   };
 
-  const filterPeriodsByCommittee = (periods: periodType[]) => {
-    const userCommittees = session?.user?.committees || [];
-    return periods.filter((period) =>
-      period.committees.some((committee) =>
-        userCommittees
-          .map((c) => c.toLowerCase())
-          .includes(committee.toLowerCase())
-      )
-    );
-  };
-
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTimeslot(e.target.value);
   };
@@ -335,7 +247,7 @@ const CommitteeInterviewTimes: NextPage = () => {
     e.preventDefault();
     const queryParams = new URLSearchParams({
       committee: selectedCommittee,
-      periodId: selectedPeriod,
+      periodId: period!._id.toString(),
     }).toString();
 
     try {
@@ -363,12 +275,10 @@ const CommitteeInterviewTimes: NextPage = () => {
       setCountdown(deadline);
     }, 1000);
     return () => clearInterval(intervalId);
-  }, [selectedPeriod, periods]);
+  }, [period]);
 
   const getSubmissionDeadline = (): string => {
-    const deadlineIso = periods.find(
-      (period) => period._id.toString() === selectedPeriod
-    )?.interviewPeriod.start;
+    const deadlineIso = period!.interviewPeriod.start;
 
     if (deadlineIso != null) {
       const deadlineDate = new Date(deadlineIso);
@@ -411,7 +321,7 @@ const CommitteeInterviewTimes: NextPage = () => {
     );
   }
 
-  if (periods.length === 0) {
+  if (period!.interviewPeriod.start < new Date()) {
     return (
       <div className="flex items-center justify-center h-screen">
         <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptak!</h2>
@@ -443,21 +353,6 @@ const CommitteeInterviewTimes: NextPage = () => {
         </div>
       </div>
       <div className="flex gap-10 w-max ">
-        <div className="flex flex-col px-5 ">
-          <label htmlFor="">Velg opptak: </label>
-          <select
-            id="period-select"
-            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-            onChange={handlePeriodSelection}
-            value={selectedPeriod}
-          >
-            {periods.map((period) => (
-              <option key={period._id.toString()} value={period._id.toString()}>
-                {period.name}
-              </option>
-            ))}
-          </select>
-        </div>
         <div className="flex flex-col px-5">
           <label className="">Velg komitee: </label>
           <select

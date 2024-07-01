@@ -102,6 +102,38 @@ const CommitteeApplicantOverView: NextPage = () => {
     return <div>Error: {error}</div>;
   }
 
+  const interviewPeriodEnd = period?.interviewPeriod.end
+    ? new Date(period.interviewPeriod.end)
+    : null;
+
+  //Satt frist til 14 dager etter intervju perioden, så får man ikke tilgang
+  if (
+    interviewPeriodEnd &&
+    interviewPeriodEnd.getTime() + 14 * 24 * 60 * 60 * 1000 <
+      new Date().getTime()
+  ) {
+    return (
+      <div className="flex flex-col h-screen text-center items-center justify-center px-20">
+        <h1 className="text-3xl">Opptaket er ferdig!</h1>
+        <br />
+        <p className="text-lg">
+          Du kan ikke lenger se søkere eller planlegge intervjuer.
+        </p>
+        <p className="text-lg">
+          {" "}
+          Har det skjedd noe feil eller trenger du tilgang til informasjonen? Ta
+          kontakt med{" "}
+          <a
+            className="font-semibold underline transition-all hover:text-online-orange"
+            href="mailto:appkom@online.ntnu.no"
+          >
+            Appkom
+          </a>{" "}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center">
       <Tabs
@@ -111,7 +143,7 @@ const CommitteeApplicantOverView: NextPage = () => {
           {
             title: "Intervjutider",
             icon: <CalendarIcon className="w-5 h-5" />,
-            content: <CommitteeInterviewTimes />,
+            content: <CommitteeInterviewTimes period={period} />,
           },
           {
             title: "Søkere",
@@ -124,7 +156,7 @@ const CommitteeApplicantOverView: NextPage = () => {
                 years={years}
                 applicationsExist={applicants != null}
                 includePreferences={false}
-                optionalCommitteesExist={period!.optionalCommittees != null}
+                optionalCommitteesExist={period?.optionalCommittees != null}
               />
             ),
           },
