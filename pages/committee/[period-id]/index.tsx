@@ -4,6 +4,14 @@ import { useSession } from "next-auth/react";
 import { applicantType, periodType } from "../../../lib/types/types";
 import { useRouter } from "next/router";
 import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
+import {
+  CalendarIcon,
+  CheckIcon,
+  UserGroupIcon,
+} from "@heroicons/react/24/solid";
+import { Tabs } from "../../../components/Tabs";
+import PlanInterview from "../../../components/committee/PlanInterview";
+import CommitteeInterviewTimes from "../../../components/committee/CommitteeInterviewTimes";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -15,6 +23,7 @@ const CommitteeApplicantOverView: NextPage = () => {
   const [committees, setCommittees] = useState<string[] | null>(null);
   const [period, setPeriod] = useState<periodType | null>(null);
   const [years, setYears] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     if (!session || !periodId) return;
@@ -94,15 +103,39 @@ const CommitteeApplicantOverView: NextPage = () => {
   }
 
   return (
-    <ApplicantsOverview
-      applicants={applicants}
-      period={period}
-      committees={committees}
-      years={years}
-      applicationsExist={applicants != null}
-      includePreferences={false}
-      optionalCommitteesExist={period!.optionalCommittees != null}
-    />
+    <div className="flex flex-col items-center">
+      <Tabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        content={[
+          {
+            title: "Intervjutider",
+            icon: <CalendarIcon className="w-5 h-5" />,
+            content: <CommitteeInterviewTimes />,
+          },
+          {
+            title: "Søkere",
+            icon: <UserGroupIcon className="w-5 h-5" />,
+            content: (
+              <ApplicantsOverview
+                applicants={applicants}
+                period={period}
+                committees={committees}
+                years={years}
+                applicationsExist={applicants != null}
+                includePreferences={false}
+                optionalCommitteesExist={period!.optionalCommittees != null}
+              />
+            ),
+          },
+          {
+            title: "Planlegg og Send ut",
+            icon: <CheckIcon className="w-5 h-5" />,
+            content: <PlanInterview />,
+          },
+        ]}
+      />
+    </div>
   );
 };
 

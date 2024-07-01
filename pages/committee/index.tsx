@@ -20,7 +20,7 @@ const Committee: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <Tabs
+      {/* <Tabs
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         content={[
@@ -37,7 +37,8 @@ const Committee: NextPage = () => {
             ),
           },
         ]}
-      />
+      /> */}
+      <CommitteeApplicants routeString={"/committee/applications/"} />
     </div>
   );
 };
