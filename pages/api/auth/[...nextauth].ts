@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: userInfo.id,
           subId: profile.sub,
-          name: profile.name,
+          name: userInfo.first_name + " " + userInfo.last_name,
           email: userInfo.email,
           //phone: userInfo.phone_number,
           //grade: userInfo.year,
