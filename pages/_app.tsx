@@ -65,10 +65,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
   return (
     <SessionProvider session={session}>
       <Head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
         <link rel="icon" href="/Online_hvit_o.svg" />
         <title>Online Komitéopptak</title>
       </Head>
