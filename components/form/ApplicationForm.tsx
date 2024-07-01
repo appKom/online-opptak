@@ -4,18 +4,18 @@ import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
-import { useEffect } from "react";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
   setApplicationData: Function;
   availableCommittees: string[];
+  optionalCommittees: string[];
 }
 
 export const ApplicationForm = (props: Props) => {
   const availableCommittees = [["Ingen", ""]];
-  const committeesToDisplay: string[][] = [];
-  const committessToRemove = ["FeminIT"];
+  const optionalCommittees: string[] = [];
+  const selectedOptionalCommittees: string[] = [];
 
   props.availableCommittees.forEach((committee) => {
     if (!availableCommittees.some((item) => item[1] === committee)) {
@@ -23,37 +23,34 @@ export const ApplicationForm = (props: Props) => {
     }
   });
 
-  availableCommittees.forEach((committee) => {
-    if (availableCommittees.length <= 2) {
-      committeesToDisplay.push(committee);
+  if (props.optionalCommittees.length > 0) {
+    for (let i = 0; i < props.optionalCommittees.length; i++) {
+      optionalCommittees.push(props.optionalCommittees[i].toLowerCase());
     }
-    if (
-      !committessToRemove.includes(committee[0]) &&
-      availableCommittees.length > 2
+  }
+
+  const addOptionalCommittee = (committee: string, value: string) => {
+    if (value === "yes" && !selectedOptionalCommittees.includes(committee)) {
+      selectedOptionalCommittees.push(committee);
+    } else if (
+      value === "no" &&
+      selectedOptionalCommittees.includes(committee)
     ) {
-      committeesToDisplay.push(committee);
+      for (let i = 0; i < selectedOptionalCommittees.length; i++) {
+        if (selectedOptionalCommittees[i] === committee) {
+          selectedOptionalCommittees.splice(i, 1);
+        }
+      }
     }
-  });
 
-  const isFeminITAvailable = props.availableCommittees.includes("FeminIT");
-
-  useEffect(() => {
-    const isFeminITAvailable = props.availableCommittees.includes("FeminIT");
-    if (!isFeminITAvailable && props.applicationData.feminIt !== "no") {
-      props.setApplicationData({
-        ...props.applicationData,
-        feminIt: "no",
-      });
-    } else if (isFeminITAvailable && committeesToDisplay.length <= 2) {
-      props.setApplicationData({
-        ...props.applicationData,
-        feminIt: "yes",
-      });
-    }
-  }, [props.availableCommittees, props.applicationData.feminIt]);
+    props.setApplicationData({
+      ...props.applicationData,
+      optionalCommittees: selectedOptionalCommittees,
+    });
+  };
 
   return (
-    <form className="px-5 text-online-darkBlue dark:text-white ">
+    <form className="px-5 text-online-darkBlue dark:text-white">
       <TextInput
         label={"E-postadresse"}
         defaultValue={props.applicationData.email}
@@ -106,16 +103,16 @@ export const ApplicationForm = (props: Props) => {
       />
       <Line />
       <div className="flex justify-center">
-        <label className="inline-block mt-6 text-gray-700 dark:text-white form-label ">
-          {committeesToDisplay.length > 2
+        <label className="inline-block mt-6 text-gray-700 dark:text-white form-label">
+          {availableCommittees.length > 2
             ? `Velg opp til 3 komiteer`
-            : `Velg opp til ${committeesToDisplay.length - 1} komiteer`}
+            : `Velg opp til ${availableCommittees.length - 1} komiteer`}
         </label>
       </div>
       <SelectInput
         required
-        values={committeesToDisplay}
-        label={committeesToDisplay.length > 2 ? "Førstevalg" : "Velg komite"}
+        values={availableCommittees}
+        label={availableCommittees.length > 2 ? "Førstevalg" : "Velg komite"}
         updateInputValues={(value: string) =>
           props.setApplicationData({
             ...props.applicationData,
@@ -124,9 +121,9 @@ export const ApplicationForm = (props: Props) => {
         }
       />
 
-      {committeesToDisplay.length > 2 && (
+      {availableCommittees.length > 2 && (
         <SelectInput
-          values={committeesToDisplay}
+          values={availableCommittees}
           label={"Andrevalg"}
           updateInputValues={(value: string) =>
             props.setApplicationData({
@@ -139,9 +136,9 @@ export const ApplicationForm = (props: Props) => {
           }
         />
       )}
-      {committeesToDisplay.length > 3 && (
+      {availableCommittees.length > 3 && (
         <SelectInput
-          values={committeesToDisplay}
+          values={availableCommittees}
           label={"Tredjevalg"}
           updateInputValues={(value: string) =>
             props.setApplicationData({
@@ -171,21 +168,20 @@ export const ApplicationForm = (props: Props) => {
           })
         }
       />
-      {isFeminITAvailable && committeesToDisplay.length > 2 && (
-        <RadioInput
-          values={[
-            ["Ja", "yes"],
-            ["Nei", "no"],
-          ]}
-          label={"Ønsker du å søke FeminIT i tillegg?"}
-          updateInputValues={(value: boolean) =>
-            props.setApplicationData({
-              ...props.applicationData,
-              feminIt: value,
-            })
-          }
-        />
-      )}
+      {optionalCommittees.map((committee) => (
+        <div key={committee}>
+          <RadioInput
+            values={[
+              ["Ja", "yes"],
+              ["Nei", "no"],
+            ]}
+            label={`Ønsker du å søke ${committee} i tillegg?`}
+            updateInputValues={(value: string) =>
+              addOptionalCommittee(committee, value)
+            }
+          />
+        </div>
+      ))}
     </form>
   );
 };
