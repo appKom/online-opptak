@@ -120,7 +120,7 @@ const ApplicantsOverview = ({
         </select>
       </div>
       {filteredApplicants && filteredApplicants.length > 0 ? (
-        <div className="px-20">
+        <div>
           <ApplicantTable
             filteredApplications={filteredApplicants}
             applicationsExist={applicationsExist}

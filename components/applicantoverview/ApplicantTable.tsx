@@ -46,7 +46,7 @@ const ApplicantTable = ({
 
     return (
       <div className="flex flex-col">
-        <div className="hidden md:flex ">
+        <div className="hidden md:flex px-20">
           <table className="min-w-full text-start border border-collapse border-gray-200 dark:bg-online-darkBlue dark:border-gray-700">
             <thead>
               <tr>
@@ -110,7 +110,7 @@ const ApplicantTable = ({
             </tbody>
           </table>
         </div>
-        <div className="flex flex-wrap justify-start md:hidden">
+        <div className="flex flex-wrap justify-start md:hidden px-10">
           <ApplicantCard
             filteredApplications={filteredApplications}
             applicationsExist={applicationsExist}
