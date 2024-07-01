@@ -138,10 +138,17 @@ const CommitteeApplicantOverView: NextPage = () => {
   return (
     <div className="flex flex-col items-center">
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">{`${period?.name}`}</h2>
-      <div className="flex flex-row py-5 pt-10">
+      <div className="flex flex-wrap justify-center py-5 pt-10 space-x-5 max-w-full">
+        <input
+          type="text"
+          placeholder="Søk etter navn"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600 mb-4"
+        />
         {committees && (
           <select
-            className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600 mb-4"
             value={selectedCommittee ?? ""}
             onChange={(e) => setSelectedCommittee(e.target.value)}
           >
@@ -153,35 +160,29 @@ const CommitteeApplicantOverView: NextPage = () => {
             ))}
           </select>
         )}
-        <input
-          type="text"
-          placeholder="Søk etter navn"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="p-2 ml-5 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-        />
-        <div className="px-5">
-          <select
-            className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-          >
-            <option value="">Velg klasse</option>
-            {years.map((year) => (
-              <option key={year} value={year}>
-                {year}. Klasse
-              </option>
-            ))}
-          </select>
-        </div>
+
+        <select
+          className="p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600 mb-4"
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(e.target.value)}
+        >
+          <option value="">Velg klasse</option>
+          {years.map((year) => (
+            <option key={year} value={year}>
+              {year}. Klasse
+            </option>
+          ))}
+        </select>
       </div>
       {filteredApplicants.length > 0 ? (
-        <ApplicantTable
-          filteredApplications={filteredApplicants}
-          applicationsExist={true}
-          includePreferences={false}
-          optionalCommitteesExist={false}
-        />
+        <div className="px-20">
+          <ApplicantTable
+            filteredApplications={filteredApplicants}
+            applicationsExist={true}
+            includePreferences={false}
+            optionalCommitteesExist={false}
+          />
+        </div>
       ) : (
         <p>Fant ingen søkere</p>
       )}

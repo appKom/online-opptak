@@ -98,7 +98,7 @@ const Admin = () => {
         {isLoading ? (
           <p className="animate-pulse">Vent litt...</p>
         ) : (
-          <div className="flex flex-col">
+          <div className="flex flex-col px-20">
             <div className="flex flex-col py-2">
               <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
                 {period?.name}

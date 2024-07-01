@@ -23,7 +23,7 @@ const ApplicantCard = ({
 }: Props) => {
   if (applicationsExist && filteredApplications?.length) {
     return (
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredApplications.map((applicant, index) => (
           <div
             key={index}
@@ -69,7 +69,7 @@ const ApplicantCard = ({
     );
   }
 
-  return <p>No applications found.</p>;
+  return <p>Ingen søknader</p>;
 };
 
 export default ApplicantCard;
