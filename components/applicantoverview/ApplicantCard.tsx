@@ -1,19 +1,19 @@
-import {
-  applicantType,
-  applicantTypeForCommittees,
-} from "../../lib/types/types";
+import { applicantType, preferencesType } from "../../lib/types/types";
 
 interface Props {
-  filteredApplications:
-    | applicantType[]
-    | applicantTypeForCommittees[]
-    | undefined;
+  filteredApplications: applicantType[] | undefined;
   applicationsExist: boolean;
   includePreferences?: boolean;
 }
 
 const isApplicantType = (applicant: any): applicant is applicantType => {
   return "optionalCommittees" in applicant;
+};
+
+const isPreferencesType = (
+  preferences: any
+): preferences is preferencesType => {
+  return "first" in preferences;
 };
 
 const ApplicantCard = ({
@@ -39,26 +39,27 @@ const ApplicantCard = ({
               <p className="mt-1 text-sm">E-post: {applicant.email}</p>
               <p className="mt-1 text-sm">Bankom: {applicant.bankom}</p>
 
-              {includePreferences && isApplicantType(applicant) && (
-                <div>
-                  <p className="mt-1 text-sm">Komiteer: </p>
-                  <p className="mt-1 text-sm">
-                    1. {applicant.preferences.first}, 2.{" "}
-                    {applicant.preferences.second}, 3.{" "}
-                    {applicant.preferences.third}
-                  </p>
-                  {isApplicantType(applicant) &&
-                    applicant.optionalCommittees != null && (
-                      <div>
-                        <p className="mt-1 text-sm">Valgfrie Komiteer: </p>
-                        <p className="mt-1 text-sm">
-                          {" "}
-                          {applicant.optionalCommittees}
-                        </p>
-                      </div>
-                    )}
-                </div>
-              )}
+              {includePreferences &&
+                isPreferencesType(applicant.preferences) && (
+                  <div>
+                    <p className="mt-1 text-sm">Komiteer: </p>
+                    <p className="mt-1 text-sm">
+                      1. {applicant.preferences.first}, 2.{" "}
+                      {applicant.preferences.second}, 3.{" "}
+                      {applicant.preferences.third}
+                    </p>
+                  </div>
+                )}
+              {isApplicantType(applicant) &&
+                applicant.optionalCommittees != null && (
+                  <div>
+                    <p className="mt-1 text-sm">Valgfrie Komiteer: </p>
+                    <p className="mt-1 text-sm">
+                      {" "}
+                      {applicant.optionalCommittees.join(", ")}
+                    </p>
+                  </div>
+                )}
               <p className="mt-1 text-sm">
                 Dato: {new Date(applicant.date).toLocaleDateString()}
               </p>
