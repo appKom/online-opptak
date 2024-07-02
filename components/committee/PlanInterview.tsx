@@ -112,8 +112,14 @@ const PlanInterview = ({ period }: Props) => {
       )}
 
       {committeeHasSubmited && (
-        <div className="items-center flex-col justify-center">
-          <TextAreaInput updateInputValues={() => {}} label={""} />
+        <div className="flex flex-col items-center justify-center">
+          <TextAreaInput
+            updateInputValues={() => {}}
+            label={""}
+            placeholder="Hei, så hyggelig at du har søkt Testkom.
+          Vi ser fram til møte med deg. Gi oss gjerne beskjed om du har noen spørsmål. Mvh. Testkom. 
+          "
+          />
 
           <Button title={"Send Melding"} color={"blue"} />
         </div>
