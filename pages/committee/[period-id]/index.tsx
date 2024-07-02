@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
 import {
   CalendarIcon,
-  CheckIcon,
+  InboxIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
 import { Tabs } from "../../../components/Tabs";
@@ -161,8 +161,8 @@ const CommitteeApplicantOverView: NextPage = () => {
             ),
           },
           {
-            title: "Planlegg og Send ut",
-            icon: <CheckIcon className="w-5 h-5" />,
+            title: "Send melding",
+            icon: <InboxIcon className="w-5 h-5" />,
             content: <PlanInterview />,
           },
         ]}
