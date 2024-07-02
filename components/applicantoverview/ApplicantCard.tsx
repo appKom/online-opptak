@@ -17,10 +17,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
   const preferences = applicant?.preferences || {};
 
   return (
-    <div
-      className="w-full max-w-md mx-auto my-4 p-4 bg-white dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-md"
-      style={{ width: "1000px" }}
-    >
+    <div className="w-full  my-4 p-4 bg-white dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-md">
       <div
         onClick={handleToggle}
         className="flex justify-between items-center cursor-pointer"

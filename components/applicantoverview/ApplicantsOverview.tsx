@@ -176,7 +176,7 @@ const ApplicantsOverview = ({
       </div>
 
       {filteredApplicants && filteredApplicants.length > 0 ? (
-        <div>
+        <div className="w-full max-w-md mx-auto">
           <ApplicantTable
             filteredApplications={filteredApplicants}
             includePreferences={includePreferences}
