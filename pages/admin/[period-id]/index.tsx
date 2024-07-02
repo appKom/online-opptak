@@ -82,9 +82,7 @@ const Admin = () => {
       period={period}
       committees={committees}
       years={years}
-      applicationsExist={applicationsExist}
       includePreferences={true}
-      optionalCommitteesExist={period?.optionalCommittees != null}
     />
   );
 };

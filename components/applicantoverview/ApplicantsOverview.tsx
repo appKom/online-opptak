@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   applicantType,
   committeePreferenceType,
@@ -13,9 +13,7 @@ interface Props {
   period: periodType | null;
   committees: string[] | null;
   years: string[];
-  applicationsExist: boolean;
   includePreferences: boolean;
-  optionalCommitteesExist: boolean;
 }
 
 const isPreferencesType = (
@@ -29,9 +27,7 @@ const ApplicantsOverview = ({
   period,
   committees,
   years,
-  applicationsExist,
   includePreferences,
-  optionalCommitteesExist,
 }: Props) => {
   const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
     []
@@ -42,6 +38,7 @@ const ApplicantsOverview = ({
   );
   const [selectedYear, setSelectedYear] = useState<string>("");
   const [filterMenuVisible, setFilterMenuVisible] = useState(false);
+  const filterMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let filtered: applicantType[] = applicants;
@@ -74,9 +71,8 @@ const ApplicantsOverview = ({
     }
 
     if (searchQuery) {
-      filtered = filtered.filter((applicant) =>
-        applicant.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const regex = new RegExp(searchQuery.split("").join(".*"), "i");
+      filtered = filtered.filter((applicant) => regex.test(applicant.name));
     }
 
     setFilteredApplicants(filtered);
@@ -87,6 +83,23 @@ const ApplicantsOverview = ({
     setSelectedCommittee(null);
     setSelectedYear("");
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        filterMenuRef.current &&
+        !filterMenuRef.current.contains(event.target as Node) &&
+        !(event.target as HTMLElement).classList.contains("filter-icon")
+      ) {
+        setFilterMenuVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [filterMenuRef]);
 
   return (
     <div className="flex flex-col items-center px-5">
@@ -107,13 +120,15 @@ const ApplicantsOverview = ({
               </p>
             )}
             <AdjustmentsHorizontalIcon
-              className="w-8 h-8 cursor-pointer"
+              className={`w-8 h-8 cursor-pointer transition-transform duration-300 transform filter-icon ${
+                filterMenuVisible ? "rotate-180" : "rotate-0"
+              }`}
               onClick={() => setFilterMenuVisible(!filterMenuVisible)}
             />
             {filterMenuVisible && (
               <div
+                ref={filterMenuRef}
                 className="absolute right-0 top-10 w-48 bg-white dark:bg-online-darkBlue border border-gray-300 dark:border-gray-600 p-4 rounded shadow-lg z-10"
-                onMouseLeave={() => setFilterMenuVisible(false)}
               >
                 {committees && (
                   <div className="mb-4">
