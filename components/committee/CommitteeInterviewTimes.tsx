@@ -51,7 +51,6 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
         start: new Date(periode!.interviewPeriod.start).toISOString(),
         end: new Date(periode!.interviewPeriod.end).toISOString(),
       });
-      console.log(periode);
     }
   }, [periodId]);
 
@@ -81,7 +80,6 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
       try {
         const res = await fetch(`/api/committees/times/${periodId}`);
         const data = await res.json();
-        console.log(data);
 
         if (data && Array.isArray(data.committees)) {
           setCommitteeInterviewTimes(data.committees);
@@ -162,6 +160,7 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
       committee: selectedCommittee,
       availabletimes: formattedEvents,
       timeslot: `${selectedTimeslot}`,
+      message: "",
     };
 
     try {

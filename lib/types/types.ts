@@ -15,6 +15,7 @@ export type commiteeType = {
     },
   ];
   timeslot: string;
+  message: string;
 };
 
 export type preferencesType = {
