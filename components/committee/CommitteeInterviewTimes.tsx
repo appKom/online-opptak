@@ -28,12 +28,12 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
 
   const [period, setPeriod] = useState<periodType | null>(null);
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
-  const [interviewInterval, setInterviewInterval] = useState(20);
+  const [interviewInterval, setInterviewInterval] = useState(15);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
   const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
-  const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
+  const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
 
   const [isLoading, setIsLoading] = useState(true);
   const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
@@ -121,9 +121,11 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
         );
 
         setCalendarEvents(events);
+        setSelectedTimeslot(relevantTimes[0].timeslot); // Set the selected timeslot
       } else {
         setHasAlreadySubmitted(false);
         setCalendarEvents([]);
+        setSelectedTimeslot("15"); // Set default timeslot to 15 minutes
       }
     }
   }, [period, selectedCommittee, committeeInterviewTimes]);
@@ -328,13 +330,15 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
     );
   }
 
-  // if (period!.interviewPeriod.start < new Date()) {
-  //   return (
-  //     <div className="flex items-center justify-center h-screen">
-  //       <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptak!</h2>
-  //     </div>
-  //   );
-  // }
+  if (period!.interviewPeriod.start < new Date()) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <h2 className="mt-5 mb-6 text-3xl font-bold">
+          Det er ikke lenger mulig å legge inn tider!
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center">
@@ -365,7 +369,7 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
           <select
             className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
-            value={selectedCommittee} // Ensure the select element shows the default value
+            value={selectedCommittee}
           >
             {filteredCommittees.map((committee) => (
               <option key={committee} value={committee}>
@@ -384,7 +388,7 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
       <form className="flex flex-col text-center">
         {hasAlreadySubmitted ? (
           <p className="mt-5 mb-6 text-lg text-center">
-            Intervjulengde: {selectedTimeslot}min
+            Intervjulengde: {selectedTimeslot} min{" "}
           </p>
         ) : (
           <div className="pt-10">
