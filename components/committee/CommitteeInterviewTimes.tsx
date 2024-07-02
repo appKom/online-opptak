@@ -47,6 +47,11 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
   useEffect(() => {
     if (periodId) {
       setPeriod(periode);
+      setVisibleRange({
+        start: new Date(periode!.interviewPeriod.start).toISOString(),
+        end: new Date(periode!.interviewPeriod.end).toISOString(),
+      });
+      console.log(periode);
     }
   }, [periodId]);
 
