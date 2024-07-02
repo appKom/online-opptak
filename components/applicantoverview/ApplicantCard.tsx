@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
-import { FaChevronDown } from "react-icons/fa";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 interface Props {
   applicant: applicantType | undefined;
@@ -18,26 +18,28 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
 
   return (
     <div
-      onClick={handleToggle}
-      className="w-full max-w-md mx-auto my-4 p-4 bg-white dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-md cursor-pointer"
+      className="w-full max-w-md mx-auto my-4 p-4 bg-white dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-md"
       style={{ width: "1000px" }}
     >
-      <div className="flex justify-between items-center">
+      <div
+        onClick={handleToggle}
+        className="flex justify-between items-center cursor-pointer"
+      >
         <div>
           <h2 className="text-lg font-semibold">{applicant?.name}</h2>
           <p className="text-gray-800 dark:text-gray-300">
             {applicant?.grade}. Klasse
           </p>
         </div>
-        <FaChevronDown
-          className={`text-white transition-transform duration-300 transform ${
+        <ChevronDownIcon
+          className={`w-5 h-5 transition-transform duration-300 transform ${
             isExpanded ? "rotate-180" : "rotate-0"
           }`}
         />
       </div>
       <div
         className={`transition-all duration-500 ease-in-out overflow-hidden ${
-          isExpanded ? "max-h-screen opacity-100 mt-4" : "max-h-0 opacity-0"
+          isExpanded ? "opacity-100 mt-4" : "max-h-0 opacity-0"
         }`}
       >
         <h1 className="font-semibold text-lg">Kontakt:</h1>
