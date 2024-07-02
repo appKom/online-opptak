@@ -5,6 +5,7 @@ import {
   periodType,
   preferencesType,
 } from "../../lib/types/types";
+import Table from "../Table";
 import ApplicantTable from "./ApplicantTable";
 
 interface Props {
@@ -123,9 +124,7 @@ const ApplicantsOverview = ({
         <div>
           <ApplicantTable
             filteredApplications={filteredApplicants}
-            applicationsExist={applicationsExist}
             includePreferences={includePreferences}
-            optionalCommitteesExist={optionalCommitteesExist}
           />
         </div>
       ) : (

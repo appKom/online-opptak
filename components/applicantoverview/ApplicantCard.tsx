@@ -1,79 +1,80 @@
-import { applicantType, preferencesType } from "../../lib/types/types";
+import { useState } from "react";
+import { applicantType } from "../../lib/types/types";
+import { FaChevronDown } from "react-icons/fa";
 
 interface Props {
-  filteredApplications: applicantType[] | undefined;
-  applicationsExist: boolean;
-  includePreferences?: boolean;
+  applicant: applicantType | undefined;
+  includePreferences: boolean;
 }
 
-const isApplicantType = (applicant: any): applicant is applicantType => {
-  return "optionalCommittees" in applicant;
-};
+const ApplicantCard = ({ applicant, includePreferences }: Props) => {
+  const [isExpanded, setIsExpanded] = useState(false);
 
-const isPreferencesType = (
-  preferences: any
-): preferences is preferencesType => {
-  return "first" in preferences;
-};
+  const handleToggle = () => {
+    setIsExpanded(!isExpanded);
+  };
 
-const ApplicantCard = ({
-  filteredApplications,
-  applicationsExist,
-  includePreferences,
-}: Props) => {
-  if (applicationsExist && filteredApplications?.length) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {filteredApplications.map((applicant, index) => (
-          <div
-            key={index}
-            className="flex flex-col justify-between h-full p-4 border border-gray-200 rounded-lg shadow-md dark:bg-gray-800 dark:border-gray-700"
-          >
-            <div>
-              <h3 className="text-xl font-medium text-gray-900 dark:text-online-snowWhite">
-                {applicant.name}
-              </h3>
-              <div className="w-full mt-1 text-sm">
-                <p className="">Om: {applicant.about}</p>
-                <p>Trinn: {applicant.grade}</p>
-                <p>Telefon: {applicant.phone}</p>
-                <p>E-post: {applicant.email}</p>
-                <p>Bankom: {applicant.bankom}</p>
-              </div>
+  const preferences = applicant?.preferences || {};
 
-              {includePreferences &&
-                isPreferencesType(applicant.preferences) && (
-                  <div>
-                    <p className="mt-1 text-sm">Komiteer: </p>
-                    <p className="mt-1 text-sm">
-                      1. {applicant.preferences.first}, 2.{" "}
-                      {applicant.preferences.second}, 3.{" "}
-                      {applicant.preferences.third}
-                    </p>
-                  </div>
-                )}
-              {isApplicantType(applicant) &&
-                includePreferences &&
-                applicant.optionalCommittees != null && (
-                  <div>
-                    <p className="mt-1 text-sm">Valgfrie Komiteer: </p>
-                    <p className="mt-1 text-sm">
-                      {" "}
-                      {applicant.optionalCommittees.join(", ")}
-                    </p>
-                  </div>
-                )}
-              <p className="mt-1 text-sm">
-                Dato: {new Date(applicant.date).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
-        ))}
+  return (
+    <div
+      onClick={handleToggle}
+      className="w-full max-w-md mx-auto my-4 p-4 bg-white dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-md cursor-pointer"
+    >
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-lg font-semibold">{applicant?.name}</h2>
+          <p className="text-gray-800 dark:text-gray-300">
+            {applicant?.grade}. Klasse
+          </p>
+        </div>
+        <FaChevronDown
+          className={`text-white transition-transform duration-300 transform ${
+            isExpanded ? "rotate-180" : "rotate-0"
+          }`}
+        />
       </div>
-    );
-  }
+      <div
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${
+          isExpanded ? "max-h-screen opacity-100 mt-4" : "max-h-0 opacity-0"
+        }`}
+      >
+        <h1 className="font-semibold text-lg">Kontakt:</h1>
+        <p>Epost: {applicant?.email}</p>
+        <p>Telefon: {applicant?.phone}</p>
 
-  return <p>Ingen søknader</p>;
+        {includePreferences && (
+          <div>
+            <br />
+            <h1 className="font-semibold text-lg">Komiteer:</h1>
+            <ul>
+              {Object.keys(preferences).map((key, index) => (
+                <li key={index}>{`${index + 1}. ${
+                  preferences[key as keyof typeof preferences]
+                }`}</li>
+              ))}
+            </ul>
+
+            {applicant?.optionalCommittees != null && (
+              <div>
+                <br />
+                <h1 className="font-semibold text-lg">Valgfrie Komiteer:</h1>
+                <p>
+                  {applicant?.optionalCommittees.join(", ") || "Ingen valg"}{" "}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+        <br />
+        <h1 className="font-semibold text-lg">Om:</h1>
+        <p>Bankom: {applicant?.bankom}</p>
+        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mt-2">
+          <p>{applicant?.about}</p>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ApplicantCard;
