@@ -118,11 +118,16 @@ const Navbar = () => {
         />
         <div className="relative">
           <button onClick={toggleDropdown} className="flex justify-end">
-            {isDropdownOpen ? (
-              <XMarkIcon className="w-10 h-10 text-gray-500 transition-transform transform rotate-45 dark:text-white" />
-            ) : (
-              <Bars3Icon className="w-10 h-10 text-gray-500 transition-transform transform dark:text-white" />
-            )}
+            <Bars3Icon
+              className={`w-10 h-10 text-gray-500 transition-transform transform dark:text-white ${
+                isDropdownOpen ? "rotate-45 opacity-0" : "rotate-0 opacity-100"
+              }`}
+            />
+            <XMarkIcon
+              className={`w-10 h-10 text-gray-500 transition-transform transform dark:text-white absolute top-0 right-0 ${
+                isDropdownOpen ? "rotate-0 opacity-100" : "rotate-45 opacity-0"
+              }`}
+            />
           </button>
           {isDropdownOpen && (
             <DropdownMenu
