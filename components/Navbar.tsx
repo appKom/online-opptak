@@ -70,7 +70,7 @@ const Navbar = () => {
                   title="For komiteer"
                   color="blue"
                   size="small"
-                  icon={<UserGroupIcon className="w-4 h-4" />}
+                  icon={<UserGroupIcon className="w-5 h-5" />}
                   onClick={() => router.push("/committee")}
                 />
               )}
