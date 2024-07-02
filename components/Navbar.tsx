@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  UserGroupIcon,
+} from "@heroicons/react/24/outline";
 import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
 import AdminIcon from "./icons/icons/AdminIcon";
@@ -66,6 +70,7 @@ const Navbar = () => {
                   title="For komiteer"
                   color="blue"
                   size="small"
+                  icon={<UserGroupIcon className="w-4 h-4" />}
                   onClick={() => router.push("/committee")}
                 />
               )}
