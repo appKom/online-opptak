@@ -89,8 +89,10 @@ const PlanInterview = ({ period }: Props) => {
   while (isLoading) return <LoadingPage />;
 
   return (
-    <div className="flex flex-col gap-5">
-      <h1 className="font-bold text-3xl">Skriv en egendefinert melding!</h1>
+    <div className="flex flex-col gap-5 max-w-md mx-auto mb-5">
+      <h1 className="font-bold text-3xl text-center">
+        Skriv en egendefinert melding!
+      </h1>
 
       <div className="flex flex-col px-5">
         <label className="">Velg komitee: </label>
@@ -108,7 +110,10 @@ const PlanInterview = ({ period }: Props) => {
       </div>
 
       {!committeeHasSubmited && (
-        <p className="text-red-500">Du må først fylle inn intervjutider</p>
+        <p className="text-red-500 justify-center items-center text-center">
+          For å sende en egendefinert melding må du først fylle ut intervju
+          tider for valgt komitee.
+        </p>
       )}
 
       {committeeHasSubmited && (
