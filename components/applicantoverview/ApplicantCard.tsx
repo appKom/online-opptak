@@ -20,6 +20,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
     <div
       onClick={handleToggle}
       className="w-full max-w-md mx-auto my-4 p-4 bg-white dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-md cursor-pointer"
+      style={{ width: "1000px" }}
     >
       <div className="flex justify-between items-center">
         <div>

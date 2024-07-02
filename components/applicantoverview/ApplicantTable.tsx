@@ -19,7 +19,7 @@ const ApplicantTable = ({
           includePreferences={includePreferences}
         />
       ))}
-      <p className="text-end">{filteredApplications?.length} resultater</p>
+      <p className="text-end ">{filteredApplications?.length} resultater</p>
     </div>
   );
 };
