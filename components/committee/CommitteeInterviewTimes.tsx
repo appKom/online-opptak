@@ -1,6 +1,7 @@
-import { BaseSyntheticEvent, ChangeEvent, useEffect } from "react";
+import { BaseSyntheticEvent, useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -15,34 +16,39 @@ interface Interview {
 }
 
 interface Props {
-  period: periodType | null;
+  periode: periodType | null;
 }
 
 const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
-const CommitteeInterviewTimes = ({ period }: Props) => {
+const CommitteeInterviewTimes = ({ periode }: Props) => {
   const { data: session } = useSession();
+  const router = useRouter();
+  const periodId = router.query["period-id"] as string;
+
+  const [period, setPeriod] = useState<periodType | null>(null);
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(20);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
   const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
-
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(true);
-
   const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
     committeeInterviewType[]
   >([]);
-
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
-
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
     useState<boolean>(false);
-
   const [countdown, setCountdown] = useState<string>("");
+
+  useEffect(() => {
+    if (periodId) {
+      setPeriod(periode);
+    }
+  }, [periodId]);
 
   useEffect(() => {
     if (session?.user?.committees && period?.committees) {
@@ -58,14 +64,19 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
       );
 
       setFilteredCommittees(commonCommittees);
+
+      if (commonCommittees.length > 0) {
+        setSelectedCommittee(commonCommittees[0]);
+      }
     }
-  }, []);
+  }, [session, period]);
 
   useEffect(() => {
     const fetchCommitteeInterviewTimes = async () => {
       try {
-        const res = await fetch("/api/committees");
+        const res = await fetch(`/api/committees/times/${periodId}`);
         const data = await res.json();
+        console.log(data);
 
         if (data && Array.isArray(data.committees)) {
           setCommitteeInterviewTimes(data.committees);
@@ -96,9 +107,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
 
       const relevantTimes = committeeInterviewTimes.filter((time) => {
         const cleanCommittee = cleanString(time.committee);
-
         const cleanSelectedCommittee = cleanString(selectedCommittee);
-
         return cleanCommittee === cleanSelectedCommittee;
       });
 
@@ -118,8 +127,6 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
       }
     }
   }, [period, selectedCommittee, committeeInterviewTimes]);
-
-  useEffect(() => {}, [committeeInterviewTimes]);
 
   const createInterval = (selectionInfo: any) => {
     const event = {
@@ -321,13 +328,13 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
     );
   }
 
-  if (period!.interviewPeriod.start < new Date()) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptak!</h2>
-      </div>
-    );
-  }
+  // if (period!.interviewPeriod.start < new Date()) {
+  //   return (
+  //     <div className="flex items-center justify-center h-screen">
+  //       <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptak!</h2>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="flex flex-col items-center">
@@ -358,6 +365,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
           <select
             className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
+            value={selectedCommittee} // Ensure the select element shows the default value
           >
             {filteredCommittees.map((committee) => (
               <option key={committee} value={committee}>

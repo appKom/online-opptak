@@ -143,7 +143,7 @@ const CommitteeApplicantOverView: NextPage = () => {
           {
             title: "Intervjutider",
             icon: <CalendarIcon className="w-5 h-5" />,
-            content: <CommitteeInterviewTimes period={period} />,
+            content: <CommitteeInterviewTimes periode={period} />,
           },
           {
             title: "Søkere",

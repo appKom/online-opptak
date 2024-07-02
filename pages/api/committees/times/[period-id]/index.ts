@@ -3,11 +3,11 @@ import {
   getCommittees,
   createCommittee,
   deleteCommittee,
-} from "../../../lib/mongo/committees";
+} from "../../../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
-import { hasSession, isInCommitee } from "../../../lib/utils/apiChecks";
-import { isCommitteeType } from "../../../lib/utils/validators";
+import { authOptions } from "../../../auth/[...nextauth]";
+import { hasSession, isInCommitee } from "../../../../../lib/utils/apiChecks";
+import { isCommitteeType } from "../../../../../lib/utils/validators";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -15,14 +15,27 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!hasSession(res, session)) return;
   if (!isInCommitee(res, session)) return;
 
+  const periodId = req.query["period-id"];
+
+  if (!periodId || typeof periodId !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Invalid or missing periodId parameter" });
+  }
+
   if (req.method === "GET") {
     try {
       const { committees, error } = await getCommittees(
         session!.user?.committees ?? []
       );
+
       if (error) throw new Error(error);
 
-      return res.status(200).json({ committees });
+      const filteredCommittees = committees!.filter(
+        (committee: any) => committee.periodId === periodId
+      );
+
+      return res.status(200).json({ committees: filteredCommittees });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
@@ -50,9 +63,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === "DELETE") {
     const committee = req.query.committee as string;
-    const periodId = req.query.periodId as string;
 
-    if (!committee || !periodId) {
+    if (!committee) {
       return res.status(400).json({ error: "Missing or invalid parameters" });
     }
 
