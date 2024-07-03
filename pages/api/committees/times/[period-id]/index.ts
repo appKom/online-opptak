@@ -45,10 +45,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "PUT") {
     const { committee, message } = req.body;
 
-    if (!committee || !message) {
+    if (!committee) {
       console.error("Missing or invalid parameters", {
         committee,
-        message,
       });
       return res.status(400).json({ error: "Missing or invalid parameters" });
     }

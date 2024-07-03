@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { committeeInterviewType, periodType } from "../../lib/types/types";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import SelectInput from "../form/SelectInput";
 
 interface Props {
   period: periodType | null;
@@ -147,19 +148,21 @@ const PlanInterview = ({ period }: Props) => {
         Skriv en egendefinert melding!
       </h1>
 
-      <div className="flex flex-col px-5">
-        <label className="">Velg komitee: </label>
-        <select
-          className="p-2 ml-10 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-          onChange={handleCommitteeSelection}
-          value={selectedCommittee}
-        >
-          {userCommittees.map((committee) => (
-            <option key={committee} value={committee}>
-              {committee}
-            </option>
-          ))}
-        </select>
+      <div className="flex gap-10 w-max ">
+        <div className="flex flex-col px-5">
+          <label className="px-10">Velg komitee: </label>
+          <select
+            className="p-2 ml-10 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            onChange={handleCommitteeSelection}
+            value={selectedCommittee}
+          >
+            {userCommittees.map((committee) => (
+              <option key={committee} value={committee}>
+                {committee}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {!committeeHasSubmitedTimes && (
