@@ -1,14 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   getCommittees,
-  createCommittee,
   deleteCommittee,
   updateCommitteeMessage,
 } from "../../../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]";
 import { hasSession, isInCommitee } from "../../../../../lib/utils/apiChecks";
-import { isCommitteeType } from "../../../../../lib/utils/validators";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -70,7 +68,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "DELETE") {
     const committee = req.query.committee as string;
 
-    if (!committee) {
+    if (!committee || !periodId) {
       return res.status(400).json({ error: "Missing or invalid parameters" });
     }
 

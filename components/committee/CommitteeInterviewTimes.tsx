@@ -260,13 +260,15 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
     e.preventDefault();
     const queryParams = new URLSearchParams({
       committee: selectedCommittee,
-      periodId: period!._id.toString(),
     }).toString();
 
     try {
-      const response = await fetch(`/api/committees?${queryParams}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/committees/times/${periodId}?${queryParams}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete data");
