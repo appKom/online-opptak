@@ -4,11 +4,11 @@ import {
   createCommittee,
   deleteCommittee,
   updateCommitteeMessage,
-} from "../../../lib/mongo/committees";
+} from "../../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
-import { hasSession, isInCommitee } from "../../../lib/utils/apiChecks";
-import { isCommitteeType } from "../../../lib/utils/validators";
+import { authOptions } from "../../auth/[...nextauth]";
+import { hasSession, isInCommitee } from "../../../../lib/utils/apiChecks";
+import { isCommitteeType } from "../../../../lib/utils/validators";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);

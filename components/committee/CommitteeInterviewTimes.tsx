@@ -164,7 +164,7 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
     };
 
     try {
-      const response = await fetch("/api/committees", {
+      const response = await fetch("/api/committees/times", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
