@@ -2,7 +2,7 @@ import React, { ChangeEvent } from "react";
 
 interface Props {
   updateInputValues: (value: string) => void;
-  value: string;
+  value?: string;
   label: string;
   placeholder?: string;
 }
