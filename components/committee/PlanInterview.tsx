@@ -120,7 +120,7 @@ const PlanInterview = ({ period }: Props) => {
       });
 
       if (!res.ok) {
-        toast.error("Det skjede en feil under innsendingen!");
+        toast.error("Det skjedde en feil under innsendingen!");
         throw new Error("Failed to update message");
       }
 
@@ -134,7 +134,7 @@ const PlanInterview = ({ period }: Props) => {
       );
       toast.success("Innsending er vellykket!");
     } catch (error) {
-      toast.success("Det skjede en feil under innsendingen!");
+      toast.error("Det skjede en feil under innsendingen!");
       console.error("Error updating message:", error);
     }
   };
@@ -188,15 +188,17 @@ const PlanInterview = ({ period }: Props) => {
         </div>
       )}
       {committeeHasSubmitedTimes && committeeHasSubmitedMessage && (
-        <div className="flex flex-col items-center justify-center w-full max-w-xs mx-auto my-6 gap-20">
-          <div className="block w-full px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600 h-36">
+        <div className="flex flex-col items-center justify-center w-full max-w-xs mx-auto my-6 ">
+          <div className="block w-full h-40 px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600">
             <p className="text-start">{message}</p>
           </div>
-          <Button
-            title={"Rediger Melding"}
-            color={"orange"}
-            onClick={() => setCommitteeHasSubmitedMessage(false)}
-          />
+          <div className="py-6">
+            <Button
+              title={"Rediger Melding"}
+              color={"orange"}
+              onClick={() => setCommitteeHasSubmitedMessage(false)}
+            />
+          </div>
         </div>
       )}
     </div>
