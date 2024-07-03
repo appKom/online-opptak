@@ -3,6 +3,7 @@ import {
   getCommittees,
   createCommittee,
   deleteCommittee,
+  updateCommitteeMessage,
 } from "../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";

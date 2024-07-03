@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import Button from "../Button";
 import TextAreaInput from "../form/TextAreaInput";
 import LoadingPage from "../LoadingPage";
 import { useRouter } from "next/router";
 import { committeeInterviewType, periodType } from "../../lib/types/types";
 import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
 
 interface Props {
   period: periodType | null;
@@ -20,8 +21,12 @@ const PlanInterview = ({ period }: Props) => {
   >([]);
   const [userCommittees, setUserCommittees] = useState<string[]>([]);
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
-  const [committeeHasSubmited, setCommitteeHasSubmited] =
+  const [committeeHasSubmitedTimes, setCommitteeHasSubmitedTimes] =
     useState<boolean>(false);
+
+  const [committeeHasSubmitedMessage, setCommitteeHasSubmitedMessage] =
+    useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
     const fetchCommitteeInterviewTimes = async () => {
@@ -69,16 +74,27 @@ const PlanInterview = ({ period }: Props) => {
 
     getCommonCommittees();
     fetchCommitteeInterviewTimes();
-  }, []);
+  }, [session, period, periodId]);
 
   useEffect(() => {
-    const committeeSubmitted = committeeInterviewTimes.some(
+    const committee = committeeInterviewTimes.find(
       (committee) => committee.committee === selectedCommittee
     );
-    setCommitteeHasSubmited(committeeSubmitted);
+    if (committee) {
+      setCommitteeHasSubmitedTimes(true);
+      if (committee.message === "") {
+        setCommitteeHasSubmitedMessage(false);
+      } else {
+        setCommitteeHasSubmitedMessage(true);
+        setMessage(committee.message);
+      }
+      setMessage(committee.message || "");
+    } else {
+      setCommitteeHasSubmitedTimes(false);
+      setCommitteeHasSubmitedMessage(false);
+      setMessage("");
+    }
   }, [selectedCommittee, committeeInterviewTimes]);
-
-  useEffect(() => {}, [selectedCommittee, committeeHasSubmited]);
 
   const handleCommitteeSelection = (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -86,7 +102,43 @@ const PlanInterview = ({ period }: Props) => {
     setSelectedCommittee(e.target.value);
   };
 
-  while (isLoading) return <LoadingPage />;
+  const handleMessageChange = (value: string) => {
+    setMessage(value);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch(`/api/committees/times/${periodId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          committee: selectedCommittee,
+          message,
+        }),
+      });
+
+      if (!res.ok) {
+        toast.error("feil");
+        throw new Error("Failed to update message");
+      }
+
+      const updatedData = await res.json();
+      setCommitteeInterviewTimes((prevTimes) =>
+        prevTimes.map((committee) =>
+          committee.committee === selectedCommittee
+            ? { ...committee, message: updatedData.message }
+            : committee
+        )
+      );
+      toast.success("Innsending er vellykket!");
+    } catch (error) {
+      console.error("Error updating message:", error);
+    }
+  };
+
+  if (isLoading) return <LoadingPage />;
 
   return (
     <div className="flex flex-col gap-5 max-w-md mx-auto mb-5">
@@ -97,7 +149,7 @@ const PlanInterview = ({ period }: Props) => {
       <div className="flex flex-col px-5">
         <label className="">Velg komitee: </label>
         <select
-          className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+          className="p-2 ml-10  text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
           onChange={handleCommitteeSelection}
           value={selectedCommittee}
         >
@@ -109,24 +161,41 @@ const PlanInterview = ({ period }: Props) => {
         </select>
       </div>
 
-      {!committeeHasSubmited && (
+      {!committeeHasSubmitedTimes && (
         <p className="text-red-500 justify-center items-center text-center">
           For å sende en egendefinert melding må du først fylle ut intervju
           tider for valgt komitee.
         </p>
       )}
 
-      {committeeHasSubmited && (
+      {committeeHasSubmitedTimes && !committeeHasSubmitedMessage && (
         <div className="flex flex-col items-center justify-center">
           <TextAreaInput
-            updateInputValues={() => {}}
+            updateInputValues={handleMessageChange}
+            value={message}
             label={""}
             placeholder="Hei, så hyggelig at du har søkt Testkom.
           Vi ser fram til møte med deg. Gi oss gjerne beskjed om du har noen spørsmål. Mvh. Testkom. 
           "
           />
 
-          <Button title={"Send Melding"} color={"blue"} />
+          <Button
+            title={"Send Melding"}
+            color={"blue"}
+            onClick={handleSubmit}
+          />
+        </div>
+      )}
+      {committeeHasSubmitedTimes && committeeHasSubmitedMessage && (
+        <div className="flex flex-col items-center justify-center gap-10">
+          <div className="block w-full px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600">
+            <p>{message}</p>
+          </div>
+          <Button
+            title={"Rediger Melding"}
+            color={"orange"}
+            onClick={() => setCommitteeHasSubmitedMessage(false)}
+          />
         </div>
       )}
     </div>

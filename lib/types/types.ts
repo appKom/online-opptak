@@ -79,4 +79,5 @@ export type committeeInterviewType = {
   committee: string;
   availabletimes: AvailableTime[];
   timeslot: string;
+  message: string;
 };
