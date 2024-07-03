@@ -4,6 +4,7 @@ import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
+import { useState } from "react";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -14,8 +15,9 @@ interface Props {
 
 export const ApplicationForm = (props: Props) => {
   const availableCommittees = [["Ingen", ""]];
-  const optionalCommittees: string[] = [];
-  const selectedOptionalCommittees: string[] = [];
+  const [selectedOptionalCommittees, setSelectedOptionalCommittees] = useState<
+    string[]
+  >([]);
 
   props.availableCommittees.forEach((committee) => {
     if (!availableCommittees.some((item) => item[1] === committee)) {
@@ -23,29 +25,25 @@ export const ApplicationForm = (props: Props) => {
     }
   });
 
-  if (props.optionalCommittees.length > 0) {
-    for (let i = 0; i < props.optionalCommittees.length; i++) {
-      optionalCommittees.push(props.optionalCommittees[i].toLowerCase());
-    }
-  }
+  const optionalCommittees: string[] = props.optionalCommittees.map(
+    (committee) => committee.toLowerCase()
+  );
 
   const addOptionalCommittee = (committee: string, value: string) => {
-    if (value === "yes" && !selectedOptionalCommittees.includes(committee)) {
-      selectedOptionalCommittees.push(committee);
-    } else if (
-      value === "no" &&
-      selectedOptionalCommittees.includes(committee)
-    ) {
-      for (let i = 0; i < selectedOptionalCommittees.length; i++) {
-        if (selectedOptionalCommittees[i] === committee) {
-          selectedOptionalCommittees.splice(i, 1);
-        }
-      }
+    let updatedCommittees = [...selectedOptionalCommittees];
+
+    if (value === "yes" && !updatedCommittees.includes(committee)) {
+      updatedCommittees.push(committee);
+    } else if (value === "no" && updatedCommittees.includes(committee)) {
+      updatedCommittees = updatedCommittees.filter(
+        (item) => item !== committee
+      );
     }
 
+    setSelectedOptionalCommittees(updatedCommittees);
     props.setApplicationData({
       ...props.applicationData,
-      optionalCommittees: selectedOptionalCommittees,
+      optionalCommittees: updatedCommittees,
     });
   };
 

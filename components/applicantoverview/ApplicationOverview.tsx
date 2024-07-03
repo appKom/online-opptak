@@ -2,6 +2,7 @@ const ApplicationOverview = ({ application }: { application: any }) => {
   const titleStyle = "font-semibold";
   const preferences = application.application.preferences || {};
 
+  console.log(application);
   return (
     <div className="px-6 py-4 border border-gray-200 rounded-lg shadow dark:border-gray-700 dark:bg-gray-800">
       <ul className="space-y-2">
