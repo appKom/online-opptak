@@ -146,6 +146,11 @@ const CommitteeApplicantOverView: NextPage = () => {
             content: <CommitteeInterviewTimes periode={period} />,
           },
           {
+            title: "Melding",
+            icon: <InboxIcon className="w-5 h-5" />,
+            content: <PlanInterview period={period} />,
+          },
+          {
             title: "Søkere",
             icon: <UserGroupIcon className="w-5 h-5" />,
             content: (
@@ -159,11 +164,6 @@ const CommitteeApplicantOverView: NextPage = () => {
                 optionalCommitteesExist={period?.optionalCommittees != null}
               />
             ),
-          },
-          {
-            title: "Melding",
-            icon: <InboxIcon className="w-5 h-5" />,
-            content: <PlanInterview period={period} />,
           },
         ]}
       />

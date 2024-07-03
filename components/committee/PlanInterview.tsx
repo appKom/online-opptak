@@ -143,16 +143,16 @@ const PlanInterview = ({ period }: Props) => {
   if (isLoading) return <LoadingPage />;
 
   return (
-    <div className="flex flex-col gap-5 max-w-md mx-auto mb-5">
-      <h1 className="font-bold text-3xl text-center">
+    <div className="flex flex-col gap-5 max-w-md mx-auto mb-5 px-10">
+      <h1 className="font-bold text-2xl text-center">
         Skriv en egendefinert melding!
       </h1>
 
       <div className="flex gap-10 w-max ">
-        <div className="flex flex-col px-5">
+        <div className="flex flex-col ">
           <label className="px-10">Velg komitee: </label>
           <select
-            className="p-2 ml-10 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="ml-10 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
             value={selectedCommittee}
           >
@@ -191,7 +191,7 @@ const PlanInterview = ({ period }: Props) => {
         </div>
       )}
       {committeeHasSubmitedTimes && committeeHasSubmitedMessage && (
-        <div className="flex flex-col items-center justify-center w-full max-w-xs mx-auto my-6 ">
+        <div className="flex flex-col items-center justify-center w-full max-w-xs mx-auto my-6">
           <div className="block w-full h-40 px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600">
             <p className="text-start">{message}</p>
           </div>

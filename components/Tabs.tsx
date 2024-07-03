@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 type TabContent = {
   title?: string;
   icon?: React.ReactNode;
@@ -28,7 +27,7 @@ export const Tabs = (props: TabsProps) => {
 
     return (
       defaultTabClass +
-      (tabIndex === props.activeTab
+      (tabIndex === currentActiveTab
         ? "relative text-online-darkTeal after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-online-darkTeal dark:after:bg-online-orange hover:text-online-darkTeal dark:text-online-orange"
         : "text-gray-500 hover:text-online-darkTeal dark:text-gray-200 dark:hover:text-online-orange")
     );
@@ -37,7 +36,7 @@ export const Tabs = (props: TabsProps) => {
   return (
     <>
       <div className="w-10/12 mb-5 border-b border-b-gray-300">
-        <ul className="flex items-center gap-4 -mb-px text-sm font-medium">
+        <ul className="flex flex-wrap items-center gap-4 -mb-px text-sm font-medium">
           {props.content.map((tab, index) => (
             <li key={index}>
               <a
