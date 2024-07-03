@@ -161,7 +161,7 @@ const CommitteeApplicantOverView: NextPage = () => {
             ),
           },
           {
-            title: "Send melding",
+            title: "Melding",
             icon: <InboxIcon className="w-5 h-5" />,
             content: <PlanInterview period={period} />,
           },

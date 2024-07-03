@@ -120,7 +120,7 @@ const PlanInterview = ({ period }: Props) => {
       });
 
       if (!res.ok) {
-        toast.error("feil");
+        toast.error("Det skjede en feil under innsendingen!");
         throw new Error("Failed to update message");
       }
 
@@ -134,6 +134,7 @@ const PlanInterview = ({ period }: Props) => {
       );
       toast.success("Innsending er vellykket!");
     } catch (error) {
+      toast.success("Det skjede en feil under innsendingen!");
       console.error("Error updating message:", error);
     }
   };
@@ -149,7 +150,7 @@ const PlanInterview = ({ period }: Props) => {
       <div className="flex flex-col px-5">
         <label className="">Velg komitee: </label>
         <select
-          className="p-2 ml-10  text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+          className="p-2 ml-10 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
           onChange={handleCommitteeSelection}
           value={selectedCommittee}
         >
@@ -187,9 +188,9 @@ const PlanInterview = ({ period }: Props) => {
         </div>
       )}
       {committeeHasSubmitedTimes && committeeHasSubmitedMessage && (
-        <div className="flex flex-col items-center justify-center gap-10">
-          <div className="block w-full px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600">
-            <p>{message}</p>
+        <div className="flex flex-col items-center justify-center w-full max-w-xs mx-auto my-6 gap-20">
+          <div className="block w-full px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600 h-36">
+            <p className="text-start">{message}</p>
           </div>
           <Button
             title={"Rediger Melding"}
