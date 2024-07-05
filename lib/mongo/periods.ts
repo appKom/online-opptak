@@ -111,3 +111,30 @@ export const getPeriodById = async (id: string | ObjectId) => {
     return { error: "Failed to fetch period by ID", exists: false };
   }
 };
+
+export const deletePeriodById = async (periodId: string | ObjectId) => {
+  try {
+    if (!periods) await init();
+
+    let validPeriodId = periodId;
+    if (typeof periodId === "string") {
+      if (!ObjectId.isValid(periodId)) {
+        console.error("Invalid ObjectId:", periodId);
+        return { error: "Invalid ObjectId format" };
+      }
+      validPeriodId = periodId;
+    }
+
+    const result = await periods.deleteOne({
+      _id: new ObjectId(validPeriodId),
+    });
+
+    if (result.deletedCount === 1) {
+      return { message: "Committee deleted successfully" };
+    } else {
+      return { error: "Committee not found or already deleted" };
+    }
+  } catch (error) {
+    return { error: "Failed to delete committee" };
+  }
+};
