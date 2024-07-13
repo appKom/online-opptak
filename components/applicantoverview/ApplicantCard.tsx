@@ -17,10 +17,10 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
   const preferences = applicant?.preferences || {};
 
   return (
-    <div className="w-full  my-4 p-4 bg-white dark:bg-gray-800 dark:border-gray-700 rounded-lg shadow-md">
+    <div className="w-full p-4 my-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <div
         onClick={handleToggle}
-        className="flex justify-between items-center cursor-pointer"
+        className="flex items-center justify-between cursor-pointer"
       >
         <div>
           <h2 className="text-lg font-semibold">{applicant?.name}</h2>
@@ -39,14 +39,14 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
           isExpanded ? "opacity-100 mt-4" : "max-h-0 opacity-0"
         }`}
       >
-        <h1 className="font-semibold text-lg">Kontakt:</h1>
+        <h1 className="text-lg font-semibold">Kontakt:</h1>
         <p>Epost: {applicant?.email}</p>
         <p>Telefon: {applicant?.phone}</p>
 
         {includePreferences && (
           <div>
             <br />
-            <h1 className="font-semibold text-lg">Komiteer:</h1>
+            <h1 className="text-lg font-semibold">Komiteer:</h1>
             <ul>
               {Object.keys(preferences).map((key, index) => (
                 <li key={index}>{`${index + 1}. ${
@@ -58,7 +58,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
             {applicant?.optionalCommittees != null && (
               <div>
                 <br />
-                <h1 className="font-semibold text-lg">Valgfrie Komiteer:</h1>
+                <h1 className="text-lg font-semibold">Valgfrie Komiteer:</h1>
                 <p>
                   {applicant?.optionalCommittees.join(", ") || "Ingen valg"}{" "}
                 </p>
@@ -67,9 +67,9 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
           </div>
         )}
         <br />
-        <h1 className="font-semibold text-lg">Om:</h1>
+        <h1 className="text-lg font-semibold">Om:</h1>
         <p>Bankom: {applicant?.bankom}</p>
-        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mt-2">
+        <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
           <p>{applicant?.about}</p>
         </div>
       </div>
