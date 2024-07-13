@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import ApplicationForm from "../../components/form/ApplicationForm";
 import { useSession } from "next-auth/react";
-import validator from "validator";
 import toast from "react-hot-toast";
 import WellDoneIllustration from "../../components/icons/illustrations/WellDoneIllustration";
 import CheckIcon from "../../components/icons/icons/CheckIcon";
