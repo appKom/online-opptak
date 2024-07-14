@@ -121,9 +121,9 @@ export const deletePeriodById = async (periodId: string | ObjectId) => {
     });
 
     return result.deletedCount === 1
-      ? { message: "Committee deleted successfully" }
-      : { error: "Committee not found or already deleted" };
+      ? { message: "Period deleted successfully" }
+      : { error: "Period not found or already deleted" };
   } catch (error) {
-    return { error: "Failed to delete committee" };
+    return { error: "Failed to delete period" };
   }
 };
