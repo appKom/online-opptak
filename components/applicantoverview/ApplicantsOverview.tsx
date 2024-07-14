@@ -105,7 +105,7 @@ const ApplicantsOverview = ({
     <div className="flex flex-col items-center px-5">
       <h2 className="mt-5 mb-6 text-3xl font-bold items-start text-start">{`${period?.name}`}</h2>
 
-      <div className="w-full max-w-md mx-auto mb-5">
+      <div className="w-full max-w-lg mx-auto mb-5">
         <div className="flex flex-row mb-2 align-end justify-between relative">
           <p className="dark:text-gray-300 text-gray-800 text-sm">
             Søk etter navn eller filtrer
@@ -176,7 +176,7 @@ const ApplicantsOverview = ({
       </div>
 
       {filteredApplicants && filteredApplicants.length > 0 ? (
-        <div className="w-full max-w-md mx-auto">
+        <div className="w-full max-w-lg mx-auto">
           <ApplicantTable
             filteredApplications={filteredApplicants}
             includePreferences={includePreferences}
