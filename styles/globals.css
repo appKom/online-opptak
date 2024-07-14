@@ -19,6 +19,13 @@ body {
     Helvetica Neue,
     sans-serif;
   height: 100%;
+}
+
+html {
+  background-color: var(--color-background);
+}
+
+body {
   background-color: var(--color-background);
 }
 
@@ -44,6 +51,13 @@ a {
     padding-right: env(safe-area-inset-right);
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
-    background-color: var(--color-background);
+  }
+
+  body.dark {
+    background-color: #131928; /*Same as bg-gray-900*/
+  }
+
+  html.dark {
+    background-color: #131928; /*Same as bg-gray-900*/
   }
 }
