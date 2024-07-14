@@ -1,6 +1,7 @@
 import Link from "next/link";
 import TableCard from "./TableCard";
 import { FaTrash } from "react-icons/fa";
+import React from "react";
 
 type ColumnType = {
   label: string;
@@ -27,12 +28,15 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
           <thead className="bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               {columns.map((column) => (
-                <th
-                  key={column.label}
-                  className="px-4 py-2 text-xs font-medium text-gray-900 dark:text-gray-200 sm:px-6 sm:py-4 sm:text-sm"
-                >
-                  {column.label}
-                </th>
+                <React.Fragment key={column.label}>
+                  {column.label !== "Delete" ? (
+                    <th className="px-4 py-2 text-xs font-medium text-gray-900 dark:text-gray-200 sm:px-6 sm:py-4 sm:text-sm">
+                      {column.label}
+                    </th>
+                  ) : (
+                    <div className="px-10 py-2"></div>
+                  )}
+                </React.Fragment>
               ))}
             </tr>
           </thead>
