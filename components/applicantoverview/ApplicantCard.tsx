@@ -45,8 +45,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
 
         {includePreferences && (
           <div>
-            <br />
-            <h1 className="text-lg font-semibold">Komiteer:</h1>
+            <h1 className="text-lg font-semibold pt-3">Komiteer:</h1>
             <ul>
               {Object.keys(preferences).map((key, index) => (
                 <li key={index}>{`${index + 1}. ${
@@ -55,7 +54,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
               ))}
             </ul>
 
-            {applicant?.optionalCommittees != null && (
+            {!applicant?.optionalCommittees && (
               <div>
                 <br />
                 <h1 className="text-lg font-semibold">Valgfrie Komiteer:</h1>
@@ -66,8 +65,8 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
             )}
           </div>
         )}
-        <br />
-        <h1 className="text-lg font-semibold">Om:</h1>
+
+        <h1 className="text-lg font-semibold pt-3">Om:</h1>
         <p>Bankom: {applicant?.bankom}</p>
         <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
           <p>{applicant?.about}</p>
