@@ -57,6 +57,7 @@ const Application: NextPage = () => {
         if (periodResponse.ok) {
           setPeriod(periodData.period);
           setPeriodExists(periodData.exists);
+          fetchApplicationData();
         } else {
           throw new Error(periodData.error || "Unknown error");
         }
@@ -206,7 +207,6 @@ const Application: NextPage = () => {
                 title={shouldShowListView ? "Se søknad" : "Skjul søknad"}
                 color="blue"
                 onClick={() => {
-                  fetchApplicationData();
                   setShouldShowListView(!shouldShowListView);
                 }}
               />
