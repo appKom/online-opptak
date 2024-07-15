@@ -77,7 +77,7 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
       </div>
       <div className="md:hidden flex flex-col space-y-4">
         {rows.map((row) => (
-          <TableCard key={row.id} period={row} />
+          <TableCard key={row.id} period={row} onDelete={onDelete} />
         ))}
       </div>
     </div>
