@@ -36,6 +36,8 @@ const CommitteeApplicantOverView: NextPage = () => {
         setPeriod(data.period);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -66,8 +68,6 @@ const CommitteeApplicantOverView: NextPage = () => {
         setYears(uniqueYears);
       } catch (error: any) {
         setError(error.message);
-      } finally {
-        setLoading(false);
       }
     };
 
