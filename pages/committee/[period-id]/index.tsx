@@ -12,6 +12,7 @@ import {
 import { Tabs } from "../../../components/Tabs";
 import SendCommitteeMessage from "../../../components/committee/SendCommitteeMessage";
 import CommitteeInterviewTimes from "../../../components/committee/CommitteeInterviewTimes";
+import LoadingPage from "../../../components/LoadingPage";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -36,8 +37,6 @@ const CommitteeApplicantOverView: NextPage = () => {
         setPeriod(data.period);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
-      } finally {
-        setLoading(false);
       } finally {
         setLoading(false);
       }

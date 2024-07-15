@@ -50,7 +50,7 @@ export const Tabs = (props: TabsProps) => {
           ))}
         </ul>
       </div>
-      <div className="py-3">
+      <div className="py-3 w-full">
         {props.content.map((tab, index) => (
           <div
             key={index}
