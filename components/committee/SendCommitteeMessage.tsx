@@ -10,9 +10,10 @@ import SelectInput from "../form/SelectInput";
 
 interface Props {
   period: periodType | null;
+  tabClicked: number;
 }
 
-const PlanInterview = ({ period }: Props) => {
+const SendCommitteeMessage = ({ period, tabClicked }: Props) => {
   const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -63,7 +64,6 @@ const PlanInterview = ({ period }: Props) => {
         const commonCommittees = userCommittees.filter((committee: string) =>
           periodCommittees.includes(committee)
         );
-        // console.log("Common committees:", commonCommittees);
 
         setUserCommittees(commonCommittees);
 
@@ -75,7 +75,7 @@ const PlanInterview = ({ period }: Props) => {
 
     getCommonCommittees();
     fetchCommitteeInterviewTimes();
-  }, [session, period, periodId]);
+  }, [session, period, periodId, tabClicked]);
 
   useEffect(() => {
     const committee = committeeInterviewTimes.find(
@@ -208,4 +208,4 @@ const PlanInterview = ({ period }: Props) => {
   );
 };
 
-export default PlanInterview;
+export default SendCommitteeMessage;

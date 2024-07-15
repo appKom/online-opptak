@@ -10,7 +10,7 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
 import { Tabs } from "../../../components/Tabs";
-import PlanInterview from "../../../components/committee/PlanInterview";
+import SendCommitteeMessage from "../../../components/committee/SendCommitteeMessage";
 import CommitteeInterviewTimes from "../../../components/committee/CommitteeInterviewTimes";
 
 const CommitteeApplicantOverView: NextPage = () => {
@@ -24,6 +24,7 @@ const CommitteeApplicantOverView: NextPage = () => {
   const [period, setPeriod] = useState<periodType | null>(null);
   const [years, setYears] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [tabClicked, setTabClicked] = useState<number>(0);
 
   useEffect(() => {
     if (!session || !periodId) return;
@@ -138,7 +139,10 @@ const CommitteeApplicantOverView: NextPage = () => {
     <div className="flex flex-col items-center">
       <Tabs
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={(index) => {
+          setActiveTab(index);
+          setTabClicked(index);
+        }}
         content={[
           {
             title: "Intervjutider",
@@ -148,7 +152,9 @@ const CommitteeApplicantOverView: NextPage = () => {
           {
             title: "Melding",
             icon: <InboxIcon className="w-5 h-5" />,
-            content: <PlanInterview period={period} />,
+            content: (
+              <SendCommitteeMessage period={period} tabClicked={tabClicked} />
+            ),
           },
           {
             title: "Søkere",
