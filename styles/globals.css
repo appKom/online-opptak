@@ -37,6 +37,32 @@ a {
 .fc-timegrid-axis {
   @apply bg-white dark:bg-gray-900;
 }
+@media (max-width: 768px) {
+  .fc-toolbar {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .fc-toolbar .fc-toolbar-chunk {
+    margin-bottom: 10px;
+  }
+
+  .fc .fc-daygrid-day-top {
+    text-align: center;
+  }
+
+  .fc .fc-timegrid-col {
+    min-width: 40px;
+  }
+
+  .fc .fc-timegrid-slot-label {
+    font-size: 0.8rem;
+  }
+
+  .fc .fc-timegrid-axis {
+    width: 40px;
+  }
+}
 
 @supports (padding: env(safe-area-inset-top)) {
   body {

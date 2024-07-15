@@ -416,20 +416,24 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
             </select>
           </div>
         )}
-        <div className="mx-20">
+        <div className="mx-4 sm:mx-20">
           <FullCalendar
             eventClassNames={"dark:bg-online-darkBlue"}
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
-            headerToolbar={{ start: "today prev,next", center: "", end: "" }}
+            headerToolbar={{
+              start: "today prev,next",
+              center: "",
+              end: "",
+            }}
             events={calendarEvents}
-            selectable={hasAlreadySubmitted ? false : true}
+            selectable={!hasAlreadySubmitted}
             selectMirror={true}
             height="auto"
             select={createInterval}
             slotDuration={`00:${interviewInterval}`}
             businessHours={{ startTime: "08:00", endTime: "18:00" }}
-            weekends={false} //Skal helger være skrudd av?
+            weekends={false}
             slotMinTime="08:00"
             slotMaxTime="18:00"
             validRange={visibleRange}
@@ -440,9 +444,7 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
               const end = selectInfo.end;
               const startHour = start.getHours();
               const endHour = end.getHours();
-
               const isSameDay = start.toDateString() === end.toDateString();
-
               return isSameDay && startHour >= 8 && endHour <= 18;
             }}
             slotLabelFormat={{
@@ -450,6 +452,8 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
               minute: "2-digit",
               hour12: false,
             }}
+            handleWindowResize={true}
+            longPressDelay={0}
           />
         </div>
 
