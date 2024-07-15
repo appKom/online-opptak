@@ -143,16 +143,16 @@ const SendCommitteeMessage = ({ period, tabClicked }: Props) => {
   if (isLoading) return <LoadingPage />;
 
   return (
-    <div className="flex flex-col gap-5 max-w-md mx-auto mb-5 px-10">
+    <div className="flex flex-col gap-5 max-w-lg mx-auto mb-5 px-10">
       <h1 className="font-bold text-2xl text-center">
         Skriv en egendefinert melding!
       </h1>
 
-      <div className="flex gap-10 w-max ">
-        <div className="flex flex-col ">
-          <label className="px-10">Velg komitee: </label>
+      <div className="flex justify-center w-full">
+        <div className="flex flex-col items-center">
+          <label className="">Velg komitee: </label>
           <select
-            className="ml-10 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+            className="text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
             value={selectedCommittee}
           >
@@ -166,7 +166,7 @@ const SendCommitteeMessage = ({ period, tabClicked }: Props) => {
       </div>
 
       {!committeeHasSubmitedTimes && (
-        <p className="text-red-500 justify-center items-center text-center">
+        <p className="text-red-500 text-center">
           For å sende en egendefinert melding må du først fylle ut intervju
           tider for valgt komitee.
         </p>
