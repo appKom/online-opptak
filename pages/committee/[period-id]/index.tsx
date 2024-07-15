@@ -38,6 +38,8 @@ const CommitteeApplicantOverView: NextPage = () => {
         console.error("Failed to fetch interview periods:", error);
       } finally {
         setLoading(false);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -96,7 +98,7 @@ const CommitteeApplicantOverView: NextPage = () => {
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingPage />;
   }
 
   if (error) {
