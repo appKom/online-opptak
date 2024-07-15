@@ -20,7 +20,7 @@ const Admin = () => {
       setPeriods(
         data.periods.map((period: periodType) => {
           return {
-            id: period.name,
+            id: period._id,
             name: period.name,
             preparation:
               formatDate(period.preparationPeriod.start) +
@@ -48,11 +48,28 @@ const Admin = () => {
     fetchPeriods();
   }, []);
 
+  const deletePeriod = async (id: string, name: string) => {
+    const isConfirmed = window.confirm(
+      `Er det sikker på at du ønsker å slette ${name}?`
+    );
+    if (!isConfirmed) return;
+
+    try {
+      await fetch(`/api/periods/${id}`, {
+        method: "DELETE",
+      });
+      setPeriods(periods.filter((period) => period.id !== id));
+    } catch (error) {
+      console.error("Failed to delete period:", error);
+    }
+  };
+
   const periodsColumns = [
     { label: "Navn", field: "name" },
     { label: "Forberedelse", field: "preparation" },
     { label: "Søknad", field: "application" },
     { label: "Intervju", field: "interview" },
+    { label: "Delete", field: "delete" },
   ];
 
   if (!session || session.user?.role !== "admin") {
@@ -73,7 +90,13 @@ const Admin = () => {
         />
       </div>
 
-      {periods.length > 0 && <Table columns={periodsColumns} rows={periods} />}
+      {periods.length > 0 && (
+        <Table
+          columns={periodsColumns}
+          rows={periods}
+          onDelete={deletePeriod}
+        />
+      )}
     </div>
   );
 };

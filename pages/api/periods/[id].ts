@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { getPeriodById } from "../../../lib/mongo/periods";
-import { hasSession } from "../../../lib/utils/apiChecks";
+import { deletePeriodById, getPeriodById } from "../../../lib/mongo/periods";
+import { hasSession, isAdmin } from "../../../lib/utils/apiChecks";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -28,6 +28,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       return res.status(200).json({ exists, period });
+    } else if (req.method === "DELETE") {
+      if (!isAdmin) return res.status(403).json({ error: "Unauthorized" });
+
+      const { error } = await deletePeriodById(id);
+      if (error) throw new Error(error);
+      return res.status(204).end();
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -36,7 +42,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json("Unexpected error occurred");
   }
 
-  res.setHeader("Allow", ["GET"]);
+  res.setHeader("Allow", ["GET", "DELETE"]);
   res.status(405).end(`Method ${req.method} Not Allowed`);
 };
 
