@@ -165,9 +165,7 @@ const CommitteeApplicantOverView: NextPage = () => {
                 period={period}
                 committees={committees}
                 years={years}
-                applicationsExist={applicants != null}
                 includePreferences={false}
-                optionalCommitteesExist={period?.optionalCommittees != null}
               />
             ),
           },
