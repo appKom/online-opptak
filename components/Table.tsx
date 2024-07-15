@@ -1,7 +1,7 @@
-import Link from "next/link";
 import TableCard from "./TableCard";
 import { FaTrash } from "react-icons/fa";
 import React from "react";
+import { useRouter } from "next/router";
 
 type ColumnType = {
   label: string;
@@ -21,6 +21,8 @@ interface TableProps {
 }
 
 const Table = ({ rows, columns, onDelete }: TableProps) => {
+  const router = useRouter();
+
   return (
     <div className="">
       <div className="hidden md:flex overflow-auto border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
@@ -45,6 +47,7 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
               <tr
                 key={"tr-" + row.id}
                 className="relative cursor-pointer hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-900 dark:border-gray-700"
+                onClick={() => row.link && router.push(row.link)}
               >
                 {columns.map((column) => (
                   <td
@@ -58,7 +61,7 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            row.link && onDelete(row.id, row.name);
+                            onDelete(row.id, row.name);
                           }}
                           className="text-black dark:text-white hover:text-red-700 hover:text-lg"
                         >
@@ -66,7 +69,7 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
                         </button>
                       </div>
                     ) : (
-                      <Link href={row.link || ""}>{row[column.field]}</Link>
+                      row[column.field]
                     )}
                   </td>
                 ))}

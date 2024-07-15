@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { applicantType, periodType } from "../../../lib/types/types";
 import { useRouter } from "next/router";
 import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
+import LoadingPage from "../../../components/LoadingPage";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -26,6 +27,8 @@ const CommitteeApplicantOverView: NextPage = () => {
         setPeriod(data.period);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -56,8 +59,6 @@ const CommitteeApplicantOverView: NextPage = () => {
         setYears(uniqueYears);
       } catch (error: any) {
         setError(error.message);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -86,7 +87,7 @@ const CommitteeApplicantOverView: NextPage = () => {
   }
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <LoadingPage />;
   }
 
   if (error) {
