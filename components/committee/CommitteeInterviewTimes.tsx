@@ -1,7 +1,6 @@
 import { BaseSyntheticEvent, useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -9,6 +8,7 @@ import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
 import NotFound from "../../pages/404";
 import Button from "../Button";
+import LoadingPage from "../LoadingPage";
 
 interface Interview {
   start: string;
@@ -16,17 +16,14 @@ interface Interview {
 }
 
 interface Props {
-  periode: periodType | null;
+  period: periodType | null;
 }
 
 const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
-const CommitteeInterviewTimes = ({ periode }: Props) => {
+const CommitteeInterviewTimes = ({ period }: Props) => {
   const { data: session } = useSession();
-  const router = useRouter();
-  const periodId = router.query["period-id"] as string;
 
-  const [period, setPeriod] = useState<periodType | null>(null);
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(15);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
@@ -45,14 +42,13 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
   const [countdown, setCountdown] = useState<string>("");
 
   useEffect(() => {
-    if (periodId) {
-      setPeriod(periode);
+    if (period) {
       setVisibleRange({
-        start: new Date(periode!.interviewPeriod.start).toISOString(),
-        end: new Date(periode!.interviewPeriod.end).toISOString(),
+        start: new Date(period!.interviewPeriod.start).toISOString(),
+        end: new Date(period!.interviewPeriod.end).toISOString(),
       });
     }
-  }, [periodId]);
+  }, [period]);
 
   useEffect(() => {
     if (session?.user?.committees && period?.committees) {
@@ -78,7 +74,7 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
   useEffect(() => {
     const fetchCommitteeInterviewTimes = async () => {
       try {
-        const res = await fetch(`/api/committees/times/${periodId}`);
+        const res = await fetch(`/api/committees/times/${period?._id}`);
         const data = await res.json();
 
         if (data && Array.isArray(data.committees)) {
@@ -124,11 +120,11 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
         );
 
         setCalendarEvents(events);
-        setSelectedTimeslot(relevantTimes[0].timeslot); // Set the selected timeslot
+        setSelectedTimeslot(relevantTimes[0].timeslot);
       } else {
         setHasAlreadySubmitted(false);
         setCalendarEvents([]);
-        setSelectedTimeslot("15"); // Set default timeslot to 15 minutes
+        setSelectedTimeslot("15");
       }
     }
   }, [period, selectedCommittee, committeeInterviewTimes]);
@@ -264,7 +260,7 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
 
     try {
       const response = await fetch(
-        `/api/committees/times/${periodId}?${queryParams}`,
+        `/api/committees/times/${period?._id}?${queryParams}`,
         {
           method: "DELETE",
         }
@@ -285,11 +281,13 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
   };
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      const deadline = getSubmissionDeadline();
-      setCountdown(deadline);
-    }, 1000);
-    return () => clearInterval(intervalId);
+    if (period) {
+      const intervalId = setInterval(() => {
+        const deadline = getSubmissionDeadline();
+        setCountdown(deadline);
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
   }, [period]);
 
   const getSubmissionDeadline = (): string => {
@@ -328,12 +326,8 @@ const CommitteeInterviewTimes = ({ periode }: Props) => {
     return <NotFound />;
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-5 text-center">
-        <p className="animate-pulse dark:text-white">Vent litt...</p>
-      </div>
-    );
+  if (!period || isLoading) {
+    return <LoadingPage />;
   }
 
   if (period!.interviewPeriod.start < new Date()) {
