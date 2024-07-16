@@ -37,8 +37,11 @@ const ApplicantsOverview = ({
     null
   );
   const [selectedYear, setSelectedYear] = useState<string>("");
+  const [selectedBankom, setSelectedBankom] = useState<string>("");
   const [filterMenuVisible, setFilterMenuVisible] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
+
+  const bankomOptions: string[] = ["yes", "no", "maybe"];
 
   useEffect(() => {
     let filtered: applicantType[] = applicants;
@@ -70,18 +73,31 @@ const ApplicantsOverview = ({
       );
     }
 
+    if (selectedBankom) {
+      filtered = filtered.filter(
+        (applicant) => applicant.bankom === selectedBankom
+      );
+    }
+
     if (searchQuery) {
       const regex = new RegExp(searchQuery.split("").join(".*"), "i");
       filtered = filtered.filter((applicant) => regex.test(applicant.name));
     }
 
     setFilteredApplicants(filtered);
-  }, [selectedCommittee, selectedYear, searchQuery, applicants]);
+  }, [
+    selectedCommittee,
+    selectedYear,
+    searchQuery,
+    selectedBankom,
+    applicants,
+  ]);
 
   const resetFilters = () => {
     setSearchQuery("");
     setSelectedCommittee(null);
     setSelectedYear("");
+    setSelectedBankom("");
   };
 
   useEffect(() => {
@@ -149,7 +165,7 @@ const ApplicantsOverview = ({
                     </select>
                   </div>
                 )}
-                <div>
+                <div className="mb-4">
                   <label className="block text-sm mb-2">Velg klasse</label>
                   <select
                     className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
@@ -160,6 +176,21 @@ const ApplicantsOverview = ({
                     {years.map((year) => (
                       <option key={year} value={year}>
                         {year}. Klasse
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm mb-2">Velg bankom</label>
+                  <select
+                    className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+                    value={selectedBankom}
+                    onChange={(e) => setSelectedBankom(e.target.value)}
+                  >
+                    <option value="">Velg bankom</option>
+                    {bankomOptions.map((bankom) => (
+                      <option key={bankom} value={bankom}>
+                        {bankom}
                       </option>
                     ))}
                   </select>
