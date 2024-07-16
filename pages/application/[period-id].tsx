@@ -212,7 +212,7 @@ const Application: NextPage = () => {
               />
             </div>
             {fetchedApplicationData && (
-              <div className="max-w-lg">
+              <div className="max-w-lg w-full">
                 <ApplicantCard
                   applicant={fetchedApplicationData.application}
                   includePreferences={true}
