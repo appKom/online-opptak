@@ -56,6 +56,7 @@ const Navbar = () => {
                 Logget inn som{" "}
                 <span className="font-medium">{session.user?.name}</span>
               </div>
+
               {session.user?.role === "admin" && (
                 <Button
                   title="Admin"
@@ -91,17 +92,17 @@ const Navbar = () => {
                 icon={<LoginIcon className="w-4 h-4" />}
                 onClick={handleLogin}
               />
-              <Image
-                src={bekkLogoSrc}
-                width={100}
-                height={30 * 1.5}
-                alt="Bekk logo"
-                className="transition-all cursor-pointer hover:opacity-60"
-                onClick={() => router.push("https://www.bekk.no/")}
-              />
             </>
           )}
           <ThemeToggle />
+          <Image
+            src={bekkLogoSrc}
+            width={100}
+            height={30 * 1.5}
+            alt="Bekk logo"
+            className="transition-all cursor-pointer hover:opacity-60"
+            onClick={() => router.push("https://www.bekk.no/")}
+          />
         </div>
       </div>
       <div className="relative md:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
