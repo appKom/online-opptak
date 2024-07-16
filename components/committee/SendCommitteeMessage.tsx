@@ -143,7 +143,7 @@ const SendCommitteeMessage = ({ period, tabClicked }: Props) => {
   if (isLoading) return <LoadingPage />;
 
   return (
-    <div className="flex flex-col gap-5 max-w-lg mx-auto mb-5 px-10">
+    <div className="flex flex-col gap-5 max-w-3xl mx-auto mb-5 px-10">
       <h1 className="font-bold text-2xl text-center">
         Skriv en egendefinert melding!
       </h1>
@@ -173,11 +173,12 @@ const SendCommitteeMessage = ({ period, tabClicked }: Props) => {
       )}
 
       {committeeHasSubmitedTimes && !committeeHasSubmitedMessage && (
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col w-full items-center justify-center">
           <TextAreaInput
             updateInputValues={handleMessageChange}
             value={message}
             label={""}
+            maxLength={1000}
             placeholder="Hei, så hyggelig at du har søkt Testkom.
           Vi ser fram til møte med deg. Gi oss gjerne beskjed om du har noen spørsmål. Mvh. Testkom. 
           "
@@ -191,10 +192,10 @@ const SendCommitteeMessage = ({ period, tabClicked }: Props) => {
         </div>
       )}
       {committeeHasSubmitedTimes && committeeHasSubmitedMessage && (
-        <div className="flex flex-col items-center justify-center w-full max-w-xs mx-auto my-6">
-          <div className="block w-full h-40 px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600">
-            <p className="text-start">{message}</p>
-          </div>
+        <div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto my-6">
+          <article className="block w-full min-h-[162px] px-3 py-2 m-0 text-base whitespace-pre-wrap text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600 overflow-auto break-words">
+            {message}
+          </article>
           <div className="py-6">
             <Button
               title={"Rediger Melding"}

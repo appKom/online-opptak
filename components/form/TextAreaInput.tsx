@@ -5,6 +5,7 @@ interface Props {
   value?: string;
   label: string;
   placeholder?: string;
+  maxLength?: number;
 }
 
 const TextAreaInput = (props: Props) => {
@@ -13,11 +14,12 @@ const TextAreaInput = (props: Props) => {
   };
 
   return (
-    <div className="justify-center w-full max-w-xs mx-auto my-6">
+    <div className="justify-center w-full mx-auto my-6">
       <div className="relative">
         <textarea
           style={{ resize: "none" }}
           rows={6}
+          maxLength={props.maxLength}
           id="textAreaComponent"
           placeholder={props.placeholder}
           className="block w-full px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600"
