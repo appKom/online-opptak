@@ -193,9 +193,12 @@ const SendCommitteeMessage = ({ period, tabClicked }: Props) => {
       )}
       {committeeHasSubmitedTimes && committeeHasSubmitedMessage && (
         <div className="flex flex-col items-center justify-center w-full max-w-3xl mx-auto my-6">
-          <article className="block w-full min-h-[162px] px-3 py-2 m-0 text-base whitespace-pre-wrap text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600 overflow-auto break-words">
-            {message}
-          </article>
+          <button
+            onClick={() => setCommitteeHasSubmitedMessage(false)}
+            className="block w-full min-h-[162px] px-3 py-2 m-0 text-base whitespace-pre-wrap text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600 overflow-auto break-words text-left flex items-start"
+          >
+            <p>{message}</p>
+          </button>
           <div className="py-6">
             <Button
               title={"Rediger Melding"}
