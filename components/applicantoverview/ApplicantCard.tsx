@@ -54,9 +54,8 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
               ))}
             </ul>
 
-            {!applicant?.optionalCommittees && (
-              <div>
-                <br />
+            {applicant?.optionalCommittees && (
+              <div className="pt-3">
                 <h1 className="text-lg font-semibold">Valgfrie Komiteer:</h1>
                 <p>
                   {applicant?.optionalCommittees.join(", ") || "Ingen valg"}{" "}
