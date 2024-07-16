@@ -16,7 +16,7 @@ const ApplicantOverviewSkeleton = () => {
     >
       <div className="flex justify-center px-5 w-full">
         <div className="flex flex-col items-center w-full max-w-lg">
-          <Skeleton width={300} height={30} className="mt-5 mb-6 py-4" />
+          <Skeleton width={200} height={30} className="mt-5 mb-6 py-4" />
           <div className="w-full max-w-lg mx-auto mb-5 pt-1">
             <div className="flex flex-row mb-2 align-end justify-between relative">
               <p className="dark:text-gray-300 text-gray-800 text-sm">
