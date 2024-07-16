@@ -33,7 +33,7 @@ export type applicantType = {
   name: string;
   email: string;
   phone: string;
-  grade: number;
+  grade: string;
   about: string;
   preferences: preferencesType | committeePreferenceType[];
   bankom: "yes" | "no" | "maybe";
