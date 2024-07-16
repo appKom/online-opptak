@@ -45,10 +45,14 @@ const ApplicantsOverview = ({
 
   const bankomOptions: string[] = ["yes", "no", "maybe"];
 
+  const apiUrl = includePreferences
+    ? `/api/applicants/${period?._id}`
+    : `/api/committees/${period?._id}`;
+
   useEffect(() => {
     const fetchApplicants = async () => {
       try {
-        const response = await fetch(`/api/committees/${period?._id}`, {
+        const response = await fetch(apiUrl, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -60,18 +64,22 @@ const ApplicantsOverview = ({
         }
 
         const data = await response.json();
+        const dataType = includePreferences
+          ? data.applications
+          : data.applicants;
 
-        setApplicants(data.applicants);
+        setApplicants(dataType);
 
         const uniqueYears: string[] = Array.from(
           new Set(
-            data.applicants.map((applicant: applicantType) =>
+            dataType.map((applicant: applicantType) =>
               applicant.grade.toString()
             )
           )
         );
         setYears(uniqueYears);
       } catch (error: any) {
+        console.log(error);
         setError(error.message);
       } finally {
         setIsLoading(false);

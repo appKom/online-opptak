@@ -15,6 +15,11 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
   };
 
   const preferences = applicant?.preferences || {};
+  const filteredPreferences = Object.entries(preferences).filter(
+    ([key, value]) => value
+  );
+
+  console.log(applicant);
 
   return (
     <div className="w-full p-4 my-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -47,10 +52,8 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
           <div>
             <h1 className="text-lg font-semibold pt-3">Komiteer:</h1>
             <ul>
-              {Object.keys(preferences).map((key, index) => (
-                <li key={index}>{`${index + 1}. ${
-                  preferences[key as keyof typeof preferences]
-                }`}</li>
+              {filteredPreferences.map(([key, value], index) => (
+                <li key={index}>{`${index + 1}. ${value}`}</li>
               ))}
             </ul>
 
