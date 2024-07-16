@@ -3,7 +3,11 @@ import { useRouter } from "next/router";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import {
+  Bars3Icon,
+  XMarkIcon,
+  UserGroupIcon,
+} from "@heroicons/react/24/outline";
 import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
 import AdminIcon from "./icons/icons/AdminIcon";
@@ -52,6 +56,7 @@ const Navbar = () => {
                 Logget inn som{" "}
                 <span className="font-medium">{session.user?.name}</span>
               </div>
+
               {session.user?.role === "admin" && (
                 <Button
                   title="Admin"
@@ -66,6 +71,7 @@ const Navbar = () => {
                   title="For komiteer"
                   color="blue"
                   size="small"
+                  icon={<UserGroupIcon className="w-5 h-5" />}
                   onClick={() => router.push("/committee")}
                 />
               )}
@@ -86,17 +92,17 @@ const Navbar = () => {
                 icon={<LoginIcon className="w-4 h-4" />}
                 onClick={handleLogin}
               />
-              <Image
-                src={bekkLogoSrc}
-                width={100}
-                height={30 * 1.5}
-                alt="Bekk logo"
-                className="transition-all cursor-pointer hover:opacity-60"
-                onClick={() => router.push("https://www.bekk.no/")}
-              />
             </>
           )}
           <ThemeToggle />
+          <Image
+            src={bekkLogoSrc}
+            width={100}
+            height={30 * 1.5}
+            alt="Bekk logo"
+            className="transition-all cursor-pointer hover:opacity-60"
+            onClick={() => router.push("https://www.bekk.no/")}
+          />
         </div>
       </div>
       <div className="relative md:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
@@ -118,11 +124,16 @@ const Navbar = () => {
         />
         <div className="relative">
           <button onClick={toggleDropdown} className="flex justify-end">
-            {isDropdownOpen ? (
-              <XMarkIcon className="w-10 h-10 text-gray-500 transition-transform transform rotate-45 dark:text-white" />
-            ) : (
-              <Bars3Icon className="w-10 h-10 text-gray-500 transition-transform transform dark:text-white" />
-            )}
+            <Bars3Icon
+              className={`w-10 h-10 text-gray-500 transition-transform transform dark:text-white ${
+                isDropdownOpen ? "rotate-45 opacity-0" : "rotate-0 opacity-100"
+              }`}
+            />
+            <XMarkIcon
+              className={`w-10 h-10 text-gray-500 transition-transform transform dark:text-white absolute top-0 right-0 ${
+                isDropdownOpen ? "rotate-0 opacity-100" : "rotate-45 opacity-0"
+              }`}
+            />
           </button>
           {isDropdownOpen && (
             <DropdownMenu

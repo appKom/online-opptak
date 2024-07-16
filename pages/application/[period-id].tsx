@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import ApplicationForm from "../../components/form/ApplicationForm";
 import { useSession } from "next-auth/react";
-import validator from "validator";
 import toast from "react-hot-toast";
 import WellDoneIllustration from "../../components/icons/illustrations/WellDoneIllustration";
 import CheckIcon from "../../components/icons/icons/CheckIcon";
@@ -13,6 +12,7 @@ import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
 import { useRouter } from "next/router";
 import Schedule from "../../components/committee/Schedule";
 import ApplicationOverview from "../../components/applicantoverview/ApplicationOverview";
+import { validateApplication } from "../../lib/utils/validateApplication";
 
 const Application: NextPage = () => {
   const { data: session } = useSession();
@@ -57,6 +57,7 @@ const Application: NextPage = () => {
         if (periodResponse.ok) {
           setPeriod(periodData.period);
           setPeriodExists(periodData.exists);
+          fetchApplicationData();
         } else {
           throw new Error(periodData.error || "Unknown error");
         }
@@ -206,7 +207,6 @@ const Application: NextPage = () => {
                 title={shouldShowListView ? "Se søknad" : "Skjul søknad"}
                 color="blue"
                 onClick={() => {
-                  fetchApplicationData();
                   setShouldShowListView(!shouldShowListView);
                 }}
               />
@@ -229,6 +229,7 @@ const Application: NextPage = () => {
                       applicationData={applicationData}
                       setApplicationData={setApplicationData}
                       availableCommittees={period?.committees || []}
+                      optionalCommittees={period?.optionalCommittees || []}
                     />
                     <div className="flex justify-center w-full">
                       <Button
@@ -277,83 +278,3 @@ const Application: NextPage = () => {
 };
 
 export default Application;
-
-const validateApplication = (applicationData: any) => {
-  // Check if email is valid
-  if (!validator.isEmail(applicationData.email)) {
-    toast.error("Fyll inn en gyldig e-postadresse");
-    return false;
-  }
-
-  // Check if phone number is valid
-  if (!validator.isMobilePhone(applicationData.phone, "nb-NO")) {
-    toast.error("Fyll inn et gyldig mobilnummer");
-    return false;
-  }
-
-  // Check if grade is valid
-  if (applicationData.grade == 0) {
-    toast.error("Velg et trinn");
-    return false;
-  }
-
-  // Check if about section is filled
-  if (applicationData.about === "") {
-    toast.error("Skriv litt om deg selv");
-    return false;
-  }
-
-  // Check if at least one preference is selected
-  if (
-    !applicationData.preferences.first &&
-    !applicationData.preferences.second &&
-    !applicationData.preferences.third
-  ) {
-    toast.error("Velg minst én komité");
-    return false;
-  }
-
-  // Check for duplicate committee preferences
-  const { first, second, third } = applicationData.preferences;
-  if (
-    (first && second && first === second) ||
-    (first && third && first === third) ||
-    (second && third && second === third)
-  ) {
-    toast.error("Du kan ikke velge samme komité flere ganger");
-    return false;
-  }
-
-  // Check if Bankom interest is specified
-  if (applicationData.bankom === undefined) {
-    toast.error("Velg om du er interessert i Bankom");
-    return false;
-  }
-
-  // Check if FeminIT interest is specified
-  if (applicationData.feminIt === undefined) {
-    toast.error("Velg om du er interessert i FeminIT");
-    return false;
-  }
-
-  // Validate selected times
-  if (applicationData.selectedTimes.length === 0) {
-    toast.error("Velg minst én tilgjengelig tid");
-    return false;
-  }
-
-  for (const time of applicationData.selectedTimes) {
-    const startTime = new Date(time.start);
-    const endTime = new Date(time.end);
-    if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
-      toast.error("Ugyldig start- eller sluttid");
-      return false;
-    }
-    if (startTime >= endTime) {
-      toast.error("Starttid må være før sluttid");
-      return false;
-    }
-  }
-
-  return true;
-};

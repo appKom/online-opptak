@@ -111,3 +111,19 @@ export const getPeriodById = async (id: string | ObjectId) => {
     return { error: "Failed to fetch period by ID", exists: false };
   }
 };
+
+export const deletePeriodById = async (periodId: string | ObjectId) => {
+  try {
+    if (!periods) await init();
+
+    const result = await periods.deleteOne({
+      _id: new ObjectId(periodId),
+    });
+
+    return result.deletedCount === 1
+      ? { message: "Period deleted successfully" }
+      : { error: "Period not found or already deleted" };
+  } catch (error) {
+    return { error: "Failed to delete period" };
+  }
+};
