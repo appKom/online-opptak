@@ -121,6 +121,8 @@ const Application: NextPage = () => {
       } else {
         toast.error("Det skjedde en feil, vennligst prøv igjen");
       }
+    } finally {
+      fetchApplicationData();
     }
   };
   const fetchApplicationData = async () => {
