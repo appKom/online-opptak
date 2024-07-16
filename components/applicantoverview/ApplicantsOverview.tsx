@@ -9,10 +9,8 @@ import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
 import ApplicantTable from "./ApplicantTable";
 
 interface Props {
-  applicants: applicantType[];
   period: periodType | null;
   committees: string[] | null;
-  years: string[];
   includePreferences: boolean;
 }
 
@@ -23,10 +21,8 @@ const isPreferencesType = (
 };
 
 const ApplicantsOverview = ({
-  applicants,
   period,
   committees,
-  years,
   includePreferences,
 }: Props) => {
   const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
@@ -41,7 +37,49 @@ const ApplicantsOverview = ({
   const [filterMenuVisible, setFilterMenuVisible] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
 
+  const [applicants, setApplicants] = useState<applicantType[]>([]);
+  const [years, setYears] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   const bankomOptions: string[] = ["yes", "no", "maybe"];
+
+  useEffect(() => {
+    const fetchApplicants = async () => {
+      try {
+        const response = await fetch(`/api/committees/${period?._id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch applicants");
+        }
+
+        const data = await response.json();
+
+        setApplicants(data.applicants);
+
+        const uniqueYears: string[] = Array.from(
+          new Set(
+            data.applicants.map((applicant: applicantType) =>
+              applicant.grade.toString()
+            )
+          )
+        );
+        setYears(uniqueYears);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    if (period) {
+      fetchApplicants();
+    }
+  }, [period]);
 
   useEffect(() => {
     let filtered: applicantType[] = applicants;
@@ -116,6 +154,22 @@ const ApplicantsOverview = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [filterMenuRef]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-5">
+        <p className="text-2xl">Laster...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-5">
+        <p className="text-2xl">Det skjedde en feil, vennligst prøv igjen</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center px-5">

@@ -16,14 +16,12 @@ import LoadingPage from "../../../components/LoadingPage";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
-  const [applicants, setApplicants] = useState<applicantType[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
   const [committees, setCommittees] = useState<string[] | null>(null);
   const [period, setPeriod] = useState<periodType | null>(null);
-  const [years, setYears] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [tabClicked, setTabClicked] = useState<number>(0);
 
@@ -42,37 +40,6 @@ const CommitteeApplicantOverView: NextPage = () => {
       }
     };
 
-    const fetchApplicants = async () => {
-      try {
-        const response = await fetch(`/api/committees/${periodId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch applicants");
-        }
-
-        const data = await response.json();
-
-        setApplicants(data.applicants);
-
-        const uniqueYears: string[] = Array.from(
-          new Set(
-            data.applicants.map((applicant: applicantType) =>
-              applicant.grade.toString()
-            )
-          )
-        );
-        setYears(uniqueYears);
-      } catch (error: any) {
-        setError(error.message);
-      }
-    };
-
-    fetchApplicants();
     fetchPeriod();
   }, [session, periodId]);
 
@@ -98,10 +65,6 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   if (loading) {
     return <LoadingPage />;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
   }
 
   const interviewPeriodEnd = period?.interviewPeriod.end
@@ -162,10 +125,8 @@ const CommitteeApplicantOverView: NextPage = () => {
             icon: <UserGroupIcon className="w-5 h-5" />,
             content: (
               <ApplicantsOverview
-                applicants={applicants}
                 period={period}
                 committees={committees}
-                years={years}
                 includePreferences={false}
               />
             ),
