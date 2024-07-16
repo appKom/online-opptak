@@ -7,6 +7,7 @@ import {
 } from "../../lib/types/types";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
 import ApplicantTable from "./ApplicantTable";
+import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
 
 interface Props {
   period: periodType | null;
@@ -156,11 +157,7 @@ const ApplicantsOverview = ({
   }, [filterMenuRef]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-5">
-        <p className="text-2xl">Laster...</p>
-      </div>
-    );
+    return <ApplicantOverviewSkeleton />;
   }
 
   if (error) {
@@ -173,9 +170,9 @@ const ApplicantsOverview = ({
 
   return (
     <div className="flex flex-col items-center px-5">
-      <h2 className="mt-5 mb-6 text-3xl font-bold items-start text-start">{`${
-        period?.name ? period.name : "Laster..."
-      }`}</h2>
+      <h2 className="mt-5 mb-6 text-3xl font-bold items-start text-start">
+        {period?.name}
+      </h2>
 
       <div className="w-full max-w-lg mx-auto mb-5">
         <div className="flex flex-row mb-2 align-end justify-between relative">
