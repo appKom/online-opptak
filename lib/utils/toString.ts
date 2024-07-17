@@ -10,3 +10,10 @@ export const getBankomValue = (bankom: "yes" | "no" | "maybe" | undefined) => {
       return "Ikke valgt";
   }
 };
+
+export const changeDisplayName = (committee: string) => {
+  if (committee.toLowerCase() === "kjelleren") {
+    return "Realfagskjelleren";
+  }
+  return committee.charAt(0).toUpperCase() + committee.slice(1);
+};
