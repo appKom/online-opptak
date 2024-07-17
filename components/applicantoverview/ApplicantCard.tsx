@@ -9,6 +9,18 @@ interface Props {
 
 const ApplicantCard = ({ applicant, includePreferences }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const getBankomValue = (bankom: "yes" | "no" | "maybe" | undefined) => {
+    switch (bankom) {
+      case "yes":
+        return "Ja";
+      case "maybe":
+        return "Kanskje";
+      case "no":
+        return "Nei";
+      default:
+        return "Ikke valgt";
+    }
+  };
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -69,7 +81,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         <h1 className="text-lg font-semibold pt-3">Om:</h1>
         <p>Bankom: {applicant?.bankom}</p>
         <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
-          <p>{applicant?.about}</p>
+          <p>{getBankomValue(applicant?.bankom)}</p>
         </div>
       </div>
     </div>
