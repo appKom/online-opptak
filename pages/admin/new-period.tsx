@@ -97,10 +97,8 @@ const NewPeriod = () => {
         setAvailableCommittees(
           committees.map(
             ({ name_short, email }: { name_short: string; email: string }) => ({
-              name:
-                name_short === "Kjelleren" ? "Realfagskjelleren" : name_short,
-              value:
-                name_short === "Kjelleren" ? "Realfagskjelleren" : name_short,
+              name: name_short,
+              value: name_short,
               description: email,
             })
           )
