@@ -4,6 +4,7 @@ import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
+import { changeDisplayName } from "../../lib/utils/toString";
 import { useState } from "react";
 
 interface Props {
