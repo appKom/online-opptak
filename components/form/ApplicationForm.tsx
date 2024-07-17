@@ -4,6 +4,7 @@ import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
+import { changeDisplayName } from "../../lib/utils/toString";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -175,7 +176,9 @@ export const ApplicationForm = (props: Props) => {
               ["Ja", "yes"],
               ["Nei", "no"],
             ]}
-            label={`Ønsker du å søke ${committee} i tillegg?`}
+            label={`Ønsker du å søke ${changeDisplayName(
+              committee
+            )} i tillegg?`}
             updateInputValues={(value: string) =>
               addOptionalCommittee(committee, value)
             }

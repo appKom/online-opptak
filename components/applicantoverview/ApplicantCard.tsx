@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { changeDisplayName, getBankomValue } from "../../lib/utils/toString";
 
 interface Props {
   applicant: applicantType | undefined;
@@ -48,9 +49,9 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
             <h1 className="text-lg font-semibold pt-3">Komiteer:</h1>
             <ul>
               {Object.keys(preferences).map((key, index) => (
-                <li key={index}>{`${index + 1}. ${
+                <li key={index}>{`${index + 1}. ${changeDisplayName(
                   preferences[key as keyof typeof preferences]
-                }`}</li>
+                )}`}</li>
               ))}
             </ul>
 
@@ -59,7 +60,9 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
                 <br />
                 <h1 className="text-lg font-semibold">Valgfrie Komiteer:</h1>
                 <p>
-                  {applicant?.optionalCommittees.join(", ") || "Ingen valg"}{" "}
+                  {applicant?.optionalCommittees
+                    ?.map(changeDisplayName)
+                    .join(", ") || "Ingen valg"}{" "}
                 </p>
               </div>
             )}
@@ -67,7 +70,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         )}
 
         <h1 className="text-lg font-semibold pt-3">Om:</h1>
-        <p>Bankom: {applicant?.bankom}</p>
+        <p>Bankom: {getBankomValue(applicant?.bankom)}</p>
         <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
           <p>{applicant?.about}</p>
         </div>
