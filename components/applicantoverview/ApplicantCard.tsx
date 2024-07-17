@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { getBankomValue } from "../../lib/utils/toString";
 
 interface Props {
   applicant: applicantType | undefined;
@@ -9,18 +10,6 @@ interface Props {
 
 const ApplicantCard = ({ applicant, includePreferences }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const getBankomValue = (bankom: "yes" | "no" | "maybe" | undefined) => {
-    switch (bankom) {
-      case "yes":
-        return "Ja";
-      case "maybe":
-        return "Kanskje";
-      case "no":
-        return "Nei";
-      default:
-        return "Ikke valgt";
-    }
-  };
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
