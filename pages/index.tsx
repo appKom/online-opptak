@@ -3,7 +3,6 @@ import AuthenticationIllustration from "../components/icons/illustrations/Authen
 import { useEffect, useState } from "react";
 import { periodType } from "../lib/types/types";
 import PeriodCard from "../components/PeriodCard";
-import Signature from "../components/Signature";
 
 const Home = () => {
   const { data: session } = useSession();

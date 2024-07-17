@@ -1,5 +1,4 @@
-import type { NextPage } from "next";
-import { BaseSyntheticEvent, ChangeEvent, useEffect } from "react";
+import { BaseSyntheticEvent, useEffect } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import FullCalendar from "@fullcalendar/react";
@@ -9,57 +8,78 @@ import { periodType, committeeInterviewType } from "../../lib/types/types";
 import toast from "react-hot-toast";
 import NotFound from "../../pages/404";
 import Button from "../Button";
+import LoadingPage from "../LoadingPage";
 
 interface Interview {
   start: string;
   end: string;
 }
 
+interface Props {
+  period: periodType | null;
+}
+
 const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
-const CommitteeInterviewTimes: NextPage = () => {
+const CommitteeInterviewTimes = ({ period }: Props) => {
   const { data: session } = useSession();
-  const [markedCells, setMarkedCells] = useState<Interview[]>([]);
-  const [interviewInterval, setInterviewInterval] = useState(20);
-  const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
-  const [periods, setPeriods] = useState<periodType[]>([]);
-  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
-  const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
 
+  const [markedCells, setMarkedCells] = useState<Interview[]>([]);
+  const [interviewInterval, setInterviewInterval] = useState(15);
+  const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
+
+  const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
   const [selectedCommittee, setSelectedCommittee] = useState<string>("");
-  const [selectedTimeslot, setSelectedTimeslot] = useState<string>("");
+  const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
 
   const [isLoading, setIsLoading] = useState(true);
-
   const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
     committeeInterviewType[]
   >([]);
-
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
-
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
     useState<boolean>(false);
-
   const [countdown, setCountdown] = useState<string>("");
 
-  const filterCommittees = (period: periodType) => {
-    const userCommittees = session?.user?.committees || [];
-    const periodCommittees = period?.committees || [];
-    return userCommittees.filter((committee) =>
-      periodCommittees
-        .map((c) => c.toLowerCase())
-        .includes(committee.toLowerCase())
-    );
-  };
+  useEffect(() => {
+    if (period) {
+      setVisibleRange({
+        start: new Date(period!.interviewPeriod.start).toISOString(),
+        end: new Date(period!.interviewPeriod.end).toISOString(),
+      });
+    }
+  }, [period]);
+
+  useEffect(() => {
+    if (session?.user?.committees && period?.committees) {
+      const userCommittees = session.user.committees.map((committee) =>
+        committee.toLowerCase()
+      );
+      const periodCommittees = period.committees.map((committee) =>
+        committee.toLowerCase()
+      );
+
+      const commonCommittees = userCommittees.filter((committee) =>
+        periodCommittees.includes(committee)
+      );
+
+      setFilteredCommittees(commonCommittees);
+
+      if (commonCommittees.length > 0) {
+        setSelectedCommittee(commonCommittees[0]);
+      }
+    }
+  }, [session, period]);
 
   useEffect(() => {
     const fetchCommitteeInterviewTimes = async () => {
       try {
-        const res = await fetch("/api/committees");
+        const res = await fetch(`/api/committees/times/${period?._id}`);
         const data = await res.json();
 
         if (data && Array.isArray(data.committees)) {
           setCommitteeInterviewTimes(data.committees);
+          setIsLoading(false);
         } else {
           console.error(
             "Fetched data does not contain an 'committees' array:",
@@ -77,11 +97,7 @@ const CommitteeInterviewTimes: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    if (
-      selectedPeriod &&
-      selectedCommittee &&
-      Array.isArray(committeeInterviewTimes)
-    ) {
+    if (selectedCommittee && Array.isArray(committeeInterviewTimes)) {
       const cleanString = (input: string) =>
         input
           .replace(/[\x00-\x1F\x7F-\x9F]/g, "")
@@ -89,15 +105,9 @@ const CommitteeInterviewTimes: NextPage = () => {
           .toLowerCase();
 
       const relevantTimes = committeeInterviewTimes.filter((time) => {
-        const cleanPeriodId = cleanString(time.periodId);
         const cleanCommittee = cleanString(time.committee);
-        const cleanSelectedPeriod = cleanString(selectedPeriod);
         const cleanSelectedCommittee = cleanString(selectedCommittee);
-
-        return (
-          cleanPeriodId === cleanSelectedPeriod &&
-          cleanCommittee === cleanSelectedCommittee
-        );
+        return cleanCommittee === cleanSelectedCommittee;
       });
 
       if (relevantTimes.length > 0) {
@@ -110,66 +120,14 @@ const CommitteeInterviewTimes: NextPage = () => {
         );
 
         setCalendarEvents(events);
+        setSelectedTimeslot(relevantTimes[0].timeslot);
       } else {
         setHasAlreadySubmitted(false);
         setCalendarEvents([]);
+        setSelectedTimeslot("15");
       }
     }
-  }, [selectedPeriod, selectedCommittee, committeeInterviewTimes]);
-
-  useEffect(() => {}, [committeeInterviewTimes]);
-
-  useEffect(() => {
-    const fetchPeriods = async () => {
-      try {
-        const res = await fetch("/api/periods");
-        const data = await res.json();
-        const today = new Date();
-
-        let availablePeriods = data.periods.filter((p: periodType) => {
-          const interviewStartDate = new Date(p.interviewPeriod.start || "");
-          // const endDate = new Date(p.interviewPeriod.end || "");
-          return interviewStartDate >= today;
-        });
-
-        availablePeriods = filterPeriodsByCommittee(availablePeriods);
-
-        if (availablePeriods.length > 0) {
-          setPeriods(availablePeriods);
-          setSelectedPeriod(availablePeriods[0]._id.toString());
-
-          const committees = filterCommittees(availablePeriods[0]);
-          setFilteredCommittees(committees);
-          if (committees.length > 0) {
-            setSelectedCommittee(committees[0]);
-          }
-          setSelectedTimeslot("15");
-        } else {
-          console.warn("No suitable interview periods found.");
-        }
-
-        const period = availablePeriods.find((p: periodType) => {
-          const interviewStartDate = new Date(p.interviewPeriod.start || "");
-          // const endDate = new Date(p.interviewPeriod.end || "");
-          return interviewStartDate >= today;
-        });
-
-        if (period) {
-          setVisibleRange({
-            start: period.interviewPeriod.start,
-            end: period.interviewPeriod.end,
-          });
-        } else {
-          console.warn("No suitable interview period found.");
-        }
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch interview periods:", error);
-      }
-    };
-
-    fetchPeriods();
-  }, []);
+  }, [period, selectedCommittee, committeeInterviewTimes]);
 
   const createInterval = (selectionInfo: any) => {
     const event = {
@@ -192,24 +150,17 @@ const CommitteeInterviewTimes: NextPage = () => {
       return;
     }
 
-    const selectedPeriodData = periods.find(
-      (p) => p._id.toString() === selectedPeriod
-    );
-    if (!selectedPeriodData) {
-      toast.error("No period selected or period data is missing");
-      return;
-    }
-
     const dataToSend = {
-      periodId: selectedPeriodData._id,
-      period_name: selectedPeriodData.name,
+      periodId: period!._id,
+      period_name: period!.name,
       committee: selectedCommittee,
       availabletimes: formattedEvents,
       timeslot: `${selectedTimeslot}`,
+      message: "",
     };
 
     try {
-      const response = await fetch("/api/committees", {
+      const response = await fetch("/api/committees/times", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -281,25 +232,6 @@ const CommitteeInterviewTimes: NextPage = () => {
     setSelectedCommittee(e.target.value);
   };
 
-  const handlePeriodSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newPeriodId = e.target.value;
-    const selectedPeriodData = periods.find(
-      (p) => p._id.toString() === newPeriodId
-    );
-    if (selectedPeriodData) {
-      setSelectedPeriod(newPeriodId);
-      const startDate = new Date(selectedPeriodData.interviewPeriod.start);
-      const endDate = new Date(selectedPeriodData.interviewPeriod.end);
-
-      setVisibleRange({
-        start: startDate.toISOString(),
-        end: endDate.toISOString(),
-      });
-    } else {
-      console.warn("Selected period not found.");
-    }
-  };
-
   const formatEventsForExport = (events: any[]) => {
     return events
       .map((event) => {
@@ -316,17 +248,6 @@ const CommitteeInterviewTimes: NextPage = () => {
       .filter((event) => event !== null);
   };
 
-  const filterPeriodsByCommittee = (periods: periodType[]) => {
-    const userCommittees = session?.user?.committees || [];
-    return periods.filter((period) =>
-      period.committees.some((committee) =>
-        userCommittees
-          .map((c) => c.toLowerCase())
-          .includes(committee.toLowerCase())
-      )
-    );
-  };
-
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTimeslot(e.target.value);
   };
@@ -335,13 +256,15 @@ const CommitteeInterviewTimes: NextPage = () => {
     e.preventDefault();
     const queryParams = new URLSearchParams({
       committee: selectedCommittee,
-      periodId: selectedPeriod,
     }).toString();
 
     try {
-      const response = await fetch(`/api/committees?${queryParams}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `/api/committees/times/${period?._id}?${queryParams}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete data");
@@ -358,17 +281,17 @@ const CommitteeInterviewTimes: NextPage = () => {
   };
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      const deadline = getSubmissionDeadline();
-      setCountdown(deadline);
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [selectedPeriod, periods]);
+    if (period) {
+      const intervalId = setInterval(() => {
+        const deadline = getSubmissionDeadline();
+        setCountdown(deadline);
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
+  }, [period]);
 
   const getSubmissionDeadline = (): string => {
-    const deadlineIso = periods.find(
-      (period) => period._id.toString() === selectedPeriod
-    )?.interviewPeriod.start;
+    const deadlineIso = period!.interviewPeriod.start;
 
     if (deadlineIso != null) {
       const deadlineDate = new Date(deadlineIso);
@@ -403,26 +326,24 @@ const CommitteeInterviewTimes: NextPage = () => {
     return <NotFound />;
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-5 text-center">
-        <p className="animate-pulse dark:text-white">Vent litt...</p>
-      </div>
-    );
+  if (!period || isLoading) {
+    return <LoadingPage />;
   }
 
-  if (periods.length === 0) {
+  if (period!.interviewPeriod.start < new Date()) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <h2 className="mt-5 mb-6 text-3xl font-bold">Ingen aktive opptak!</h2>
+        <h2 className="mt-5 mb-6 text-3xl font-bold">
+          Det er ikke lenger mulig å legge inn tider!
+        </h2>
       </div>
     );
   }
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-row gap-2 mt-5 mb-6 text-3xl font-bold text-center">
-        <h2 className="">Legg inn ledige tider for intervjuer</h2>
+      <div className="flex flex-row gap-2 mt-5 mb-6 text-2xl font-semibold text-center">
+        Legg inn ledige tider for intervjuer
       </div>
       <div className="flex max-w-full p-4 mx-5 mb-5 text-sm text-yellow-500 rounded-md dark:text-online-orange bg-yellow-50 dark:bg-gray-800">
         <svg
@@ -443,26 +364,12 @@ const CommitteeInterviewTimes: NextPage = () => {
         </div>
       </div>
       <div className="flex gap-10 w-max ">
-        <div className="flex flex-col px-5 ">
-          <label htmlFor="">Velg opptak: </label>
-          <select
-            id="period-select"
-            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-            onChange={handlePeriodSelection}
-            value={selectedPeriod}
-          >
-            {periods.map((period) => (
-              <option key={period._id.toString()} value={period._id.toString()}>
-                {period.name}
-              </option>
-            ))}
-          </select>
-        </div>
         <div className="flex flex-col px-5">
           <label className="">Velg komitee: </label>
           <select
             className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             onChange={handleCommitteeSelection}
+            value={selectedCommittee}
           >
             {filteredCommittees.map((committee) => (
               <option key={committee} value={committee}>
@@ -481,7 +388,7 @@ const CommitteeInterviewTimes: NextPage = () => {
       <form className="flex flex-col text-center">
         {hasAlreadySubmitted ? (
           <p className="mt-5 mb-6 text-lg text-center">
-            Intervjulengde: {selectedTimeslot}min
+            Intervjulengde: {selectedTimeslot} min{" "}
           </p>
         ) : (
           <div className="pt-10">
@@ -503,20 +410,24 @@ const CommitteeInterviewTimes: NextPage = () => {
             </select>
           </div>
         )}
-        <div className="mx-20">
+        <div className="mx-4 sm:mx-20">
           <FullCalendar
             eventClassNames={"dark:bg-online-darkBlue"}
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
-            headerToolbar={{ start: "today prev,next", center: "", end: "" }}
+            headerToolbar={{
+              start: "today prev,next",
+              center: "",
+              end: "",
+            }}
             events={calendarEvents}
-            selectable={hasAlreadySubmitted ? false : true}
+            selectable={!hasAlreadySubmitted}
             selectMirror={true}
             height="auto"
             select={createInterval}
             slotDuration={`00:${interviewInterval}`}
             businessHours={{ startTime: "08:00", endTime: "18:00" }}
-            weekends={false} //Skal helger være skrudd av?
+            weekends={false}
             slotMinTime="08:00"
             slotMaxTime="18:00"
             validRange={visibleRange}
@@ -527,9 +438,7 @@ const CommitteeInterviewTimes: NextPage = () => {
               const end = selectInfo.end;
               const startHour = start.getHours();
               const endHour = end.getHours();
-
               const isSameDay = start.toDateString() === end.toDateString();
-
               return isSameDay && startHour >= 8 && endHour <= 18;
             }}
             slotLabelFormat={{
@@ -537,6 +446,8 @@ const CommitteeInterviewTimes: NextPage = () => {
               minute: "2-digit",
               hour12: false,
             }}
+            handleWindowResize={true}
+            longPressDelay={0}
           />
         </div>
 

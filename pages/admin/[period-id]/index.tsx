@@ -9,10 +9,7 @@ const Admin = () => {
   const { data: session } = useSession();
   const periodId = router.query["period-id"];
   const [period, setPeriod] = useState<periodType | null>(null);
-  const [applicants, setApplicants] = useState<applicantType[]>([]);
-  const [applicationsExist, setApplicationsExist] = useState(false);
   const [committees, setCommittees] = useState<string[] | null>(null);
-  const [years, setYears] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchPeriod = async () => {
@@ -36,41 +33,8 @@ const Admin = () => {
       }
     };
 
-    const fetchApplications = async () => {
-      if (!session || session.user?.role !== "admin") {
-        return;
-      }
-      if (periodId === undefined) return;
-
-      try {
-        const response = await fetch(`/api/applicants/${periodId}`);
-        const data = await response.json();
-        if (response.ok) {
-          setApplicants(data.applications);
-          setApplicationsExist(data.exists);
-
-          const uniqueYears: string[] = Array.from(
-            new Set(
-              data.applications.map((applicant: applicantType) =>
-                applicant.grade.toString()
-              )
-            )
-          );
-          setYears(uniqueYears);
-        } else {
-          throw new Error(data.error || "Unknown error");
-        }
-      } catch (error) {
-        console.error("Error checking applications:", error);
-      } finally {
-      }
-    };
-
     fetchPeriod();
-    fetchApplications();
   }, [session?.user?.owId, periodId]);
-
-  useEffect(() => {}, [applicants, committees]);
 
   if (!session || session.user?.role !== "admin") {
     return <NotFound />;
@@ -78,10 +42,8 @@ const Admin = () => {
 
   return (
     <ApplicantsOverview
-      applicants={applicants}
       period={period}
       committees={committees}
-      years={years}
       includePreferences={true}
     />
   );

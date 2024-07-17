@@ -96,9 +96,17 @@ const NewPeriod = () => {
         const committees = await response.json();
         setAvailableCommittees(
           committees.map(
-            ({ name_short, email }: { name_short: string; email: string }) => ({
+            ({
+              name_short,
+              name_long,
+              email,
+            }: {
+              name_short: string;
+              name_long: string;
+              email: string;
+            }) => ({
               name: name_short,
-              value: name_short,
+              name_long: name_long,
               description: email,
             })
           )
@@ -159,19 +167,19 @@ const NewPeriod = () => {
               })
             }
           />
-
-          <TextAreaInput
-            label="Beskrivelse"
-            placeholder="Flere komiteer søker nye medlemmer til suppleringsopptak. Har du det som trengs? Søk nå og bli en del av vårt fantastiske miljø!
+          <div className="max-w-xs w-full">
+            <TextAreaInput
+              label="Beskrivelse"
+              placeholder="Flere komiteer søker nye medlemmer til suppleringsopptak. Har du det som trengs? Søk nå og bli en del av vårt fantastiske miljø!
             "
-            updateInputValues={(value: string) =>
-              setPeriodData({
-                ...periodData,
-                description: value,
-              })
-            }
-          />
-
+              updateInputValues={(value: string) =>
+                setPeriodData({
+                  ...periodData,
+                  description: value,
+                })
+              }
+            />
+          </div>
           <DatePickerInput
             label="Forberedelsesperiode"
             updateDates={updatePreparationPeriodDates}

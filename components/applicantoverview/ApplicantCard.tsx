@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { changeDisplayName, getBankomValue } from "../../lib/utils/toString";
 
 interface Props {
   applicant: applicantType | undefined;
@@ -15,6 +16,9 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
   };
 
   const preferences = applicant?.preferences || {};
+  const filteredPreferences = Object.entries(preferences).filter(
+    ([key, value]) => value
+  );
 
   return (
     <div className="w-full p-4 my-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
@@ -47,19 +51,20 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
           <div>
             <h1 className="text-lg font-semibold pt-3">Komiteer:</h1>
             <ul>
-              {Object.keys(preferences).map((key, index) => (
-                <li key={index}>{`${index + 1}. ${
-                  preferences[key as keyof typeof preferences]
-                }`}</li>
+              {filteredPreferences.map(([key, value], index) => (
+                <li key={index}>{`${index + 1}. ${changeDisplayName(
+                  value as string
+                )}`}</li>
               ))}
             </ul>
 
-            {!applicant?.optionalCommittees && (
-              <div>
-                <br />
-                <h1 className="text-lg font-semibold">Valgfrie Komiteer:</h1>
+            {applicant?.optionalCommittees && (
+              <div className="pt-3">
+                <h1 className="text-lg font-semibold">Andre valg:</h1>
                 <p>
-                  {applicant?.optionalCommittees.join(", ") || "Ingen valg"}{" "}
+                  {applicant?.optionalCommittees
+                    ?.map(changeDisplayName)
+                    .join(", ") || "Ingen valg"}{" "}
                 </p>
               </div>
             )}
@@ -67,9 +72,9 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         )}
 
         <h1 className="text-lg font-semibold pt-3">Om:</h1>
-        <p>Bankom: {applicant?.bankom}</p>
+        <p>Bankom: {getBankomValue(applicant?.bankom)}</p>
         <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
-          <p>{applicant?.about}</p>
+          <p className="whitespace-pre-wrap">{applicant?.about}</p>
         </div>
       </div>
     </div>

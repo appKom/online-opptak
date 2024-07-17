@@ -11,8 +11,13 @@ import { Tabs } from "../../components/Tabs";
 import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
 import { useRouter } from "next/router";
 import Schedule from "../../components/committee/Schedule";
-import ApplicationOverview from "../../components/applicantoverview/ApplicationOverview";
 import { validateApplication } from "../../lib/utils/validateApplication";
+import ApplicantCard from "../../components/applicantoverview/ApplicantCard";
+
+interface FetchedApplicationData {
+  exists: boolean;
+  application: applicantType;
+}
 
 const Application: NextPage = () => {
   const { data: session } = useSession();
@@ -21,9 +26,8 @@ const Application: NextPage = () => {
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
   const [periodExists, setPeriodExists] = useState(false);
-  const [fetchedApplicationData, setFetchedApplicationData] = useState(null);
-
-  const [shouldShowListView, setShouldShowListView] = useState(true);
+  const [fetchedApplicationData, setFetchedApplicationData] =
+    useState<FetchedApplicationData | null>(null);
 
   const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -34,8 +38,9 @@ const Application: NextPage = () => {
     name: session?.user?.name,
     email: session?.user?.email,
     phone: session?.user?.phone || "",
-    grade: session?.user?.grade,
+    grade: "1",
     about: "",
+    optionalCommittees: [],
     preferences: {
       first: "",
       second: "",
@@ -120,6 +125,8 @@ const Application: NextPage = () => {
       } else {
         toast.error("Det skjedde en feil, vennligst prøv igjen");
       }
+    } finally {
+      fetchApplicationData();
     }
   };
   const fetchApplicationData = async () => {
@@ -203,16 +210,14 @@ const Application: NextPage = () => {
                 color="white"
                 onClick={handleDeleteApplication}
               />
-              <Button
-                title={shouldShowListView ? "Se søknad" : "Skjul søknad"}
-                color="blue"
-                onClick={() => {
-                  setShouldShowListView(!shouldShowListView);
-                }}
-              />
             </div>
-            {fetchedApplicationData && !shouldShowListView && (
-              <ApplicationOverview application={fetchedApplicationData} />
+            {fetchedApplicationData && (
+              <div className="max-w-lg w-full">
+                <ApplicantCard
+                  applicant={fetchedApplicationData.application}
+                  includePreferences={true}
+                />
+              </div>
             )}
           </div>
         ) : (

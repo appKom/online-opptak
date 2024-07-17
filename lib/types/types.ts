@@ -15,6 +15,7 @@ export type commiteeType = {
     },
   ];
   timeslot: string;
+  message: string;
 };
 
 export type preferencesType = {
@@ -32,7 +33,7 @@ export type applicantType = {
   name: string;
   email: string;
   phone: string;
-  grade: number;
+  grade: string;
   about: string;
   preferences: preferencesType | committeePreferenceType[];
   bankom: "yes" | "no" | "maybe";
@@ -92,4 +93,5 @@ export type committeeInterviewType = {
   committee: string;
   availabletimes: AvailableTime[];
   timeslot: string;
+  message: string;
 };
