@@ -54,13 +54,15 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
             <h1 className="text-lg font-semibold pt-3">Komiteer:</h1>
             <ul>
               {filteredPreferences.map(([key, value], index) => (
-                <li key={index}>{`${index + 1}. ${value}`}</li>
+                <li key={index}>{`${index + 1}. ${changeDisplayName(
+                  value as string
+                )}`}</li>
               ))}
             </ul>
 
             {applicant?.optionalCommittees && (
               <div className="pt-3">
-                <h1 className="text-lg font-semibold">Valgfrie Komiteer:</h1>
+                <h1 className="text-lg font-semibold">Andre valg:</h1>
                 <p>
                   {applicant?.optionalCommittees
                     .map(changeDisplayName)
