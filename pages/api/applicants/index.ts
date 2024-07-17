@@ -10,8 +10,6 @@ import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import capitalizeFirstLetter from "../../../utils/capitalizeFirstLetter";
 import sendEmail from "../../../utils/sendEmail";
 
-
-
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
 
@@ -59,18 +57,46 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const sesClient = new SESClient({ region: "eu-north-1" });
 
       if (applicant != null) {
-        const emailData : emailDataType = {
+        let optionalCommitteesString = "";
+        if (applicant.optionalCommittees.length > 0) {
+          optionalCommitteesString = applicant.optionalCommittees.join(", ");
+        } else {
+          optionalCommitteesString = "Ingen";
+        }
+
+        const emailData: emailDataType = {
           name: applicant.name,
           emails: [applicant.email],
           phone: applicant.phone,
           grade: applicant.grade,
           about: applicant.about,
-          firstChoice: applicant.preferences.first == undefined ? "Tom" : applicant.preferences.first == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicant.preferences.first),
-          secondChoice: applicant.preferences.second == undefined ? "Tom" : applicant.preferences.second == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicant.preferences.second),
-          thirdChoice: applicant.preferences.third == undefined ? "Tom" : applicant.preferences.third == "onlineil" ? "Online IL" : capitalizeFirstLetter(applicant.preferences.third),
-          bankom: applicant.bankom == "yes" ? "Ja" : applicant.bankom == "no" ? "Nei" : "Kanskje",
-          feminIt: applicant.feminIt == "yes" ? "Ja" : "Nei"
+          firstChoice: "Tom",
+          secondChoice: "Tom",
+          thirdChoice: "Tom",
+          bankom:
+            applicant.bankom == "yes"
+              ? "Ja"
+              : applicant.bankom == "no"
+              ? "Nei"
+              : "Kanskje",
+          optionalCommittees: optionalCommitteesString,
         };
+
+        //Type guard
+        if (!Array.isArray(applicant.preferences)) {
+          emailData.firstChoice =
+            applicant.preferences.first == "onlineil"
+              ? "Online IL"
+              : capitalizeFirstLetter(applicant.preferences.first);
+          emailData.secondChoice =
+            applicant.preferences.second == "onlineil"
+              ? "Online IL"
+              : capitalizeFirstLetter(applicant.preferences.second);
+          emailData.thirdChoice =
+            applicant.preferences.third == "onlineil"
+              ? "Online IL"
+              : capitalizeFirstLetter(applicant.preferences.third);
+        }
 
         try {
           await sendEmail({
@@ -78,8 +104,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             fromEmail: "opptak@online.ntnu.no",
             toEmails: emailData.emails,
             subject: "Vi har mottatt din søknad!",
-            htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br><strong>E-post:</strong> ${emailData.emails[0]}<br><br><strong>Fullt navn:</strong> ${emailData.name}<br><br><strong>Telefonnummer:</strong> ${emailData.phone}<br><br><strong>Trinn:</strong> ${emailData.grade}<br><br><strong>Førstevalg:</strong> ${emailData.firstChoice}<br><br><strong>Andrevalg:</strong> ${emailData.secondChoice}<br><br><strong>Tredjevalg:</strong> ${emailData.thirdChoice}<br><br><strong>Ønsker du å være økonomiansvarlig:</strong> ${emailData.bankom}<br><br><strong>Ønsker du å søke FeminIT:</strong> ${emailData.feminIt}<br><br><strong>Kort om deg selv:</strong><br>${emailData.about}`
-          })
+            htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br><strong>E-post:</strong> ${emailData.emails[0]}<br><br><strong>Fullt navn:</strong> ${emailData.name}<br><br><strong>Telefonnummer:</strong> ${emailData.phone}<br><br><strong>Trinn:</strong> ${emailData.grade}<br><br><strong>Førstevalg:</strong> ${emailData.firstChoice}<br><br><strong>Andrevalg:</strong> ${emailData.secondChoice}<br><br><strong>Tredjevalg:</strong> ${emailData.thirdChoice}<br><br><strong>Ønsker du å være økonomiansvarlig:</strong> ${emailData.bankom}<br><br><strong> Andre valg:</strong> ${emailData.optionalCommittees}<br><br><strong>Kort om deg selv:</strong><br>${emailData.about}`,
+          });
 
           console.log("Email sent to: ", emailData.emails);
         } catch (error) {

@@ -58,7 +58,7 @@ export type emailDataType = {
   secondChoice: string;
   thirdChoice: string;
   bankom: "Ja" | "Nei" | "Kanskje";
-  feminIt: "Ja" | "Nei";
+  optionalCommittees: string;
 };
 
 export type periodType = {
