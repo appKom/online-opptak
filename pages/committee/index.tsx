@@ -2,12 +2,6 @@ import type { NextPage } from "next";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import CommitteeInterViewTimes from "../../components/committee/CommitteeInterviewTimes";
-import {
-  CheckIcon,
-  CalendarIcon,
-  InboxIcon,
-} from "@heroicons/react/24/outline";
-import { Tabs } from "../../components/Tabs";
 import CommitteeApplicants from "../../components/committee/CommitteApplicants";
 
 const Committee: NextPage = () => {
@@ -20,24 +14,7 @@ const Committee: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <Tabs
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        content={[
-          {
-            title: "Intervjutider",
-            icon: <CalendarIcon className="w-5 h-5" />,
-            content: <CommitteeInterViewTimes />,
-          },
-          {
-            title: "Søkere",
-            icon: <CheckIcon className="w-5 h-5" />,
-            content: (
-              <CommitteeApplicants routeString={"/committee/applications/"} />
-            ),
-          },
-        ]}
-      />
+      <CommitteeApplicants routeString={"/committee/applications/"} />
     </div>
   );
 };

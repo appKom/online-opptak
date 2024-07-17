@@ -1,13 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   getCommittees,
-  createCommittee,
   deleteCommittee,
-} from "../../../lib/mongo/committees";
+  updateCommitteeMessage,
+} from "../../../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]";
-import { hasSession, isInCommitee } from "../../../lib/utils/apiChecks";
-import { isCommitteeType } from "../../../lib/utils/validators";
+import { authOptions } from "../../../auth/[...nextauth]";
+import { hasSession, isInCommitee } from "../../../../../lib/utils/apiChecks";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -15,34 +14,52 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!hasSession(res, session)) return;
   if (!isInCommitee(res, session)) return;
 
+  const periodId = req.query["period-id"];
+
+  if (!periodId || typeof periodId !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Invalid or missing periodId parameter" });
+  }
+
   if (req.method === "GET") {
     try {
       const { committees, error } = await getCommittees(
         session!.user?.committees ?? []
       );
+
       if (error) throw new Error(error);
 
-      return res.status(200).json({ committees });
+      const filteredCommittees = committees!.filter(
+        (committee: any) => committee.periodId === periodId
+      );
+
+      return res.status(200).json({ committees: filteredCommittees });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
-  if (req.method === "POST") {
-    const committeeData = req.body;
+  if (req.method === "PUT") {
+    const { committee, message } = req.body;
 
-    if (!isCommitteeType(req.body)) {
-      return res.status(400).json({ error: "Invalid data format" });
+    if (!committee) {
+      console.error("Missing or invalid parameters", {
+        committee,
+      });
+      return res.status(400).json({ error: "Missing or invalid parameters" });
     }
 
     try {
-      const { committee, error } = await createCommittee(
-        committeeData,
+      const { updatedMessage, error } = await updateCommitteeMessage(
+        committee,
+        periodId,
+        message,
         session!.user?.committees ?? []
       );
       if (error) throw new Error(error);
 
-      return res.status(201).json({ committee });
+      return res.status(200).json({ message: updatedMessage });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
@@ -50,7 +67,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === "DELETE") {
     const committee = req.query.committee as string;
-    const periodId = req.query.periodId as string;
 
     if (!committee || !periodId) {
       return res.status(400).json({ error: "Missing or invalid parameters" });
@@ -73,7 +89,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  res.setHeader("Allow", ["GET", "POST", "DELETE"]);
+  res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
   res.status(405).end(`Method ${req.method} is not allowed.`);
 };
 
