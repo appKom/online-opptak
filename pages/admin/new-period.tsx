@@ -96,17 +96,9 @@ const NewPeriod = () => {
         const committees = await response.json();
         setAvailableCommittees(
           committees.map(
-            ({
-              name_short,
-              name_long,
-              email,
-            }: {
-              name_short: string;
-              name_long: string;
-              email: string;
-            }) => ({
+            ({ name_short, email }: { name_short: string; email: string }) => ({
               name: name_short,
-              name_long: name_long,
+              value: name_short,
               description: email,
             })
           )
@@ -180,6 +172,7 @@ const NewPeriod = () => {
               }
             />
           </div>
+
           <DatePickerInput
             label="Forberedelsesperiode"
             updateDates={updatePreparationPeriodDates}
