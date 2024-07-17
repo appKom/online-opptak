@@ -94,7 +94,6 @@ const NewPeriod = () => {
         const response = await fetch("/api/periods/ow-committees");
         if (!response.ok) throw new Error("Failed to fetch committees");
         const committees = await response.json();
-        console.log(committees);
         setAvailableCommittees(
           committees.map(
             ({

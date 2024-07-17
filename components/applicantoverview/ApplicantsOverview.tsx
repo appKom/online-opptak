@@ -79,7 +79,6 @@ const ApplicantsOverview = ({
         );
         setYears(uniqueYears);
       } catch (error: any) {
-        console.log(error);
         setError(error.message);
       } finally {
         setIsLoading(false);
