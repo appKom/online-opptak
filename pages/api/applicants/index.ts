@@ -9,6 +9,7 @@ import { isAdmin, hasSession, checkOwId } from "../../../lib/utils/apiChecks";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import capitalizeFirstLetter from "../../../utils/capitalizeFirstLetter";
 import sendEmail from "../../../utils/sendEmail";
+import { changeDisplayName } from "../../../lib/utils/toString";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -59,7 +60,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (applicant != null) {
         let optionalCommitteesString = "";
         if (applicant.optionalCommittees.length > 0) {
-          optionalCommitteesString = applicant.optionalCommittees.join(", ");
+          optionalCommitteesString = applicant.optionalCommittees
+            ?.map(changeDisplayName)
+            .join(", ");
         } else {
           optionalCommitteesString = "Ingen";
         }

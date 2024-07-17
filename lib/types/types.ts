@@ -53,7 +53,7 @@ export type emailDataType = {
   name: string;
   emails: string[];
   phone: string;
-  grade: number;
+  grade: string;
   about: string;
   firstChoice: string;
   secondChoice: string;
