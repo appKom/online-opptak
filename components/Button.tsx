@@ -4,6 +4,7 @@ interface Props {
   size?: "small";
   icon?: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  href?: string;
 }
 
 const Button = (props: Props) => {
@@ -28,6 +29,15 @@ const Button = (props: Props) => {
   }
 
   const className = `font-medium text-center justify-center transition-all rounded-lg shadow-sm focus:ring focus:ring-primary-200 inline-flex items-center gap-1.5 ${colorClasses} ${sizeClasses}`;
+
+  if (props.href) {
+    return (
+      <a href={props.href} className={className}>
+        {props.title}
+        {props.icon}
+      </a>
+    );
+  }
 
   return (
     <button type="button" onClick={props.onClick} className={className}>

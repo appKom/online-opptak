@@ -1,103 +1,34 @@
-import { useSession } from "next-auth/react";
-import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
-import { useEffect, useState } from "react";
-import { periodType } from "../lib/types/types";
-import PeriodCard from "../components/PeriodCard";
+import { ArrowRightIcon } from "@heroicons/react/24/solid";
+import Button from "../components/Button";
+import FestivitiesIllustration from "../components/icons/illustrations/FestivitiesIllustration";
 
 const Home = () => {
-  const { data: session } = useSession();
-  const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchPeriods = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch("/api/periods");
-        const data = await res.json();
-        const today = new Date();
-
-        setCurrentPeriods(
-          data.periods.filter((period: periodType) => {
-            const startDate = new Date(period.applicationPeriod.start || "");
-            const endDate = new Date(period.applicationPeriod.end || "");
-
-            return startDate <= today && endDate >= today;
-          })
-        );
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch application periods:", error);
-      }
-    };
-
-    session && fetchPeriods();
-  }, [session]);
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-5 text-center">
-        <p className="animate-pulse dark:text-white">Vent litt...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col justify-between overflow-x-hidden text-online-darkBlue dark:text-white">
-      <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
-        {session ? (
-          currentPeriods.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-8">
-              <h1 className="text-3xl ">Ingen åpne opptak for øyeblikket</h1>
-              <p className="w-10/12 max-w-2xl text-center text-md ">
-                Opptak til{" "}
-                <a
-                  href="https://online.ntnu.no/applications"
-                  className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-                >
-                  komiteene
-                </a>{" "}
-                skjer vanligvis i august etter fadderuka. Noen komiteer har
-                vanligvis suppleringsopptak i februar.{<br></br>} <br></br> Følg
-                med på{" "}
-                <a
-                  href="https://online.ntnu.no"
-                  className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-                >
-                  online.ntnu.no
-                </a>{" "}
-                eller på vår{" "}
-                <a
-                  href="https://www.facebook.com/groups/1547182375336132"
-                  className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-                >
-                  Facebook
-                </a>{" "}
-                side for kunngjøringer!
-              </p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-10">
-              <h3 className="text-xl font-semibold text-center text-online-darkBlue dark:text-white">
-                Nåværende søknadsperioder
-              </h3>
-              <div className="flex flex-wrap justify-center max-w-full gap-5">
-                {currentPeriods.map((period: periodType, index: number) => (
-                  <PeriodCard key={index} period={period} />
-                ))}
-              </div>
-            </div>
-          )
-        ) : (
-          <div className="flex flex-col items-center justify-center gap-5">
-            <AuthenticationIllustration className="h-52" />
-            <p className="text-lg">
-              Vennligst logg inn for å få tilgang til opptakssystemet
-            </p>
+    <section className="flex items-center justify-center h-full bg-white dark:bg-gray-900">
+      <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+        <div className="mr-auto place-self-center lg:col-span-7">
+          <h1 className="max-w-2xl mb-4 text-4xl font-bold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">
+            opptak.online
+          </h1>
+          <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+            Her skal det stå masse kult om komitéopptak og sånn og om at man må
+            bli med i komité og at dette er det bra opptakssystem og sånn.
+          </p>
+          <div className="flex gap-4">
+            <Button
+              title="Søk nå"
+              color="blue"
+              icon={<ArrowRightIcon className="w-4 h-4" />}
+              href="/apply"
+            />
+            <Button title="Om opptak" color="white" href="/about" />
           </div>
-        )}
+        </div>
+        <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
+          <FestivitiesIllustration className={""} />
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 export default Home;
