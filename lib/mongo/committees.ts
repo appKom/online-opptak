@@ -68,11 +68,14 @@ export const updateCommitteeMessage = async (
   }
 };
 
-export const getCommittees = async (userCommittees: string[]) => {
+export const getCommittees = async (
+  periodId: string,
+  userCommittees: string[]
+) => {
   try {
     if (!committees) await init();
     const result = await committees
-      .find({ committee: { $in: userCommittees } })
+      .find({ committee: { $in: userCommittees }, periodId: periodId })
       .toArray();
     return { committees: result };
   } catch (error) {

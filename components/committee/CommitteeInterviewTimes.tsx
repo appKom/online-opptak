@@ -55,9 +55,13 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
       const userCommittees = session.user.committees.map((committee) =>
         committee.toLowerCase()
       );
-      const periodCommittees = period.committees.map((committee) =>
+      let periodCommittees = period.committees.map((committee) =>
         committee.toLowerCase()
       );
+
+      period.optionalCommittees.forEach((committee) => {
+        periodCommittees.push(committee.toLowerCase());
+      });
 
       const commonCommittees = userCommittees.filter((committee) =>
         periodCommittees.includes(committee)

@@ -25,16 +25,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "GET") {
     try {
       const { committees, error } = await getCommittees(
+        periodId,
         session!.user?.committees ?? []
       );
 
       if (error) throw new Error(error);
 
-      const filteredCommittees = committees!.filter(
-        (committee: any) => committee.periodId === periodId
-      );
-
-      return res.status(200).json({ committees: filteredCommittees });
+      return res.status(200).json({ committees: committees });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
