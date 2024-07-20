@@ -74,12 +74,6 @@ const CheckboxInput = (props: Props) => {
             <p className="p-2 text-sm text-gray-700 dark:text-gray-300">
               {props.info}
             </p>
-            <button
-              onClick={toggleInfo}
-              className="pb-2 pl-2 mt-2 text-xs text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600"
-            >
-              Lukk
-            </button>
           </div>
         )}
         <button
