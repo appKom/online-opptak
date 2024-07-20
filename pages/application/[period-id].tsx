@@ -4,7 +4,7 @@ import ApplicationForm from "../../components/form/ApplicationForm";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import WellDoneIllustration from "../../components/icons/illustrations/WellDoneIllustration";
-import CheckIcon from "../../components/icons/icons/CheckIcon";
+import CheckBoxIcon from "../../components/icons/icons/CheckBoxIcon";
 import Button from "../../components/Button";
 import CalendarIcon from "../../components/icons/icons/CalendarIcon";
 import { Tabs } from "../../components/Tabs";
@@ -212,7 +212,7 @@ const Application: NextPage = () => {
               />
             </div>
             {fetchedApplicationData && (
-              <div className="max-w-lg w-full">
+              <div className="w-full max-w-lg">
                 <ApplicantCard
                   applicant={fetchedApplicationData.application}
                   includePreferences={true}
@@ -227,7 +227,7 @@ const Application: NextPage = () => {
             content={[
               {
                 title: "Søknad",
-                icon: <CheckIcon className="w-5 h-5" />,
+                icon: <CheckBoxIcon className="w-5 h-5" />,
                 content: (
                   <>
                     <ApplicationForm

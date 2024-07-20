@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { periodType } from "../lib/types/types";
 import { formatDateNorwegian } from "../lib/utils/dateUtils";
 import Button from "./Button";
+import CheckIcon from "./icons/icons/CheckIcon";
 
 interface Props {
   period: periodType;
@@ -37,7 +38,7 @@ const PeriodCard = ({ period }: Props) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+    <div className="relative w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white">
       <div className="flex flex-col justify-between h-full p-4">
         <div>
           <h3 className="text-xl font-medium text-gray-900 dark:text-online-snowWhite">
@@ -56,6 +57,12 @@ const PeriodCard = ({ period }: Props) => {
             - {formatDateNorwegian(period.interviewPeriod.end)}
           </p>
         </div>
+        {hasApplied && (
+          <span className="absolute flex items-center justify-center gap-2 px-3 py-1 text-green-600 bg-green-100 rounded-full top-4 right-4 dark:bg-green-800 shrink-0 dark:text-green-300">
+            Søkt
+            <CheckIcon className="w-3 h-3" />
+          </span>
+        )}
         <div className="flex justify-center mt-4">
           <Button
             onClick={hasApplied ? handleButtonOnClick : handleButtonOnClick}
