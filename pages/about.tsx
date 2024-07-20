@@ -43,7 +43,7 @@ const About = () => {
 
         <p className="max-w-2xl font-light text-gray-500 md:text-lg lg:text-xl dark:text-gray-400">
           Opptaksiden er laget for å gjøre opptak for alle involverte,
-          både søkere og komiteer, så enkel og oversiktlig som mulig.
+          både søkere og komiteer, så enkelt og oversiktlig som mulig.
         </p>
 
         <div className="flex flex-col justify-between w-full gap-10 mt-6 xl:flex-row lg:mt-16">
