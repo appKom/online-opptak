@@ -72,7 +72,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           emails: [applicant.email],
           phone: applicant.phone,
           grade: applicant.grade,
-          about: applicant.about,
+          about: applicant.about.replace(/\n/g, "<br>"),
           firstChoice: "Tom",
           secondChoice: "Tom",
           thirdChoice: "Tom",
