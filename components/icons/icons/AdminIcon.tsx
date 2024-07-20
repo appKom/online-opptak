@@ -2,8 +2,8 @@ const AdminIcon = ({
   className,
   fill,
 }: {
-  className: string;
-  fill: string;
+  className?: string;
+  fill?: string;
 }) => (
   <svg
     width="20"
