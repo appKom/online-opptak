@@ -14,7 +14,7 @@ const TextAreaInput = (props: Props) => {
   };
 
   return (
-    <div className="justify-center w-full mx-auto my-6">
+    <div className="justify-center w-full max-w-xs mx-auto my-6">
       <div className="relative">
         <textarea
           style={{ resize: "none" }}
