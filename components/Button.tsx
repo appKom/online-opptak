@@ -10,15 +10,20 @@ const Button = (props: Props) => {
   let colorClasses = "";
   let sizeClasses = "";
 
-  if (props.color === "blue") {
-    colorClasses =
-      "border bg-online-darkTeal text-online-snowWhite hover:text-online-orange dark:bg-inherit dark:text-green-500 dark:hover:text-online-orange dark:border-green-500 dark:hover:border-online-orange";
-  } else if (props.color === "white") {
-    colorClasses =
-      "bg-online-white text-online-darkTeal hover:text-online-orange border dark:bg-inherit dark:text-white dark:hover:text-online-orange dark:hover:border-online-orange";
-  } else if (props.color === "orange") {
-    colorClasses =
-      "bg-online-orange text-online-snowWhite hover:text-online-darkTeal border dark:bg-inherit dark:text-orange-500 dark:hover:text-online-orange dark:hover:border-online-orange dark:border-orange-500 dark:hover:border-online-orange";
+  switch (props.color) {
+    case "blue":
+      colorClasses =
+        "bg-online-darkTeal text-online-snowWhite hover:bg-online-darkBlue";
+      break;
+    case "white":
+      colorClasses =
+        "bg-online-white text-online-darkTeal hover:bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600";
+      break;
+    case "orange":
+      colorClasses = "bg-online-orange hover:bg-online-darkOrange text-white";
+      break;
+    default:
+      break;
   }
 
   if (props.size === "small") {
