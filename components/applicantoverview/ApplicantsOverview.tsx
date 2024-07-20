@@ -11,7 +11,8 @@ import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
 
 interface Props {
   period: periodType | null;
-  committees: string[] | null;
+  committees?: string[] | null;
+  committee?: string;
   includePreferences: boolean;
 }
 
@@ -24,6 +25,7 @@ const isPreferencesType = (
 const ApplicantsOverview = ({
   period,
   committees,
+  committee,
   includePreferences,
 }: Props) => {
   const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
@@ -47,7 +49,7 @@ const ApplicantsOverview = ({
 
   const apiUrl = includePreferences
     ? `/api/applicants/${period?._id}`
-    : `/api/committees/${period?._id}`;
+    : `/api/committees/applicants/${period?._id}/${committee}`;
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -206,7 +208,7 @@ const ApplicantsOverview = ({
                 ref={filterMenuRef}
                 className="absolute right-0 top-10 w-48 bg-white dark:bg-online-darkBlue border border-gray-300 dark:border-gray-600 p-4 rounded shadow-lg z-10"
               >
-                {committees && (
+                {Array.isArray(committees) && (
                   <div className="mb-4">
                     <label className="block text-sm mb-2">Velg komite</label>
                     <select

@@ -186,17 +186,17 @@ const CommitteeApplicantOverView: NextPage = () => {
               />
             ),
           },
-          // {
-          //   title: "Søkere",
-          //   icon: <UserGroupIcon className="w-5 h-5" />,
-          //   content: (
-          //     <ApplicantsOverview
-          //       period={period}
-          //       committees={committee}
-          //       includePreferences={false}
-          //     />
-          //   ),
-          // },
+          {
+            title: "Søkere",
+            icon: <UserGroupIcon className="w-5 h-5" />,
+            content: (
+              <ApplicantsOverview
+                period={period}
+                committee={committee}
+                includePreferences={false}
+              />
+            ),
+          },
         ]}
       />
     </div>

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getApplicantsForCommittee } from "../../../../lib/mongo/applicants";
+import { getApplicantsForCommittee } from "../../../../../lib/mongo/applicants";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]";
+import { authOptions } from "../../../auth/[...nextauth]";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -10,10 +10,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(403).json({ error: "Access denied, no session" });
   }
 
-  const periodId = req.query["period-id"] as string;
+  const periodId = req.query["period-id"];
+  const selectedCommittee = req.query.committee;
 
-  if (!periodId) {
-    return res.status(400).json({ error: "Invalid format" });
+  if (typeof selectedCommittee !== "string") {
+    return res.status(400).json({ error: "Invalid committee parameter" });
+  }
+
+  if (!periodId || typeof periodId !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Invalid or missing periodId parameter" });
   }
 
   if (!session.user?.isCommitee || !session.user.committees) {
@@ -24,6 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     if (req.method === "GET") {
       const { applicants, error } = await getApplicantsForCommittee(
         periodId,
+        selectedCommittee,
         session.user.committees
       );
       if (error) {
