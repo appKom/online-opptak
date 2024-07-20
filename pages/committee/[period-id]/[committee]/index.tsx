@@ -154,7 +154,15 @@ const CommitteeApplicantOverView: NextPage = () => {
   return (
     <div className="flex flex-col items-center">
       <span className="mt-5 mb-6 text-3xl font-bold text-center">
-        <h1>{`${period?.name} --> ${changeDisplayName(committee)}`}</h1>
+        <h1>
+          <button onClick={() => router.push("/committee")}>
+            <span>{period?.name}</span>
+          </button>
+          <span>{` --> `}</span>
+          <button onClick={() => router.push(`/committee/${periodId}`)}>
+            <span>{changeDisplayName(committee)}</span>
+          </button>
+        </h1>
       </span>
       <Tabs
         activeTab={activeTab}
