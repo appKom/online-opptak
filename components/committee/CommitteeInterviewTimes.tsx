@@ -55,7 +55,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
       const userCommittees = session.user.committees.map((committee) =>
         committee.toLowerCase()
       );
-      let periodCommittees = period.committees.map((committee) =>
+      const periodCommittees = period.committees.map((committee) =>
         committee.toLowerCase()
       );
 
