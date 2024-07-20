@@ -369,7 +369,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
       </div>
 
       <div className="flex flex-col w-full max-w-sm gap-2 px-10">
-        <label>Velg komitè:</label>
+        <label>Velg komité:</label>
         <select
           className="p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
           onChange={handleCommitteeSelection}
