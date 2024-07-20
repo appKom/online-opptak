@@ -371,7 +371,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
       <div className="flex flex-col px-10 gap-2 w-full max-w-sm">
         <label className="">Velg komitee: </label>
         <select
-          className="p-2  text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+          className="p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
           onChange={handleCommitteeSelection}
           value={selectedCommittee}
         >
@@ -383,7 +383,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
         </select>
       </div>
 
-      <p className="my-5 text-lg text-center px-5">
+      <p className="px-5 my-5 text-lg text-center">
         Velg ledige tider ved å trykke på eller dra over flere celler.
         <br></br>Intervjuene vil bli satt opp etter hverandre fra første ledige
         tid.
