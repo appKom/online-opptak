@@ -28,6 +28,29 @@ const CommitteeApplicants: NextPage<Props> = ({ routeString }) => {
 
       setPeriods(
         filteredPeriods.map((period: periodType) => {
+          const userCommittees = session?.user?.committees?.map((committee) =>
+            committee.toLowerCase()
+          );
+          const periodCommittees = period.committees.map((committee) =>
+            committee.toLowerCase()
+          );
+
+          period.optionalCommittees.forEach((committee) => {
+            periodCommittees.push(committee.toLowerCase());
+          });
+
+          const commonCommittees = userCommittees!.filter((committee) =>
+            periodCommittees.includes(committee)
+          );
+
+          let uriLink = "";
+
+          if (commonCommittees.length > 1) {
+            uriLink = `committee/${period._id}`;
+          } else {
+            uriLink = `committee/${period._id}/${commonCommittees[0]}`;
+          }
+
           return {
             name: period.name,
             preparation:
@@ -43,7 +66,7 @@ const CommitteeApplicants: NextPage<Props> = ({ routeString }) => {
               " til " +
               formatDate(period.interviewPeriod.end),
             committees: period.committees,
-            link: `committee/${period._id}`,
+            link: uriLink,
           };
         })
       );
