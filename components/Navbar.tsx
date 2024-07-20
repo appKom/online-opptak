@@ -62,7 +62,7 @@ const Navbar = () => {
                   title="Admin"
                   color="orange"
                   size="small"
-                  icon={<AdminIcon className="w-4 h-4" fill="" />}
+                  icon={<AdminIcon className="w-4 h-4" />}
                   onClick={() => router.push("/admin")}
                 />
               )}

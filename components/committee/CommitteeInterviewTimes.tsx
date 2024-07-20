@@ -59,6 +59,10 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
         committee.toLowerCase()
       );
 
+      period.optionalCommittees.forEach((committee) => {
+        periodCommittees.push(committee.toLowerCase());
+      });
+
       const commonCommittees = userCommittees.filter((committee) =>
         periodCommittees.includes(committee)
       );
@@ -342,7 +346,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-row gap-2 mt-5 mb-6 text-2xl font-semibold text-center">
+      <div className="flex flex-row gap-2 mt-5 mb-6 text-2xl font-semibold text-center px-5">
         Legg inn ledige tider for intervjuer
       </div>
       <div className="flex max-w-full p-4 mx-5 mb-5 text-sm text-yellow-500 rounded-md dark:text-online-orange bg-yellow-50 dark:bg-gray-800">
@@ -363,24 +367,23 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
           Fristen for å legge inn tider er {countdown}
         </div>
       </div>
-      <div className="flex gap-10 w-max ">
-        <div className="flex flex-col px-5">
-          <label className="">Velg komitee: </label>
-          <select
-            className="p-2 ml-5 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-            onChange={handleCommitteeSelection}
-            value={selectedCommittee}
-          >
-            {filteredCommittees.map((committee) => (
-              <option key={committee} value={committee}>
-                {committee}
-              </option>
-            ))}
-          </select>
-        </div>
+
+      <div className="flex flex-col w-full max-w-sm gap-2 px-10">
+        <label>Velg komité:</label>
+        <select
+          className="p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+          onChange={handleCommitteeSelection}
+          value={selectedCommittee}
+        >
+          {filteredCommittees.map((committee) => (
+            <option key={committee} value={committee}>
+              {committee}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <p className="my-5 text-lg text-center">
+      <p className="px-5 my-5 text-lg text-center">
         Velg ledige tider ved å trykke på eller dra over flere celler.
         <br></br>Intervjuene vil bli satt opp etter hverandre fra første ledige
         tid.
