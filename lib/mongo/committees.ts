@@ -70,12 +70,17 @@ export const updateCommitteeMessage = async (
 
 export const getCommittees = async (
   periodId: string,
+  selectedCommittee: string,
   userCommittees: string[]
 ) => {
   try {
     if (!committees) await init();
+    if (!userHasAccessCommittee(userCommittees, selectedCommittee)) {
+      return { error: "User is unauthenticated" };
+    }
+
     const result = await committees
-      .find({ committee: { $in: userCommittees }, periodId: periodId })
+      .find({ committee: selectedCommittee, periodId: periodId })
       .toArray();
     return { committees: result };
   } catch (error) {
@@ -141,26 +146,18 @@ export const deleteCommittee = async (
       return { error: "User does not have access to this committee" };
     }
 
-    let validPeriodId = periodId;
-    if (typeof periodId === "string") {
-      if (!ObjectId.isValid(periodId)) {
-        console.error("Invalid ObjectId:", periodId);
-        return { error: "Invalid ObjectId format" };
-      }
-      validPeriodId = periodId;
-    }
-
     const count = await committees.countDocuments({
       committee: committee,
-      periodId: validPeriodId,
+      periodId: periodId,
     });
+
     if (count === 0) {
       return { error: "Committee not found or already deleted" };
     }
 
     const result = await committees.deleteOne({
       committee: committee,
-      periodId: validPeriodId,
+      periodId: periodId,
     });
 
     if (result.deletedCount === 1) {

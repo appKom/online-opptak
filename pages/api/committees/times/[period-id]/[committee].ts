@@ -15,6 +15,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!isInCommitee(res, session)) return;
 
   const periodId = req.query["period-id"];
+  const selectedCommittee = req.query.committee;
+
+  if (typeof selectedCommittee !== "string") {
+    return res.status(400).json({ error: "Invalid committee parameter" });
+  }
 
   if (!periodId || typeof periodId !== "string") {
     return res
@@ -26,6 +31,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { committees, error } = await getCommittees(
         periodId,
+        selectedCommittee,
         session!.user?.committees ?? []
       );
 
@@ -38,18 +44,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === "PUT") {
-    const { committee, message } = req.body;
-
-    if (!committee) {
-      console.error("Missing or invalid parameters", {
-        committee,
-      });
-      return res.status(400).json({ error: "Missing or invalid parameters" });
-    }
+    const { message } = req.body;
 
     try {
       const { updatedMessage, error } = await updateCommitteeMessage(
-        committee,
+        selectedCommittee,
         periodId,
         message,
         session!.user?.committees ?? []
@@ -63,15 +62,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === "DELETE") {
-    const committee = req.query.committee as string;
-
-    if (!committee || !periodId) {
-      return res.status(400).json({ error: "Missing or invalid parameters" });
-    }
-
     try {
       const { error } = await deleteCommittee(
-        committee,
+        selectedCommittee,
         periodId,
         session!.user?.committees ?? []
       );

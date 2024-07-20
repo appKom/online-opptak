@@ -132,24 +132,24 @@ const CommitteeApplicantOverView: NextPage = () => {
               <CommitteeInterviewTimes period={period} committee={committee} />
             ),
           },
-          {
-            title: "Melding",
-            icon: <InboxIcon className="w-5 h-5" />,
-            content: (
-              <SendCommitteeMessage period={period} tabClicked={tabClicked} />
-            ),
-          },
-          {
-            title: "Søkere",
-            icon: <UserGroupIcon className="w-5 h-5" />,
-            content: (
-              <ApplicantsOverview
-                period={period}
-                committees={committee}
-                includePreferences={false}
-              />
-            ),
-          },
+          // {
+          //   title: "Melding",
+          //   icon: <InboxIcon className="w-5 h-5" />,
+          //   content: (
+          //     <SendCommitteeMessage period={period} tabClicked={tabClicked} />
+          //   ),
+          // },
+          // {
+          //   title: "Søkere",
+          //   icon: <UserGroupIcon className="w-5 h-5" />,
+          //   content: (
+          //     <ApplicantsOverview
+          //       period={period}
+          //       committees={committee}
+          //       includePreferences={false}
+          //     />
+          //   ),
+          // },
         ]}
       />
     </div>

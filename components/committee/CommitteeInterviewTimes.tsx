@@ -32,9 +32,8 @@ const CommitteeInterviewTimes = ({ period, committee }: Props) => {
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
 
   const [isLoading, setIsLoading] = useState(true);
-  const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
-    committeeInterviewType[]
-  >([]);
+  const [committeeInterviewTimes, setCommitteeInterviewTimes] =
+    useState<committeeInterviewType>();
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
     useState<boolean>(false);
@@ -51,28 +50,33 @@ const CommitteeInterviewTimes = ({ period, committee }: Props) => {
 
   useEffect(() => {
     const fetchCommitteeInterviewTimes = async () => {
+      if (!period) return;
+
       try {
-        const res = await fetch(`/api/committees/times/${period?._id}`);
+        const res = await fetch(
+          `/api/committees/times/${period?._id}/${committee}`
+        );
         const data = await res.json();
 
-        if (data && Array.isArray(data.committees)) {
+        if (data) {
           setCommitteeInterviewTimes(data.committees);
-          setIsLoading(false);
         } else {
           console.error(
-            "Fetched data does not contain an 'committees' array:",
+            "Fetched data does not contain a 'committees' array:",
             data
           );
-          setCommitteeInterviewTimes([]);
         }
       } catch (error) {
         console.error("Error fetching committee interview times:", error);
-        setCommitteeInterviewTimes([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchCommitteeInterviewTimes();
-  }, []);
+    if (period && committee) {
+      fetchCommitteeInterviewTimes();
+    }
+  }, [period, committee]);
 
   useEffect(() => {
     if (committee && Array.isArray(committeeInterviewTimes)) {
@@ -91,7 +95,7 @@ const CommitteeInterviewTimes = ({ period, committee }: Props) => {
       if (relevantTimes.length > 0) {
         setHasAlreadySubmitted(true);
         const events = relevantTimes.flatMap((time) =>
-          time.availabletimes.map((at) => ({
+          time.availabletimes.map((at: any) => ({
             start: new Date(at.start).toISOString(),
             end: new Date(at.end).toISOString(),
           }))
@@ -226,13 +230,10 @@ const CommitteeInterviewTimes = ({ period, committee }: Props) => {
 
   const deleteSubmission = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const queryParams = new URLSearchParams({
-      committee: committee, //TODO fjernes
-    }).toString();
 
     try {
       const response = await fetch(
-        `/api/committees/times/${period?._id}?${queryParams}`,
+        `/api/committees/times/${period?._id}/${committee}`,
         {
           method: "DELETE",
         }
