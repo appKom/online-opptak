@@ -53,29 +53,30 @@ const CheckboxInput = (props: Props) => {
   return (
     <div className="w-full max-w-xs mx-auto my-6">
       <div className="relative">
-        <div className="flex flex-row gap-1 items-center ">
+        <div className="flex items-center gap-1">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
             {props.label}
           </label>
-          {props.info && (
-            <div className="relative">
-              <button onClick={toggleInfo}>
-                <InformationCircleIcon className="text-gray-700 dark:text-white h-6 w-6" />
-              </button>
-            </div>
-          )}
           {props.required && (
             <span className="text-red-500 dark:text-red-400">*</span>
           )}
+          {props.info && (
+            <InformationCircleIcon
+              onClick={toggleInfo}
+              onMouseEnter={() => setShowInfo(true)}
+              onMouseLeave={() => setShowInfo(false)}
+              className="w-5 h-5 text-gray-700 dark:text-white"
+            />
+          )}
         </div>
         {showInfo && (
-          <div className="w-full absolute bg-white border rounded shadow-lg dark:bg-gray-800 dark:border-gray-700 right-0">
-            <p className="text-sm p-2 text-gray-700 dark:text-gray-300">
+          <div className="absolute right-0 w-full bg-white border rounded shadow-lg dark:bg-gray-800 dark:border-gray-700">
+            <p className="p-2 text-sm text-gray-700 dark:text-gray-300">
               {props.info}
             </p>
             <button
               onClick={toggleInfo}
-              className="mt-2 text-xs pb-2 pl-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600"
+              className="pb-2 pl-2 mt-2 text-xs text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600"
             >
               Lukk
             </button>
