@@ -42,8 +42,8 @@ const About = () => {
         </h1>
 
         <p className="max-w-2xl font-light text-gray-500 md:text-lg lg:text-xl dark:text-gray-400">
-          Opptaksiden er laget for å gjøre opptak for alle involverte,
-          både søkere og komiteer, så enkelt og oversiktlig som mulig.
+          Opptaksiden er laget for å gjøre opptak for alle involverte, både
+          søkere og komiteer, så enkelt og oversiktlig som mulig.
         </p>
 
         <div className="flex flex-col justify-between w-full gap-10 mt-6 xl:flex-row lg:mt-16">
@@ -51,9 +51,15 @@ const About = () => {
             <div key={index}>
               <div className="flex flex-row items-center gap-4 mb-4 xl:items-start xl:flex-col">
                 <div
-                  className={
-                    "p-4 bg-" + item.color + "-100 rounded w-min h-min"
-                  }
+                  className={`p-4 ${
+                    item.color === "red"
+                      ? "bg-red-100"
+                      : item.color === "blue"
+                      ? "bg-blue-100"
+                      : item.color === "green"
+                      ? "bg-green-100"
+                      : ""
+                  } rounded w-min h-min`}
                 >
                   {item.icon}
                 </div>
