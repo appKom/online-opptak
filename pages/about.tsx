@@ -37,7 +37,7 @@ const About = () => {
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <div className="w-[90%] md:w-[80%] xl:w-[65%]">
-        <h1 className="max-w-2xl mb-10 text-4xl font-bold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">
+        <h1 className="max-w-2xl mb-10 pt-5 text-4xl font-bold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">
           Hvordan fungerer opptak.online?
         </h1>
 
