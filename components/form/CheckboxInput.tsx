@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import InfoIcon from "../icons/icons/InfoIcon";
+import { InformationCircleIcon } from "@heroicons/react/24/outline";
 
 interface CheckboxOption {
   name: string;
@@ -12,8 +12,8 @@ interface Props {
   label: string;
   values: CheckboxOption[];
   required?: boolean;
-  order: number; //Nødvendig dersom man skal ha flere checkboxer på samme side
-  requireInfo: boolean;
+  order: number;
+  info?: string;
 }
 
 const CheckboxInput = (props: Props) => {
@@ -24,14 +24,12 @@ const CheckboxInput = (props: Props) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
 
-    // Update the state based on whether the checkbox was checked or unchecked
     if (isChecked) {
       setCheckedItems((prev) => [...prev, value]);
     } else {
       setCheckedItems((prev) => prev.filter((item) => item !== value));
     }
 
-    // Update the parent component
     props.updateInputValues(
       isChecked
         ? [...checkedItems, value]
@@ -41,11 +39,9 @@ const CheckboxInput = (props: Props) => {
 
   const handleCheckAll = () => {
     if (props.values.length === checkedItems.length) {
-      // If all items are checked, uncheck all
       setCheckedItems([]);
       props.updateInputValues([]);
     } else {
-      // Otherwise, check all items
       const allValues = props.values.map((item) => item.value);
       setCheckedItems(allValues);
       props.updateInputValues(allValues);
@@ -57,35 +53,29 @@ const CheckboxInput = (props: Props) => {
   return (
     <div className="w-full max-w-xs mx-auto my-6">
       <div className="relative">
-        <div className="flex flex-row gap-1">
+        <div className="flex items-center gap-1">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
             {props.label}
           </label>
-          {props.requireInfo ? (
-            <div>
-              <button onClick={toggleInfo}>
-                <InfoIcon className={""} fill={"white"} />
-              </button>
-              {showInfo && (
-                <div className="absolute z-10 p-4 bg-white border rounded shadow-lg dark:bg-gray-800 dark:border-gray-700">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
-                    Valgfrie komiteer er komiteene som søkere kan velge i
-                    tillegg til de maksimum 3 komiteene de kan søke på.
-                    Eksempelvis: FeminIT
-                  </p>
-                  <button
-                    onClick={toggleInfo}
-                    className="mt-2 text-xs text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-600"
-                  >
-                    Lukk
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
+          {props.required && (
             <span className="text-red-500 dark:text-red-400">*</span>
           )}
+          {props.info && (
+            <InformationCircleIcon
+              onClick={toggleInfo}
+              onMouseEnter={() => setShowInfo(true)}
+              onMouseLeave={() => setShowInfo(false)}
+              className="w-5 h-5 text-gray-700 dark:text-white"
+            />
+          )}
         </div>
+        {showInfo && (
+          <div className="absolute right-0 w-full bg-white border rounded shadow-lg dark:bg-gray-800 dark:border-gray-700">
+            <p className="p-2 text-sm text-gray-700 dark:text-gray-300">
+              {props.info}
+            </p>
+          </div>
+        )}
         <button
           type="button"
           onClick={handleCheckAll}
