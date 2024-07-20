@@ -199,7 +199,7 @@ const Application: NextPage = () => {
 
   if (hasAlreadySubmitted) {
     return (
-      <div className="flex flex-col items-center py-10 justify-center gap-5 px-6 md:px-40 lg:px-80 dark:text-white">
+      <div className="flex flex-col items-center py-10 justify-center gap-5 px-5 md:px-40 lg:px-80 dark:text-white">
         <WellDoneIllustration className="h-32" />
         <p className="text-lg text-center max-w-md">
           Vi har mottatt din søknad og sendt deg en bekreftelse på e-post! Du
@@ -213,7 +213,7 @@ const Application: NextPage = () => {
           />
         </div>
         {fetchedApplicationData && (
-          <div className="max-w-md px-5 w-full">
+          <div className="max-w-md w-full">
             <ApplicantCard
               applicant={fetchedApplicationData.application}
               includePreferences={true}
