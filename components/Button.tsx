@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface Props {
   title: string;
   color: "blue" | "white" | "orange";
@@ -32,10 +34,12 @@ const Button = (props: Props) => {
 
   if (props.href) {
     return (
-      <a href={props.href} className={className}>
-        {props.title}
-        {props.icon}
-      </a>
+      <Link href={props.href}>
+        <a className={className}>
+          {props.title}
+          {props.icon}
+        </a>
+      </Link>
     );
   }
 
