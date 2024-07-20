@@ -208,7 +208,7 @@ const ApplicantsOverview = ({
                 ref={filterMenuRef}
                 className="absolute right-0 top-10 w-48 bg-white dark:bg-online-darkBlue border border-gray-300 dark:border-gray-600 p-4 rounded shadow-lg z-10"
               >
-                {Array.isArray(committees) && (
+                {committees && (
                   <div className="mb-4">
                     <label className="block text-sm mb-2">Velg komite</label>
                     <select
