@@ -1,8 +1,27 @@
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import Button from "../components/Button";
 import FestivitiesIllustration from "../components/icons/illustrations/FestivitiesIllustration";
+import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
+import { signIn, useSession } from "next-auth/react";
 
 const Home = () => {
+  const { data: session } = useSession();
+  const handleLogin = () => signIn("auth0");
+
+  if (!session) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full gap-5 px-5">
+        <AuthenticationIllustration className="h-52" />
+        <p className="text-lg flex text-center">
+          Vennligst logg inn for å få tilgang til opptakssystemet
+        </p>
+        <div className="flex md:hidden w-full items-center justify-center">
+          <Button title={"Logg inn"} color={"blue"} onClick={handleLogin} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <section className="flex items-center justify-center h-full bg-white dark:bg-gray-900">
       <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
