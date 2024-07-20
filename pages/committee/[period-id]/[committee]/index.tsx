@@ -1,7 +1,11 @@
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { applicantType, periodType } from "../../../../lib/types/types";
+import {
+  applicantType,
+  committeeInterviewType,
+  periodType,
+} from "../../../../lib/types/types";
 import { useRouter } from "next/router";
 import ApplicantsOverview from "../../../../components/applicantoverview/ApplicantsOverview";
 import {
@@ -28,6 +32,8 @@ const CommitteeApplicantOverView: NextPage = () => {
   const [tabClicked, setTabClicked] = useState<number>(0);
 
   const [hasAccess, setHasAccess] = useState<boolean>(false);
+  const [committeeInterviewTimes, setCommitteeInterviewTimes] =
+    useState<committeeInterviewType | null>(null);
 
   useEffect(() => {
     if (!session || !periodId) return;
@@ -42,11 +48,40 @@ const CommitteeApplicantOverView: NextPage = () => {
       }
     };
 
+    fetchPeriod();
+  }, [periodId]);
+
+  useEffect(() => {
+    if (!session || !periodId || !committee) return;
+
+    const fetchCommitteeInterviewTimes = async () => {
+      if (!session || committeeInterviewTimes) {
+        return;
+      }
+      if (period?._id === undefined) return;
+
+      try {
+        const response = await fetch(
+          `/api/committees/times/${period?._id}/${committee}`
+        );
+        const data = await response.json();
+        console.log(data);
+        if (response.ok) {
+          setCommitteeInterviewTimes(data.period);
+        } else {
+          throw new Error(data.error || "Unknown error");
+        }
+      } catch (error) {
+        console.error("Error checking period:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     const checkAccess = () => {
       if (!period) {
         return;
       }
-
       const userCommittees = session?.user?.committees?.map((committee) =>
         committee.toLowerCase()
       );
@@ -63,15 +98,14 @@ const CommitteeApplicantOverView: NextPage = () => {
       );
       if (commonCommittees.includes(committee)) {
         setHasAccess(true);
-        setLoading(false);
+        fetchCommitteeInterviewTimes();
       } else {
         setLoading(false);
       }
     };
 
-    fetchPeriod();
     checkAccess();
-  }, [session, periodId, period]);
+  }, [period]);
 
   if (loading) {
     return <LoadingPage />;
@@ -129,14 +163,22 @@ const CommitteeApplicantOverView: NextPage = () => {
             title: "Intervjutider",
             icon: <CalendarIcon className="w-5 h-5" />,
             content: (
-              <CommitteeInterviewTimes period={period} committee={committee} />
+              <CommitteeInterviewTimes
+                period={period}
+                committee={committee}
+                committeeInterviewTimes={committeeInterviewTimes}
+              />
             ),
           },
           // {
           //   title: "Melding",
           //   icon: <InboxIcon className="w-5 h-5" />,
           //   content: (
-          //     <SendCommitteeMessage period={period} tabClicked={tabClicked} />
+          //     <SendCommitteeMessage
+          //       period={period}
+          //       committee={committee}
+          //       tabClicked={tabClicked}
+          //     />
           //   ),
           // },
           // {

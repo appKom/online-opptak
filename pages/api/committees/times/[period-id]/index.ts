@@ -4,14 +4,21 @@ import {
   createCommittee,
   deleteCommittee,
   updateCommitteeMessage,
-} from "../../../../lib/mongo/committees";
+} from "../../../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]";
-import { hasSession, isInCommitee } from "../../../../lib/utils/apiChecks";
-import { isCommitteeType } from "../../../../lib/utils/validators";
+import { authOptions } from "../../../auth/[...nextauth]";
+import { hasSession, isInCommitee } from "../../../../../lib/utils/apiChecks";
+import { isCommitteeType } from "../../../../../lib/utils/validators";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
+  const periodId = req.query["period-id"];
+
+  if (!periodId || typeof periodId !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Invalid or missing periodId parameter" });
+  }
 
   if (!hasSession(res, session)) return;
   if (!isInCommitee(res, session)) return;
@@ -26,7 +33,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       const { committee, error } = await createCommittee(
         committeeData,
-        session!.user?.committees ?? []
+        session!.user?.committees ?? [],
+        periodId
       );
       if (error) throw new Error(error);
 

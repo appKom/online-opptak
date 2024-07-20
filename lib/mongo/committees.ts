@@ -1,6 +1,7 @@
 import { Collection, Db, MongoClient, ObjectId, UpdateResult } from "mongodb";
 import clientPromise from "./mongodb";
 import { commiteeType } from "../types/types";
+import { co } from "@fullcalendar/core/internal-common";
 
 let client: MongoClient;
 let db: Db;
@@ -104,7 +105,8 @@ export const getCommittee = async (id: string) => {
 
 export const createCommittee = async (
   committeeData: commiteeType,
-  userCommittes: string[]
+  userCommittes: string[],
+  periodId: string
 ) => {
   try {
     if (!committees) await init();
@@ -112,10 +114,23 @@ export const createCommittee = async (
       return { error: "User does not have access to this committee" };
     }
 
+    if (!ObjectId.isValid(periodId)) {
+      return { error: "Invalid periodId" };
+    }
+
     const parsedCommitteeData =
       typeof committeeData === "string"
         ? JSON.parse(committeeData)
         : committeeData;
+
+    const count = await committees.countDocuments({
+      periodId: periodId,
+      committee: committeeData.committee,
+    });
+
+    if (count > 0) {
+      return { error: "Committee Times already exists" };
+    }
 
     const result = await committees.insertOne(parsedCommitteeData);
     if (result.insertedId) {

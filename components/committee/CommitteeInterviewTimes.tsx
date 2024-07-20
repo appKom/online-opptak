@@ -18,11 +18,16 @@ interface Interview {
 interface Props {
   period: periodType | null;
   committee: string;
+  committeeInterviewTimes: committeeInterviewType | null;
 }
 
 const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
-const CommitteeInterviewTimes = ({ period, committee }: Props) => {
+const CommitteeInterviewTimes = ({
+  period,
+  committee,
+  committeeInterviewTimes,
+}: Props) => {
   const { data: session } = useSession();
 
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
@@ -31,9 +36,6 @@ const CommitteeInterviewTimes = ({ period, committee }: Props) => {
 
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [committeeInterviewTimes, setCommitteeInterviewTimes] =
-    useState<committeeInterviewType>();
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
     useState<boolean>(false);
@@ -47,36 +49,6 @@ const CommitteeInterviewTimes = ({ period, committee }: Props) => {
       });
     }
   }, [period]);
-
-  useEffect(() => {
-    const fetchCommitteeInterviewTimes = async () => {
-      if (!period) return;
-
-      try {
-        const res = await fetch(
-          `/api/committees/times/${period?._id}/${committee}`
-        );
-        const data = await res.json();
-
-        if (data) {
-          setCommitteeInterviewTimes(data.committees);
-        } else {
-          console.error(
-            "Fetched data does not contain a 'committees' array:",
-            data
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching committee interview times:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (period && committee) {
-      fetchCommitteeInterviewTimes();
-    }
-  }, [period, committee]);
 
   useEffect(() => {
     if (committee && Array.isArray(committeeInterviewTimes)) {
@@ -142,7 +114,7 @@ const CommitteeInterviewTimes = ({ period, committee }: Props) => {
     };
 
     try {
-      const response = await fetch("/api/committees/times", {
+      const response = await fetch(`/api/committees/times/${period?._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -297,10 +269,6 @@ const CommitteeInterviewTimes = ({ period, committee }: Props) => {
 
   if (!session || !session.user?.isCommitee) {
     return <NotFound />;
-  }
-
-  if (!period || isLoading) {
-    return <LoadingPage />;
   }
 
   if (period!.interviewPeriod.start < new Date()) {
