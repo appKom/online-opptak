@@ -37,7 +37,7 @@ const PeriodCard = ({ period }: Props) => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white">
+    <div className="relative w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white">
       <div className="flex flex-col justify-between h-full p-4">
         <div>
           <h3 className="text-xl font-medium text-gray-900 dark:text-online-snowWhite">
@@ -56,6 +56,26 @@ const PeriodCard = ({ period }: Props) => {
             - {formatDateNorwegian(period.interviewPeriod.end)}
           </p>
         </div>
+        {hasApplied && (
+          <span className="absolute flex items-center justify-center gap-2 px-3 py-1 text-green-600 bg-green-100 rounded-full top-4 right-4 dark:bg-green-800 shrink-0 dark:text-green-300">
+            Søkt
+            <svg
+              className="w-3 h-3"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 16 12"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M1 5.917 5.724 10.5 15 1.5"
+              />
+            </svg>
+          </span>
+        )}
         <div className="flex justify-center mt-4">
           <Button
             onClick={hasApplied ? handleButtonOnClick : handleButtonOnClick}
