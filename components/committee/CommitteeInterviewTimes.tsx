@@ -17,19 +17,18 @@ interface Interview {
 
 interface Props {
   period: periodType | null;
+  committee: string;
 }
 
 const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
-const CommitteeInterviewTimes = ({ period }: Props) => {
+const CommitteeInterviewTimes = ({ period, committee }: Props) => {
   const { data: session } = useSession();
 
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(15);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
-  const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
-  const [selectedCommittee, setSelectedCommittee] = useState<string>("");
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
 
   const [isLoading, setIsLoading] = useState(true);
@@ -49,31 +48,6 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
       });
     }
   }, [period]);
-
-  useEffect(() => {
-    if (session?.user?.committees && period?.committees) {
-      const userCommittees = session.user.committees.map((committee) =>
-        committee.toLowerCase()
-      );
-      const periodCommittees = period.committees.map((committee) =>
-        committee.toLowerCase()
-      );
-
-      period.optionalCommittees.forEach((committee) => {
-        periodCommittees.push(committee.toLowerCase());
-      });
-
-      const commonCommittees = userCommittees.filter((committee) =>
-        periodCommittees.includes(committee)
-      );
-
-      setFilteredCommittees(commonCommittees);
-
-      if (commonCommittees.length > 0) {
-        setSelectedCommittee(commonCommittees[0]);
-      }
-    }
-  }, [session, period]);
 
   useEffect(() => {
     const fetchCommitteeInterviewTimes = async () => {
@@ -101,7 +75,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
   }, []);
 
   useEffect(() => {
-    if (selectedCommittee && Array.isArray(committeeInterviewTimes)) {
+    if (committee && Array.isArray(committeeInterviewTimes)) {
       const cleanString = (input: string) =>
         input
           .replace(/[\x00-\x1F\x7F-\x9F]/g, "")
@@ -110,7 +84,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
 
       const relevantTimes = committeeInterviewTimes.filter((time) => {
         const cleanCommittee = cleanString(time.committee);
-        const cleanSelectedCommittee = cleanString(selectedCommittee);
+        const cleanSelectedCommittee = cleanString(committee);
         return cleanCommittee === cleanSelectedCommittee;
       });
 
@@ -131,7 +105,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
         setSelectedTimeslot("15");
       }
     }
-  }, [period, selectedCommittee, committeeInterviewTimes]);
+  }, [period, committee, committeeInterviewTimes]);
 
   const createInterval = (selectionInfo: any) => {
     const event = {
@@ -157,7 +131,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
     const dataToSend = {
       periodId: period!._id,
       period_name: period!.name,
-      committee: selectedCommittee,
+      committee: committee, //TODO FJERN
       availabletimes: formattedEvents,
       timeslot: `${selectedTimeslot}`,
       message: "",
@@ -230,12 +204,6 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
     );
   };
 
-  const handleCommitteeSelection = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedCommittee(e.target.value);
-  };
-
   const formatEventsForExport = (events: any[]) => {
     return events
       .map((event) => {
@@ -259,7 +227,7 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
   const deleteSubmission = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
     const queryParams = new URLSearchParams({
-      committee: selectedCommittee,
+      committee: committee, //TODO fjernes
     }).toString();
 
     try {
@@ -366,21 +334,6 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
           <b className="mr-2">NB!</b>
           Fristen for å legge inn tider er {countdown}
         </div>
-      </div>
-
-      <div className="flex flex-col w-full max-w-sm gap-2 px-10">
-        <label>Velg komité:</label>
-        <select
-          className="p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-          onChange={handleCommitteeSelection}
-          value={selectedCommittee}
-        >
-          {filteredCommittees.map((committee) => (
-            <option key={committee} value={committee}>
-              {committee}
-            </option>
-          ))}
-        </select>
       </div>
 
       <p className="px-5 my-5 text-lg text-center">

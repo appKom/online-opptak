@@ -11,7 +11,7 @@ import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
 
 interface Props {
   period: periodType | null;
-  committees: string[] | null;
+  committees: string;
   includePreferences: boolean;
 }
 
@@ -206,23 +206,6 @@ const ApplicantsOverview = ({
                 ref={filterMenuRef}
                 className="absolute right-0 top-10 w-48 bg-white dark:bg-online-darkBlue border border-gray-300 dark:border-gray-600 p-4 rounded shadow-lg z-10"
               >
-                {committees && (
-                  <div className="mb-4">
-                    <label className="block text-sm mb-2">Velg komite</label>
-                    <select
-                      className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-                      value={selectedCommittee ?? ""}
-                      onChange={(e) => setSelectedCommittee(e.target.value)}
-                    >
-                      <option value="">Velg komite</option>
-                      {committees.map((committee, index) => (
-                        <option key={index} value={committee}>
-                          {committee}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
                 <div className="mb-4">
                   <label className="block text-sm mb-2">Velg klasse</label>
                   <select

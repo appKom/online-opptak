@@ -13,6 +13,8 @@ import { Tabs } from "../../../../components/Tabs";
 import SendCommitteeMessage from "../../../../components/committee/SendCommitteeMessage";
 import CommitteeInterviewTimes from "../../../../components/committee/CommitteeInterviewTimes";
 import LoadingPage from "../../../../components/LoadingPage";
+import { changeDisplayName } from "../../../../lib/utils/toString";
+import Custom404 from "../../../404";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -20,10 +22,12 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
-  const [committees, setCommittees] = useState<string[] | null>(null);
+  const committee = router.query["committee"] as string;
   const [period, setPeriod] = useState<periodType | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [tabClicked, setTabClicked] = useState<number>(0);
+
+  const [hasAccess, setHasAccess] = useState<boolean>(false);
 
   useEffect(() => {
     if (!session || !periodId) return;
@@ -35,36 +39,46 @@ const CommitteeApplicantOverView: NextPage = () => {
         setPeriod(data.period);
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
-      } finally {
+      }
+    };
+
+    const checkAccess = () => {
+      if (!period) {
+        return;
+      }
+
+      const userCommittees = session?.user?.committees?.map((committee) =>
+        committee.toLowerCase()
+      );
+      const periodCommittees = period.committees.map((committee) =>
+        committee.toLowerCase()
+      );
+
+      period.optionalCommittees.forEach((committee) => {
+        periodCommittees.push(committee.toLowerCase());
+      });
+
+      const commonCommittees = userCommittees!.filter((committee) =>
+        periodCommittees.includes(committee)
+      );
+      if (commonCommittees.includes(committee)) {
+        setHasAccess(true);
+        setLoading(false);
+      } else {
         setLoading(false);
       }
     };
 
     fetchPeriod();
-  }, [session, periodId]);
-
-  useEffect(() => {
-    if (period && session) {
-      const userCommittees = session.user!.committees;
-      const periodCommittees = period.committees;
-
-      if (period.optionalCommittees != null) {
-        periodCommittees.push(...period.optionalCommittees);
-      }
-
-      const filteredCommittees = periodCommittees.filter(
-        (committee) => userCommittees?.includes(committee.toLowerCase())
-      );
-      setCommittees(filteredCommittees);
-    }
-  }, [period, session]);
-
-  if (!session || !session.user?.isCommitee) {
-    return <p>Ingen Tilgang!</p>;
-  }
+    checkAccess();
+  }, [session, periodId, period]);
 
   if (loading) {
     return <LoadingPage />;
+  }
+
+  if (!session || !hasAccess) {
+    return <Custom404 />;
   }
 
   const interviewPeriodEnd = period?.interviewPeriod.end
@@ -101,6 +115,9 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
+      <span className="mt-5 mb-6 text-3xl font-bold text-center">
+        <h1>{`${period?.name} --> ${changeDisplayName(committee)}`}</h1>
+      </span>
       <Tabs
         activeTab={activeTab}
         setActiveTab={(index) => {
@@ -111,7 +128,9 @@ const CommitteeApplicantOverView: NextPage = () => {
           {
             title: "Intervjutider",
             icon: <CalendarIcon className="w-5 h-5" />,
-            content: <CommitteeInterviewTimes period={period} />,
+            content: (
+              <CommitteeInterviewTimes period={period} committee={committee} />
+            ),
           },
           {
             title: "Melding",
@@ -126,7 +145,7 @@ const CommitteeApplicantOverView: NextPage = () => {
             content: (
               <ApplicantsOverview
                 period={period}
-                committees={committees}
+                committees={committee}
                 includePreferences={false}
               />
             ),
