@@ -42,7 +42,7 @@ const About = () => {
         </h1>
 
         <p className="max-w-2xl font-light text-gray-500 md:text-lg lg:text-xl dark:text-gray-400">
-          Opptaksystemet er lagd for alt å gjøre prosessen for alle involverte,
+          Opptaksiden er laget for å gjøre opptak for alle involverte,
           både søkere og komiteer, så enkel og oversiktlig som mulig.
         </p>
 
