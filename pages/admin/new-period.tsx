@@ -200,7 +200,6 @@ const NewPeriod = () => {
                 label="Velg komiteer"
                 values={availableCommittees}
                 order={1}
-                requireInfo={false}
                 required
               />
               <CheckboxInput
@@ -213,8 +212,9 @@ const NewPeriod = () => {
                 order={2}
                 label="Velg valgfrie komiteer"
                 values={availableCommittees}
-                requireInfo={true}
-                required
+                info=" Valgfrie komiteer er komiteene som søkere kan velge i
+                    tillegg til de maksimum 3 komiteene de kan søke på.
+                    Eksempelvis: FeminIT"
               />
             </div>
           )}
