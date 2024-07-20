@@ -3,6 +3,7 @@ import AuthenticationIllustration from "../components/icons/illustrations/Authen
 import { useEffect, useState } from "react";
 import { periodType } from "../lib/types/types";
 import PeriodCard from "../components/PeriodCard";
+import LoadingPage from "../components/LoadingPage";
 
 const Apply = () => {
   const { data: session } = useSession();
@@ -34,13 +35,8 @@ const Apply = () => {
     session && fetchPeriods();
   }, [session]);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center py-5 text-center">
-        <p className="animate-pulse dark:text-white">Vent litt...</p>
-      </div>
-    );
-  }
+  if (isLoading) return <LoadingPage />;
+
   return (
     <div className="flex flex-col justify-between overflow-x-hidden text-online-darkBlue dark:text-white">
       <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
