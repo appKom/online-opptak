@@ -4,7 +4,7 @@ import ApplicationForm from "../../components/form/ApplicationForm";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import WellDoneIllustration from "../../components/icons/illustrations/WellDoneIllustration";
-import CheckBoxIcon from "../../components/icons/icons/CheckBoxIcon";
+import CheckIcon from "../../components/icons/icons/CheckIcon";
 import Button from "../../components/Button";
 import CalendarIcon from "../../components/icons/icons/CalendarIcon";
 import { Tabs } from "../../components/Tabs";
@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import Schedule from "../../components/committee/Schedule";
 import { validateApplication } from "../../lib/utils/validateApplication";
 import ApplicantCard from "../../components/applicantoverview/ApplicantCard";
+import LoadingPage from "../../components/LoadingPage";
 
 interface FetchedApplicationData {
   exists: boolean;
@@ -24,7 +25,7 @@ const Application: NextPage = () => {
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
 
-  const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(false);
+  const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(true);
   const [periodExists, setPeriodExists] = useState(false);
   const [fetchedApplicationData, setFetchedApplicationData] =
     useState<FetchedApplicationData | null>(null);
@@ -54,8 +55,6 @@ const Application: NextPage = () => {
       if (!periodId || !session?.user?.owId) {
         return;
       }
-
-      setIsLoading(true);
       try {
         const periodResponse = await fetch(`/api/periods/${periodId}`);
         const periodData = await periodResponse.json();
@@ -75,9 +74,8 @@ const Application: NextPage = () => {
           `/api/applicants/${periodId}/${session.user.owId}`
         );
         const applicationData = await applicationResponse.json();
-        if (applicationResponse.ok) {
-          setHasAlreadySubmitted(applicationData.exists);
-        } else {
+
+        if (!applicationResponse.ok) {
           throw new Error(applicationData.error || "Unknown error");
         }
       } catch (error) {
@@ -138,17 +136,18 @@ const Application: NextPage = () => {
         `/api/applicants/${periodId}/${session.user.owId}`
       );
       const data = await response.json();
-
-      if (response.ok) {
-        setFetchedApplicationData(data);
+      if (!data.exists) {
+        setHasAlreadySubmitted(false);
       } else {
+        setFetchedApplicationData(data);
+      }
+
+      if (!response.ok) {
         throw new Error(data.error || "Unknown error");
       }
     } catch (error) {
       console.error("Error fetching application data:", error);
       toast.error("Failed to fetch application data.");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -184,6 +183,47 @@ const Application: NextPage = () => {
     }
   };
 
+  if (isLoading) {
+    return <LoadingPage />;
+  }
+
+  if (!periodExists) {
+    return (
+      <div className="flex flex-col items-center justify-center py-5">
+        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
+          Opptaket finnes ikke
+        </h1>
+      </div>
+    );
+  }
+
+  if (hasAlreadySubmitted) {
+    return (
+      <div className="flex flex-col items-center py-10 justify-center gap-5 px-6 md:px-40 lg:px-80 dark:text-white">
+        <WellDoneIllustration className="h-32" />
+        <p className="text-lg text-center max-w-md">
+          Vi har mottatt din søknad og sendt deg en bekreftelse på e-post! Du
+          vil få enda en e-post med intervjutider når søknadsperioden er over.
+        </p>
+        <div className="flex gap-5">
+          <Button
+            title="Trekk tilbake søknad"
+            color="white"
+            onClick={handleDeleteApplication}
+          />
+        </div>
+        {fetchedApplicationData && (
+          <div className="max-w-md px-5 w-full">
+            <ApplicantCard
+              applicant={fetchedApplicationData.application}
+              includePreferences={true}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="flex flex-col items-center justify-center py-5">
@@ -192,91 +232,62 @@ const Application: NextPage = () => {
             {period?.name}
           </h1>
         )}
-        {isLoading ? (
-          <p className="animate-pulse dark:text-white">Vent litt...</p>
-        ) : !periodExists ? (
-          <p className="dark:text-white">Perioden finnes ikke</p>
-        ) : hasAlreadySubmitted ? (
-          <div className="flex flex-col items-center justify-center gap-5 px-6 md:px-40 lg:px-80 dark:text-white">
-            <WellDoneIllustration className="h-32" />
-            <p className="text-lg text-center">
-              Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!
-              Du vil få enda en e-post med intervjutider når søknadsperioden er
-              over.
-            </p>
-            <div className="flex gap-5">
-              <Button
-                title="Trekk tilbake søknad"
-                color="white"
-                onClick={handleDeleteApplication}
-              />
-            </div>
-            {fetchedApplicationData && (
-              <div className="w-full max-w-lg">
-                <ApplicantCard
-                  applicant={fetchedApplicationData.application}
-                  includePreferences={true}
-                />
-              </div>
-            )}
-          </div>
-        ) : (
-          <Tabs
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            content={[
-              {
-                title: "Søknad",
-                icon: <CheckBoxIcon className="w-5 h-5" />,
-                content: (
-                  <>
-                    <ApplicationForm
-                      applicationData={applicationData}
-                      setApplicationData={setApplicationData}
-                      availableCommittees={period?.committees || []}
-                      optionalCommittees={period?.optionalCommittees || []}
+
+        <Tabs
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          content={[
+            {
+              title: "Søknad",
+              icon: <CheckIcon className="w-5 h-5" />,
+              content: (
+                <>
+                  <ApplicationForm
+                    applicationData={applicationData}
+                    setApplicationData={setApplicationData}
+                    availableCommittees={period?.committees || []}
+                    optionalCommittees={period?.optionalCommittees || []}
+                  />
+                  <div className="flex justify-center w-full">
+                    <Button
+                      title="Videre"
+                      color="blue"
+                      onClick={() => {
+                        if (!validateApplication(applicationData)) {
+                          return;
+                        }
+                        setActiveTab(activeTab + 1);
+                      }}
+                      size="small"
                     />
-                    <div className="flex justify-center w-full">
-                      <Button
-                        title="Videre"
-                        color="blue"
-                        onClick={() => {
-                          if (!validateApplication(applicationData)) {
-                            return;
-                          }
-                          setActiveTab(activeTab + 1);
-                        }}
-                        size="small"
-                      />
-                    </div>
-                  </>
-                ),
-              },
-              {
-                title: "Intervjutider",
-                icon: <CalendarIcon className="w-5 h-5" />,
-                content: (
-                  <div className="flex flex-col items-center justify-center">
-                    <Schedule
-                      interviewLength={Number(30)}
-                      periodTime={period?.interviewPeriod}
-                      setApplicationData={setApplicationData}
-                      applicationData={applicationData}
-                    />
-                    <div className="flex justify-center w-full mt-10">
-                      <Button
-                        title="Send inn søknad"
-                        color="blue"
-                        onClick={handleSubmitApplication}
-                        size="small"
-                      />
-                    </div>
                   </div>
-                ),
-              },
-            ]}
-          />
-        )}
+                </>
+              ),
+            },
+            {
+              title: "Intervjutider",
+              icon: <CalendarIcon className="w-5 h-5" />,
+              content: (
+                <div className="flex flex-col items-center justify-center">
+                  <Schedule
+                    interviewLength={Number(30)}
+                    periodTime={period?.interviewPeriod}
+                    setApplicationData={setApplicationData}
+                    applicationData={applicationData}
+                  />
+                  <div className="flex justify-center w-full mt-10">
+                    <Button
+                      title="Send inn søknad"
+                      color="blue"
+                      onClick={handleSubmitApplication}
+                      size="small"
+                    />
+                  </div>
+                </div>
+              ),
+            },
+          ]}
+        />
       </div>
     </div>
   );
