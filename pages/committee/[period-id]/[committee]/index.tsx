@@ -65,9 +65,8 @@ const CommitteeApplicantOverView: NextPage = () => {
           `/api/committees/times/${period?._id}/${committee}`
         );
         const data = await response.json();
-        console.log(data);
         if (response.ok) {
-          setCommitteeInterviewTimes(data.period);
+          setCommitteeInterviewTimes(data.committees[0]);
         } else {
           throw new Error(data.error || "Unknown error");
         }
@@ -105,7 +104,7 @@ const CommitteeApplicantOverView: NextPage = () => {
     };
 
     checkAccess();
-  }, [period]);
+  }, [period, tabClicked]);
 
   if (loading) {
     return <LoadingPage />;
@@ -170,17 +169,18 @@ const CommitteeApplicantOverView: NextPage = () => {
               />
             ),
           },
-          // {
-          //   title: "Melding",
-          //   icon: <InboxIcon className="w-5 h-5" />,
-          //   content: (
-          //     <SendCommitteeMessage
-          //       period={period}
-          //       committee={committee}
-          //       tabClicked={tabClicked}
-          //     />
-          //   ),
-          // },
+          {
+            title: "Melding",
+            icon: <InboxIcon className="w-5 h-5" />,
+            content: (
+              <SendCommitteeMessage
+                period={period}
+                committee={committee}
+                committeeInterviewTimes={committeeInterviewTimes}
+                tabClicked={tabClicked}
+              />
+            ),
+          },
           // {
           //   title: "Søkere",
           //   icon: <UserGroupIcon className="w-5 h-5" />,

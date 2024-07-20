@@ -10,16 +10,17 @@ import toast from "react-hot-toast";
 interface Props {
   period: periodType | null;
   committee: string;
+  committeeInterviewTimes: committeeInterviewType | null;
   tabClicked: number;
 }
 
-const SendCommitteeMessage = ({ period, committee, tabClicked }: Props) => {
-  const { data: session } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
+const SendCommitteeMessage = ({
+  committee,
+  committeeInterviewTimes,
+}: Props) => {
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
-  const [committeeInterviewTimes, setCommitteeInterviewTimes] =
-    useState<committeeInterviewType>();
+
   const [committeeHasSubmitedTimes, setCommitteeHasSubmitedTimes] =
     useState<boolean>(false);
 
@@ -27,52 +28,25 @@ const SendCommitteeMessage = ({ period, committee, tabClicked }: Props) => {
     useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
-  useEffect(() => {
-    const fetchCommitteeInterviewTimes = async () => {
-      if (!session) {
-        return;
-      }
-      if (period?._id === undefined) return;
-
-      try {
-        const response = await fetch(
-          `/api/committees/times/${period?._id}/${committee}`
-        );
-        const data = await response.json();
-        console.log(data);
-        if (response.ok) {
-          setCommitteeInterviewTimes(data);
-        } else {
-          throw new Error(data.error || "Unknown error");
-        }
-      } catch (error) {
-        console.error("Error checking period:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchCommitteeInterviewTimes();
-  }, [tabClicked]);
+  const [updatedCommitteeInterviewTimes, setUpdatedCommitteeInterviewTimes] =
+    useState<committeeInterviewType | null>(committeeInterviewTimes);
 
   useEffect(() => {
-    if (committeeInterviewTimes) {
+    if (updatedCommitteeInterviewTimes) {
       setCommitteeHasSubmitedTimes(true);
-      if (committeeInterviewTimes.message === "") {
+      if (updatedCommitteeInterviewTimes.message === "") {
         setCommitteeHasSubmitedMessage(false);
       } else {
         setCommitteeHasSubmitedMessage(true);
-        setMessage(committeeInterviewTimes.message);
+        setMessage(updatedCommitteeInterviewTimes.message);
       }
-      setMessage(committeeInterviewTimes.message || "");
+      setMessage(updatedCommitteeInterviewTimes.message || "");
     } else {
       setCommitteeHasSubmitedTimes(false);
       setCommitteeHasSubmitedMessage(false);
       setMessage("");
     }
-
-    console.log(message);
-  }, [committeeInterviewTimes]);
+  }, [updatedCommitteeInterviewTimes]);
 
   const handleMessageChange = (value: string) => {
     setMessage(value);
@@ -99,15 +73,13 @@ const SendCommitteeMessage = ({ period, committee, tabClicked }: Props) => {
       }
 
       const updatedData = await res.json();
-      setCommitteeInterviewTimes(updatedData);
+      setUpdatedCommitteeInterviewTimes(updatedData);
       toast.success("Innsending er vellykket!");
     } catch (error) {
       toast.error("Det skjede en feil under innsendingen!");
       console.error("Error updating message:", error);
     }
   };
-
-  if (isLoading) return <LoadingPage />;
 
   return (
     <div className="flex flex-col gap-5 max-w-3xl mx-auto mb-5 px-10">

@@ -51,37 +51,34 @@ const CommitteeInterviewTimes = ({
   }, [period]);
 
   useEffect(() => {
-    if (committee && Array.isArray(committeeInterviewTimes)) {
+    if (committee && committeeInterviewTimes) {
       const cleanString = (input: string) =>
         input
           .replace(/[\x00-\x1F\x7F-\x9F]/g, "")
           .trim()
           .toLowerCase();
 
-      const relevantTimes = committeeInterviewTimes.filter((time) => {
-        const cleanCommittee = cleanString(time.committee);
-        const cleanSelectedCommittee = cleanString(committee);
-        return cleanCommittee === cleanSelectedCommittee;
-      });
+      const cleanCommittee = cleanString(committeeInterviewTimes.committee);
+      const cleanSelectedCommittee = cleanString(committee);
 
-      if (relevantTimes.length > 0) {
+      if (cleanCommittee === cleanSelectedCommittee) {
         setHasAlreadySubmitted(true);
-        const events = relevantTimes.flatMap((time) =>
-          time.availabletimes.map((at: any) => ({
+        const events = committeeInterviewTimes.availabletimes.map(
+          (at: any) => ({
             start: new Date(at.start).toISOString(),
             end: new Date(at.end).toISOString(),
-          }))
+          })
         );
 
         setCalendarEvents(events);
-        setSelectedTimeslot(relevantTimes[0].timeslot);
+        setSelectedTimeslot(committeeInterviewTimes.timeslot);
       } else {
         setHasAlreadySubmitted(false);
         setCalendarEvents([]);
         setSelectedTimeslot("15");
       }
     }
-  }, [period, committee, committeeInterviewTimes]);
+  }, [committeeInterviewTimes]);
 
   const createInterval = (selectionInfo: any) => {
     const event = {
