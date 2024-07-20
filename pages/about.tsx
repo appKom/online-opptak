@@ -38,7 +38,7 @@ const About = () => {
     <div className="flex flex-col items-center justify-center h-full">
       <div className="w-[90%] md:w-[80%] xl:w-[65%]">
         <h1 className="max-w-2xl mb-10 text-4xl font-bold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">
-          hvordan fungerer opptak.online?
+          Hvordan fungerer opptak.online?
         </h1>
 
         <p className="max-w-2xl font-light text-gray-500 md:text-lg lg:text-xl dark:text-gray-400">
