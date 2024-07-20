@@ -55,7 +55,7 @@ const CommitteeApplicantOverView: NextPage = () => {
     if (!session || !periodId || !committee) return;
 
     const fetchCommitteeInterviewTimes = async () => {
-      if (!session || committeeInterviewTimes) {
+      if (!session) {
         return;
       }
       if (period?._id === undefined) return;
@@ -77,6 +77,12 @@ const CommitteeApplicantOverView: NextPage = () => {
       }
     };
 
+    fetchCommitteeInterviewTimes();
+  }, [tabClicked, period]);
+
+  useEffect(() => {
+    if (!session || !periodId || !committee) return;
+
     const checkAccess = () => {
       if (!period) {
         return;
@@ -97,14 +103,13 @@ const CommitteeApplicantOverView: NextPage = () => {
       );
       if (commonCommittees.includes(committee)) {
         setHasAccess(true);
-        fetchCommitteeInterviewTimes();
       } else {
         setLoading(false);
       }
     };
 
     checkAccess();
-  }, [period, tabClicked]);
+  }, [period]);
 
   if (loading) {
     return <LoadingPage />;

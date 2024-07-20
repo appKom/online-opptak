@@ -28,25 +28,22 @@ const SendCommitteeMessage = ({
     useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
-  const [updatedCommitteeInterviewTimes, setUpdatedCommitteeInterviewTimes] =
-    useState<committeeInterviewType | null>(committeeInterviewTimes);
-
   useEffect(() => {
-    if (updatedCommitteeInterviewTimes) {
+    if (committeeInterviewTimes) {
       setCommitteeHasSubmitedTimes(true);
-      if (updatedCommitteeInterviewTimes.message === "") {
+      if (committeeInterviewTimes.message === "") {
         setCommitteeHasSubmitedMessage(false);
       } else {
         setCommitteeHasSubmitedMessage(true);
-        setMessage(updatedCommitteeInterviewTimes.message);
+        setMessage(committeeInterviewTimes.message);
       }
-      setMessage(updatedCommitteeInterviewTimes.message || "");
+      setMessage(committeeInterviewTimes.message || "");
     } else {
       setCommitteeHasSubmitedTimes(false);
       setCommitteeHasSubmitedMessage(false);
       setMessage("");
     }
-  }, [updatedCommitteeInterviewTimes]);
+  }, [committeeInterviewTimes]);
 
   const handleMessageChange = (value: string) => {
     setMessage(value);
@@ -73,7 +70,8 @@ const SendCommitteeMessage = ({
       }
 
       const updatedData = await res.json();
-      setUpdatedCommitteeInterviewTimes(updatedData);
+      setMessage(updatedData.message);
+      setCommitteeHasSubmitedMessage(true);
       toast.success("Innsending er vellykket!");
     } catch (error) {
       toast.error("Det skjede en feil under innsendingen!");
