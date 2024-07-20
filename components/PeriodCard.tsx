@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { periodType } from "../lib/types/types";
 import { formatDateNorwegian } from "../lib/utils/dateUtils";
 import Button from "./Button";
+import CheckIcon from "./icons/icons/CheckIcon";
 
 interface Props {
   period: periodType;
@@ -59,21 +60,7 @@ const PeriodCard = ({ period }: Props) => {
         {hasApplied && (
           <span className="absolute flex items-center justify-center gap-2 px-3 py-1 text-green-600 bg-green-100 rounded-full top-4 right-4 dark:bg-green-800 shrink-0 dark:text-green-300">
             Søkt
-            <svg
-              className="w-3 h-3"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 16 12"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 5.917 5.724 10.5 15 1.5"
-              />
-            </svg>
+            <CheckIcon className="w-3 h-3" />
           </span>
         )}
         <div className="flex justify-center mt-4">
