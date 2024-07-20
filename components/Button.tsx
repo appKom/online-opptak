@@ -20,8 +20,7 @@ const Button = (props: Props) => {
         "bg-online-white text-online-darkTeal hover:bg-gray-100 border border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600";
       break;
     case "orange":
-      colorClasses =
-        "bg-online-orange hover:bg-online-darkOrange text-online-darkTeal";
+      colorClasses = "bg-online-orange hover:bg-online-darkOrange text-white";
       break;
     default:
       break;
