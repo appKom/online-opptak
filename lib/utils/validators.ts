@@ -84,15 +84,12 @@ export const isPeriodType = (data: any): data is periodType => {
   };
 
   const arePeriodsValid = (
-    preparationPeriod: any,
     applicationPeriod: any,
     interviewPeriod: any
   ): boolean => {
     return (
-      isChronological(preparationPeriod.start, preparationPeriod.end) &&
       isChronological(applicationPeriod.start, applicationPeriod.end) &&
       isChronological(interviewPeriod.start, interviewPeriod.end) &&
-      new Date(preparationPeriod.end) <= new Date(applicationPeriod.start) &&
       new Date(applicationPeriod.end) <= new Date(interviewPeriod.start)
     );
   };
@@ -100,16 +97,11 @@ export const isPeriodType = (data: any): data is periodType => {
   const hasBasicFields =
     typeof data.name === "string" &&
     typeof data.description === "string" &&
-    isValidPeriod(data.preparationPeriod) &&
     isValidPeriod(data.applicationPeriod) &&
     isValidPeriod(data.interviewPeriod) &&
     Array.isArray(data.committees) &&
     data.committees.every((committee: any) => typeof committee === "string") &&
-    arePeriodsValid(
-      data.preparationPeriod,
-      data.applicationPeriod,
-      data.interviewPeriod
-    );
+    arePeriodsValid(data.applicationPeriod, data.interviewPeriod);
 
   return hasBasicFields;
 };

@@ -30,10 +30,6 @@ const CommitteeApplicants: NextPage<Props> = ({ routeString }) => {
         filteredPeriods.map((period: periodType) => {
           return {
             name: period.name,
-            preparation:
-              formatDate(period.preparationPeriod.start) +
-              " til " +
-              formatDate(period.preparationPeriod.end),
             application:
               formatDate(period.applicationPeriod.start) +
               " til " +
@@ -58,7 +54,6 @@ const CommitteeApplicants: NextPage<Props> = ({ routeString }) => {
 
   const periodsColumns = [
     { label: "Navn", field: "name" },
-    { label: "Forberedelse", field: "preparation" },
     { label: "Søknad", field: "application" },
     { label: "Intervju", field: "interview" },
   ];
