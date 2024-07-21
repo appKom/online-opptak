@@ -2,7 +2,6 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import {
-  applicantType,
   committeeInterviewType,
   periodType,
 } from "../../../../lib/types/types";

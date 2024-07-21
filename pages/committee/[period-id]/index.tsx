@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { periodType } from "../../../lib/types/types";
 import { useSession } from "next-auth/react";
 import LoadingPage from "../../../components/LoadingPage";
 import CommitteeCard from "../../../components/committee/CommitteeCard";
@@ -9,7 +8,6 @@ const ChooseCommittee = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const periodId = router.query["period-id"];
-  const [period, setPeriod] = useState<periodType | null>(null);
   const [committees, setCommittees] = useState<string[] | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -20,7 +18,6 @@ const ChooseCommittee = () => {
       try {
         const res = await fetch(`/api/periods/${periodId}`);
         const data = await res.json();
-        setPeriod(data.period);
 
         if (data.period) {
           const userCommittees = session!.user!.committees;
