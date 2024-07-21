@@ -24,7 +24,7 @@ const CommitteeAboutCard = ({
         {name_long} {name_long !== name_short && `(${name_short})`}
       </h3>
       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">{email}</p>
-      <p className="text-gray-500 dark:text-gray-400">
+      <p className="text-gray-500 whitespace-pre-wrap dark:text-gray-400">
         {(showMore ? description_long : description_short) ||
           "Ingen beskrivelse :("}
       </p>

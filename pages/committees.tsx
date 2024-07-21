@@ -34,8 +34,8 @@ const Committees = () => {
             Onlines komiteer
           </h2>
           <p className="text-gray-500 sm:text-xl dark:text-gray-400">
-            blabla her skal det stå noe om hva en komite er og at man kan se her
-            alle komiteer man kan søke på osv.
+            Komitémedlemmer får Online til å gå rundt, og arbeider for at alle
+            informatikkstudenter skal ha en flott studiehverdag.
           </p>
         </div>
         <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
