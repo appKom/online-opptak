@@ -182,17 +182,9 @@ export default function Schedule({
           intervjutider!
         </div>
       </div>
-      <div className="flex justify-center gap-10 text-gray-700 dark:text-white">
-        <div className="flex items-center gap-2">
-          <div className="w-16 h-8 bg-green-300 border border-gray-300 rounded-sm dark:border-gray-700"></div>
-          Jeg er ledig
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-16 h-8 bg-red-300 border border-gray-300 rounded-sm dark:border-gray-700"></div>
-          <div>
-            Jeg er <span className="font-bold">IKKE</span> ledig
-          </div>
-        </div>
+      <div className="flex gap-10">
+        <AvailabilityIndicator isAvailable />
+        <AvailabilityIndicator />
       </div>
       <div className="flex px-5 py-4 mt-5 border border-gray-200 rounded-md shadow w-max dark:bg-gray-800 dark:border-gray-700">
         <div className="flex flex-col justify-end">
@@ -218,3 +210,18 @@ export default function Schedule({
     </div>
   );
 }
+
+const AvailabilityIndicator = ({ isAvailable }: { isAvailable?: boolean }) => {
+  return (
+    <div className="flex items-center gap-2 text-gray-700 dark:text-white">
+      <div
+        className={`w-16 h-8 border border-gray-300 rounded-sm dark:border-gray-700 ${
+          isAvailable ? "bg-green-300" : "bg-red-300"
+        }`}
+      ></div>
+      <div>
+        Jeg er {!isAvailable && <span className="font-bold">IKKE</span>} ledig
+      </div>
+    </div>
+  );
+};
