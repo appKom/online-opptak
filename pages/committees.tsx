@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import LoadingPage from "../components/LoadingPage";
+import { owCommitteeType } from "../lib/types/types";
 
 const Committees = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [committees, setCommittees] = useState([]);
+  const [committees, setCommittees] = useState<owCommitteeType[]>([]);
 
   const fetchCommittees = async () => {
     try {
@@ -41,7 +42,7 @@ const Committees = () => {
             return (
               <div key={index}>
                 <div className="flex items-center justify-center w-16 h-16 p-1 mb-4 bg-gray-100 rounded-full lg:h-20 lg:w-20 dark:bg-gray-900">
-                  <img src={committee.image} alt={committee.name_long} />
+                  <img src={committee.image?.xs} alt={committee.name_long} />
                 </div>
                 <h3 className="mb-2 text-xl font-bold dark:text-white">
                   {committee.name_long}{" "}
@@ -49,7 +50,7 @@ const Committees = () => {
                     "(" + committee.name_short + ")"}
                 </h3>
                 <p className="text-gray-500 dark:text-gray-400">
-                  {committee.description || "Ingen beskrivelse :("}
+                  {committee.application_description || "Ingen beskrivelse :("}
                 </p>
               </div>
             );

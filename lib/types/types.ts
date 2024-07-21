@@ -95,3 +95,11 @@ export type committeeInterviewType = {
   timeslot: string;
   message: string;
 };
+
+export type owCommitteeType = {
+  name_short: string;
+  name_long: string;
+  email?: string;
+  application_description?: string;
+  image?: { xs: string };
+};
