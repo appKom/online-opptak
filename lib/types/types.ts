@@ -95,3 +95,27 @@ export type committeeInterviewType = {
   timeslot: string;
   message: string;
 };
+
+export type interviewType = {
+  name: string;
+  interviewTimes: {
+    start: string;
+    end: string;
+  };
+};
+
+export type emailCommitteeInterviewType = {
+  periodId: string;
+  period_name: string;
+  committeeName: string;
+  committeeEmail: string;
+  applicants: interviewType[];
+};
+
+export type emailApplicantInterviewType = {
+  periodId: string;
+  period_name: string;
+  applicantName: string;
+  applicantEmail: string;
+  committees: interviewType[];
+};
