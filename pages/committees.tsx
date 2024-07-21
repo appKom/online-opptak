@@ -36,9 +36,9 @@ const Committees = () => {
           </p>
         </div>
         <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
-          {committees?.map((committee) => {
+          {committees?.map((committee, index) => {
             return (
-              <div>
+              <div key={index}>
                 <div className="flex items-center justify-center w-16 h-16 p-1 mb-4 bg-gray-100 rounded-full lg:h-20 lg:w-20 dark:bg-gray-900">
                   <img src={committee.image} alt={committee.name_long} />
                 </div>
