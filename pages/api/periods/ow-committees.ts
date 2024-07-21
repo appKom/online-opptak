@@ -33,6 +33,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       "Eksgruppa",
       "Eldsterådet",
       "Ex-Komiteer",
+      "Faddere",
       "interessegrupper",
       "ITEX",
       "ITEX-påmeldte",
@@ -71,10 +72,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
               name_short: string;
               name_long: string;
               email?: string;
+              image?: {
+                md?: string;
+              };
+              application_description?: string;
             }) => ({
               name_short: group.name_short,
               name_long: group.name_long,
-              email: group.email || "No email provided",
+              email: group.email || "Ingen e-post",
+              imageUri: group.image?.md,
+              description: group.application_description || "Ingen beskrivelse",
             })
           )
       );
