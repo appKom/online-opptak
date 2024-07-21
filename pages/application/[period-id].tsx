@@ -68,30 +68,32 @@ const Application: NextPage = () => {
       if (!periodId || !session?.user?.owId) return;
 
       try {
-        const periodResponse = await fetch(`/api/periods/${periodId}`);
+        const [periodResponse, applicationResponse] = await Promise.all([
+          fetch(`/api/periods/${periodId}`),
+          fetch(`/api/applicants/${periodId}/${session.user.owId}`),
+        ]);
+
         const periodData = await periodResponse.json();
         if (periodResponse.ok) {
           setPeriod(periodData.period);
           setPeriodExists(periodData.exists);
-          fetchApplicationData();
         } else {
           throw new Error(periodData.error || "Unknown error");
         }
-      } catch (error) {
-        console.error("Error checking period:", error);
-      }
 
-      try {
-        const applicationResponse = await fetch(
-          `/api/applicants/${periodId}/${session.user.owId}`
-        );
         const applicationData = await applicationResponse.json();
-
-        if (!applicationResponse.ok) {
+        if (applicationResponse.ok) {
+          if (applicationData.exists) {
+            setFetchedApplicationData(applicationData);
+            setHasAlreadySubmitted(true);
+          } else {
+            setHasAlreadySubmitted(false);
+          }
+        } else {
           throw new Error(applicationData.error || "Unknown error");
         }
       } catch (error) {
-        console.error("Error checking application status:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setIsLoading(false);
       }
