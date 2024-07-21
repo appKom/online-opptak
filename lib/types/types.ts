@@ -85,6 +85,7 @@ export type periodType = {
 export type AvailableTime = {
   start: string;
   end: string;
+  room: string;
 };
 
 export type committeeInterviewType = {
