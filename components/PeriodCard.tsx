@@ -14,6 +14,7 @@ const PeriodCard = ({ period }: Props) => {
   const { data: session } = useSession();
   const router = useRouter();
   const [hasApplied, setHasApplied] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkApplicationStatus = async () => {
@@ -24,6 +25,7 @@ const PeriodCard = ({ period }: Props) => {
         if (response.ok) {
           const data = await response.json();
           setHasApplied(data.exists);
+          setIsLoading(false);
         }
       }
     };
@@ -36,6 +38,8 @@ const PeriodCard = ({ period }: Props) => {
   const handleButtonOnClick = () => {
     router.push(`/application/${period._id}`);
   };
+
+  if (isLoading) return <p>Vent litt...</p>;
 
   return (
     <div className="relative w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white">
