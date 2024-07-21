@@ -130,7 +130,6 @@ const Application: NextPage = () => {
   const fetchApplicationData = async () => {
     if (!session?.user?.owId || !periodId) return;
 
-    setIsLoading(true);
     try {
       const response = await fetch(
         `/api/applicants/${periodId}/${session.user.owId}`
