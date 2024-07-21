@@ -64,6 +64,7 @@ const CommitteeApplicantOverView: NextPage = () => {
           `/api/committees/times/${period?._id}/${committee}`
         );
         const data = await response.json();
+
         if (response.ok) {
           setCommitteeInterviewTimes(data.committees[0]);
         } else {

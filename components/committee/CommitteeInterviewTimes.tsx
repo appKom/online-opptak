@@ -11,6 +11,7 @@ import Button from "../Button";
 import ImportantNote from "../ImportantNote";
 
 interface Interview {
+  title: string;
   start: string;
   end: string;
 }
@@ -41,6 +42,10 @@ const CommitteeInterviewTimes = ({
     useState<boolean>(false);
   const [countdown, setCountdown] = useState<string>("");
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [currentSelection, setCurrentSelection] = useState<any>(null);
+  const [roomInput, setRoomInput] = useState<string>("");
+
   useEffect(() => {
     if (period) {
       setVisibleRange({
@@ -65,6 +70,7 @@ const CommitteeInterviewTimes = ({
         setHasAlreadySubmitted(true);
         const events = committeeInterviewTimes.availabletimes.map(
           (at: any) => ({
+            title: at.room,
             start: new Date(at.start).toISOString(),
             end: new Date(at.end).toISOString(),
           })
@@ -80,17 +86,32 @@ const CommitteeInterviewTimes = ({
     }
   }, [committeeInterviewTimes]);
 
-  const createInterval = (selectionInfo: any) => {
+  const handleDateSelect = (selectionInfo: any) => {
+    setCurrentSelection(selectionInfo);
+    setIsModalOpen(true);
+  };
+
+  const handleRoomSubmit = () => {
+    if (!roomInput) {
+      toast.error("Vennligst skriv inn et romnavn");
+      return;
+    }
+
     const event = {
-      title: "",
-      start: selectionInfo.start,
-      end: selectionInfo.end,
+      title: roomInput,
+      start: currentSelection.start,
+      end: currentSelection.end,
     };
-    selectionInfo.view.calendar.addEvent(event);
+
+    currentSelection.view.calendar.addEvent(event);
     addCell([
-      selectionInfo.start.toISOString(),
-      selectionInfo.end.toISOString(),
+      roomInput,
+      currentSelection.start.toISOString(),
+      currentSelection.end.toISOString(),
     ]);
+
+    setRoomInput("");
+    setIsModalOpen(false);
   };
 
   const submit = async (e: BaseSyntheticEvent) => {
@@ -141,7 +162,10 @@ const CommitteeInterviewTimes = ({
   };
 
   const addCell = (cell: string[]) => {
-    setMarkedCells([...markedCells, { start: cell[0], end: cell[1] }]);
+    setMarkedCells([
+      ...markedCells,
+      { title: cell[0], start: cell[1], end: cell[2] },
+    ]);
   };
 
   const updateInterviewInterval = (e: BaseSyntheticEvent) => {
@@ -150,8 +174,10 @@ const CommitteeInterviewTimes = ({
 
   const renderEventContent = (eventContent: any) => {
     return (
-      <div>
-        <span>{eventContent.timeText}</span>
+      <div className="flex flex-row justify-between p-4 overflow-hidden whitespace-nowrap">
+        <h1 className="text-3xl overflow-hidden whitespace-nowrap overflow-ellipsis">
+          {eventContent.event.title}
+        </h1>
         {!hasAlreadySubmitted && (
           <button
             className="ml-2"
@@ -169,7 +195,7 @@ const CommitteeInterviewTimes = ({
             <img
               src="/close.svg"
               alt="close icon"
-              style={{ width: "22px", height: "22px" }}
+              style={{ width: "40px", height: "40px" }}
             />
           </button>
         )}
@@ -186,6 +212,7 @@ const CommitteeInterviewTimes = ({
         const startDateTime = new Date(startDateTimeString);
         const endDateTime = new Date(endDatetimeString);
         return {
+          room: event.title,
           start: startDateTime.toISOString(),
           end: endDateTime.toISOString(),
         };
@@ -332,7 +359,7 @@ const CommitteeInterviewTimes = ({
             selectable={!hasAlreadySubmitted}
             selectMirror={true}
             height="auto"
-            select={createInterval}
+            select={handleDateSelect}
             slotDuration={`00:${interviewInterval}`}
             businessHours={{ startTime: "08:00", endTime: "18:00" }}
             weekends={false}
@@ -378,6 +405,30 @@ const CommitteeInterviewTimes = ({
           />
         </div>
       </form>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-5 rounded shadow-lg">
+            <h2 className="mb-4 text-xl font-semibold">
+              Skriv inn navn på rom:
+            </h2>
+            <input
+              type="text"
+              className="my-2 p-2 w-full rounded-lg dark:bg-gray-900  border-gray-900 dark:border-white transition-none outline-none"
+              value={roomInput}
+              onChange={(e) => setRoomInput(e.target.value)}
+            />
+            <div className="flex flex-row justify-between px-5 mt-4">
+              <Button
+                title="Avbryt"
+                onClick={() => setIsModalOpen(false)}
+                color="orange"
+              />
+              <Button title="Ok" onClick={handleRoomSubmit} color="blue" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
