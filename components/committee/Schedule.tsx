@@ -1,5 +1,5 @@
 import ScheduleColumn from "./ScheduleColumn";
-import getTimeSlots from "../../utils/getTimeSlots";
+import getTimeSlots from "../../lib/utils/getTimeSlots";
 import { useState, useEffect } from "react";
 import { DeepPartial, applicantType } from "../../lib/types/types";
 
