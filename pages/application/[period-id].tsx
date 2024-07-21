@@ -49,6 +49,18 @@ const Application: NextPage = () => {
     },
   });
   const [period, setPeriod] = useState<periodType>();
+  const [isApplicationPeriodOver, setIsApplicationPeriodOver] = useState(false);
+
+  useEffect(() => {
+    if (!period) {
+      return;
+    }
+
+    const currentDate = new Date().toISOString();
+    if (new Date(period.applicationPeriod.end) < new Date(currentDate)) {
+      setIsApplicationPeriodOver(true);
+    }
+  }, [period]);
 
   useEffect(() => {
     const checkPeriodAndApplicationStatus = async () => {
@@ -190,19 +202,19 @@ const Application: NextPage = () => {
 
   if (hasAlreadySubmitted) {
     return (
-      <div className="flex flex-col items-center justify-center gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
+      <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
         <WellDoneIllustration className="h-32" />
         <p className="max-w-md text-lg text-center">
           Vi har mottatt din søknad og sendt deg en bekreftelse på e-post! Du
           vil få enda en e-post med intervjutider når søknadsperioden er over.
         </p>
-        <div className="flex gap-5">
+        {!isApplicationPeriodOver && (
           <Button
             title="Trekk tilbake søknad"
             color="white"
             onClick={handleDeleteApplication}
           />
-        </div>
+        )}
         {fetchedApplicationData && (
           <div className="w-full max-w-md">
             <ApplicantCard
