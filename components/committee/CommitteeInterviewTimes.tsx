@@ -17,25 +17,25 @@ interface Interview {
 
 interface Props {
   period: periodType | null;
+  committee: string;
+  committeeInterviewTimes: committeeInterviewType | null;
 }
 
 const INTERVIEW_TIME_OPTIONS = ["15", "20", "30"];
 
-const CommitteeInterviewTimes = ({ period }: Props) => {
+const CommitteeInterviewTimes = ({
+  period,
+  committee,
+  committeeInterviewTimes,
+}: Props) => {
   const { data: session } = useSession();
 
   const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(15);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
-  const [filteredCommittees, setFilteredCommittees] = useState<string[]>([]);
-  const [selectedCommittee, setSelectedCommittee] = useState<string>("");
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [committeeInterviewTimes, setCommitteeInterviewTimes] = useState<
-    committeeInterviewType[]
-  >([]);
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
     useState<boolean>(false);
@@ -51,87 +51,34 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
   }, [period]);
 
   useEffect(() => {
-    if (session?.user?.committees && period?.committees) {
-      const userCommittees = session.user.committees.map((committee) =>
-        committee.toLowerCase()
-      );
-      const periodCommittees = period.committees.map((committee) =>
-        committee.toLowerCase()
-      );
-
-      period.optionalCommittees.forEach((committee) => {
-        periodCommittees.push(committee.toLowerCase());
-      });
-
-      const commonCommittees = userCommittees.filter((committee) =>
-        periodCommittees.includes(committee)
-      );
-
-      setFilteredCommittees(commonCommittees);
-
-      if (commonCommittees.length > 0) {
-        setSelectedCommittee(commonCommittees[0]);
-      }
-    }
-  }, [session, period]);
-
-  useEffect(() => {
-    const fetchCommitteeInterviewTimes = async () => {
-      try {
-        const res = await fetch(`/api/committees/times/${period?._id}`);
-        const data = await res.json();
-
-        if (data && Array.isArray(data.committees)) {
-          setCommitteeInterviewTimes(data.committees);
-          setIsLoading(false);
-        } else {
-          console.error(
-            "Fetched data does not contain an 'committees' array:",
-            data
-          );
-          setCommitteeInterviewTimes([]);
-        }
-      } catch (error) {
-        console.error("Error fetching committee interview times:", error);
-        setCommitteeInterviewTimes([]);
-      }
-    };
-
-    fetchCommitteeInterviewTimes();
-  }, []);
-
-  useEffect(() => {
-    if (selectedCommittee && Array.isArray(committeeInterviewTimes)) {
+    if (committee && committeeInterviewTimes) {
       const cleanString = (input: string) =>
         input
           .replace(/[\x00-\x1F\x7F-\x9F]/g, "")
           .trim()
           .toLowerCase();
 
-      const relevantTimes = committeeInterviewTimes.filter((time) => {
-        const cleanCommittee = cleanString(time.committee);
-        const cleanSelectedCommittee = cleanString(selectedCommittee);
-        return cleanCommittee === cleanSelectedCommittee;
-      });
+      const cleanCommittee = cleanString(committeeInterviewTimes.committee);
+      const cleanSelectedCommittee = cleanString(committee);
 
-      if (relevantTimes.length > 0) {
+      if (cleanCommittee === cleanSelectedCommittee) {
         setHasAlreadySubmitted(true);
-        const events = relevantTimes.flatMap((time) =>
-          time.availabletimes.map((at) => ({
+        const events = committeeInterviewTimes.availabletimes.map(
+          (at: any) => ({
             start: new Date(at.start).toISOString(),
             end: new Date(at.end).toISOString(),
-          }))
+          })
         );
 
         setCalendarEvents(events);
-        setSelectedTimeslot(relevantTimes[0].timeslot);
+        setSelectedTimeslot(committeeInterviewTimes.timeslot);
       } else {
         setHasAlreadySubmitted(false);
         setCalendarEvents([]);
         setSelectedTimeslot("15");
       }
     }
-  }, [period, selectedCommittee, committeeInterviewTimes]);
+  }, [committeeInterviewTimes]);
 
   const createInterval = (selectionInfo: any) => {
     const event = {
@@ -157,14 +104,14 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
     const dataToSend = {
       periodId: period!._id,
       period_name: period!.name,
-      committee: selectedCommittee,
+      committee: committee,
       availabletimes: formattedEvents,
       timeslot: `${selectedTimeslot}`,
       message: "",
     };
 
     try {
-      const response = await fetch("/api/committees/times", {
+      const response = await fetch(`/api/committees/times/${period?._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -230,12 +177,6 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
     );
   };
 
-  const handleCommitteeSelection = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    setSelectedCommittee(e.target.value);
-  };
-
   const formatEventsForExport = (events: any[]) => {
     return events
       .map((event) => {
@@ -258,13 +199,10 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
 
   const deleteSubmission = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const queryParams = new URLSearchParams({
-      committee: selectedCommittee,
-    }).toString();
 
     try {
       const response = await fetch(
-        `/api/committees/times/${period?._id}?${queryParams}`,
+        `/api/committees/times/${period?._id}/${committee}`,
         {
           method: "DELETE",
         }
@@ -330,10 +268,6 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
     return <NotFound />;
   }
 
-  if (!period || isLoading) {
-    return <LoadingPage />;
-  }
-
   if (period!.interviewPeriod.start < new Date()) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -366,21 +300,6 @@ const CommitteeInterviewTimes = ({ period }: Props) => {
           <b className="mr-2">NB!</b>
           Fristen for å legge inn tider er {countdown}
         </div>
-      </div>
-
-      <div className="flex flex-col w-full max-w-sm gap-2 px-10">
-        <label>Velg komité:</label>
-        <select
-          className="p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
-          onChange={handleCommitteeSelection}
-          value={selectedCommittee}
-        >
-          {filteredCommittees.map((committee) => (
-            <option key={committee} value={committee}>
-              {committee}
-            </option>
-          ))}
-        </select>
       </div>
 
       <p className="px-5 my-5 text-lg text-center">
