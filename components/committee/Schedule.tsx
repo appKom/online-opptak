@@ -1,7 +1,8 @@
 import ScheduleColumn from "./ScheduleColumn";
-import getTimeSlots from "../../utils/getTimeSlots";
+import getTimeSlots from "../../lib/utils/getTimeSlots";
 import { useState, useEffect } from "react";
 import { DeepPartial, applicantType } from "../../lib/types/types";
+import ImportantNote from "../ImportantNote";
 
 interface Props {
   interviewLength: number;
@@ -161,27 +162,16 @@ export default function Schedule({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex max-w-full p-4 mx-5 mb-5 text-sm text-yellow-500 rounded-md dark:text-online-orange bg-yellow-50 dark:bg-gray-800">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="flex-shrink-0 w-5 h-5 mr-3"
-        >
-          <path
-            fillRule="evenodd"
-            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-            clipRule="evenodd"
-          />
-        </svg>
-        <div>
-          <b className="mr-2">Valgfritt</b>
-          Legg til tider du&nbsp;
-          <span className="font-semibold">IKKE</span>&nbsp;er ledig for
-          intervju. Flere ledige tider øker sjansen for automatisk tildeling av
-          intervjutider!
-        </div>
-      </div>
+      <ImportantNote
+        prefix="Valgfritt"
+        text={
+          <>
+            Legg inn tider du&nbsp;<span className="font-bold">IKKE</span>
+            &nbsp;er ledig for intervju. Flere ledige tider øker sjansen for
+            automatisk tildeling av intervjutider!
+          </>
+        }
+      />
       <div className="flex gap-10">
         <AvailabilityIndicator isAvailable />
         <AvailabilityIndicator />
