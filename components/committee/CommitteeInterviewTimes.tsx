@@ -104,7 +104,7 @@ const CommitteeInterviewTimes = ({
     const dataToSend = {
       periodId: period!._id,
       period_name: period!.name,
-      committee: committee, //TODO FJERN
+      committee: committee,
       availabletimes: formattedEvents,
       timeslot: `${selectedTimeslot}`,
       message: "",
