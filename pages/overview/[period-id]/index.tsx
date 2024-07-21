@@ -21,10 +21,10 @@ const Overview = () => {
   >([]);
 
   useEffect(() => {
-    const fetchPeriod = async () => {
+    const fetchPeriod = async (updateCache = false) => {
       try {
         const cachedPeriod = localStorage.getItem(`period-${periodId}`);
-        if (cachedPeriod) {
+        if (cachedPeriod && !updateCache) {
           setPeriod(JSON.parse(cachedPeriod));
         } else {
           const res = await fetch(`/api/periods/${periodId}`);
@@ -42,20 +42,22 @@ const Overview = () => {
 
     if (periodId) {
       fetchPeriod();
+      fetchPeriod(true); // Update cache in the background
     }
   }, [periodId]);
 
   useEffect(() => {
-    const fetchCommittees = async () => {
+    const fetchCommittees = async (updateCache = false) => {
       try {
         const cachedCommittees = localStorage.getItem("ow-committees");
-        if (cachedCommittees) {
+        if (cachedCommittees && !updateCache) {
           const committees = JSON.parse(cachedCommittees);
           if (period) {
             const filteredCommittees = committees.filter(
               ({ name_short }: { name_short: string }) =>
                 period.committees.includes(name_short) ||
-                period.optionalCommittees.includes(name_short)
+                period.optionalCommittees.includes(name_short) ||
+                "Bankom" === name_short
             );
 
             setAvailableCommittees(
@@ -89,7 +91,8 @@ const Overview = () => {
             const filteredCommittees = committees.filter(
               ({ name_short }: { name_short: string }) =>
                 period.committees.includes(name_short) ||
-                period.optionalCommittees.includes(name_short)
+                period.optionalCommittees.includes(name_short) ||
+                "Bankom" === name_short
             );
 
             setAvailableCommittees(
@@ -121,8 +124,10 @@ const Overview = () => {
         setIsLoading(false);
       }
     };
+
     if (period) {
       fetchCommittees();
+      fetchCommittees(true);
     }
   }, [period]);
 

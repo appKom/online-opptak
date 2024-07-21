@@ -22,7 +22,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       "HS",
       "Komiteledere",
       "Pangkom",
-      "Bankom",
       "Fond",
       "Æresmedlemmer",
       "Bed&Fagkom",
