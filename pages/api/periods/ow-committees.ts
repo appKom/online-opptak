@@ -71,7 +71,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             name_short: group.name_short,
             name_long: group.name_long,
             email: group.email,
-            application_description: group.application_description,
+            description_short: group.description_short,
+            description_long: group.description_long,
             image: group?.image,
           }))
       );
