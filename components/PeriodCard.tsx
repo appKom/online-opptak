@@ -63,16 +63,16 @@ const PeriodCard = ({ period }: Props) => {
             <CheckIcon className="w-3 h-3" />
           </span>
         )}
-        <div className="flex flex-row justify-center mt-4 gap-4">
+        <div className="flex flex-row justify-center gap-4 mt-4">
           <Button
-            href={`/overview/${period._id}`}
-            title={"Les mer"}
+            onClick={hasApplied ? handleButtonOnClick : handleButtonOnClick}
+            title={hasApplied ? "Se søknad" : "Søk nå"}
             size="small"
             color="blue"
           />
           <Button
-            onClick={hasApplied ? handleButtonOnClick : handleButtonOnClick}
-            title={hasApplied ? "Se søknad" : "Søk nå"}
+            href={`/overview/${period._id}`}
+            title="Les mer"
             size="small"
             color="white"
           />
