@@ -5,10 +5,7 @@ import {
   periodType,
   preferencesType,
 } from "../../lib/types/types";
-import {
-  AdjustmentsHorizontalIcon,
-  ChevronDownIcon,
-} from "@heroicons/react/24/outline";
+import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
 import ApplicantTable from "./ApplicantTable";
 import Skeleton from "react-loading-skeleton";
 
