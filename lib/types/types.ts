@@ -92,20 +92,30 @@ export type committeeInterviewType = {
   message: string;
 };
 
-export type interviewType = {
-  name: string;
+export type algorithmType = {
+  applicantName: string;
+  committeeName: string;
   interviewTimes: {
     start: string;
     end: string;
   };
-};
+}[];
 
 export type emailCommitteeInterviewType = {
   periodId: string;
   period_name: string;
   committeeName: string;
   committeeEmail: string;
-  applicants: interviewType[];
+  applicants: [
+    {
+      committeeName: string;
+      interviewTimes: {
+        start: string;
+        end: string;
+        room: string;
+      };
+    },
+  ];
 };
 
 export type emailApplicantInterviewType = {
@@ -113,5 +123,14 @@ export type emailApplicantInterviewType = {
   period_name: string;
   applicantName: string;
   applicantEmail: string;
-  committees: interviewType[];
+  committees: [
+    {
+      applicantName: string;
+      InterviewTimes: {
+        start: string;
+        end: string;
+        room: string;
+      };
+    },
+  ];
 };
