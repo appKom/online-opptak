@@ -66,10 +66,6 @@ export type periodType = {
   _id: ObjectId;
   name: string;
   description: string;
-  preparationPeriod: {
-    start: Date;
-    end: Date;
-  };
   applicationPeriod: {
     start: Date;
     end: Date;

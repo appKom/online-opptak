@@ -51,10 +51,6 @@ const Committee: NextPage = () => {
 
           return {
             name: period.name,
-            preparation:
-              formatDate(period.preparationPeriod.start) +
-              " til " +
-              formatDate(period.preparationPeriod.end),
             application:
               formatDate(period.applicationPeriod.start) +
               " til " +
@@ -81,7 +77,6 @@ const Committee: NextPage = () => {
 
   const periodsColumns = [
     { label: "Navn", field: "name" },
-    { label: "Forberedelse", field: "preparation" },
     { label: "Søknad", field: "application" },
     { label: "Intervju", field: "interview" },
   ];
