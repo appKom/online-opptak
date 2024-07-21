@@ -5,13 +5,13 @@ print(sys.path)
 print(__name__)
 # sys.path.append("C:\\Users\\Jørgen Galdal\\Documents\\lokalSkoleprogrammering\\appkom\\OnlineOpptak\\algorithm\\mip_matching")
 
-from Applicant import Applicant
+from mip_matching.Applicant import Applicant
 
 from typing import Iterator
 # from typing import TYPE_CHECKING
 # if TYPE_CHECKING:
 #     # Unngår cyclic import
-from TimeInterval import TimeInterval
+from mip_matching.TimeInterval import TimeInterval
 
 
 class Committee:
