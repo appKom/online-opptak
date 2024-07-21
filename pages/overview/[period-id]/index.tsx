@@ -23,9 +23,18 @@ const Overview = () => {
   useEffect(() => {
     const fetchPeriod = async () => {
       try {
-        const res = await fetch(`/api/periods/${periodId}`);
-        const data = await res.json();
-        setPeriod(data.period);
+        const cachedPeriod = localStorage.getItem(`period-${periodId}`);
+        if (cachedPeriod) {
+          setPeriod(JSON.parse(cachedPeriod));
+        } else {
+          const res = await fetch(`/api/periods/${periodId}`);
+          const data = await res.json();
+          setPeriod(data.period);
+          localStorage.setItem(
+            `period-${periodId}`,
+            JSON.stringify(data.period)
+          );
+        }
       } catch (error) {
         console.error("Failed to fetch interview periods:", error);
       }
@@ -39,37 +48,71 @@ const Overview = () => {
   useEffect(() => {
     const fetchCommittees = async () => {
       try {
-        const response = await fetch("/api/periods/ow-committees");
-        if (!response.ok) throw new Error("Failed to fetch committees");
-        const committees = await response.json();
+        const cachedCommittees = localStorage.getItem("ow-committees");
+        if (cachedCommittees) {
+          const committees = JSON.parse(cachedCommittees);
+          if (period) {
+            const filteredCommittees = committees.filter(
+              ({ name_short }: { name_short: string }) =>
+                period.committees.includes(name_short) ||
+                period.optionalCommittees.includes(name_short)
+            );
 
-        if (period) {
-          const filteredCommittees = committees.filter(
-            ({ name_short }: { name_short: string }) =>
-              period.committees.includes(name_short) ||
-              period.optionalCommittees.includes(name_short)
-          );
+            setAvailableCommittees(
+              filteredCommittees.map(
+                ({
+                  name_short,
+                  email,
+                  imageUri,
+                  description,
+                }: {
+                  name_short: string;
+                  email: string;
+                  imageUri: string;
+                  description: string;
+                }) => ({
+                  name: name_short,
+                  email: email,
+                  imageUri: imageUri || "/Online_bla_o.svg",
+                  description: description,
+                })
+              )
+            );
+          }
+        } else {
+          const response = await fetch("/api/periods/ow-committees");
+          if (!response.ok) throw new Error("Failed to fetch committees");
+          const committees = await response.json();
+          localStorage.setItem("ow-committees", JSON.stringify(committees));
 
-          setAvailableCommittees(
-            filteredCommittees.map(
-              ({
-                name_short,
-                email,
-                imageUri,
-                description,
-              }: {
-                name_short: string;
-                email: string;
-                imageUri: string;
-                description: string;
-              }) => ({
-                name: name_short,
-                email: email,
-                imageUri: imageUri || "/Online_bla_o.svg",
-                description: description,
-              })
-            )
-          );
+          if (period) {
+            const filteredCommittees = committees.filter(
+              ({ name_short }: { name_short: string }) =>
+                period.committees.includes(name_short) ||
+                period.optionalCommittees.includes(name_short)
+            );
+
+            setAvailableCommittees(
+              filteredCommittees.map(
+                ({
+                  name_short,
+                  email,
+                  imageUri,
+                  description,
+                }: {
+                  name_short: string;
+                  email: string;
+                  imageUri: string;
+                  description: string;
+                }) => ({
+                  name: name_short,
+                  email: email,
+                  imageUri: imageUri || "/Online_bla_o.svg",
+                  description: description,
+                })
+              )
+            );
+          }
         }
       } catch (error) {
         console.error(error);
