@@ -1,6 +1,6 @@
 import ScheduleCell from "./ScheduleCell";
 import { useState } from "react";
-import getTimeSlots from "../../utils/getTimeSlots";
+import getTimeSlots from "../../lib/utils/getTimeSlots";
 
 interface Props {
   date: string;
