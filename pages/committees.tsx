@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import LoadingPage from "../components/LoadingPage";
 
 const Committees = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +22,7 @@ const Committees = () => {
     fetchCommittees();
   }, []);
 
-  if (isLoading) return <div>Vent litt...</div>;
+  if (isLoading) return <LoadingPage />;
 
   return (
     <section className="bg-white dark:bg-gray-900">
