@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { owCommitteeType } from "../lib/types/types";
 
 const CommitteeAboutCard = ({
@@ -6,11 +5,8 @@ const CommitteeAboutCard = ({
   name_long,
   name_short,
   email,
-  description_short,
-  description_long,
+  application_description,
 }: owCommitteeType) => {
-  const [showMore, setShowMore] = useState(false);
-
   return (
     <div>
       <div className="flex items-center justify-center w-16 h-16 p-1 mb-4 bg-gray-100 rounded-full lg:h-20 lg:w-20 dark:bg-gray-900">
@@ -25,17 +21,8 @@ const CommitteeAboutCard = ({
       </h3>
       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">{email}</p>
       <p className="text-gray-500 whitespace-pre-wrap dark:text-gray-400">
-        {(showMore ? description_long : description_short) ||
-          "Ingen beskrivelse :("}
+        {application_description || "Ingen opptaksbeskrivelse :("}
       </p>
-      {description_long && description_long != description_short && (
-        <button
-          onClick={() => setShowMore(!showMore)}
-          className="mb-2 text-blue-500 hover:text-blue-700"
-        >
-          Les {showMore ? "mindre" : "mer"}
-        </button>
-      )}
     </div>
   );
 };
