@@ -193,8 +193,11 @@ const Application: NextPage = () => {
       <div className="flex flex-col items-center justify-center gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
         <WellDoneIllustration className="h-32" />
         <p className="max-w-md text-lg text-center">
+          {`
           Vi har mottatt din søknad og sendt deg en bekreftelse på e-post! Du
-          vil få enda en e-post med intervjutider når søknadsperioden er over.
+          vil få enda en e-post med intervjutider når søknadsperioden er over. `}
+          <br /> <br />
+          {`(Sjekk spam-mappen din hvis du ikke finner e-posten)`}
         </p>
         <div className="flex gap-5">
           <Button
