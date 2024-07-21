@@ -1,10 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { createApplicant, getApplicants } from "../../../lib/mongo/applicants";
 import { authOptions } from "../auth/[...nextauth]";
-import { getServerSession } from "next-auth";
 import { getPeriodById } from "../../../lib/mongo/periods";
+import { getServerSession } from "next-auth";
+import { emailDataType } from "../../../lib/types/types";
 import { isApplicantType } from "../../../lib/utils/validators";
 import { isAdmin, hasSession, checkOwId } from "../../../lib/utils/apiChecks";
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import capitalizeFirstLetter from "../../../utils/capitalizeFirstLetter";
+import sendEmail from "../../../utils/sendEmail";
+import { changeDisplayName } from "../../../lib/utils/toString";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -49,6 +54,69 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const { applicant, error } = await createApplicant(requestBody);
       if (error) throw new Error(error);
+
+      const sesClient = new SESClient({ region: "eu-north-1" });
+
+      if (applicant != null) {
+        let optionalCommitteesString = "";
+        if (applicant.optionalCommittees.length > 0) {
+          optionalCommitteesString = applicant.optionalCommittees
+            ?.map(changeDisplayName)
+            .join(", ");
+        } else {
+          optionalCommitteesString = "Ingen";
+        }
+
+        const emailData: emailDataType = {
+          name: applicant.name,
+          emails: [applicant.email],
+          phone: applicant.phone,
+          grade: applicant.grade,
+          about: applicant.about.replace(/\n/g, "<br>"),
+          firstChoice: "Tom",
+          secondChoice: "Tom",
+          thirdChoice: "Tom",
+          bankom:
+            applicant.bankom == "yes"
+              ? "Ja"
+              : applicant.bankom == "no"
+              ? "Nei"
+              : "Kanskje",
+          optionalCommittees: optionalCommitteesString,
+        };
+
+        //Type guard
+        if (!Array.isArray(applicant.preferences)) {
+          emailData.firstChoice =
+            applicant.preferences.first == "onlineil"
+              ? "Online IL"
+              : capitalizeFirstLetter(applicant.preferences.first);
+          emailData.secondChoice =
+            applicant.preferences.second == "onlineil"
+              ? "Online IL"
+              : capitalizeFirstLetter(applicant.preferences.second);
+          emailData.thirdChoice =
+            applicant.preferences.third == "onlineil"
+              ? "Online IL"
+              : capitalizeFirstLetter(applicant.preferences.third);
+        }
+
+        try {
+          await sendEmail({
+            sesClient: sesClient,
+            fromEmail: "opptak@online.ntnu.no",
+            toEmails: emailData.emails,
+            subject: "Vi har mottatt din søknad!",
+            htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br><strong>E-post:</strong> ${emailData.emails[0]}<br><br><strong>Fullt navn:</strong> ${emailData.name}<br><br><strong>Telefonnummer:</strong> ${emailData.phone}<br><br><strong>Trinn:</strong> ${emailData.grade}<br><br><strong>Førstevalg:</strong> ${emailData.firstChoice}<br><br><strong>Andrevalg:</strong> ${emailData.secondChoice}<br><br><strong>Tredjevalg:</strong> ${emailData.thirdChoice}<br><br><strong>Ønsker du å være økonomiansvarlig:</strong> ${emailData.bankom}<br><br><strong> Andre valg:</strong> ${emailData.optionalCommittees}<br><br><strong>Kort om deg selv:</strong><br>${emailData.about}`,
+          });
+
+          console.log("Email sent to: ", emailData.emails);
+        } catch (error) {
+          console.error("Error sending email: ", error);
+          throw error;
+        }
+      }
+
       return res.status(201).json({ applicant });
     }
   } catch (error) {
