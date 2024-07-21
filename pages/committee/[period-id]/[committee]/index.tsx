@@ -18,6 +18,7 @@ import CommitteeInterviewTimes from "../../../../components/committee/CommitteeI
 import LoadingPage from "../../../../components/LoadingPage";
 import { changeDisplayName } from "../../../../lib/utils/toString";
 import Custom404 from "../../../404";
+import PageTitle from "../../../../components/PageTitle";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -151,12 +152,7 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-10/12">
-        <div className="w-full my-8">
-            <h2 className="mb-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Opptaksperiode: <span className="font-normal">{period?.name}</span></h2>
-            <p className="text-xl font-semibold text-gray-500 dark:text-gray-400">Komité: <span className="font-normal">{changeDisplayName(committee)}</span></p>
-        </div>
-      </div>
+      <PageTitle mainTitle={period?.name || ""} boldMainTitle="Opptaksperiode" subTitle={changeDisplayName(committee)} boldSubTitle="Komité" />
       <Tabs
         activeTab={activeTab}
         setActiveTab={(index) => {

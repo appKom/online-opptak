@@ -15,6 +15,7 @@ import { validateApplication } from "../../lib/utils/validateApplication";
 import ApplicantCard from "../../components/applicantoverview/ApplicantCard";
 import LoadingPage from "../../components/LoadingPage";
 import { formatDateNorwegian } from "../../lib/utils/dateUtils";
+import PageTitle from "../../components/PageTitle";
 
 interface FetchedApplicationData {
   exists: boolean;
@@ -238,12 +239,7 @@ const Application: NextPage = () => {
   return (
     <div>
       <div className="flex flex-col items-center justify-center py-5">
-        {periodExists && period && (
-          <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
-            {period?.name}
-          </h1>
-        )}
-
+        <PageTitle mainTitle={period?.name || ""} boldMainTitle="Opptaksperiode" subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""} boldSubTitle="Søknadsfrist" />
         <Tabs
           activeTab={activeTab}
           setActiveTab={setActiveTab}
