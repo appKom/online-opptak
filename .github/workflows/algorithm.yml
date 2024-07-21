@@ -1,0 +1,21 @@
+on:
+  push:
+    paths: 
+      - "algorithm/*"
+  pull_request:
+    paths: 
+      - "algorithm/*"
+
+jobs:
+  test:
+    runs-on: "ubuntu-latest"
+    steps: 
+      - name: Install mip_matching
+        run: |
+          cd algorithm
+          python -m pip install -e .
+
+      - name: Run tests
+        run: |
+          python -m unittest discover -p "*test.py"
+          
