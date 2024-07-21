@@ -4,10 +4,12 @@ import { useSession } from "next-auth/react";
 import Table from "../../components/Table";
 import { formatDate } from "../../lib/utils/dateUtils";
 import { periodType } from "../../lib/types/types";
+import LoadingPage from "../../components/LoadingPage";
 
 const Committee: NextPage = () => {
   const { data: session } = useSession();
   const [periods, setPeriods] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPeriods = async () => {
     try {
@@ -68,6 +70,8 @@ const Committee: NextPage = () => {
       );
     } catch (error) {
       console.error("Failed to fetch application periods:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -86,8 +90,8 @@ const Committee: NextPage = () => {
     return <p>Ingen tilgang!</p>;
   }
 
-  if (!session || !session.user?.isCommitee) {
-    return <p>Ingen tilgang!</p>;
+  if (isLoading) {
+    return <LoadingPage />;
   }
 
   return (
