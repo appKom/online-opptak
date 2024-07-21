@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent, useEffect } from "react";
+import { BaseSyntheticEvent, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import FullCalendar from "@fullcalendar/react";
@@ -45,6 +45,8 @@ const CommitteeInterviewTimes = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [currentSelection, setCurrentSelection] = useState<any>(null);
   const [roomInput, setRoomInput] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const calendarRef = useRef<FullCalendar>(null);
 
   useEffect(() => {
     if (period) {
@@ -86,6 +88,30 @@ const CommitteeInterviewTimes = ({
     }
   }, [committeeInterviewTimes]);
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isModalOpen) {
+        if (event.key === "Enter") {
+          handleRoomSubmit();
+        } else if (event.key === "Escape") {
+          setIsModalOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModalOpen, roomInput]);
+
+  useEffect(() => {
+    if (isModalOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isModalOpen]);
+
   const handleDateSelect = (selectionInfo: any) => {
     setCurrentSelection(selectionInfo);
     setIsModalOpen(true);
@@ -103,7 +129,10 @@ const CommitteeInterviewTimes = ({
       end: currentSelection.end,
     };
 
-    currentSelection.view.calendar.addEvent(event);
+    const calendarApi = currentSelection.view.calendar;
+    calendarApi.addEvent(event);
+    calendarApi.render(); // Force the calendar to re-render
+
     addCell([
       roomInput,
       currentSelection.start.toISOString(),
@@ -112,6 +141,7 @@ const CommitteeInterviewTimes = ({
 
     setRoomInput("");
     setIsModalOpen(false);
+    setCalendarEvents((prevEvents) => [...prevEvents, event]); // Trigger re-render
   };
 
   const submit = async (e: BaseSyntheticEvent) => {
@@ -347,6 +377,7 @@ const CommitteeInterviewTimes = ({
         )}
         <div className="mx-4 sm:mx-20">
           <FullCalendar
+            ref={calendarRef}
             eventClassNames={"dark:bg-online-darkBlue"}
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
@@ -413,6 +444,7 @@ const CommitteeInterviewTimes = ({
               Skriv inn navn på rom:
             </h2>
             <input
+              ref={inputRef}
               type="text"
               className="my-2 p-2 w-full rounded-lg dark:bg-gray-900  border-gray-900 dark:border-white transition-none outline-none"
               value={roomInput}
