@@ -36,7 +36,7 @@ const Committees = () => {
             alle komiteer man kan søke på osv.
           </p>
         </div>
-        <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
+        <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
           {committees?.map((committee, index) => {
             return (
               <div key={index}>
