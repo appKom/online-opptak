@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import "react-loading-skeleton/dist/skeleton.css";
 import React, { useEffect } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
 import Head from "next/head";

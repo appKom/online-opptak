@@ -5,9 +5,12 @@ import {
   periodType,
   preferencesType,
 } from "../../lib/types/types";
-import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
+import {
+  AdjustmentsHorizontalIcon,
+  ChevronDownIcon,
+} from "@heroicons/react/24/outline";
 import ApplicantTable from "./ApplicantTable";
-import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
+import Skeleton from "react-loading-skeleton";
 
 interface Props {
   period: periodType | null;
@@ -163,13 +166,9 @@ const ApplicantsOverview = ({
     };
   }, [filterMenuRef]);
 
-  if (isLoading) {
-    return <ApplicantOverviewSkeleton />;
-  }
-
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-5">
+      <div className="flex items-center justify-center min-h-screen px-5">
         <p className="text-2xl">Det skjedde en feil, vennligst prøv igjen</p>
       </div>
     );
@@ -177,19 +176,23 @@ const ApplicantsOverview = ({
 
   return (
     <div className="flex flex-col items-center px-5">
-      <h2 className="mt-5 mb-6 text-3xl font-bold items-start text-start">
-        {period?.name}
+      <h2 className="items-start my-5 text-3xl font-bold">
+        {isLoading ? (
+          <Skeleton width={200} height={30} className="py-4 mt-5 mb-6" />
+        ) : (
+          period?.name
+        )}
       </h2>
 
       <div className="w-full max-w-lg mx-auto mb-5">
-        <div className="flex flex-row mb-2 align-end justify-between relative">
-          <p className="dark:text-gray-300 text-gray-800 text-sm">
+        <div className="relative flex flex-row justify-between mb-2 align-end">
+          <p className="text-sm text-gray-800 dark:text-gray-300">
             Søk etter navn eller filtrer
           </p>
-          <div className="flex flex-row gap-2 relative">
+          <div className="relative flex flex-row gap-2">
             {applicants.length > filteredApplicants.length && (
               <p
-                className="text-blue-800 dark:text-blue-400 text-sm cursor-pointer"
+                className="text-sm text-blue-800 cursor-pointer dark:text-blue-400"
                 onClick={resetFilters}
               >
                 (Vis alle {applicants.length})
@@ -204,13 +207,13 @@ const ApplicantsOverview = ({
             {filterMenuVisible && (
               <div
                 ref={filterMenuRef}
-                className="absolute right-0 top-10 w-48 bg-white dark:bg-online-darkBlue border border-gray-300 dark:border-gray-600 p-4 rounded shadow-lg z-10"
+                className="absolute right-0 z-10 w-48 p-4 bg-white border border-gray-300 rounded shadow-lg top-10 dark:bg-online-darkBlue dark:border-gray-600"
               >
                 {committees && (
                   <div className="mb-4">
-                    <label className="block text-sm mb-2">Velg komite</label>
+                    <label className="block mb-2 text-sm">Velg komite</label>
                     <select
-                      className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+                      className="w-full p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                       value={selectedCommittee ?? ""}
                       onChange={(e) => setSelectedCommittee(e.target.value)}
                     >
@@ -224,9 +227,9 @@ const ApplicantsOverview = ({
                   </div>
                 )}
                 <div className="mb-4">
-                  <label className="block text-sm mb-2">Velg klasse</label>
+                  <label className="block mb-2 text-sm">Velg klasse</label>
                   <select
-                    className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+                    className="w-full p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
                   >
@@ -239,9 +242,9 @@ const ApplicantsOverview = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm mb-2">Velg bankom</label>
+                  <label className="block mb-2 text-sm">Velg bankom</label>
                   <select
-                    className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+                    className="w-full p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                     value={selectedBankom}
                     onChange={(e) => setSelectedBankom(e.target.value)}
                   >
@@ -266,7 +269,12 @@ const ApplicantsOverview = ({
         />
       </div>
 
-      {filteredApplicants && filteredApplicants.length > 0 ? (
+      {isLoading ? (
+        <div className="w-full max-w-lg p-4 my-4 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+          <Skeleton width={200} height={24} className="w-full" />
+          <Skeleton width={80} height={20} className="w-full" />
+        </div>
+      ) : filteredApplicants && filteredApplicants.length > 0 ? (
         <div className="w-full max-w-lg mx-auto">
           <ApplicantTable
             filteredApplications={filteredApplicants}
