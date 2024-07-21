@@ -52,9 +52,8 @@ const Application: NextPage = () => {
 
   useEffect(() => {
     const checkPeriodAndApplicationStatus = async () => {
-      if (!periodId || !session?.user?.owId) {
-        return;
-      }
+      if (!periodId || !session?.user?.owId) return;
+
       try {
         const periodResponse = await fetch(`/api/periods/${periodId}`);
         const periodData = await periodResponse.json();
@@ -89,9 +88,8 @@ const Application: NextPage = () => {
   }, [session?.user?.owId, periodId]);
 
   const handleSubmitApplication = async () => {
-    if (!validateApplication(applicationData)) {
-      return;
-    }
+    if (!validateApplication(applicationData)) return;
+
     try {
       applicationData.periodId = periodId as string;
       const response = await fetch("/api/applicants", {
@@ -127,6 +125,7 @@ const Application: NextPage = () => {
       fetchApplicationData();
     }
   };
+
   const fetchApplicationData = async () => {
     if (!session?.user?.owId || !periodId) return;
 
@@ -156,12 +155,7 @@ const Application: NextPage = () => {
       return;
     }
 
-    const isConfirmed = confirm(
-      "Er du sikker på at du vil trekke tilbake søknaden?"
-    );
-    if (!isConfirmed) {
-      return;
-    }
+    if (!confirm("Er du sikker på at du vil trekke tilbake søknaden?")) return;
 
     try {
       const response = await fetch(
@@ -182,9 +176,7 @@ const Application: NextPage = () => {
     }
   };
 
-  if (isLoading) {
-    return <LoadingPage />;
-  }
+  if (isLoading) return <LoadingPage />;
 
   if (!periodExists) {
     return (
@@ -198,9 +190,9 @@ const Application: NextPage = () => {
 
   if (hasAlreadySubmitted) {
     return (
-      <div className="flex flex-col items-center py-10 justify-center gap-5 px-5 md:px-40 lg:px-80 dark:text-white">
+      <div className="flex flex-col items-center justify-center gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
         <WellDoneIllustration className="h-32" />
-        <p className="text-lg text-center max-w-md">
+        <p className="max-w-md text-lg text-center">
           Vi har mottatt din søknad og sendt deg en bekreftelse på e-post! Du
           vil få enda en e-post med intervjutider når søknadsperioden er over.
         </p>
@@ -212,7 +204,7 @@ const Application: NextPage = () => {
           />
         </div>
         {fetchedApplicationData && (
-          <div className="max-w-md w-full">
+          <div className="w-full max-w-md">
             <ApplicantCard
               applicant={fetchedApplicationData.application}
               includePreferences={true}
@@ -252,9 +244,7 @@ const Application: NextPage = () => {
                       title="Videre"
                       color="blue"
                       onClick={() => {
-                        if (!validateApplication(applicationData)) {
-                          return;
-                        }
+                        if (!validateApplication(applicationData)) return;
                         setActiveTab(activeTab + 1);
                       }}
                       size="small"
