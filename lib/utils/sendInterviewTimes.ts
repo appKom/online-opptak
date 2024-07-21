@@ -15,7 +15,7 @@ export const fetchInterviewTimes = async ({ periodId }: Props) => {
   //TODO
   //Hente data fra algoritmen
   //Hente data fra databasen
-  //Slå sammen date fra algoritmen og databasen
+  //Slå sammen dataen fra algoritmen og databasen
 };
 
 interface sendInterviewTimesProps {
