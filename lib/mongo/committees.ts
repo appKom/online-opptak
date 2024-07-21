@@ -1,6 +1,7 @@
 import { Collection, Db, MongoClient, ObjectId, UpdateResult } from "mongodb";
 import clientPromise from "./mongodb";
 import { commiteeType } from "../types/types";
+import { co } from "@fullcalendar/core/internal-common";
 
 let client: MongoClient;
 let db: Db;
@@ -70,12 +71,17 @@ export const updateCommitteeMessage = async (
 
 export const getCommittees = async (
   periodId: string,
+  selectedCommittee: string,
   userCommittees: string[]
 ) => {
   try {
     if (!committees) await init();
+    if (!userHasAccessCommittee(userCommittees, selectedCommittee)) {
+      return { error: "User is unauthenticated" };
+    }
+
     const result = await committees
-      .find({ committee: { $in: userCommittees }, periodId: periodId })
+      .find({ committee: selectedCommittee, periodId: periodId })
       .toArray();
     return { committees: result };
   } catch (error) {
@@ -99,7 +105,8 @@ export const getCommittee = async (id: string) => {
 
 export const createCommittee = async (
   committeeData: commiteeType,
-  userCommittes: string[]
+  userCommittes: string[],
+  periodId: string
 ) => {
   try {
     if (!committees) await init();
@@ -107,10 +114,23 @@ export const createCommittee = async (
       return { error: "User does not have access to this committee" };
     }
 
+    if (!ObjectId.isValid(periodId)) {
+      return { error: "Invalid periodId" };
+    }
+
     const parsedCommitteeData =
       typeof committeeData === "string"
         ? JSON.parse(committeeData)
         : committeeData;
+
+    const count = await committees.countDocuments({
+      periodId: periodId,
+      committee: committeeData.committee,
+    });
+
+    if (count > 0) {
+      return { error: "Committee Times already exists" };
+    }
 
     const result = await committees.insertOne(parsedCommitteeData);
     if (result.insertedId) {
@@ -141,26 +161,18 @@ export const deleteCommittee = async (
       return { error: "User does not have access to this committee" };
     }
 
-    let validPeriodId = periodId;
-    if (typeof periodId === "string") {
-      if (!ObjectId.isValid(periodId)) {
-        console.error("Invalid ObjectId:", periodId);
-        return { error: "Invalid ObjectId format" };
-      }
-      validPeriodId = periodId;
-    }
-
     const count = await committees.countDocuments({
       committee: committee,
-      periodId: validPeriodId,
+      periodId: periodId,
     });
+
     if (count === 0) {
       return { error: "Committee not found or already deleted" };
     }
 
     const result = await committees.deleteOne({
       committee: committee,
-      periodId: validPeriodId,
+      periodId: periodId,
     });
 
     if (result.deletedCount === 1) {
