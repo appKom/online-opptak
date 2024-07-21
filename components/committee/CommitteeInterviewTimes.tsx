@@ -174,13 +174,10 @@ const CommitteeInterviewTimes = ({
 
   const renderEventContent = (eventContent: any) => {
     return (
-      <div className="flex flex-row justify-between p-4 overflow-hidden whitespace-nowrap">
-        <h1 className="text-3xl overflow-hidden whitespace-nowrap overflow-ellipsis">
-          {eventContent.event.title}
-        </h1>
+      <div className="relative flex flex-col p-4">
         {!hasAlreadySubmitted && (
           <button
-            className="ml-2"
+            className="absolute top-0 right-0 m-2"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -195,10 +192,13 @@ const CommitteeInterviewTimes = ({
             <img
               src="/close.svg"
               alt="close icon"
-              style={{ width: "40px", height: "40px" }}
+              style={{ width: "20px", height: "20px" }}
             />
           </button>
         )}
+        <h1 className="text-sm sm:text-xl md:text-2xl lg:text-3xl break-words">
+          {eventContent.event.title}
+        </h1>
       </div>
     );
   };
