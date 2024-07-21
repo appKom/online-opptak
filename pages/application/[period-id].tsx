@@ -201,8 +201,8 @@ const Application: NextPage = () => {
           (rundt {formatDateNorwegian(period?.applicationPeriod?.end)}).
         </p>
         <p className="max-w-md text-center text-gray-500">
-          (Hvis du ikke finner e-posten din, sjekk "søppelpost"- eller
-          "spam"-mappen.)
+          (Hvis du ikke finner e-posten din, sjekk søppelpost- eller
+          spam-mappen.)
         </p>
         <div className="flex gap-5">
           <Button
