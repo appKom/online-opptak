@@ -95,7 +95,7 @@ export type committeeInterviewType = {
 export type algorithmType = {
   applicantName: string;
   committeeName: string;
-  interviewTimes: {
+  interviewTime: {
     start: string;
     end: string;
   };
