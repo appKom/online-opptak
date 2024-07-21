@@ -1,0 +1,27 @@
+on:
+  push:
+    paths: 
+      - "algorithm/*"
+  pull_request:
+    paths: 
+      - "algorithm/*"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: "ubuntu-latest"
+    
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps: 
+      - name: Install mip_matching
+        run: |
+          cd algorithm
+          python -m pip install -e .
+
+      - name: Run tests
+        run: |
+          python -m unittest discover -p "*test.py"
+          

@@ -1,21 +1,30 @@
 /** @type {import('tailwindcss').Config} */
+const defaultTheme = require("tailwindcss/defaultTheme");
+const colors = require("tailwindcss/colors");
+
 module.exports = {
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    colors: {
-      online: {
-        darkTeal: "#005577",
-        darkBlue: "#10243e",
-        orange: "#fab759",
-        blueGray: "#131620",
-        snowWhite: "#edf6ff",
-        white: "#fdfdfe",
+    extend: {
+      fontFamily: {
+        sans: ["Inter", ...defaultTheme.fontFamily.sans],
+      },
+      colors: {
+        online: {
+          darkTeal: "#005577",
+          darkBlue: "#10243e",
+          orange: "#fab759",
+          darkOrange: "#c9821c",
+          blueGray: "#131620",
+          snowWhite: "#edf6ff",
+          white: "#fdfdfe",
+        },
       },
     },
-    extend: {},
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms")],
 };

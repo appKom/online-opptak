@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { applicantType, commiteeType } from "../types";
+import { applicantType, preferencesType } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
@@ -22,18 +22,20 @@ async function init() {
   await init();
 })();
 
-export const createApplicant = async (
-  applicantData: applicantType | string,
-) => {
+export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
-    const parsedApplicantData =
-      typeof applicantData === "string"
-        ? JSON.parse(applicantData)
-        : applicantData;
+    const existingApplicant = await applicants.findOne({
+      owId: applicantData.owId,
+      periodId: applicantData.periodId,
+    });
 
-    const result = await applicants.insertOne(parsedApplicantData);
+    if (existingApplicant) {
+      return { error: "409 Application already exists for this period" };
+    }
+
+    const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
       const insertedApplicant = await applicants.findOne({
         _id: result.insertedId,
@@ -62,23 +64,133 @@ export const getApplicants = async () => {
   }
 };
 
-export const updateSelectedTimes = async (
+export const getApplication = async (
   id: string,
-  selectedTimes: [{ start: string; end: string }],
+  periodId: string | ObjectId
 ) => {
   try {
     if (!applicants) await init();
-    const result = await applicants.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { selectedTimes: selectedTimes } },
-    );
-    if (result.matchedCount > 0) {
-      return { message: "Selected times updated successfully" };
+
+    const result = await applicants.findOne({
+      owId: id,
+      periodId: periodId,
+    });
+
+    return { application: result, exists: !!result };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch application", exists: false };
+  }
+};
+
+export const getApplications = async (periodId: string) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants
+      .find({ periodId: periodId }) // No ObjectId conversion needed
+      .toArray();
+
+    return { applications: result, exists: result.length > 0 };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch applications" };
+  }
+};
+
+export const getApplicantsForCommittee = async (
+  periodId: string,
+  userCommittees: string[]
+) => {
+  try {
+    if (!applicants) await init();
+
+    // Henter alle søkere for perioden
+    const result = await applicants.find({ periodId: periodId }).toArray();
+
+    // Type guard
+    const isPreferencesType = (
+      preferences: any
+    ): preferences is preferencesType => {
+      return (
+        preferences &&
+        typeof preferences.first === "string" &&
+        typeof preferences.second === "string" &&
+        typeof preferences.third === "string"
+      );
+    };
+
+    // Filtrerer søkerne slik at kun brukere som er i komiteen som har blitt søkt på ser søkeren
+    // Fjerner prioriterings informasjon
+    const filteredApplicants = result
+      .map((applicant) => {
+        let preferencesArray: string[] = [];
+        if (isPreferencesType(applicant.preferences)) {
+          preferencesArray = [
+            applicant.preferences.first,
+            applicant.preferences.second,
+            applicant.preferences.third,
+          ];
+        } else if (Array.isArray(applicant.preferences)) {
+          preferencesArray = applicant.preferences.map(
+            (pref) => pref.committee
+          );
+        }
+
+        if (applicant.optionalCommittees != null) {
+          if (applicant.optionalCommittees.length > 0) {
+            for (const committee of applicant.optionalCommittees) {
+              preferencesArray.push(committee);
+            }
+          }
+        }
+
+        // Sjekker om brukerens komite er blant søkerens komiteer
+        const hasCommonCommittees = preferencesArray.some((preference) =>
+          userCommittees.includes(preference)
+        );
+
+        applicant.optionalCommittees = [];
+
+        if (hasCommonCommittees) {
+          // Fjerner prioriteringer
+          const { preferences, ...rest } = applicant;
+          const filteredPreferences = preferencesArray
+            .filter((preference) => userCommittees.includes(preference))
+            .map((committee) => ({ committee }));
+
+          return { ...rest, preferences: filteredPreferences };
+        }
+        return null;
+      })
+      .filter((applicant) => applicant !== null);
+
+    return { applicants: filteredApplicants };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch applicants" };
+  }
+};
+
+export const deleteApplication = async (
+  owId: string,
+  periodId: string | ObjectId
+) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants.deleteOne({
+      owId: owId,
+      periodId: periodId,
+    });
+
+    if (result.deletedCount === 1) {
+      return { message: "Application deleted successfully" };
     } else {
-      return { error: "No applicant found with the specified ID" };
+      return { error: "Application not found or already deleted" };
     }
   } catch (error) {
     console.error(error);
-    return { error: "Failed to update selected times" };
+    return { error: "Failed to delete application" };
   }
 };
