@@ -1,5 +1,6 @@
 from __future__ import annotations
 from datetime import datetime, timedelta, date, time
+# import ..algorithm.mip_matching.core.Applicant.py as applicant
 
 from mip_matching.TimeInterval import TimeInterval
 from mip_matching.Committee import Committee
@@ -144,7 +145,8 @@ class MipTest(unittest.TestCase):
         START_TIME_PER_DAY = time(hour=8, minute=0)
         END_TIME_PER_DAY = time(hour=18, minute=0)
         DAY_LENGTH = datetime.combine(date.today(
-        ), END_TIME_PER_DAY) - datetime.combine(date.today(), START_TIME_PER_DAY)  # type: ignore
+            # type: ignore
+        ), END_TIME_PER_DAY) - datetime.combine(date.today(), START_TIME_PER_DAY)
 
         def get_random_interval(interval_date: date, interval_length_min: timedelta, interval_length_max: timedelta) -> TimeInterval:
             interval_start = datetime.combine(interval_date, START_TIME_PER_DAY) + \

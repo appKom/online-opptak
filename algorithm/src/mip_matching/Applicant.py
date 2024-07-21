@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     # Unngår cyclic import
-    from mip_matching.Committee import Committee
-    from mip_matching.TimeInterval import TimeInterval
+    from Committee import Committee
+    from TimeInterval import TimeInterval
 
 import itertools
 
@@ -29,7 +29,6 @@ class Applicant:
             self.add_committee(committee)
 
     def add_interval(self, interval: TimeInterval) -> None:
-        # TODO: Vurder å gjøre "sanitizing" ved å slå sammen overlappende intervaller.
         """
         Slår også sammen overlappende intervaller.
 

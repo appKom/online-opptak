@@ -49,3 +49,7 @@ class ApplicantTest(unittest.TestCase):
             TimeInterval(datetime(2024, 8, 24, 7, 30),
                          datetime(2024, 8, 24, 11, 30)),
         })
+
+if __name__ == "__main__":
+    unittest.main(exit=False)
+    
