@@ -10,6 +10,7 @@ import {
   isAdmin,
   checkOwId,
 } from "../../../../lib/utils/apiChecks";
+import { getPeriodById } from "../../../../lib/mongo/periods";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -25,6 +26,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (!checkOwId(res, session, id)) return;
 
+  const { period } = await getPeriodById(periodId);
+
+  if (!period) {
+    return res.status(404).json({ error: "Period not found" });
+  }
+
   try {
     if (req.method === "GET") {
       const { application, exists, error } = await getApplication(id, periodId);
@@ -33,6 +40,12 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
       return res.status(200).json({ exists, application });
     } else if (req.method === "DELETE") {
+      const currentDate = new Date().toISOString();
+
+      if (new Date(period.applicationPeriod.end) < new Date(currentDate)) {
+        return res.status(403).json({ error: "Application period is over" });
+      }
+
       const { error } = await deleteApplication(id, periodId);
       if (error) throw new Error(error);
       return res.status(204).end();
