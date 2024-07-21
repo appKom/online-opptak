@@ -1,7 +1,8 @@
 import ScheduleColumn from "./ScheduleColumn";
-import getTimeSlots from "../../utils/getTimeSlots";
+import getTimeSlots from "../../lib/utils/getTimeSlots";
 import { useState, useEffect } from "react";
 import { DeepPartial, applicantType } from "../../lib/types/types";
+import ImportantNote from "../ImportantNote";
 
 interface Props {
   interviewLength: number;
@@ -205,38 +206,19 @@ export default function Schedule({
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex max-w-full p-4 mx-5 mb-5 text-sm text-yellow-500 rounded-md dark:text-online-orange bg-yellow-50 dark:bg-gray-800">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          className="flex-shrink-0 w-5 h-5 mr-3"
-        >
-          <path
-            fillRule="evenodd"
-            d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-            clipRule="evenodd"
-          />
-        </svg>
-        <div>
-          <b className="mr-2">Valgfritt</b>
-          Legg til tider du&nbsp;
-          <span className="font-semibold">IKKE</span>&nbsp;er ledig for
-          intervju. Flere ledige tider øker sjansen for automatisk tildeling av
-          intervjutider!
-        </div>
-      </div>
-      <div className="flex justify-center gap-10 text-gray-700 dark:text-white">
-        <div className="flex items-center gap-2">
-          <div className="w-16 h-8 bg-green-300 border border-gray-300 rounded-sm dark:border-gray-700"></div>
-          Jeg er ledig
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-16 h-8 bg-red-300 border border-gray-300 rounded-sm dark:border-gray-700"></div>
-          <div>
-            Jeg er <span className="font-bold">IKKE</span> ledig
-          </div>
-        </div>
+      <ImportantNote
+        prefix="Valgfritt"
+        text={
+          <>
+            Legg inn tider du&nbsp;<span className="font-bold">IKKE</span>
+            &nbsp;er ledig for intervju. Flere ledige tider øker sjansen for
+            automatisk tildeling av intervjutider!
+          </>
+        }
+      />
+      <div className="flex gap-10">
+        <AvailabilityIndicator isAvailable />
+        <AvailabilityIndicator />
       </div>
       <div className="flex px-5 py-4 mt-5 border border-gray-200 rounded-md shadow w-max dark:bg-gray-800 dark:border-gray-700">
         <div className="flex flex-col justify-end">
@@ -262,3 +244,18 @@ export default function Schedule({
     </div>
   );
 }
+
+const AvailabilityIndicator = ({ isAvailable }: { isAvailable?: boolean }) => {
+  return (
+    <div className="flex items-center gap-2 text-gray-700 dark:text-white">
+      <div
+        className={`w-16 h-8 border border-gray-300 rounded-sm dark:border-gray-700 ${
+          isAvailable ? "bg-green-300" : "bg-red-300"
+        }`}
+      ></div>
+      <div>
+        Jeg er {!isAvailable && <span className="font-bold">IKKE</span>} ledig
+      </div>
+    </div>
+  );
+};

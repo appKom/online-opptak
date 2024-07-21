@@ -48,14 +48,24 @@ export type applicantType = {
   periodId: string | ObjectId;
 };
 
+// applicantType modified to fit email content
+export type emailDataType = {
+  name: string;
+  emails: string[];
+  phone: string;
+  grade: string;
+  about: string;
+  firstChoice: string;
+  secondChoice: string;
+  thirdChoice: string;
+  bankom: "Ja" | "Nei" | "Kanskje";
+  optionalCommittees: string;
+};
+
 export type periodType = {
   _id: ObjectId;
   name: string;
   description: string;
-  preparationPeriod: {
-    start: Date;
-    end: Date;
-  };
   applicationPeriod: {
     start: Date;
     end: Date;
