@@ -33,7 +33,7 @@ const Home = () => {
             Her skal det stå masse kult om komitéopptak og sånn og om at man må
             bli med i komité og at dette er det bra opptakssystem og sånn.
           </p>
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <Button
               title="Søk nå"
               color="blue"
@@ -41,7 +41,7 @@ const Home = () => {
               href="/apply"
             />
             <Button title="Om opptak" color="white" href="/about" />
-            <Button title="Komiteer" color="white" href="/committees" />
+            <Button title="Om komiteer" color="white" href="/committees" />
           </div>
         </div>
         <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
