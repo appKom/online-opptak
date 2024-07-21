@@ -85,6 +85,7 @@ const Overview = () => {
           const response = await fetch("/api/periods/ow-committees");
           if (!response.ok) throw new Error("Failed to fetch committees");
           const committees = await response.json();
+          console.log(committees);
           localStorage.setItem("ow-committees", JSON.stringify(committees));
 
           if (period) {
