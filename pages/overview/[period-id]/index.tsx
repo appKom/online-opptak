@@ -4,12 +4,14 @@ import CommitteeOverviewCard from "../../../components/CommitteOverviewCard";
 import LoadingPage from "../../../components/LoadingPage";
 import { useRouter } from "next/router";
 import { periodType } from "../../../lib/types/types";
+import Button from "../../../components/Button";
 
 const Overview = () => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const periodId = router.query["period-id"];
   const [period, setPeriod] = useState<periodType | null>(null);
+  const [showAllCommittees] = useState<boolean>(periodId == "all");
   const [availableCommittees, setAvailableCommittees] = useState<
     {
       name: string;
@@ -40,7 +42,7 @@ const Overview = () => {
       }
     };
 
-    if (periodId) {
+    if (periodId && !showAllCommittees) {
       fetchPeriod();
       fetchPeriod(true); // Update cache in the background
     }
@@ -52,13 +54,21 @@ const Overview = () => {
         const cachedCommittees = localStorage.getItem("ow-committees");
         if (cachedCommittees && !updateCache) {
           const committees = JSON.parse(cachedCommittees);
-          if (period) {
-            const filteredCommittees = committees.filter(
-              ({ name_short }: { name_short: string }) =>
-                period.committees.includes(name_short) ||
-                period.optionalCommittees.includes(name_short) ||
-                "Bankom" === name_short
-            );
+          let filteredCommittees;
+          if (period || showAllCommittees) {
+            if (period) {
+              filteredCommittees = committees.filter(
+                ({ name_short }: { name_short: string }) =>
+                  period.committees.includes(name_short) ||
+                  period.optionalCommittees.includes(name_short) ||
+                  "Bankom" === name_short
+              );
+            } else {
+              filteredCommittees = committees.filter(
+                ({ name_short }: { name_short: string }) =>
+                  "Output" !== name_short && "Faddere" !== name_short
+              );
+            }
 
             setAvailableCommittees(
               filteredCommittees.map(
@@ -86,14 +96,22 @@ const Overview = () => {
           if (!response.ok) throw new Error("Failed to fetch committees");
           const committees = await response.json();
           localStorage.setItem("ow-committees", JSON.stringify(committees));
+          let filteredCommittees;
 
-          if (period) {
-            const filteredCommittees = committees.filter(
-              ({ name_short }: { name_short: string }) =>
-                period.committees.includes(name_short) ||
-                period.optionalCommittees.includes(name_short) ||
-                "Bankom" === name_short
-            );
+          if (period || showAllCommittees) {
+            if (period) {
+              filteredCommittees = committees.filter(
+                ({ name_short }: { name_short: string }) =>
+                  period.committees.includes(name_short) ||
+                  period.optionalCommittees.includes(name_short) ||
+                  "Bankom" === name_short
+              );
+            } else {
+              filteredCommittees = committees.filter(
+                ({ name_short }: { name_short: string }) =>
+                  "Output" !== name_short && "Faddere" !== name_short
+              );
+            }
 
             setAvailableCommittees(
               filteredCommittees.map(
@@ -125,11 +143,11 @@ const Overview = () => {
       }
     };
 
-    if (period) {
+    if (period || showAllCommittees) {
       fetchCommittees();
       fetchCommittees(true);
     }
-  }, [period]);
+  }, [period, periodId]);
 
   if (isLoading) {
     return <LoadingPage />;
@@ -156,6 +174,9 @@ const Overview = () => {
           />
         ))}
       </div>
+      {!showAllCommittees && (
+        <Button title="Vis alle komiteer" color="white" href="/overview/all" />
+      )}
     </div>
   );
 };
