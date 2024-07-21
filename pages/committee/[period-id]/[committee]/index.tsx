@@ -129,14 +129,13 @@ const CommitteeApplicantOverView: NextPage = () => {
       new Date().getTime()
   ) {
     return (
-      <div className="flex flex-col h-screen text-center items-center justify-center px-20">
+      <div className="flex flex-col items-center justify-center h-screen px-20 text-center">
         <h1 className="text-3xl">Opptaket er ferdig!</h1>
         <br />
         <p className="text-lg">
           Du kan ikke lenger se søkere eller planlegge intervjuer.
         </p>
         <p className="text-lg">
-          {" "}
           Har det skjedd noe feil eller trenger du tilgang til informasjonen? Ta
           kontakt med{" "}
           <a
@@ -144,7 +143,7 @@ const CommitteeApplicantOverView: NextPage = () => {
             href="mailto:appkom@online.ntnu.no"
           >
             Appkom
-          </a>{" "}
+          </a>
         </p>
       </div>
     );
@@ -152,17 +151,12 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <span className="mt-5 mb-6 text-3xl font-bold text-center">
-        <h1>
-          <button onClick={() => router.push("/committee")}>
-            <span>{period?.name}</span>
-          </button>
-          <span>{` --> `}</span>
-          <button onClick={() => router.push(`/committee/${periodId}`)}>
-            <span>{changeDisplayName(committee)}</span>
-          </button>
-        </h1>
-      </span>
+      <div className="w-10/12">
+        <div className="w-full my-8">
+            <h2 className="mb-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Opptaksperiode: <span className="font-normal">{period?.name}</span></h2>
+            <p className="text-xl font-semibold text-gray-500 dark:text-gray-400">Komité: <span className="font-normal">{changeDisplayName(committee)}</span></p>
+        </div>
+      </div>
       <Tabs
         activeTab={activeTab}
         setActiveTab={(index) => {
