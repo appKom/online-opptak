@@ -418,7 +418,7 @@ const CommitteeInterviewTimes = ({
               value={roomInput}
               onChange={(e) => setRoomInput(e.target.value)}
             />
-            <div className="flex flex-row justify-between px-5 mt-4">
+            <div className="flex flex-row justify-center gap-2 mt-4">
               <Button
                 title="Avbryt"
                 onClick={() => setIsModalOpen(false)}
