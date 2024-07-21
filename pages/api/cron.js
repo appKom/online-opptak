@@ -5,4 +5,8 @@ export default function handler(req, res) {
 
     // TODO Check for correct time and run algorithm.
     res.status(200).end('Hello Cron!');
+
+    const spawn = require("child_process").spawn;
+
+    const algorithmProcess = spawn('cd algorithm', ["path/to/script.py", arg1, arg2,], { cwd: "./algorithm/ " });
 }
