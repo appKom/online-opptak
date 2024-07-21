@@ -33,7 +33,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       "Eksgruppa",
       "Eldsterådet",
       "Ex-Komiteer",
-      "Faddere",
       "interessegrupper",
       "ITEX",
       "ITEX-påmeldte",
