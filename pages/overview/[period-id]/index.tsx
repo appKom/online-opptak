@@ -11,7 +11,7 @@ const Overview = () => {
   const router = useRouter();
   const periodId = router.query["period-id"];
   const [period, setPeriod] = useState<periodType | null>(null);
-  const [showAllCommittees] = useState<boolean>(periodId == "all");
+  const [showAllCommittees, setShowAllCommittees] = useState<boolean>(false);
   const [availableCommittees, setAvailableCommittees] = useState<
     {
       name: string;
@@ -21,6 +21,12 @@ const Overview = () => {
       description: string;
     }[]
   >([]);
+
+  useEffect(() => {
+    if (periodId) {
+      setShowAllCommittees(periodId === "all");
+    }
+  }, [periodId]);
 
   useEffect(() => {
     const fetchPeriod = async (updateCache = false) => {
@@ -42,7 +48,7 @@ const Overview = () => {
       }
     };
 
-    if (periodId && !showAllCommittees) {
+    if (periodId && periodId !== "all") {
       fetchPeriod();
       fetchPeriod(true); // Update cache in the background
     }
@@ -63,7 +69,7 @@ const Overview = () => {
                   period.optionalCommittees.includes(name_short) ||
                   "Bankom" === name_short
               );
-            } else {
+            } else if (showAllCommittees) {
               filteredCommittees = committees.filter(
                 ({ name_short }: { name_short: string }) =>
                   "Output" !== name_short && "Faddere" !== name_short
@@ -106,7 +112,7 @@ const Overview = () => {
                   period.optionalCommittees.includes(name_short) ||
                   "Bankom" === name_short
               );
-            } else {
+            } else if (showAllCommittees) {
               filteredCommittees = committees.filter(
                 ({ name_short }: { name_short: string }) =>
                   "Output" !== name_short && "Faddere" !== name_short
@@ -147,7 +153,12 @@ const Overview = () => {
       fetchCommittees();
       fetchCommittees(true);
     }
-  }, [period, periodId]);
+  }, [period, showAllCommittees]);
+
+  const onShowAll: () => Promise<void> = async () => {
+    await router.push("/overview/all");
+    router.reload();
+  };
 
   if (isLoading) {
     return <LoadingPage />;
@@ -175,7 +186,11 @@ const Overview = () => {
         ))}
       </div>
       {!showAllCommittees && (
-        <Button title="Vis alle komiteer" color="white" href="/overview/all" />
+        <Button
+          title="Vis alle komiteer"
+          color="white"
+          onClick={() => onShowAll()}
+        />
       )}
     </div>
   );
