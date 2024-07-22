@@ -152,7 +152,7 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <PageTitle mainTitle={period?.name || ""} boldMainTitle="Opptaksperiode" subTitle={changeDisplayName(committee)} boldSubTitle="Komité" />
+      <PageTitle boldMainTitle={period?.name} subTitle={changeDisplayName(committee)} boldSubTitle="Komité" />
       <Tabs
         activeTab={activeTab}
         setActiveTab={(index) => {

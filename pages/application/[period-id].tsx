@@ -239,7 +239,7 @@ const Application: NextPage = () => {
   return (
     <div>
       <div className="flex flex-col items-center justify-center py-5">
-        <PageTitle mainTitle={period?.name || ""} boldMainTitle="Opptaksperiode" subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""} boldSubTitle="Søknadsfrist" />
+        <PageTitle boldMainTitle={period?.name} subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""} boldSubTitle="Søknadsfrist" />
         <Tabs
           activeTab={activeTab}
           setActiveTab={setActiveTab}
