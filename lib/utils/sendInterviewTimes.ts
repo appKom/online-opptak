@@ -11,7 +11,7 @@ interface Props {
   periodId: string;
 }
 
-export const fetchInterviewTimes = async ({ periodId }: Props) => {
+export const sendOutInterviewTimes = async ({ periodId }: Props) => {
   //TODO
   //Hente data fra algoritmen
   //Hente data fra databasen
@@ -23,7 +23,7 @@ interface sendInterviewTimesProps {
   applicantsToEmail: emailApplicantInterviewType[];
 }
 
-const sendInterviewTimes = async ({
+const formatAndSendEmails = async ({
   committeesToEmail,
   applicantsToEmail,
 }: sendInterviewTimesProps) => {
