@@ -22,7 +22,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       "HS",
       "Komiteledere",
       "Pangkom",
-      "Bankom",
       "Fond",
       "Æresmedlemmer",
       "Bed&Fagkom",
@@ -71,7 +70,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         description_short: group.description_short,
         description_long: group.description_long,
         image: group?.image,
-        application_description : group.application_description,
+        application_description: group.application_description,
       }));
     return res.status(200).json(groups);
   } catch (error) {
