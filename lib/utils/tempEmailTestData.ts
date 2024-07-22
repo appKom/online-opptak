@@ -2,163 +2,258 @@ import { algorithmType } from "../types/types";
 
 export const algorithmTestData: algorithmType = [
   {
-    applicantName: "Alice Johnson",
-    committeeName: "Tech Committee",
-    interviewTime: {
-      start: "2024-07-22T09:00:00Z",
-      end: "2024-07-22T10:00:00Z",
-    },
-  },
-  {
-    applicantName: "Bob Smith",
-    committeeName: "HR Committee",
-    interviewTime: {
-      start: "2024-07-22T11:00:00Z",
-      end: "2024-07-22T12:00:00Z",
-    },
-  },
-  {
-    applicantName: "Charlie Brown",
-    committeeName: "Finance Committee",
-    interviewTime: {
-      start: "2024-07-23T13:00:00Z",
-      end: "2024-07-23T14:00:00Z",
-    },
-  },
-  {
-    applicantName: "Daisy Ridley",
-    committeeName: "Marketing Committee",
-    interviewTime: {
-      start: "2024-07-24T15:00:00Z",
-      end: "2024-07-24T16:00:00Z",
-    },
-  },
-  {
-    applicantName: "Ethan Hunt",
-    committeeName: "Operations Committee",
-    interviewTime: {
-      start: "2024-07-25T17:00:00Z",
-      end: "2024-07-25T18:00:00Z",
-    },
-  },
-  {
-    applicantName: "Fiona Apple",
-    committeeName: "Tech Committee",
-    interviewTime: {
-      start: "2024-07-26T09:00:00Z",
-      end: "2024-07-26T10:00:00Z",
-    },
-  },
-  {
-    applicantName: "George Clooney",
-    committeeName: "HR Committee",
-    interviewTime: {
-      start: "2024-07-27T11:00:00Z",
-      end: "2024-07-27T12:00:00Z",
-    },
-  },
-  {
-    applicantName: "Hannah Montana",
-    committeeName: "Finance Committee",
-    interviewTime: {
-      start: "2024-07-28T13:00:00Z",
-      end: "2024-07-28T14:00:00Z",
-    },
-  },
-  {
     applicantName: "Ian Somerhalder",
-    committeeName: "Marketing Committee",
-    interviewTime: {
-      start: "2024-07-29T15:00:00Z",
-      end: "2024-07-29T16:00:00Z",
-    },
+    interviews: [
+      {
+        start: "2024-07-29T15:00:00Z",
+        end: "2024-07-29T16:00:00Z",
+        committeeName: "Bedkom",
+      },
+      {
+        start: "2024-07-29T15:00:00Z",
+        end: "2024-07-29T16:00:00Z",
+        committeeName: "Appkom",
+      },
+    ],
   },
   {
-    applicantName: "Jennifer Lawrence",
-    committeeName: "Operations Committee",
-    interviewTime: {
-      start: "2024-07-30T17:00:00Z",
-      end: "2024-07-30T18:00:00Z",
-    },
+    applicantName: "Fredrik Hansemann",
+    interviews: [
+      {
+        start: "2024-07-29T08:30:00Z",
+        end: "2024-07-29T09:00:00Z",
+        committeeName: "Bedkom",
+      },
+      {
+        start: "2024-07-29T15:00:00Z",
+        end: "2024-07-29T16:00:00Z",
+        committeeName: "Appkom",
+      },
+    ],
   },
   {
-    applicantName: "Kyle Reese",
-    committeeName: "Tech Committee",
-    interviewTime: {
-      start: "2024-07-31T09:00:00Z",
-      end: "2024-07-31T10:00:00Z",
-    },
+    applicantName: "Elena Gilbert",
+    interviews: [
+      {
+        start: "2024-07-30T10:00:00Z",
+        end: "2024-07-30T11:00:00Z",
+        committeeName: "Dotkom",
+      },
+      {
+        start: "2024-07-30T12:00:00Z",
+        end: "2024-07-30T13:00:00Z",
+        committeeName: "Fagkom",
+      },
+    ],
   },
   {
-    applicantName: "Laura Palmer",
-    committeeName: "HR Committee",
-    interviewTime: {
-      start: "2024-08-01T11:00:00Z",
-      end: "2024-08-01T12:00:00Z",
-    },
+    applicantName: "Damon Salvatore",
+    interviews: [
+      {
+        start: "2024-07-31T09:00:00Z",
+        end: "2024-07-31T10:00:00Z",
+        committeeName: "Ekskom",
+      },
+      {
+        start: "2024-07-31T11:00:00Z",
+        end: "2024-07-31T12:00:00Z",
+        committeeName: "Bedkom",
+      },
+    ],
   },
   {
-    applicantName: "Michael Scott",
-    committeeName: "Finance Committee",
-    interviewTime: {
-      start: "2024-08-02T13:00:00Z",
-      end: "2024-08-02T14:00:00Z",
-    },
+    applicantName: "Bonnie Bennett",
+    interviews: [
+      {
+        start: "2024-08-01T14:00:00Z",
+        end: "2024-08-01T15:00:00Z",
+        committeeName: "Appkom",
+      },
+      {
+        start: "2024-08-01T16:00:00Z",
+        end: "2024-08-01T17:00:00Z",
+        committeeName: "Dotkom",
+      },
+    ],
   },
   {
-    applicantName: "Nancy Drew",
-    committeeName: "Marketing Committee",
-    interviewTime: {
-      start: "2024-08-03T15:00:00Z",
-      end: "2024-08-03T16:00:00Z",
-    },
+    applicantName: "Caroline Forbes",
+    interviews: [
+      {
+        start: "2024-08-02T10:30:00Z",
+        end: "2024-08-02T11:30:00Z",
+        committeeName: "Fagkom",
+      },
+      {
+        start: "2024-08-02T12:30:00Z",
+        end: "2024-08-02T13:30:00Z",
+        committeeName: "Ekskom",
+      },
+    ],
   },
   {
-    applicantName: "Oscar Wilde",
-    committeeName: "Operations Committee",
-    interviewTime: {
-      start: "2024-08-04T17:00:00Z",
-      end: "2024-08-04T18:00:00Z",
-    },
+    applicantName: "Stefan Salvatore",
+    interviews: [
+      {
+        start: "2024-08-03T08:00:00Z",
+        end: "2024-08-03T09:00:00Z",
+        committeeName: "Bedkom",
+      },
+      {
+        start: "2024-08-03T10:00:00Z",
+        end: "2024-08-03T11:00:00Z",
+        committeeName: "Appkom",
+      },
+    ],
   },
   {
-    applicantName: "Pam Beesly",
-    committeeName: "Tech Committee",
-    interviewTime: {
-      start: "2024-08-05T09:00:00Z",
-      end: "2024-08-05T10:00:00Z",
-    },
+    applicantName: "Matt Donovan",
+    interviews: [
+      {
+        start: "2024-08-04T09:00:00Z",
+        end: "2024-08-04T10:00:00Z",
+        committeeName: "Dotkom",
+      },
+      {
+        start: "2024-08-04T11:00:00Z",
+        end: "2024-08-04T12:00:00Z",
+        committeeName: "Fagkom",
+      },
+    ],
   },
   {
-    applicantName: "Quentin Tarantino",
-    committeeName: "HR Committee",
-    interviewTime: {
-      start: "2024-08-06T11:00:00Z",
-      end: "2024-08-06T12:00:00Z",
-    },
+    applicantName: "Tyler Lockwood",
+    interviews: [
+      {
+        start: "2024-08-05T13:00:00Z",
+        end: "2024-08-05T14:00:00Z",
+        committeeName: "Ekskom",
+      },
+      {
+        start: "2024-08-05T15:00:00Z",
+        end: "2024-08-05T16:00:00Z",
+        committeeName: "Bedkom",
+      },
+    ],
   },
   {
-    applicantName: "Rachel Green",
-    committeeName: "Finance Committee",
-    interviewTime: {
-      start: "2024-08-07T13:00:00Z",
-      end: "2024-08-07T14:00:00Z",
-    },
+    applicantName: "Alaric Saltzman",
+    interviews: [
+      {
+        start: "2024-08-06T09:30:00Z",
+        end: "2024-08-06T10:30:00Z",
+        committeeName: "Appkom",
+      },
+      {
+        start: "2024-08-06T11:30:00Z",
+        end: "2024-08-06T12:30:00Z",
+        committeeName: "Dotkom",
+      },
+    ],
   },
   {
-    applicantName: "Steve Rogers",
-    committeeName: "Marketing Committee",
-    interviewTime: {
-      start: "2024-08-08T15:00:00Z",
-      end: "2024-08-08T16:00:00Z",
-    },
+    applicantName: "Jenna Sommers",
+    interviews: [
+      {
+        start: "2024-08-07T08:30:00Z",
+        end: "2024-08-07T09:30:00Z",
+        committeeName: "Fagkom",
+      },
+      {
+        start: "2024-08-07T10:30:00Z",
+        end: "2024-08-07T11:30:00Z",
+        committeeName: "Ekskom",
+      },
+    ],
   },
   {
-    applicantName: "Tina Fey",
-    committeeName: "Operations Committee",
-    interviewTime: {
-      start: "2024-08-09T17:00:00Z",
-      end: "2024-08-09T18:00:00Z",
-    },
+    applicantName: "Jeremy Gilbert",
+    interviews: [
+      {
+        start: "2024-08-08T10:00:00Z",
+        end: "2024-08-08T11:00:00Z",
+        committeeName: "Bedkom",
+      },
+      {
+        start: "2024-08-08T12:00:00Z",
+        end: "2024-08-08T13:00:00Z",
+        committeeName: "Appkom",
+      },
+    ],
+  },
+  {
+    applicantName: "Katherine Pierce",
+    interviews: [
+      {
+        start: "2024-08-09T14:30:00Z",
+        end: "2024-08-09T15:30:00Z",
+        committeeName: "Dotkom",
+      },
+      {
+        start: "2024-08-09T16:30:00Z",
+        end: "2024-08-09T17:30:00Z",
+        committeeName: "Fagkom",
+      },
+    ],
+  },
+  {
+    applicantName: "Rebekah Mikaelson",
+    interviews: [
+      {
+        start: "2024-08-10T09:00:00Z",
+        end: "2024-08-10T10:00:00Z",
+        committeeName: "Ekskom",
+      },
+      {
+        start: "2024-08-10T11:00:00Z",
+        end: "2024-08-10T12:00:00Z",
+        committeeName: "Bedkom",
+      },
+    ],
+  },
+  {
+    applicantName: "Klaus Mikaelson",
+    interviews: [
+      {
+        start: "2024-08-11T13:00:00Z",
+        end: "2024-08-11T14:00:00Z",
+        committeeName: "Appkom",
+      },
+      {
+        start: "2024-08-11T15:00:00Z",
+        end: "2024-08-11T16:00:00Z",
+        committeeName: "Dotkom",
+      },
+    ],
+  },
+  {
+    applicantName: "Hayley Marshall",
+    interviews: [
+      {
+        start: "2024-08-12T08:30:00Z",
+        end: "2024-08-12T09:30:00Z",
+        committeeName: "Fagkom",
+      },
+      {
+        start: "2024-08-12T10:30:00Z",
+        end: "2024-08-12T11:30:00Z",
+        committeeName: "Ekskom",
+      },
+    ],
+  },
+  {
+    applicantName: "Marcel Gerard",
+    interviews: [
+      {
+        start: "2024-08-13T11:00:00Z",
+        end: "2024-08-13T12:00:00Z",
+        committeeName: "Bedkom",
+      },
+      {
+        start: "2024-08-13T13:00:00Z",
+        end: "2024-08-13T14:00:00Z",
+        committeeName: "Appkom",
+      },
+    ],
   },
 ];
