@@ -17,7 +17,7 @@ const CommitteeAboutCard = ({
         <img
           src={image?.xs || "/Online_svart_o.svg"}
           alt={name_long}
-          className="max-w-full max-h-full"
+          className="max-w-full max-h-full bg-white rounded-full p-1"
         />
       </div>
       <h3 className="text-xl font-bold dark:text-white">

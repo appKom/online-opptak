@@ -11,16 +11,37 @@ const Committees = () => {
     try {
       const response = await fetch("/api/periods/ow-committees");
       const data = await response.json();
-      setCommittees(data);
+
+      const cachedData = JSON.parse(
+        localStorage.getItem("committeesCache") || "[]"
+      );
+
+      if (JSON.stringify(data) !== JSON.stringify(cachedData)) {
+        localStorage.setItem("committeesCache", JSON.stringify(data));
+        setCommittees(data);
+      } else {
+        setCommittees(cachedData);
+      }
       console.log(data);
     } catch (error) {
       console.error("Failed to fetch committees:", error);
+      const cachedData = JSON.parse(
+        localStorage.getItem("committeesCache") || "[]"
+      );
+      setCommittees(cachedData);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    const cachedData = JSON.parse(
+      localStorage.getItem("committeesCache") || "[]"
+    );
+    if (cachedData.length > 0) {
+      setCommittees(cachedData);
+      setIsLoading(false);
+    }
     fetchCommittees();
   }, []);
 
