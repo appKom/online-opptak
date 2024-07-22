@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { periodType } from "../../lib/types/types";
 import { formatDate } from "../../lib/utils/dateUtils";
 import NotFound from "../404";
+import Link from "next/link";
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -78,11 +79,9 @@ const Admin = () => {
       </h1>
 
       <div className="pb-10">
-        <Button
-          title="Ny opptaksperiode"
-          color="blue"
-          onClick={() => router.push("/admin/new-period")}
-        />
+        <Link href="/admin/new-period">
+          <Button title="Ny opptaksperiode" color="blue" />
+        </Link>
       </div>
 
       {periods.length > 0 && (

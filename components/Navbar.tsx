@@ -35,19 +35,19 @@ const Navbar = () => {
   return (
     <div>
       <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-0 dark:bg-gray-800">
-        <Link href="/" passHref>
-          <a
-            className={isLinkActive("/") ? "active" : ""}
-            aria-label="Online logo"
-          >
-            <Image
-              src={onlineLogoSrc}
-              width={100 * 1.5}
-              height={30 * 1.5}
-              alt="Online logo"
-              className="transition-all cursor-pointer hover:opacity-60"
-            />
-          </a>
+        <Link
+          href="/"
+          passHref
+          className={isLinkActive("/") ? "active" : ""}
+          aria-label="Online logo"
+        >
+          <Image
+            src={onlineLogoSrc}
+            width={100 * 1.5}
+            height={30 * 1.5}
+            alt="Online logo"
+            className="transition-all cursor-pointer hover:opacity-60"
+          />
         </Link>
         <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal dark:text-white">
           {session ? (
@@ -58,22 +58,24 @@ const Navbar = () => {
               </div>
 
               {session.user?.role === "admin" && (
-                <Button
-                  title="Admin"
-                  color="orange"
-                  size="small"
-                  icon={<AdminIcon className="w-4 h-4" />}
-                  onClick={() => router.push("/admin")}
-                />
+                <Link href="/admin">
+                  <Button
+                    title="Admin"
+                    color="orange"
+                    size="small"
+                    icon={<AdminIcon className="w-4 h-4" />}
+                  />
+                </Link>
               )}
               {session.user?.isCommitee && (
-                <Button
-                  title="For komiteer"
-                  color="blue"
-                  size="small"
-                  icon={<UserGroupIcon className="w-5 h-5" />}
-                  onClick={() => router.push("/committee")}
-                />
+                <Link href="/committee">
+                  <Button
+                    title="For komiteer"
+                    color="blue"
+                    size="small"
+                    icon={<UserGroupIcon className="w-5 h-5" />}
+                  />
+                </Link>
               )}
               <Button
                 title="Logg ut"

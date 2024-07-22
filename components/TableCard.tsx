@@ -4,6 +4,7 @@ import Button from "./Button";
 import { periodType } from "../lib/types/types";
 import { on } from "events";
 import { FaTrash } from "react-icons/fa";
+import Link from "next/link";
 
 interface Props {
   period: any;
@@ -12,9 +13,6 @@ interface Props {
 
 const TableCard = ({ period, onDelete }: Props) => {
   const router = useRouter();
-  const handleButtonOnClick = () => {
-    router.push(period.link);
-  };
 
   return (
     <div className="px-10">
@@ -48,12 +46,9 @@ const TableCard = ({ period, onDelete }: Props) => {
           </p>
         </div>
         <div className="flex justify-center mt-4">
-          <Button
-            onClick={handleButtonOnClick}
-            title={"Se opptak"}
-            size="small"
-            color="white"
-          />
+          <Link href={period.link}>
+            <Button title={"Se opptak"} size="small" color="white" />
+          </Link>
         </div>
       </div>
     </div>

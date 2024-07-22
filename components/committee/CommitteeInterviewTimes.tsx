@@ -78,7 +78,7 @@ const CommitteeInterviewTimes = ({
         setSelectedTimeslot("15");
       }
     }
-  }, [committeeInterviewTimes]);
+  }, [committeeInterviewTimes, committee]);
 
   const createInterval = (selectionInfo: any) => {
     const event = {

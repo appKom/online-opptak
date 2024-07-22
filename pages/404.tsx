@@ -22,11 +22,9 @@ export default function Custom404() {
       </div>
 
       <div className="py-10">
-        <Button
-          title="Gå tilbake til hjem siden"
-          color="blue"
-          onClick={() => (window.location.href = "/")}
-        />
+        <Link href={(window.location.href = "/")}>
+          <Button title="Gå tilbake til hjem siden" color="blue" />
+        </Link>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import FestivitiesIllustration from "../components/icons/illustrations/FestivitiesIllustration";
 import AuthenticationIllustration from "../components/icons/illustrations/AuthenticationIllustration";
 import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
 
 const Home = () => {
   const { data: session } = useSession();
@@ -34,13 +35,16 @@ const Home = () => {
             bli med i komité og at dette er det bra opptakssystem og sånn.
           </p>
           <div className="flex gap-4">
-            <Button
-              title="Søk nå"
-              color="blue"
-              icon={<ArrowRightIcon className="w-4 h-4" />}
-              href="/apply"
-            />
-            <Button title="Om opptak" color="white" href="/about" />
+            <Link href="/apply">
+              <Button
+                title="Søk nå"
+                color="blue"
+                icon={<ArrowRightIcon className="w-4 h-4" />}
+              />
+            </Link>
+            <Link href="/about">
+              <Button title="Om opptak" color="white" />
+            </Link>
           </div>
         </div>
         <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">

@@ -18,6 +18,7 @@ import CommitteeInterviewTimes from "../../../../components/committee/CommitteeI
 import LoadingPage from "../../../../components/LoadingPage";
 import { changeDisplayName } from "../../../../lib/utils/toString";
 import Custom404 from "../../../404";
+import Link from "next/link";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -48,7 +49,7 @@ const CommitteeApplicantOverView: NextPage = () => {
     };
 
     fetchPeriod();
-  }, [periodId]);
+  }, [periodId, session]);
 
   useEffect(() => {
     if (!session || !periodId || !committee) return;
@@ -77,7 +78,7 @@ const CommitteeApplicantOverView: NextPage = () => {
     };
 
     fetchCommitteeInterviewTimes();
-  }, [tabClicked, period]);
+  }, [tabClicked, period, committee, periodId, session]);
 
   useEffect(() => {
     if (!session || !periodId || !committee) return;
@@ -108,7 +109,7 @@ const CommitteeApplicantOverView: NextPage = () => {
     };
 
     checkAccess();
-  }, [period]);
+  }, [period, committee, periodId, session]);
 
   if (loading) {
     return <LoadingPage />;
@@ -154,13 +155,17 @@ const CommitteeApplicantOverView: NextPage = () => {
     <div className="flex flex-col items-center">
       <span className="mt-5 mb-6 text-3xl font-bold text-center">
         <h1>
-          <button onClick={() => router.push("/committee")}>
-            <span>{period?.name}</span>
-          </button>
+          <Link href="/committee">
+            <button>
+              <span>{period?.name}</span>
+            </button>
+          </Link>
           <span>{` --> `}</span>
-          <button onClick={() => router.push(`/committee/${periodId}`)}>
-            <span>{changeDisplayName(committee)}</span>
-          </button>
+          <Link href={`/committee/${periodId}`}>
+            <button>
+              <span>{changeDisplayName(committee)}</span>
+            </button>
+          </Link>
         </h1>
       </span>
       <Tabs

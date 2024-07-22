@@ -5,6 +5,7 @@ import { periodType } from "../lib/types/types";
 import { formatDateNorwegian } from "../lib/utils/dateUtils";
 import Button from "./Button";
 import CheckIcon from "./icons/icons/CheckIcon";
+import Link from "next/link";
 
 interface Props {
   period: periodType;
@@ -33,10 +34,6 @@ const PeriodCard = ({ period }: Props) => {
     }
   }, [period._id, session?.user?.owId]);
 
-  const handleButtonOnClick = () => {
-    router.push(`/application/${period._id}`);
-  };
-
   return (
     <div className="relative w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white">
       <div className="flex flex-col justify-between h-full p-4">
@@ -64,12 +61,13 @@ const PeriodCard = ({ period }: Props) => {
           </span>
         )}
         <div className="flex justify-center mt-4">
-          <Button
-            onClick={hasApplied ? handleButtonOnClick : handleButtonOnClick}
-            title={hasApplied ? "Se søknad" : "Søk nå"}
-            size="small"
-            color="white"
-          />
+          <Link href={`/application/${period._id}`}>
+            <Button
+              title={hasApplied ? "Se søknad" : "Søk nå"}
+              size="small"
+              color="white"
+            />
+          </Link>
         </div>
       </div>
     </div>
