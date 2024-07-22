@@ -7,8 +7,8 @@ import { emailDataType } from "../../../lib/types/types";
 import { isApplicantType } from "../../../lib/utils/validators";
 import { isAdmin, hasSession, checkOwId } from "../../../lib/utils/apiChecks";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
-import capitalizeFirstLetter from "../../../utils/capitalizeFirstLetter";
-import sendEmail from "../../../utils/sendEmail";
+import capitalizeFirstLetter from "../../../lib/utils/capitalizeFirstLetter";
+import sendEmail from "../../../lib/utils/sendEmail";
 import { changeDisplayName } from "../../../lib/utils/toString";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
