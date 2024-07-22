@@ -21,12 +21,21 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
     await fetchCommitteeInterviewTimes(periodId);
   const committeeEmails: committeeEmails[] = await fetchCommitteeEmails();
 
-  //TODO hente fra algoritmen
+  console.log("Period:", period);
+  console.log("Committee Interview Times:", committeeInterviewTimes);
+  console.log("Committee Emails:", committeeEmails);
+
+  // TODO hente fra algoritmen
   const algorithmData: algorithmType = algorithmTestData;
 
   const committeesToEmail: emailCommitteeInterviewType[] = [];
   const applicantsToEmailMap: { [key: string]: emailApplicantInterviewType } =
     {};
+
+  // Ensure committeeInterviewTimes is an array
+  if (!Array.isArray(committeeInterviewTimes)) {
+    throw new Error("committeeInterviewTimes is not an array");
+  }
 
   // Merge data from algorithm and database
   for (const committeeTime of committeeInterviewTimes) {
@@ -80,14 +89,21 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
 
   const applicantsToEmail = Object.values(applicantsToEmailMap);
 
+  console.log("Committees To Email:", committeesToEmail);
+  console.log("Applicants To Email:", applicantsToEmail);
+
   // Send out the emails
   await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
 };
 
 const fetchPeriod = async (periodId: string): Promise<periodType> => {
   try {
-    const response = await fetch(`api/periods/${periodId}`);
-    return await response.json();
+    const response = await fetch(`/api/periods/${periodId}`);
+    const data = await response.json();
+    if (!data || !data.period) {
+      throw new Error("Invalid response from fetchPeriod");
+    }
+    return data.period;
   } catch (error) {
     console.error(error);
     throw new Error("Failed to fetch period");
@@ -98,8 +114,14 @@ const fetchCommitteeInterviewTimes = async (
   periodId: string
 ): Promise<committeeInterviewType[]> => {
   try {
-    const response = await fetch(`api/committees/times/${periodId}`);
-    return await response.json();
+    const response = await fetch(`/api/committees/times/${periodId}`);
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error(
+        "Expected an array from the fetchCommitteeInterviewTimes API response"
+      );
+    }
+    return data;
   } catch (error) {
     console.error(error);
     throw new Error("Failed to fetch committee interview times");
@@ -108,8 +130,14 @@ const fetchCommitteeInterviewTimes = async (
 
 const fetchCommitteeEmails = async (): Promise<committeeEmails[]> => {
   try {
-    const response = await fetch(`api/periods/ow-committees`);
-    return await response.json();
+    const response = await fetch(`/api/periods/ow-committees`);
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw new Error(
+        "Expected an array from the fetchCommitteeEmails API response"
+      );
+    }
+    return data;
   } catch (error) {
     console.error(error);
     throw new Error("Failed to fetch committee emails");

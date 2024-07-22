@@ -4,12 +4,18 @@ import router from "next/router";
 import { applicantType, periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
 import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
+import { Tabs } from "../../../components/Tabs";
+import { CalendarIcon, InboxIcon } from "@heroicons/react/24/solid";
+import Button from "../../../components/Button";
+import { sendOutInterviewTimes } from "../../../lib/utils/sendInterviewTimes";
 
 const Admin = () => {
   const { data: session } = useSession();
-  const periodId = router.query["period-id"];
+  const periodId = router.query["period-id"] as string;
   const [period, setPeriod] = useState<periodType | null>(null);
   const [committees, setCommittees] = useState<string[] | null>(null);
+  const [activeTab, setActiveTab] = useState(0);
+  const [tabClicked, setTabClicked] = useState<number>(0);
 
   useEffect(() => {
     const fetchPeriod = async () => {
@@ -41,10 +47,38 @@ const Admin = () => {
   }
 
   return (
-    <ApplicantsOverview
-      period={period}
-      committees={committees}
-      includePreferences={true}
+    <Tabs
+      activeTab={activeTab}
+      setActiveTab={(index) => {
+        setActiveTab(index);
+        setTabClicked(index);
+      }}
+      content={[
+        {
+          title: "Søkere",
+          icon: <CalendarIcon className="w-5 h-5" />,
+          content: (
+            <ApplicantsOverview
+              period={period}
+              committees={committees}
+              includePreferences={true}
+            />
+          ),
+        },
+        {
+          title: "Send ut",
+          icon: <InboxIcon className="w-5 h-5" />,
+          content: (
+            <div className="flex flex-col items-center">
+              <Button
+                title={"Send ut"}
+                color={"blue"}
+                onClick={() => sendOutInterviewTimes({ periodId })}
+              />
+            </div>
+          ),
+        },
+      ]}
     />
   );
 };
