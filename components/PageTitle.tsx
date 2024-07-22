@@ -8,7 +8,7 @@ const PageTitle = ({
 }: {
   mainTitle?: string;
   boldMainTitle?: string;
-  subTitle?: string;
+  subTitle?: string | React.ReactNode;
   boldSubTitle?: string;
 }) => {
   return (
