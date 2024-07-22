@@ -38,11 +38,7 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
         email.name_short.toLowerCase() === committeeTime.committee.toLowerCase()
     );
 
-    console.log("her 4");
-    console.log(`Committee email ${committeeEmail}`);
-
     if (!committeeEmail) continue;
-    console.log("her 5");
 
     const applicants = algorithmData
       .filter((app) =>
@@ -80,11 +76,8 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
 
     committeesToEmail.push(emailCommittee);
 
-    console.log("her 3");
     for (const app of applicants) {
-      console.log("her 1");
       if (!applicantsToEmailMap[app.committeeEmail]) {
-        console.log("her 2");
         applicantsToEmailMap[app.committeeEmail] = {
           periodId: period._id.toString(),
           period_name: period.name,
