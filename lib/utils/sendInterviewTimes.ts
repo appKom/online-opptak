@@ -25,65 +25,81 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
   console.log("Committee Interview Times:", committeeInterviewTimes);
   console.log("Committee Emails:", committeeEmails);
 
-  // TODO hente fra algoritmen
   const algorithmData: algorithmType = algorithmTestData;
 
   const committeesToEmail: emailCommitteeInterviewType[] = [];
   const applicantsToEmailMap: { [key: string]: emailApplicantInterviewType } =
     {};
 
-  // Ensure committeeInterviewTimes is an array
-  if (!Array.isArray(committeeInterviewTimes)) {
-    throw new Error("committeeInterviewTimes is not an array");
-  }
-
-  // Merge data from algorithm and database
   for (const committeeTime of committeeInterviewTimes) {
+    // Find the email details for the current committee
     const committeeEmail = committeeEmails.find(
-      (email) => email.committeeName === committeeTime.committee
+      (email) =>
+        email.name_short.toLowerCase() === committeeTime.committee.toLowerCase()
     );
 
+    console.log("her 4");
+    console.log(`Committee email ${committeeEmail}`);
+
     if (!committeeEmail) continue;
+    console.log("her 5");
 
     const applicants = algorithmData
-      .filter((app) => app.committeeName === committeeTime.committee)
+      .filter((app) =>
+        app.interviews.some(
+          (interview) => interview.committeeName === committeeTime.committee
+        )
+      )
       .map((app) => ({
-        committeeName: app.committeeName,
-        committeeEmail: committeeEmail.committeeEmail,
-        interviewTimes: {
-          start: app.interviewTime.start,
-          end: app.interviewTime.end,
+        committeeName: committeeTime.committee,
+        committeeEmail: committeeEmail.email,
+        interviewTimes: app.interviews.map((interview) => ({
+          start: interview.start,
+          end: interview.end,
           room:
             committeeTime.availabletimes.find(
               (time) =>
-                time.start === app.interviewTime.start &&
-                time.end === app.interviewTime.end
+                time.start === interview.start && time.end === interview.end
             )?.room || "",
-        },
+        })),
       }));
 
     const emailCommittee: emailCommitteeInterviewType = {
       periodId: period._id.toString(),
       period_name: period.name,
       committeeName: committeeTime.committee,
-      committeeEmail: committeeEmail.committeeEmail,
-      applicants,
+      committeeEmail: committeeEmail.email,
+      applicants: applicants.flatMap((applicant) =>
+        applicant.interviewTimes.map((interviewTime) => ({
+          committeeName: applicant.committeeName,
+          committeeEmail: applicant.committeeEmail,
+          interviewTimes: interviewTime,
+        }))
+      ),
     };
 
     committeesToEmail.push(emailCommittee);
 
-    // Collect applicants to send email
-    for (const applicant of applicants) {
-      if (!applicantsToEmailMap[applicant.committeeEmail]) {
-        applicantsToEmailMap[applicant.committeeEmail] = {
+    console.log("her 3");
+    for (const app of applicants) {
+      console.log("her 1");
+      if (!applicantsToEmailMap[app.committeeEmail]) {
+        console.log("her 2");
+        applicantsToEmailMap[app.committeeEmail] = {
           periodId: period._id.toString(),
           period_name: period.name,
-          applicantName: applicant.committeeName,
-          applicantEmail: applicant.committeeEmail,
+          applicantName: app.committeeName,
+          applicantEmail: app.committeeEmail,
           committees: [],
         };
       }
-      applicantsToEmailMap[applicant.committeeEmail].committees.push(applicant);
+      applicantsToEmailMap[app.committeeEmail].committees.push(
+        ...app.interviewTimes.map((interviewTime) => ({
+          committeeName: app.committeeName,
+          committeeEmail: app.committeeEmail,
+          interviewTimes: interviewTime,
+        }))
+      );
     }
   }
 
@@ -92,7 +108,6 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
   console.log("Committees To Email:", committeesToEmail);
   console.log("Applicants To Email:", applicantsToEmail);
 
-  // Send out the emails
   await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
 };
 
@@ -116,8 +131,6 @@ const fetchCommitteeInterviewTimes = async (
   try {
     const response = await fetch(`/api/committees/times/${periodId}`);
     const data = await response.json();
-    console.log(data.committees.committees);
-
     return data.committees.committees;
   } catch (error) {
     console.error(error);
@@ -177,8 +190,6 @@ const formatAndSendEmails = async ({
     // });
 
     console.log(
-      "sesClient",
-      sesClient,
       "fromEmail",
       "opptak@online.ntnu.no",
       "toEmails",
@@ -215,8 +226,6 @@ const formatAndSendEmails = async ({
     // });
 
     console.log(
-      "sesClient",
-      sesClient,
       "fromEmail",
       "opptak@online.ntnu.no",
       "toEmails",
