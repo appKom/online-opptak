@@ -41,7 +41,7 @@ const Home = () => {
               href="/apply"
             />
             <Button title="Om opptak" color="white" href="/about" />
-            <Button title="Om komiteer" color="white" href="/committees" />
+            <Button title="Komiteer" color="white" href="/committees" />
           </div>
         </div>
         <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">

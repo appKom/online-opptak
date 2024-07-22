@@ -71,6 +71,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         description_short: group.description_short,
         description_long: group.description_long,
         image: group?.image,
+        application_description : group.application_description,
       }));
     return res.status(200).json(groups);
   } catch (error) {
