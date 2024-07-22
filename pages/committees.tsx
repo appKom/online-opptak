@@ -7,22 +7,39 @@ const Committees = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
 
+  const excludedCommittees = [
+    "Jubkom",
+    "Velkom",
+    "Output",
+    "Ekskom",
+    "Faddere",
+    "Debug",
+  ];
+
+  const filterCommittees = (committees: owCommitteeType[]) => {
+    return committees.filter(
+      (committee) => !excludedCommittees.includes(committee.name_short)
+    );
+  };
+
   const fetchCommittees = async () => {
     try {
       const response = await fetch("/api/periods/ow-committees");
       const data = await response.json();
 
+      const filteredData = filterCommittees(data);
+
       const cachedData = JSON.parse(
         localStorage.getItem("committeesCache") || "[]"
       );
 
-      if (JSON.stringify(data) !== JSON.stringify(cachedData)) {
-        localStorage.setItem("committeesCache", JSON.stringify(data));
-        setCommittees(data);
+      if (JSON.stringify(filteredData) !== JSON.stringify(cachedData)) {
+        localStorage.setItem("committeesCache", JSON.stringify(filteredData));
+        setCommittees(filteredData);
       } else {
         setCommittees(cachedData);
       }
-      console.log(data);
+      console.log(filteredData);
     } catch (error) {
       console.error("Failed to fetch committees:", error);
       const cachedData = JSON.parse(

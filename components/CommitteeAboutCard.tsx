@@ -21,7 +21,7 @@ const CommitteeAboutCard = ({
       </h3>
       <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">{email}</p>
       <p className="text-gray-500 whitespace-pre-wrap dark:text-gray-400">
-        {application_description || "Ingen opptaksbeskrivelse :("}
+        {application_description || "Ingen opptaksbeskrivelse"}
       </p>
     </div>
   );
