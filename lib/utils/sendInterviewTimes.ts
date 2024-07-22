@@ -116,12 +116,9 @@ const fetchCommitteeInterviewTimes = async (
   try {
     const response = await fetch(`/api/committees/times/${periodId}`);
     const data = await response.json();
-    if (!Array.isArray(data)) {
-      throw new Error(
-        "Expected an array from the fetchCommitteeInterviewTimes API response"
-      );
-    }
-    return data;
+    console.log(data.committees.committees);
+
+    return data.committees.committees;
   } catch (error) {
     console.error(error);
     throw new Error("Failed to fetch committee interview times");
