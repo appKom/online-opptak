@@ -142,7 +142,6 @@ const Navbar = () => {
               session={session}
               handleLogin={handleLogin}
               handleLogout={handleLogout}
-              router={router}
               toggleDropdown={toggleDropdown}
             />
           )}
