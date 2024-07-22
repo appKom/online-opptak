@@ -69,6 +69,15 @@ export const updateCommitteeMessage = async (
   }
 };
 
+export const getCommitteesByPeriod = async (periodId: string) => {
+  try {
+    const result = await committees.find({ periodId: periodId }).toArray();
+    return { committees: result };
+  } catch (error) {
+    return { error: "Failed to fetch committees" };
+  }
+};
+
 export const getCommittees = async (
   periodId: string,
   selectedCommittee: string,

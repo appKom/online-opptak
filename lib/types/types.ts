@@ -81,12 +81,14 @@ export type periodType = {
 export type AvailableTime = {
   start: string;
   end: string;
+  room: string;
 };
 
 export type committeeInterviewType = {
   periodId: string;
   period_name: string;
   committee: string;
+  committeeEmail: string;
   availabletimes: AvailableTime[];
   timeslot: string;
   message: string;
@@ -101,21 +103,25 @@ export type algorithmType = {
   };
 }[];
 
+export type committeeEmails = {
+  committeeName: string;
+  committeeEmail: string;
+};
+
 export type emailCommitteeInterviewType = {
   periodId: string;
   period_name: string;
   committeeName: string;
   committeeEmail: string;
-  applicants: [
-    {
-      committeeName: string;
-      interviewTimes: {
-        start: string;
-        end: string;
-        room: string;
-      };
-    },
-  ];
+  applicants: {
+    committeeName: string;
+    committeeEmail: string;
+    interviewTimes: {
+      start: string;
+      end: string;
+      room: string;
+    };
+  }[];
 };
 
 export type emailApplicantInterviewType = {
@@ -123,14 +129,13 @@ export type emailApplicantInterviewType = {
   period_name: string;
   applicantName: string;
   applicantEmail: string;
-  committees: [
-    {
-      applicantName: string;
-      InterviewTimes: {
-        start: string;
-        end: string;
-        room: string;
-      };
-    },
-  ];
+  committees: {
+    committeeName: string;
+    committeeEmail: string;
+    interviewTimes: {
+      start: string;
+      end: string;
+      room: string;
+    };
+  }[];
 };
