@@ -26,7 +26,7 @@ const Admin = () => {
     setCommittees(data?.period.committees)
   }, [data, session?.user?.owId]);
 
-  if (!session || session.user?.role !== "admin") return <NotFound />;
+  if (session?.user?.role !== "admin") return <NotFound />;
   if (isLoading) return <LoadingPage />;
   if (isError) return <ErrorPage />;
 
