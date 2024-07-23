@@ -14,13 +14,11 @@ const CommitteeAboutCard = ({
 
   return (
     <div>
-      <div className="flex flex-row justify-between w-full h-16 p-1 mb-4 rounded-full">
-        <img
-          src={image?.xs || "/Online_svart_o.svg"}
-          alt={name_long}
-          className="max-w-full max-h-full p-1 bg-white rounded-full"
-        />
-      </div>
+      <img
+        src={image?.xs || "/Online_svart_o.svg"}
+        alt={name_long}
+        className="w-16 h-16 p-1 mb-2 bg-white rounded-full"
+      />
 
       <div className="flex items-center gap-2">
         <h3 className="text-xl font-bold dark:text-white">
