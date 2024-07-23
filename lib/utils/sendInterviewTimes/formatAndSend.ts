@@ -4,6 +4,7 @@ import {
   emailApplicantInterviewType,
 } from "../../types/types";
 import { changeDisplayName } from "../toString";
+import { formatDateHours } from "../dateUtils";
 
 interface sendInterviewTimesProps {
   committeesToEmail: emailCommitteeInterviewType[];
@@ -25,8 +26,12 @@ export const formatAndSendEmails = async ({
 
     typedApplicant.committees.forEach((committee) => {
       body += `Komite: ${committee.committeeName}\n`;
-      body += `Start: ${committee.interviewTime.start}\n`;
-      body += `Slutt: ${committee.interviewTime.end}\n`;
+      body += `Start: ${formatDateHours(
+        new Date(committee.interviewTime.start)
+      )}\n`;
+      body += `Slutt: ${formatDateHours(
+        new Date(committee.interviewTime.end)
+      )}\n`;
       body += `Rom: ${committee.interviewTime.room}\n\n`;
     });
 
@@ -54,8 +59,12 @@ export const formatAndSendEmails = async ({
 
     typedCommittee.applicants.forEach((applicant) => {
       body += `Navn: ${applicant.applicantName}\n`;
-      body += `Start: ${applicant.interviewTime.start}\n`;
-      body += `Slutt: ${applicant.interviewTime.end}\n`;
+      body += `Start: ${formatDateHours(
+        new Date(applicant.interviewTime.start)
+      )}\n`;
+      body += `Slutt: ${formatDateHours(
+        new Date(applicant.interviewTime.end)
+      )}\n`;
       body += `Rom: ${applicant.interviewTime.room}\n\n`;
     });
 
