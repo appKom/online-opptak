@@ -1,4 +1,4 @@
-import { algorithmType } from "../types/types";
+import { algorithmType } from "../../types/types";
 
 export const algorithmTestData: algorithmType = [
   {

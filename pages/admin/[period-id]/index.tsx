@@ -7,7 +7,7 @@ import ApplicantsOverview from "../../../components/applicantoverview/Applicants
 import { Tabs } from "../../../components/Tabs";
 import { CalendarIcon, InboxIcon } from "@heroicons/react/24/solid";
 import Button from "../../../components/Button";
-import { sendOutInterviewTimes } from "../../../lib/utils/sendInterviewTimes";
+import { sendOutInterviewTimes } from "../../../lib/utils/sendInterviewTimes/sendInterviewTimes";
 
 const Admin = () => {
   const { data: session } = useSession();

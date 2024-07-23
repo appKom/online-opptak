@@ -117,11 +117,11 @@ export type emailCommitteeInterviewType = {
   applicants: {
     applicantName: string;
     applicantEmail: string;
-    interviewTimes: {
+    interviewTime: {
       start: string;
       end: string;
       room: string;
-    }[];
+    };
   }[];
 };
 
@@ -133,10 +133,10 @@ export type emailApplicantInterviewType = {
   committees: {
     committeeName: string;
     committeeEmail: string;
-    interviewTimes: {
+    interviewTime: {
       start: string;
       end: string;
       room: string;
-    }[];
+    };
   }[];
 };
