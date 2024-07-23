@@ -9,7 +9,7 @@ def main():
     
     #Sjekker om perioden er før intervjutiden og etter søknadstiden, og returnerer søkere og komitétider dersom det er tilfelle
     for period in periods:
-        periodId = period["_id"]
+        periodId = str(period["_id"])
         interview_start = datetime.fromisoformat(period["interviewPeriod"]["start"].replace("Z", "+00:00"))
         application_end = datetime.fromisoformat(period["applicationPeriod"]["end"].replace("Z", "+00:00"))
         
@@ -50,7 +50,7 @@ def fetch_periods():
     return periods
 
 def fetch_applicants(periodId):
-    collection, client = connect_to_db("applicants")
+    collection, client = connect_to_db("applicant")
     
     applicants = collection.find({"periodId": periodId})
     
