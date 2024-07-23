@@ -123,7 +123,6 @@ const CommitteeInterviewTimes = ({
         throw new Error("Failed to submit data");
       }
 
-      const result = await response.json();
       toast.success("Tidene er sendt inn!");
       setHasAlreadySubmitted(true);
     } catch (error) {
@@ -290,8 +289,8 @@ const CommitteeInterviewTimes = ({
 
       <p className="px-5 my-5 text-lg text-center">
         Velg ledige tider ved å trykke på eller dra over flere celler.
-        <br/>Intervjuene vil bli satt opp etter hverandre fra første ledige
-        tid.
+        <br />
+        Intervjuene vil bli satt opp etter hverandre fra første ledige tid.
       </p>
       <form className="flex flex-col text-center">
         {hasAlreadySubmitted ? (

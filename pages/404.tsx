@@ -1,5 +1,3 @@
-// pages/404.js
-import Link from "next/link";
 import Button from "../components/Button";
 import Image from "next/image";
 

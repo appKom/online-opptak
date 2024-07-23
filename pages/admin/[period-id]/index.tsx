@@ -1,7 +1,7 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import router from "next/router";
-import { applicantType, periodType } from "../../../lib/types/types";
+import { periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
 import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
 
@@ -29,7 +29,6 @@ const Admin = () => {
         }
       } catch (error) {
         console.error("Error checking period:", error);
-      } finally {
       }
     };
 

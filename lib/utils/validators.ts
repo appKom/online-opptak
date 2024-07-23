@@ -31,12 +31,12 @@ export const isApplicantType = (data: any): data is applicantType => {
       data.preferences.second !== data.preferences.third);
 
   // Check that the selectedTimes array is valid
-  const hasSelectedTimesFields =
+  /* const hasSelectedTimesFields = // TODO: DONT KNOW IF WE NEED THIS, LOOK AT THIS LATER
     Array.isArray(data.selectedTimes) &&
     data.selectedTimes.every(
       (time: { start: any; end: any }) =>
         typeof time.start === "string" && typeof time.end === "string"
-    );
+    ); */
 
   const hasOptionalFields =
     data.optionalCommittees &&

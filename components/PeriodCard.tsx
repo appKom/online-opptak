@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { periodType } from "../lib/types/types";
 import { formatDateNorwegian } from "../lib/utils/dateUtils";
@@ -12,7 +11,6 @@ interface Props {
 
 const PeriodCard = ({ period }: Props) => {
   const { data: session } = useSession();
-  const router = useRouter();
   const [hasApplied, setHasApplied] = useState(false);
 
   useEffect(() => {

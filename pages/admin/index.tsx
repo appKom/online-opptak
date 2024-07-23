@@ -1,7 +1,6 @@
 import { useSession } from "next-auth/react";
 import Table, { RowType } from "../../components/Table";
 import Button from "../../components/Button";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { periodType } from "../../lib/types/types";
 import { formatDate } from "../../lib/utils/dateUtils";
@@ -9,7 +8,6 @@ import NotFound from "../404";
 
 const Admin = () => {
   const { data: session } = useSession();
-  const router = useRouter();
 
   const [periods, setPeriods] = useState<RowType[]>([]);
 
