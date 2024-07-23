@@ -3,7 +3,7 @@ import { algorithmType } from "../../types/types";
 export const algorithmTestData: algorithmType = [
   {
     applicantName: "Ian Somerhalder",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "IanSommerhalder@gmail.com",
     interviews: [
       {
         start: "2024-07-29T15:00:00Z",
@@ -35,7 +35,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Elena Gilbert",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Elena@outlook.com",
     interviews: [
       {
         start: "2024-07-30T10:00:00Z",
@@ -51,7 +51,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Damon Salvatore",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Damon@gmail.com",
     interviews: [
       {
         start: "2024-07-31T09:00:00Z",
@@ -67,7 +67,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Bonnie Bennett",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Bonnie@bennet.no",
     interviews: [
       {
         start: "2024-08-01T14:00:00Z",
@@ -83,7 +83,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Caroline Forbes",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Caroline@gmail.com",
     interviews: [
       {
         start: "2024-08-02T10:30:00Z",
@@ -99,7 +99,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Stefan Salvatore",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "stefan@salvatore.no",
     interviews: [
       {
         start: "2024-08-03T08:00:00Z",
@@ -115,7 +115,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Matt Donovan",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Matt@donavan.com",
     interviews: [
       {
         start: "2024-08-04T09:00:00Z",
@@ -131,7 +131,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Tyler Lockwood",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Tyler@lockwood.com",
     interviews: [
       {
         start: "2024-08-05T13:00:00Z",
@@ -147,7 +147,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Alaric Saltzman",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Alaric@yahoo.com",
     interviews: [
       {
         start: "2024-08-06T09:30:00Z",
@@ -163,7 +163,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Jenna Sommers",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Jenna@outlook.com",
     interviews: [
       {
         start: "2024-08-07T08:30:00Z",
@@ -179,7 +179,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Jeremy Gilbert",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Jeremy@yahoo.com",
     interviews: [
       {
         start: "2024-08-08T10:00:00Z",
@@ -195,7 +195,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Katherine Pierce",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Katherine@gmail.com",
     interviews: [
       {
         start: "2024-08-09T14:30:00Z",
@@ -211,7 +211,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Rebekah Mikaelson",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Rebakah@gmail.com",
     interviews: [
       {
         start: "2024-08-10T09:00:00Z",
@@ -227,7 +227,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Klaus Mikaelson",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Klaus@outlook.com",
     interviews: [
       {
         start: "2024-08-11T13:00:00Z",
@@ -243,7 +243,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Hayley Marshall",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Hayley@gmail.com",
     interviews: [
       {
         start: "2024-08-12T08:30:00Z",
@@ -259,7 +259,7 @@ export const algorithmTestData: algorithmType = [
   },
   {
     applicantName: "Marcel Gerard",
-    applicantEmail: "fhansteen@gmail.com",
+    applicantEmail: "Marcel@Gerard.com",
     interviews: [
       {
         start: "2024-08-13T11:00:00Z",
