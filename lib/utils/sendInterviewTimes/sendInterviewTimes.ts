@@ -66,14 +66,20 @@ const formatApplicants = (
 
       const committeeTime = committeeInterviewTimes.find(
         (time) =>
-          time.committee.toLowerCase() ===
-            interview.committeeName.toLowerCase() &&
-          time.availabletimes.some(
-            (available) =>
-              available.start === interview.start &&
-              available.end === interview.end
-          )
+          time.committee.toLowerCase() === interview.committeeName.toLowerCase()
       );
+
+      let room = "";
+
+      if (committeeTime) {
+        const availableTime = committeeTime.availabletimes.find(
+          (available) =>
+            available.start <= interview.start && available.end >= interview.end
+        );
+        if (availableTime) {
+          room = availableTime.room;
+        }
+      }
 
       return {
         committeeName: interview.committeeName,
@@ -81,17 +87,12 @@ const formatApplicants = (
         interviewTime: {
           start: interview.start,
           end: interview.end,
-          room:
-            committeeTime?.availabletimes.find(
-              (available) =>
-                available.start === interview.start &&
-                available.end === interview.end
-            )?.room || "",
+          room: room,
         },
       };
     });
 
-    const applicantToEmail: emailApplicantInterviewType = {
+    const applicantToEmail = {
       periodId: periodId,
       period_name: period.name,
       applicantName: app.applicantName,
