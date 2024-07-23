@@ -47,39 +47,41 @@ const Admin = () => {
   }
 
   return (
-    <Tabs
-      activeTab={activeTab}
-      setActiveTab={(index) => {
-        setActiveTab(index);
-        setTabClicked(index);
-      }}
-      content={[
-        {
-          title: "Søkere",
-          icon: <CalendarIcon className="w-5 h-5" />,
-          content: (
-            <ApplicantsOverview
-              period={period}
-              committees={committees}
-              includePreferences={true}
-            />
-          ),
-        },
-        {
-          title: "Send ut",
-          icon: <InboxIcon className="w-5 h-5" />,
-          content: (
-            <div className="flex flex-col items-center">
-              <Button
-                title={"Send ut"}
-                color={"blue"}
-                onClick={() => sendOutInterviewTimes({ periodId })}
+    <div className="px-5 py-2">
+      <Tabs
+        activeTab={activeTab}
+        setActiveTab={(index) => {
+          setActiveTab(index);
+          setTabClicked(index);
+        }}
+        content={[
+          {
+            title: "Søkere",
+            icon: <CalendarIcon className="w-5 h-5" />,
+            content: (
+              <ApplicantsOverview
+                period={period}
+                committees={committees}
+                includePreferences={true}
               />
-            </div>
-          ),
-        },
-      ]}
-    />
+            ),
+          },
+          {
+            title: "Send ut",
+            icon: <InboxIcon className="w-5 h-5" />,
+            content: (
+              <div className="flex flex-col items-center">
+                <Button
+                  title={"Send ut"}
+                  color={"blue"}
+                  onClick={() => sendOutInterviewTimes({ periodId })}
+                />
+              </div>
+            ),
+          },
+        ]}
+      />
+    </div>
   );
 };
 
