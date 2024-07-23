@@ -76,11 +76,18 @@ const Committees = () => {
       return true;
     }
 
-    return periods.some(
-      (period) =>
-        period.committees.includes(committee.name_short) ||
-        period.optionalCommittees.includes(committee.name_short)
-    );
+    const today = new Date();
+    return periods.some((period) => {
+      const applicationStart = new Date(period.applicationPeriod.start);
+      const applicationEnd = new Date(period.applicationPeriod.end);
+
+      return (
+        applicationStart <= today &&
+        applicationEnd >= today &&
+        (period.committees.includes(committee.name_short) ||
+          period.optionalCommittees.includes(committee.name_short))
+      );
+    });
   };
 
   if (isLoading) return <LoadingPage />;
