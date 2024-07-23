@@ -2,10 +2,10 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from datetime import datetime, timezone
 import os
+import certifi
 
 def main():
     periods = fetch_periods()
-    
     
     #Sjekker om perioden er før intervjutiden og etter søknadstiden, og returnerer søkere og komitétider dersom det er tilfelle
     for period in periods:
@@ -14,7 +14,7 @@ def main():
         application_end = datetime.fromisoformat(period["applicationPeriod"]["end"].replace("Z", "+00:00"))
         
         now = datetime.now(timezone.utc)
-        
+
         if interview_start < now and application_end > now:
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
@@ -30,7 +30,7 @@ def connect_to_db(collection_name):
     mongo_uri = os.getenv("MONGODB_URI")
     db_name = os.getenv("DB_NAME")
 
-    client = MongoClient(mongo_uri)
+    client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
     
     db = client[db_name] # type: ignore
     
@@ -71,6 +71,5 @@ def fetch_committee_times(periodId):
     
     return committee_times
 
-
-
-
+if __name__ == "__main__":
+    main()
