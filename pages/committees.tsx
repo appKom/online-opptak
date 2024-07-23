@@ -1,25 +1,29 @@
 import { useEffect, useState } from "react";
 import LoadingPage from "../components/LoadingPage";
-import { owCommitteeType } from "../lib/types/types";
+import { owCommitteeType, periodType } from "../lib/types/types";
 import CommitteeAboutCard from "../components/CommitteeAboutCard";
 
 const Committees = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
+  const [periods, setPeriods] = useState<periodType[]>([]);
 
-  const excludedCommittees = [
-    "Jubkom",
-    "Velkom",
-    "Output",
-    "Ekskom",
-    "Faddere",
-    "Debug",
-  ];
+  const excludedCommittees = ["Jubkom", "Output", "Faddere"];
 
   const filterCommittees = (committees: owCommitteeType[]) => {
     return committees.filter(
       (committee) => !excludedCommittees.includes(committee.name_short)
     );
+  };
+
+  const fetchPeriods = async () => {
+    try {
+      const response = await fetch("/api/periods");
+      const data = await response.json();
+      setPeriods(data.periods);
+    } catch (error) {
+      console.error("Failed to fetch periods:", error);
+    }
   };
 
   const fetchCommittees = async () => {
@@ -59,8 +63,25 @@ const Committees = () => {
       setCommittees(cachedData);
       setIsLoading(false);
     }
+    fetchPeriods();
     fetchCommittees();
   }, []);
+
+  const hasPeriod = (committee: any) => {
+    if (!Array.isArray(periods)) {
+      return false;
+    }
+
+    if (periods.length > 0 && committee.name_short === "Bankom") {
+      return true;
+    }
+
+    return periods.some(
+      (period) =>
+        period.committees.includes(committee.name_short) ||
+        period.optionalCommittees.includes(committee.name_short)
+    );
+  };
 
   if (isLoading) return <LoadingPage />;
 
@@ -78,7 +99,13 @@ const Committees = () => {
         </div>
         <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
           {committees?.map((committee, index) => {
-            return <CommitteeAboutCard {...committee} key={index} />;
+            return (
+              <CommitteeAboutCard
+                key={index}
+                committee={committee}
+                hasPeriod={hasPeriod(committee)}
+              />
+            );
           })}
         </div>
       </div>
