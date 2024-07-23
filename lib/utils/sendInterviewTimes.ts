@@ -10,6 +10,7 @@ import {
 } from "../types/types";
 
 import { algorithmTestData } from "./tempEmailTestData";
+import { changeDisplayName } from "./toString";
 
 interface Props {
   periodId: string;
@@ -49,6 +50,8 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
         );
       })
       .map((app) => ({
+        applicantName: app.applicantName,
+        applicantEmail: app.applicantEmail,
         committeeName: committeeTime.committee,
         committeeEmail: committeeEmail.email,
         interviewTimes: app.interviews.map((interview) => ({
@@ -67,34 +70,38 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
       period_name: period.name,
       committeeName: committeeTime.committee,
       committeeEmail: committeeEmail.email,
-      applicants: applicants.flatMap((applicant) =>
-        applicant.interviewTimes.map((interviewTime) => ({
-          committeeName: applicant.committeeName,
-          committeeEmail: applicant.committeeEmail,
-          interviewTimes: interviewTime,
-        }))
-      ),
+      applicants: applicants.map((app) => ({
+        applicantName: app.applicantName,
+        applicantEmail: app.applicantEmail,
+        interviewTimes: app.interviewTimes.map((interview) => ({
+          start: interview.start,
+          end: interview.end,
+          room: "",
+        })),
+      })),
     };
 
     committeesToEmail.push(emailCommittee);
 
     for (const app of applicants) {
-      if (!applicantsToEmailMap[app.committeeEmail]) {
-        applicantsToEmailMap[app.committeeEmail] = {
+      if (!applicantsToEmailMap[app.applicantEmail]) {
+        applicantsToEmailMap[app.applicantEmail] = {
           periodId: period._id.toString(),
           period_name: period.name,
-          applicantName: app.committeeName,
-          applicantEmail: app.committeeEmail,
+          applicantName: app.applicantName,
+          applicantEmail: app.applicantEmail,
           committees: [],
         };
       }
-      applicantsToEmailMap[app.committeeEmail].committees.push(
-        ...app.interviewTimes.map((interviewTime) => ({
-          committeeName: app.committeeName,
-          committeeEmail: app.committeeEmail,
-          interviewTimes: interviewTime,
-        }))
-      );
+      applicantsToEmailMap[app.applicantEmail].committees.push({
+        committeeName: app.committeeName,
+        committeeEmail: app.committeeEmail,
+        interviewTimes: app.interviewTimes.map((interview) => ({
+          start: interview.start,
+          end: interview.end,
+          room: "",
+        })),
+      });
     }
   }
 
@@ -200,7 +207,9 @@ const formatAndSendEmails = async ({
   for (const committee of committeesToEmail) {
     const typedCommittee: emailCommitteeInterviewType = committee;
     const committeeEmail = [typedCommittee.committeeEmail];
-    const subject = `${typedCommittee.period_name}s sine intervjutider`;
+    const subject = `${changeDisplayName(
+      typedCommittee.committeeName
+    )}s sine intervjutider for ${typedCommittee.period_name}`;
     let body = `Her er intervjutidene for søkerene deres:\n\n`;
 
     typedCommittee.applicants.forEach((applicant: any) => {

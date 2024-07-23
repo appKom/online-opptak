@@ -96,7 +96,7 @@ export type committeeInterviewType = {
 
 export type algorithmType = {
   applicantName: string;
-
+  applicantEmail: string;
   interviews: {
     start: string;
     end: string;
@@ -115,13 +115,13 @@ export type emailCommitteeInterviewType = {
   committeeName: string;
   committeeEmail: string;
   applicants: {
-    committeeName: string;
-    committeeEmail: string;
+    applicantName: string;
+    applicantEmail: string;
     interviewTimes: {
       start: string;
       end: string;
       room: string;
-    };
+    }[];
   }[];
 };
 
@@ -137,6 +137,6 @@ export type emailApplicantInterviewType = {
       start: string;
       end: string;
       room: string;
-    };
+    }[];
   }[];
 };
