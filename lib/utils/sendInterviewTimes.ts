@@ -32,7 +32,7 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
     {};
 
   for (const committeeTime of committeeInterviewTimes) {
-    // Find the email details for the current committee
+    console.log("Committee Time:", committeeTime);
     const committeeEmail = committeeEmails.find(
       (email) =>
         email.name_short.toLowerCase() === committeeTime.committee.toLowerCase()
@@ -41,11 +41,13 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
     if (!committeeEmail) continue;
 
     const applicants = algorithmData
-      .filter((app) =>
-        app.interviews.some(
-          (interview) => interview.committeeName === committeeTime.committee
-        )
-      )
+      .filter((app) => {
+        return app.interviews.some(
+          (interview) =>
+            interview.committeeName.toLowerCase() ===
+            committeeTime.committee.toLowerCase()
+        );
+      })
       .map((app) => ({
         committeeName: committeeTime.committee,
         committeeEmail: committeeEmail.email,
