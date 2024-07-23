@@ -43,9 +43,9 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
             </tr>
           </thead>
           <tbody className="border-t border-gray-100 dark:border-0">
-            {rows.map((row) => (
+            {rows.map((row, index) => (
               <tr
-                key={"tr-" + row.id}
+                key={"tr-" + index}
                 className="relative cursor-pointer hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-900 dark:border-gray-700"
                 onClick={() => row.link && router.push(row.link)}
               >
@@ -78,9 +78,9 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
           </tbody>
         </table>
       </div>
-      <div className="md:hidden flex flex-col space-y-4">
-        {rows.map((row) => (
-          <TableCard key={row.id} period={row} onDelete={onDelete} />
+      <div className="flex flex-col space-y-4 md:hidden">
+        {rows.map((row, index) => (
+          <TableCard key={"TableCard-" + index} period={row} onDelete={onDelete} />
         ))}
       </div>
     </>
