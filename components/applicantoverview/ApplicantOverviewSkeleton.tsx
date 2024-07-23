@@ -32,8 +32,6 @@ const ApplicantOverviewSkeleton = () => {
             <input
               type="text"
               placeholder="Ola Nordmann"
-              value={""}
-              onChange={(e) => {}}
               className="w-full text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
             />
           </div>
