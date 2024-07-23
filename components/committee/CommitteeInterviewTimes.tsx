@@ -290,7 +290,7 @@ const CommitteeInterviewTimes = ({
 
       <p className="px-5 my-5 text-lg text-center">
         Velg ledige tider ved å trykke på eller dra over flere celler.
-        <br></br>Intervjuene vil bli satt opp etter hverandre fra første ledige
+        <br/>Intervjuene vil bli satt opp etter hverandre fra første ledige
         tid.
       </p>
       <form className="flex flex-col text-center">
@@ -320,7 +320,7 @@ const CommitteeInterviewTimes = ({
         )}
         <div className="mx-4 sm:mx-20">
           <FullCalendar
-            eventClassNames={"dark:bg-online-darkBlue"}
+            eventClassNames="dark:bg-online-darkBlue"
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
             headerToolbar={{

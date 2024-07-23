@@ -1,72 +1,52 @@
+import React from 'react';
 import ThemeToggle from "./ThemeToggle";
+import Link from 'next/link';
+
+interface User {
+  name: string;
+  role?: string;
+  isCommittee?: boolean;
+}
+
+interface Session {
+  user?: User;
+}
 
 type Props = {
-  session: any;
+  session: Session | null;
   handleLogin: () => void;
   handleLogout: () => void;
-  router: any;
   toggleDropdown: () => void;
 };
 
-const DropdownMenu = (props: Props) => {
+const DropdownMenu = ({ session, handleLogin, handleLogout, toggleDropdown }: Props) => {
+  const RenderLink = ({ path, label }: { path: string; label: string }) => (
+    <Link href={path} passHref>
+      <a onClick={toggleDropdown} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+        {label}
+      </a>
+    </Link>
+  );
+
   return (
     <div className="absolute right-0 z-10 w-48 py-2 mt-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg shadow-xl cursor-pointer dark:bg-gray-800 dark:border-gray-600 dark:text-white">
-      {!props.session ? (
-        <div>
+      {!session?.user ? (
+        <>
           <ThemeToggle />
-          <a
-            onClick={props.handleLogin}
-            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
+          <a onClick={handleLogin} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
             Logg inn
           </a>
-        </div>
+        </>
       ) : (
         <>
           <div className="px-4 py-2 cursor-default">
-            Logget inn som{" "}
-            <span className="font-medium">{props.session.user?.name}</span>
+            Logget inn som <span className="font-medium">{session?.user.name}</span>
           </div>
-          <a
-            onClick={() => {
-              props.router.push("/");
-              props.toggleDropdown();
-            }}
-            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            Hjem
-          </a>
-          {props.session.user?.role === "admin" && (
-            <a
-              onClick={() => {
-                props.router.push("/admin");
-                props.toggleDropdown();
-              }}
-              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              Admin
-            </a>
-          )}
-
-          {props.session.user?.isCommitee && (
-            <a
-              onClick={() => {
-                props.router.push("/committee");
-                props.toggleDropdown();
-              }}
-              className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
-              For komiteer
-            </a>
-          )}
+          <RenderLink path="/" label="Hjem" />
+          {session?.user.role === "admin" && <RenderLink path="/admin" label="Admin" />}
+          {session?.user.isCommittee && <RenderLink path="/committee" label="For komiteer" />}
           <ThemeToggle />
-          <a
-            onClick={() => {
-              props.handleLogout();
-              props.toggleDropdown();
-            }}
-            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
+          <a onClick={() => { handleLogout(); toggleDropdown(); }} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">
             Logg ut
           </a>
         </>
