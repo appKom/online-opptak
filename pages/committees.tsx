@@ -8,7 +8,7 @@ const Committees = () => {
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
   const [periods, setPeriods] = useState<periodType[]>([]);
 
-  const excludedCommittees = ["Jubkom", "Output", "Faddere"];
+  const excludedCommittees = ["Faddere"];
 
   const filterCommittees = (committees: owCommitteeType[]) => {
     return committees.filter(
@@ -72,11 +72,16 @@ const Committees = () => {
       return false;
     }
 
-    if (periods.length > 0 && committee.name_short === "Bankom") {
-      return true;
+    const today = new Date();
+
+    if (committee.name_short === "Bankom") {
+      return periods.some((period) => {
+        const applicationStart = new Date(period.applicationPeriod.start);
+        const applicationEnd = new Date(period.applicationPeriod.end);
+        return applicationStart <= today && applicationEnd >= today;
+      });
     }
 
-    const today = new Date();
     return periods.some((period) => {
       const applicationStart = new Date(period.applicationPeriod.start);
       const applicationEnd = new Date(period.applicationPeriod.end);
