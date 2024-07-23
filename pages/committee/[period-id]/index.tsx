@@ -13,7 +13,7 @@ const ChooseCommittee = () => {
   const router = useRouter();
   const periodId = router.query["period-id"];
 
-  const [committees, setCommittees] = useState<string[]>();
+  const [committees, setCommittees] = useState<string[] | null>(null);
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['periods', periodId],

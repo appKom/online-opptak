@@ -10,8 +10,8 @@ import ApplicantTable from "./ApplicantTable";
 import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
 
 interface Props {
-  period?: periodType;
-  committees?: string[];
+  period?: periodType | null;
+  committees?: string[] | null;
   committee?: string;
   includePreferences: boolean;
 }

@@ -13,8 +13,8 @@ const Admin = () => {
   const { data: session } = useSession();
   const periodId = router.query["period-id"];
 
-  const [period, setPeriod] = useState<periodType>();
-  const [committees, setCommittees] = useState<string[]>();
+  const [period, setPeriod] = useState<periodType | null>(null);
+  const [committees, setCommittees] = useState<string[] | null>(null);
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['periods', periodId],
