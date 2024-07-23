@@ -24,8 +24,8 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
   const router = useRouter();
 
   return (
-    <div className="">
-      <div className="hidden md:flex overflow-auto border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
+    <>
+      <div className="hidden overflow-auto border border-gray-200 rounded-lg shadow-md md:flex dark:border-gray-700">
         <table className="w-full text-gray-500 border-collapse dark:bg-online-darkBlue dark:text-gray-200">
           <thead className="bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -36,7 +36,7 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
                       {column.label}
                     </th>
                   ) : (
-                    <div className="px-10 py-2"></div>
+                    <th className="px-10 py-2"></th>
                   )}
                 </React.Fragment>
               ))}
@@ -83,7 +83,7 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
           <TableCard key={row.id} period={row} onDelete={onDelete} />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
