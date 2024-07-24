@@ -9,11 +9,10 @@ cd algorithm
 python -m venv ".venv"
 ```
 
-Lag så en fil i `.\.venv\Lib\site-packages` som slutter på `.pth` og inneholder den absolutte filstien til `mip_matching`-mappen.
-
 ```
 .\.venv\Scripts\activate
-python -m pip install -r requirements.txt
+pip install -e .
+pip install -r requirements.txt
 ```
 
 ## TODOs
