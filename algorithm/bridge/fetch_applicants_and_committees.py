@@ -3,9 +3,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timezone
 import os
 import certifi
-import itertools
-from typing import TypedDict, List
-import mip
+from typing import  List
 
 from mip_matching.Committee import Committee
 from mip_matching.TimeInterval import TimeInterval
@@ -95,8 +93,7 @@ def fetch_committee_times(periodId):
     
     return committee_times
 
-from typing import List
-from datetime import datetime
+
 
 def create_applicant_objects(applicants_data: List[dict], all_committees: dict[str, Committee]) -> set[Applicant]:
     applicants = set()
