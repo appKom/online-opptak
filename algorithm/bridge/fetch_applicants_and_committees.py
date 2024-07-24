@@ -37,13 +37,13 @@ def main():
             
             match_result = match_meetings(applicant_objects, committee_objects)
             
-            send_to_db(match_result, applicants)
+            send_to_db(match_result, applicants, period["_id"])
             return match_result
         
         
-def send_to_db(match_result: MeetingMatch, applicants: List[dict]):
+def send_to_db(match_result: MeetingMatch, applicants: List[dict], periodId):
     load_dotenv()
-    formatted_results = format_match_results(match_result, applicants)
+    formatted_results = format_match_results(match_result, applicants, periodId)
     print("Sending to db")
     print(formatted_results)
     
@@ -108,7 +108,7 @@ def fetch_committee_times(periodId):
     
     return committee_times
 
-def format_match_results(match_results: MeetingMatch, applicants: List[dict]) -> List[Dict]:
+def format_match_results(match_results: MeetingMatch, applicants: List[dict], periodId) -> List[Dict]:
     transformed_results = {}
     applicant_dict = {str(applicant['_id']): applicant['name'] for applicant in applicants}
     
@@ -118,6 +118,7 @@ def format_match_results(match_results: MeetingMatch, applicants: List[dict]) ->
         
         if applicant_id not in transformed_results:
             transformed_results[applicant_id] = {
+                "periodId": periodId,
                 "applicantId": applicant_id,
                 "applicantName": applicant_name,
                 "interviews": []
