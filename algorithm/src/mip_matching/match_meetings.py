@@ -68,11 +68,12 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
     # Få de faktiske møtetidene
     matched_meetings: int = 0
     matchings: list = []
-    for name, variable in m.items():
+    for (applicant, committee, interval), variable in m.items():
         if variable.x:
             matched_meetings += 1
-            matchings.append((name[0].email, *name))
-            print(f"{name}")
+            matchings.append((applicant.email, applicant.id, committee, interval))
+            print(f"{(applicant, committee, interval)}")
+
 
     total_wanted_meetings = sum(
         len(applicant.get_committees()) for applicant in applicants)

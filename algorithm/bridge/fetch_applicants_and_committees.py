@@ -37,13 +37,13 @@ def main():
             
             match_result = match_meetings(applicant_objects, committee_objects)
             
-            send_to_db(match_result)
+            send_to_db(match_result, applicants)
             return match_result
         
         
-def send_to_db(match_result: MeetingMatch):
+def send_to_db(match_result: MeetingMatch, applicants: List[dict]):
     load_dotenv()
-    formatted_results = format_match_results(match_result)
+    formatted_results = format_match_results(match_result, applicants)
     print("Sending to db")
     print(formatted_results)
     
@@ -108,36 +108,39 @@ def fetch_committee_times(periodId):
     
     return committee_times
 
-def format_match_results(match_results: MeetingMatch) -> List[Dict]:
+def format_match_results(match_results: MeetingMatch, applicants: List[dict]) -> List[Dict]:
     transformed_results = {}
-
+    applicant_dict = {str(applicant['_id']): applicant['name'] for applicant in applicants}
+    
     for result in match_results['matchings']:
-        email, _, committee, time_interval = result
-        start = time_interval.start.isoformat()
-        end = time_interval.end.isoformat()
+        applicant_id = str(result[1])
+        applicant_name = applicant_dict.get(applicant_id, 'Unknown')
         
-        if email not in transformed_results:
-            transformed_results[email] = {
-                "applicantName": result[1].name, 
-                "applicantEmail": email,
+        if applicant_id not in transformed_results:
+            transformed_results[applicant_id] = {
+                "applicantId": applicant_id,
+                "applicantName": applicant_name,
                 "interviews": []
             }
         
-        transformed_results[email]["interviews"].append({
+        committee = result[2]
+        time_interval = result[3]
+        start = time_interval.start.isoformat()
+        end = time_interval.end.isoformat()
+        
+        transformed_results[applicant_id]["interviews"].append({
             "start": start,
             "end": end,
-            "committeeName": committee.name  
+            "committeeName": committee.name
         })
 
     return list(transformed_results.values())
 
 
-
-
 def create_applicant_objects(applicants_data: List[dict], all_committees: dict[str, Committee]) -> set[Applicant]:
     applicants = set()
     for data in applicants_data:
-        applicant = Applicant(name=data['name'], email=data['email'])
+        applicant = Applicant(name=data['name'], email=data['email'], id=data['_id'])
         
         
         optional_committee_names = data.get('optionalCommittees', [])
