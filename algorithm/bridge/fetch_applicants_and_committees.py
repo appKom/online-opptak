@@ -26,7 +26,12 @@ def main():
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
             
-            applicant_objects = create_applicant_objects(applicants)
+            
+            committee_objects = create_committee_objects(committee_times)
+            
+            all_committees = {committee.name: committee for committee in committee_objects}
+            
+            applicant_objects = create_applicant_objects(applicants, all_committees)
             committee_objects = create_committee_objects(committee_times)
             
             print(applicant_objects)
@@ -90,18 +95,34 @@ def fetch_committee_times(periodId):
     
     return committee_times
 
-def create_applicant_objects(applicants_data: List[dict]) -> set[Applicant]:
+from typing import List
+from datetime import datetime
+
+def create_applicant_objects(applicants_data: List[dict], all_committees: dict[str, Committee]) -> set[Applicant]:
     applicants = set()
     for data in applicants_data:
         applicant = Applicant(name=data['name'])
+        
+        optional_committee_names = data.get('optionalCommittees', [])
+        optional_committees = {all_committees[name] for name in optional_committee_names if name in all_committees}
+        applicant.add_committees(optional_committees)
+        
+        preferences = data.get('preferences', {})
+        preference_committees = {all_committees[committee_name] for committee_name in preferences.values() if committee_name in all_committees}
+        applicant.add_committees(preference_committees)
+
         for interval_data in data['selectedTimes']:
             interval = TimeInterval(
                 start=datetime.fromisoformat(interval_data['start'].replace("Z", "+00:00")),
                 end=datetime.fromisoformat(interval_data['end'].replace("Z", "+00:00"))
             )
             applicant.add_interval(interval)
+            
         applicants.add(applicant)
     return applicants
+
+
+
 
 def create_committee_objects(committee_data: List[dict]) -> set[Committee]:
     committees = set()

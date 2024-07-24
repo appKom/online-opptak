@@ -19,6 +19,9 @@ class MeetingMatch(TypedDict):
 def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> MeetingMatch:
     """Matches meetings and returns a MeetingMatch-object"""
     model = mip.Model(sense=mip.MAXIMIZE)
+    
+    for applicant in applicants:
+        print(f"Applicant: {applicant.name}, Committees: {[str(committee) for committee in applicant.get_committees()]}")
 
     m = {}
 
