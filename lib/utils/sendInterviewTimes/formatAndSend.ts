@@ -25,7 +25,7 @@ export const formatAndSendEmails = async ({
     let body = `\n\n`;
 
     typedApplicant.committees.forEach((committee) => {
-      body += `Komite: ${committee.committeeName}\n`;
+      body += `Komite: ${changeDisplayName(committee.committeeName)}\n`;
       body += `Start: ${formatDateHours(
         new Date(committee.interviewTime.start)
       )}\n`;
