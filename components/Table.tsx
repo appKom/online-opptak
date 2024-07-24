@@ -24,8 +24,8 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
   const router = useRouter();
 
   return (
-    <div className="">
-      <div className="hidden md:flex overflow-auto border border-gray-200 rounded-lg shadow-md dark:border-gray-700">
+    <>
+      <div className="hidden overflow-auto border border-gray-200 rounded-lg shadow-md md:flex dark:border-gray-700">
         <table className="w-full text-gray-500 border-collapse dark:bg-online-darkBlue dark:text-gray-200">
           <thead className="bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -36,16 +36,16 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
                       {column.label}
                     </th>
                   ) : (
-                    <div className="px-10 py-2"></div>
+                    <th className="px-10 py-2"></th>
                   )}
                 </React.Fragment>
               ))}
             </tr>
           </thead>
           <tbody className="border-t border-gray-100 dark:border-0">
-            {rows.map((row) => (
+            {rows.map((row, index) => (
               <tr
-                key={"tr-" + row.id}
+                key={"tr-" + index}
                 className="relative cursor-pointer hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-900 dark:border-gray-700"
                 onClick={() => row.link && router.push(row.link)}
               >
@@ -78,12 +78,12 @@ const Table = ({ rows, columns, onDelete }: TableProps) => {
           </tbody>
         </table>
       </div>
-      <div className="md:hidden flex flex-col space-y-4">
-        {rows.map((row) => (
-          <TableCard key={row.id} period={row} onDelete={onDelete} />
+      <div className="flex flex-col space-y-4 md:hidden">
+        {rows.map((row, index) => (
+          <TableCard key={"TableCard-" + index} period={row} onDelete={onDelete} />
         ))}
       </div>
-    </div>
+    </>
   );
 };
 

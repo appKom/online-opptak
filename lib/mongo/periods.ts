@@ -64,11 +64,6 @@ export const getCurrentPeriods = async () => {
     const filter = {
       $or: [
         {
-          // Check if current ISO date string is within the preparation period
-          "preparationPeriod.start": { $lte: currentDate },
-          "preparationPeriod.end": { $gte: currentDate },
-        },
-        {
           // Check if current ISO date string is within the application period
           "applicationPeriod.start": { $lte: currentDate },
           "applicationPeriod.end": { $gte: currentDate },

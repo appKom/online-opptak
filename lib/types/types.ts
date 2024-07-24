@@ -66,10 +66,6 @@ export type periodType = {
   _id: ObjectId;
   name: string;
   description: string;
-  preparationPeriod: {
-    start: Date;
-    end: Date;
-  };
   applicationPeriod: {
     start: Date;
     end: Date;
@@ -80,9 +76,11 @@ export type periodType = {
   };
   committees: string[];
   optionalCommittees: string[];
+  hasSentInterviewTimes: boolean;
 };
 
 export type AvailableTime = {
+  room: string;
   start: string;
   end: string;
 };
@@ -94,4 +92,14 @@ export type committeeInterviewType = {
   availabletimes: AvailableTime[];
   timeslot: string;
   message: string;
+};
+
+export type owCommitteeType = {
+  name_short: string;
+  name_long: string;
+  email?: string;
+  description_long?: string;
+  description_short?: string;
+  application_description?: string;
+  image?: { xs: string };
 };

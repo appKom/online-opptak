@@ -10,8 +10,9 @@ import ApplicantTable from "./ApplicantTable";
 import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
 
 interface Props {
-  period: periodType | null;
-  committees: string[] | null;
+  period?: periodType | null;
+  committees?: string[] | null;
+  committee?: string;
   includePreferences: boolean;
 }
 
@@ -24,6 +25,7 @@ const isPreferencesType = (
 const ApplicantsOverview = ({
   period,
   committees,
+  committee,
   includePreferences,
 }: Props) => {
   const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
@@ -47,7 +49,7 @@ const ApplicantsOverview = ({
 
   const apiUrl = includePreferences
     ? `/api/applicants/${period?._id}`
-    : `/api/committees/${period?._id}`;
+    : `/api/committees/applicants/${period?._id}/${committee}`;
 
   useEffect(() => {
     const fetchApplicants = async () => {

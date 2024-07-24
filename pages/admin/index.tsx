@@ -22,10 +22,6 @@ const Admin = () => {
           return {
             id: period._id,
             name: period.name,
-            preparation:
-              formatDate(period.preparationPeriod.start) +
-              " til " +
-              formatDate(period.preparationPeriod.end),
             application:
               formatDate(period.applicationPeriod.start) +
               " til " +
@@ -66,7 +62,6 @@ const Admin = () => {
 
   const periodsColumns = [
     { label: "Navn", field: "name" },
-    { label: "Forberedelse", field: "preparation" },
     { label: "Søknad", field: "application" },
     { label: "Intervju", field: "interview" },
     { label: "Delete", field: "delete" },
@@ -86,7 +81,7 @@ const Admin = () => {
         <Button
           title="Ny opptaksperiode"
           color="blue"
-          onClick={() => router.push("/admin/new-period")}
+          href="/admin/new-period"
         />
       </div>
 

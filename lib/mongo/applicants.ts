@@ -100,6 +100,7 @@ export const getApplications = async (periodId: string) => {
 
 export const getApplicantsForCommittee = async (
   periodId: string,
+  selectedCommittee: string,
   userCommittees: string[]
 ) => {
   try {
@@ -152,7 +153,10 @@ export const getApplicantsForCommittee = async (
 
         applicant.optionalCommittees = [];
 
-        if (hasCommonCommittees) {
+        const isSelectedCommitteePresent =
+          preferencesArray.includes(selectedCommittee);
+
+        if (hasCommonCommittees && isSelectedCommitteePresent) {
           // Fjerner prioriteringer
           const { preferences, ...rest } = applicant;
           const filteredPreferences = preferencesArray

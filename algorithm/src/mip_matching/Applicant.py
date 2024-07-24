@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     # Unngår cyclic import
-    from Committee import Committee
-    from TimeInterval import TimeInterval
+    from mip_matching.Committee import Committee
+    from mip_matching.TimeInterval import TimeInterval
 
 import itertools
 

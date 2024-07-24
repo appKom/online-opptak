@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { hasSession } from "../../../lib/utils/apiChecks";
+import { owCommitteeType } from "../../../lib/types/types";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -14,15 +15,13 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const baseUrl = "https://old.online.ntnu.no/api/v1/group/online-groups/";
-    let groups = [];
-    let page = 1;
-    let hasMorePages = true;
+    const baseUrl =
+      "https://old.online.ntnu.no/api/v1/group/online-groups/?page_size=999";
+
     const excludedCommitteeNames = [
       "HS",
       "Komiteledere",
       "Pangkom",
-      "Bankom",
       "Fond",
       "Æresmedlemmer",
       "Bed&Fagkom",
@@ -48,41 +47,31 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       "X-Sport",
     ];
 
-    while (hasMorePages) {
-      const response = await fetch(`${baseUrl}?page=${page}`);
+    const response = await fetch(baseUrl);
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
-      }
-
-      const data = await response.json();
-
-      groups.push(
-        ...data.results
-          // .filter(
-          //   (group: { group_type: string }) => group.group_type === "committee"
-          // )
-          .filter(
-            (group: { name_short: string }) =>
-              !excludedCommitteeNames.includes(group.name_short) // Exclude committees by name_short
-          )
-          .map(
-            (group: {
-              name_short: string;
-              name_long: string;
-              email?: string;
-            }) => ({
-              name_short: group.name_short,
-              name_long: group.name_long,
-              email: group.email || "No email provided",
-            })
-          )
-      );
-
-      hasMorePages = !!data.next;
-      page++;
+    if (!response.ok) {
+      throw new Error("Failed to fetch data");
     }
 
+    const data = await response.json();
+
+    const groups = data.results
+      // .filter(
+      //   (group: { group_type: string }) => group.group_type === "committee"
+      // )
+      .filter(
+        (group: { name_short: string }) =>
+          !excludedCommitteeNames.includes(group.name_short) // Exclude committees by name_short
+      )
+      .map((group: owCommitteeType) => ({
+        name_short: group.name_short,
+        name_long: group.name_long,
+        email: group.email,
+        description_short: group.description_short,
+        description_long: group.description_long,
+        image: group?.image,
+        application_description: group.application_description,
+      }));
     return res.status(200).json(groups);
   } catch (error) {
     console.error(error);

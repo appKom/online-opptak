@@ -35,10 +35,6 @@ const PeriodCard = ({ period }: Props) => {
     }
   }, [period._id, session?.user?.owId]);
 
-  const handleButtonOnClick = () => {
-    router.push(`/application/${period._id}`);
-  };
-
   if (isLoading) {
     return (
       <div className="w-full max-w-md p-4 border border-gray-200 rounded shadow animate-pulse md:p-6 dark:border-gray-700 ">
@@ -78,10 +74,10 @@ const PeriodCard = ({ period }: Props) => {
         )}
         <div className="flex justify-center mt-4">
           <Button
-            onClick={hasApplied ? handleButtonOnClick : handleButtonOnClick}
             title={hasApplied ? "Se søknad" : "Søk nå"}
             size="small"
             color="white"
+            href={`/application/${period._id}`}
           />
         </div>
       </div>

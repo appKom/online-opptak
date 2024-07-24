@@ -44,7 +44,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         }`}
       >
         <h1 className="text-lg font-semibold">Kontakt:</h1>
-        <p>Epost: {applicant?.email}</p>
+        <p>E-post: {applicant?.email}</p>
         <p>Telefon: {applicant?.phone}</p>
 
         {includePreferences && (
