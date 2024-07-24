@@ -15,10 +15,11 @@ class Applicant:
     komitéer hen har søkt på, og når søkeren kan ha intervjuer.
     """
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, email: str):
         self.committees: list[Committee] = []
         self.slots: set[TimeInterval] = set()
         self.name = name
+        self.email = email
 
     def add_committee(self, committee: Committee) -> None:
         self.committees.append(committee)

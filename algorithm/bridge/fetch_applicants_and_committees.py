@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from datetime import datetime, timezone
 import os
 import certifi
-from typing import  List
+from typing import List, Dict
 
 from mip_matching.Committee import Committee
 from mip_matching.TimeInterval import TimeInterval
@@ -42,8 +42,23 @@ def main():
         
         
 def send_to_db(match_result: MeetingMatch):
+    load_dotenv()
+    formatted_results = format_match_results(match_result)
     print("Sending to db")
-    print(match_result)
+    print(formatted_results)
+    
+    mongo_uri = os.getenv("MONGODB_URI")
+    db_name = os.getenv("DB_NAME")
+    client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
+    
+    db = client[db_name] # type: ignore
+    
+    collection = db["interviews"]
+    
+    collection.insert_many(formatted_results)
+    
+    client.close()
+
         
 
 def connect_to_db(collection_name):
@@ -93,12 +108,37 @@ def fetch_committee_times(periodId):
     
     return committee_times
 
+def format_match_results(match_results: MeetingMatch) -> List[Dict]:
+    transformed_results = {}
+
+    for result in match_results['matchings']:
+        email, _, committee, time_interval = result
+        start = time_interval.start.isoformat()
+        end = time_interval.end.isoformat()
+        
+        if email not in transformed_results:
+            transformed_results[email] = {
+                "applicantName": result[1].name, 
+                "applicantEmail": email,
+                "interviews": []
+            }
+        
+        transformed_results[email]["interviews"].append({
+            "start": start,
+            "end": end,
+            "committeeName": committee.name  
+        })
+
+    return list(transformed_results.values())
+
+
 
 
 def create_applicant_objects(applicants_data: List[dict], all_committees: dict[str, Committee]) -> set[Applicant]:
     applicants = set()
     for data in applicants_data:
-        applicant = Applicant(name=data['name'])
+        applicant = Applicant(name=data['name'], email=data['email'])
+        
         
         optional_committee_names = data.get('optionalCommittees', [])
         optional_committees = {all_committees[name] for name in optional_committee_names if name in all_committees}
