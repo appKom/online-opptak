@@ -52,7 +52,7 @@ export const fetchAlgorithmData = async (
   periodId: string
 ): Promise<algorithmType[]> => {
   try {
-    const reponse = await fetch(`/interviews/${periodId}`);
+    const reponse = await fetch(`/api/interviews/${periodId}`);
     const data = await reponse.json();
     if (!Array.isArray(data)) {
       throw new Error("Expected an array from the interviews API response");
