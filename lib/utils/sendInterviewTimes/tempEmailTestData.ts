@@ -12,7 +12,7 @@ export const algorithmTestData: algorithmType = [
       },
       {
         start: "2024-07-29T15:00:00Z",
-        end: "2024-07-29T16:00:00Z",
+        end: "2024-07-29T12:00:00Z",
         committeeName: "Appkom",
       },
     ],
@@ -28,7 +28,7 @@ export const algorithmTestData: algorithmType = [
       },
       {
         start: "2024-07-29T15:00:00Z",
-        end: "2024-07-29T16:00:00Z",
+        end: "2024-07-20T12:00:00Z",
         committeeName: "Appkom",
       },
     ],
