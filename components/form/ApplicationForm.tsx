@@ -5,7 +5,8 @@ import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
 import { changeDisplayName } from "../../lib/utils/toString";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export const ApplicationForm = (props: Props) => {
+  const [isNtnuEmail, setIsNtnuEmail] = useState<boolean>(false);
   const availableCommittees = [["Ingen", ""]];
   const [selectedOptionalCommittees, setSelectedOptionalCommittees] = useState<
     string[]
@@ -48,9 +50,31 @@ export const ApplicationForm = (props: Props) => {
     });
   };
 
+  useEffect(() => {
+    if (
+      props.applicationData.email &&
+      props.applicationData.email.includes("ntnu.no")
+    ) {
+      setIsNtnuEmail(true);
+      // toast.error(
+      //   "Vi har problemer med å sende e-post til ntnu.no-adresser. Vennligst bruk en annen e-postadresse."
+      // );
+    } else {
+      setIsNtnuEmail(false);
+    }
+  }, [props.applicationData.email]);
+
   return (
     <div className="flex justify-center items-center">
       <form className="px-5 text-online-darkBlue dark:text-white max-w-sm w-full">
+        {isNtnuEmail && (
+          <div className="px-5">
+            <p className="text-red-500">
+              Vi har problemer med å sende e-post til NTNU e-poster. Vennligst
+              bruk en annen e-postadresse.
+            </p>
+          </div>
+        )}
         <TextInput
           label={"E-postadresse"}
           defaultValue={props.applicationData.email}

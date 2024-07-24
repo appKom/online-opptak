@@ -8,6 +8,14 @@ export const validateApplication = (applicationData: any) => {
     return false;
   }
 
+  // Check if ntnu email is used
+  if (applicationData.email.includes("ntnu.no")) {
+    toast.error(
+      "Vi har problemer med å sende e-post til NTNU e-poster. Vennligst bruk en annen e-postadresse."
+    );
+    return false;
+  }
+
   // Check if phone number is valid
   if (!validator.isMobilePhone(applicationData.phone, "nb-NO")) {
     toast.error("Fyll inn et gyldig mobilnummer");
