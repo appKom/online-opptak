@@ -54,11 +54,10 @@ export const fetchAlgorithmData = async (
   try {
     const reponse = await fetch(`/api/interviews/${periodId}`);
     const data = await reponse.json();
-    if (!Array.isArray(data)) {
+    if (!Array.isArray(data.interviews.interviews)) {
       throw new Error("Expected an array from the interviews API response");
     }
-    console.log(data);
-    return data;
+    return data.interviews.interviews;
   } catch (error) {
     console.error(error);
     throw new Error("Failed to fetch algorithm data");
