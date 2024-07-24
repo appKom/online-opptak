@@ -72,7 +72,9 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         )}
 
         <h1 className="text-lg font-semibold pt-3">Om:</h1>
-        <p>Bankom: {getBankomValue(applicant?.bankom)}</p>
+        <p>
+          Ønsker å være økonomiansvarlig : {getBankomValue(applicant?.bankom)}
+        </p>
         <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
           <p className="whitespace-pre-wrap">{applicant?.about}</p>
         </div>

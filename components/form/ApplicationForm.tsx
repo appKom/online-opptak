@@ -163,7 +163,7 @@ export const ApplicationForm = (props: Props) => {
             ["Usikker (gjerne spør om mer info på intervjuet)", "maybe"],
           ]}
           label={
-            "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankkom)?"
+            "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankom)?"
           }
           updateInputValues={(value: boolean) =>
             props.setApplicationData({
