@@ -64,7 +64,7 @@ const CommitteeApplicantOverView: NextPage = () => {
     if (!session || !periodId || !committee) return;
 
     const fetchCommitteeInterviewTimes = async () => {
-      if (!session) {
+      if (!session.user?.committees?.includes(committee)) {
         return;
       }
       if (period?._id === undefined) return;
@@ -74,6 +74,7 @@ const CommitteeApplicantOverView: NextPage = () => {
           `/api/committees/times/${period?._id}/${committee}`
         );
         const data = await response.json();
+
         if (response.ok) {
           setCommitteeInterviewTimes(data.committees[0]);
         } else {

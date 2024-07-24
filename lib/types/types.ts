@@ -80,6 +80,7 @@ export type periodType = {
 };
 
 export type AvailableTime = {
+  room: string;
   start: string;
   end: string;
 };
