@@ -81,7 +81,7 @@ const Committee: NextPage = () => {
     { label: "Intervju", field: "interview" },
   ];
 
-  if (!session || !session.user?.isCommitee) {
+  if (!session || !session.user?.isCommittee) {
     return <p>Ingen tilgang!</p>;
   }
 
