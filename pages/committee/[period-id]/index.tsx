@@ -3,51 +3,43 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import LoadingPage from "../../../components/LoadingPage";
 import CommitteeCard from "../../../components/committee/CommitteeCard";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPeriodById } from "../../../lib/api/periodApi";
+import ErrorPage from "../../../components/ErrorPage";
+import NotFound from "../../404";
 
 const ChooseCommittee = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const periodId = router.query["period-id"];
+
   const [committees, setCommittees] = useState<string[] | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ['periods', periodId],
+    queryFn: fetchPeriodById,
+  });
 
   useEffect(() => {
-    const fetchPeriod = async () => {
-      if (!session || !periodId) return;
+    if(!data) return;
 
-      try {
-        const res = await fetch(`/api/periods/${periodId}`);
-        const data = await res.json();
+    const userCommittees = session!.user!.committees;
+    const periodCommittees = [...data.period?.committees, ...data.period?.optionalCommittees];
 
-        if (data.period) {
-          const userCommittees = session!.user!.committees;
-          const periodCommittees = data.period.committees;
+    const matchingCommittees = periodCommittees.filter(
+      (committee: string) =>
+        userCommittees?.includes(committee.toLowerCase())
+    );
+    setCommittees(matchingCommittees);
 
-          if (data.period.optionalCommittees != null) {
-            periodCommittees.push(...data.period.optionalCommittees);
-          }
+  }, [data, session])
 
-          const filteredCommittees = periodCommittees.filter(
-            (committee: string) =>
-              userCommittees?.includes(committee.toLowerCase())
-          );
-          setCommittees(filteredCommittees);
-        }
-      } catch (error) {
-        console.error("Failed to fetch interview periods:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPeriod();
-  }, [periodId, session]);
-
-  if (loading) {
-    return <LoadingPage />;
-  }
+  if (session?.user?.committees?.length === 0) return <NotFound />;
+  if (isLoading) return <LoadingPage />;
+  if (isError) return <ErrorPage />;
 
   return (
-    <div className="flex flex-col px-5 pt-5 items-center gap-8">
+    <div className="flex flex-col items-center gap-8 px-5">
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">Velg komite</h2>
       {committees?.map((committee) => (
         <CommitteeCard

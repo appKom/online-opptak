@@ -8,6 +8,15 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import LoadingPage from "../components/LoadingPage";
 import Signature from "../lib/utils/Signature";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient({
+  defaultOptions: { // TODO: go over default options
+    queries: {
+      staleTime: 1000 * 60 * 10,
+    },
+  },
+});
 
 const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -70,12 +79,14 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
       </Head>
       <div className="flex flex-col min-h-screen bg-white dark:text-white dark:bg-gray-900">
         <SessionHandler>
-          <Toaster />
-          <Navbar />
-          <div className="flex-grow">
-            <Component {...pageProps} />
-          </div>
-          <Footer />
+          <QueryClientProvider client={queryClient}>
+            <Toaster />
+            <Navbar />
+            <div className="flex-grow">
+              <Component {...pageProps} />
+            </div>
+            <Footer />
+          </QueryClientProvider>
         </SessionHandler>
       </div>
     </SessionProvider>
