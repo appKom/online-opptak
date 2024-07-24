@@ -49,12 +49,13 @@ const ChooseCommittee = () => {
   return (
     <div className="flex flex-col px-5 pt-5 items-center gap-8">
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">Velg komite</h2>
-      {committees?.map((committee) =>
-        CommitteeCard({
-          committee,
-          link: `${periodId}/${committee.toLowerCase()}`,
-        })
-      )}
+      {committees?.map((committee) => (
+        <CommitteeCard
+          key={committee}
+          committee={committee}
+          link={`${periodId}/${committee.toLowerCase()}`}
+        />
+      ))}
     </div>
   );
 };

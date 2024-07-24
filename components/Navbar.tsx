@@ -36,13 +36,12 @@ const Navbar = () => {
     <div>
       <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-0 dark:bg-gray-800">
         <Link href="/" passHref>
-          <a
-            aria-label="Online logo"
-          >
+          <a aria-label="Online logo">
             <Image
               src={onlineLogoSrc}
               width={100 * 1.5}
               height={30 * 1.5}
+              priority
               alt="Online logo"
               className="transition-all cursor-pointer hover:opacity-60"
             />
@@ -102,7 +101,7 @@ const Navbar = () => {
                 height={30 * 1.5}
                 alt="Bekk logo"
                 className="transition-all cursor-pointer hover:opacity-60"
-                />
+              />
             </a>
           </Link>
         </div>
