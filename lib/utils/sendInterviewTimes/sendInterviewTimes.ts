@@ -17,6 +17,7 @@ import {
   fetchPeriod,
 } from "./fetchFunctions";
 import { formatAndSendEmails } from "./formatAndSend";
+import toast from "react-hot-toast";
 
 interface Props {
   periodId: string;
@@ -41,10 +42,29 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
   const committeesToEmail: emailCommitteeInterviewType[] =
     formatCommittees(applicantsToEmail);
 
-  // console.log(applicantsToEmailMap);
-  // console.log(committeesToEmail);
+  const dataToSend = {
+    committeesToEmail,
+    applicantsToEmail,
+  };
 
-  await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
+  try {
+    const response = await fetch(`/api/interviews/send/${period?._id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dataToSend),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to submit data");
+    }
+
+    const result = await response.json();
+    toast.success("Intervjutider er sendt inn!");
+  } catch (error) {
+    toast.error("Kunne ikke sende inn!");
+  }
 };
 
 const formatApplicants = (
