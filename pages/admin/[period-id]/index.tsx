@@ -23,7 +23,10 @@ const Admin = () => {
         const data = await response.json();
         if (response.ok) {
           setPeriod(data.period);
-          setCommittees(data.period.committees);
+
+          setCommittees(
+            data.period.committees.concat(data.period.optionalCommittees)
+          );
         } else {
           throw new Error(data.error || "Unknown error");
         }

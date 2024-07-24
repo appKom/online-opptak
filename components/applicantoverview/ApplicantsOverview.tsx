@@ -103,7 +103,11 @@ const ApplicantsOverview = ({
             applicant.preferences.second.toLowerCase() ===
               selectedCommittee.toLowerCase() ||
             applicant.preferences.third.toLowerCase() ===
-              selectedCommittee.toLowerCase()
+              selectedCommittee.toLowerCase() ||
+            applicant.optionalCommittees.some(
+              (committee) =>
+                committee.toLowerCase() === selectedCommittee.toLowerCase()
+            )
           );
         } else {
           return applicant.preferences.some(
