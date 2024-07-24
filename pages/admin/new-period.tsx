@@ -18,10 +18,6 @@ const NewPeriod = () => {
   const [periodData, setPeriodData] = useState<DeepPartial<periodType>>({
     name: "",
     description: "",
-    preparationPeriod: {
-      start: undefined,
-      end: undefined,
-    },
     applicationPeriod: {
       start: undefined,
       end: undefined,
@@ -32,23 +28,8 @@ const NewPeriod = () => {
     },
     committees: [],
     optionalCommittees: [],
+    hasSentInterviewTimes: false,
   });
-
-  const updatePreparationPeriodDates = ({
-    start,
-    end,
-  }: {
-    start: string;
-    end: string;
-  }) => {
-    setPeriodData((prevData) => ({
-      ...prevData,
-      preparationPeriod: {
-        start: start ? new Date(start) : undefined,
-        end: end ? new Date(end) : undefined,
-      },
-    }));
-  };
 
   const updateApplicationPeriodDates = ({
     start,
@@ -144,7 +125,7 @@ const NewPeriod = () => {
     <>
       <div className="flex flex-col items-center justify-center py-5">
         <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
-          Ny søknadsperiode
+          Ny opptaksperiode
         </h1>
 
         <div className="flex flex-col items-center w-full pb-10">
@@ -159,7 +140,7 @@ const NewPeriod = () => {
               })
             }
           />
-          <div className="max-w-xs w-full">
+          <div className="w-full max-w-xs">
             <TextAreaInput
               label="Beskrivelse"
               placeholder="Flere komiteer søker nye medlemmer til suppleringsopptak. Har du det som trengs? Søk nå og bli en del av vårt fantastiske miljø!
@@ -173,10 +154,6 @@ const NewPeriod = () => {
             />
           </div>
 
-          <DatePickerInput
-            label="Forberedelsesperiode"
-            updateDates={updatePreparationPeriodDates}
-          />
           <DatePickerInput
             label="Søknadsperiode"
             updateDates={updateApplicationPeriodDates}
@@ -229,7 +206,7 @@ const NewPeriod = () => {
               onClick={handlePreviewPeriod}
             />
             <Button
-              title="Opprett søknadsperiode"
+              title="Opprett opptaksperiode"
               color="blue"
               onClick={handleAddPeriod}
             />

@@ -18,6 +18,8 @@ import CommitteeInterviewTimes from "../../../../components/committee/CommitteeI
 import LoadingPage from "../../../../components/LoadingPage";
 import { changeDisplayName } from "../../../../lib/utils/toString";
 import Custom404 from "../../../404";
+import PageTitle from "../../../../components/PageTitle";
+import Link from "next/link";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -34,6 +36,8 @@ const CommitteeApplicantOverView: NextPage = () => {
   const [committeeInterviewTimes, setCommitteeInterviewTimes] =
     useState<committeeInterviewType | null>(null);
 
+  const [singleCommitteeInPeriod, setSingleCommitteeInPeriod] = useState<boolean>(true);
+
   useEffect(() => {
     if (!session || !periodId) return;
 
@@ -49,6 +53,12 @@ const CommitteeApplicantOverView: NextPage = () => {
 
     fetchPeriod();
   }, [periodId]);
+
+  useEffect(() => {
+    const userCommittees = session?.user?.committees?.map(c => c.toLowerCase()) || [];
+    const periodCommittees = [...(period?.committees || []), ...(period?.optionalCommittees || [])].map(c => c.toLowerCase());
+    setSingleCommitteeInPeriod(userCommittees.filter(c => periodCommittees.includes(c)).length === 1);
+  }, [period, session]);
 
   useEffect(() => {
     if (!session || !periodId || !committee) return;
@@ -130,14 +140,13 @@ const CommitteeApplicantOverView: NextPage = () => {
       new Date().getTime()
   ) {
     return (
-      <div className="flex flex-col h-screen text-center items-center justify-center px-20">
+      <div className="flex flex-col items-center justify-center h-full px-20 text-center">
         <h1 className="text-3xl">Opptaket er ferdig!</h1>
         <br />
         <p className="text-lg">
           Du kan ikke lenger se søkere eller planlegge intervjuer.
         </p>
         <p className="text-lg">
-          {" "}
           Har det skjedd noe feil eller trenger du tilgang til informasjonen? Ta
           kontakt med{" "}
           <a
@@ -145,7 +154,7 @@ const CommitteeApplicantOverView: NextPage = () => {
             href="mailto:appkom@online.ntnu.no"
           >
             Appkom
-          </a>{" "}
+          </a>
         </p>
       </div>
     );
@@ -153,17 +162,21 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <span className="mt-5 mb-6 text-3xl font-bold text-center">
-        <h1>
-          <button onClick={() => router.push("/committee")}>
-            <span>{period?.name}</span>
-          </button>
-          <span>{` --> `}</span>
-          <button onClick={() => router.push(`/committee/${periodId}`)}>
-            <span>{changeDisplayName(committee)}</span>
-          </button>
-        </h1>
-      </span>
+      <PageTitle
+        boldMainTitle={period?.name}
+        subTitle={
+          <div className="inline-flex flex-row items-center">
+            {changeDisplayName(committee)}
+            {!singleCommitteeInPeriod && (
+              <Link href={"/committee/" + periodId}>
+                <a className="ml-1 text-sm text-blue-500 hover:text-blue-800">(Bytt)</a>
+              </Link>
+            )}
+          </div>
+        }
+        boldSubTitle="Komité"
+      />
+
       <Tabs
         activeTab={activeTab}
         setActiveTab={(index) => {

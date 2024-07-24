@@ -72,7 +72,7 @@ const Apply = () => {
         ) : (
           <div className="flex flex-col gap-10">
             <h3 className="text-4xl font-bold tracking-tight text-center dark:text-white">
-              Nåværende søknadsperioder
+              Nåværende opptaksperioder
             </h3>
             <div className="flex flex-wrap justify-center max-w-full gap-5">
               {currentPeriods.map((period: periodType, index: number) => (
