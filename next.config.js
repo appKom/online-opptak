@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+// eslint-disable-next-line no-unused-vars
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,

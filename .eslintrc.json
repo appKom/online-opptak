@@ -4,6 +4,8 @@
     "eslint:recommended",
     "plugin:react/recommended"
   ],
+  "plugins": ["react", "@typescript-eslint"],
+  "parser": "@typescript-eslint/parser",
   "rules": {
     "react/react-in-jsx-scope": "off"
   }
