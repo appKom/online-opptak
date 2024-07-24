@@ -20,7 +20,7 @@ def main():
         
         now = datetime.now(timezone.utc)
 
-        if  (application_end > now and period["hasSentInterviewTimes"] == False and interview_end < now) or period["name"] == "Juli Opptak":
+        if  (application_end > now and period["hasSentInterviewTimes"] == False and interview_end < now):
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
             
