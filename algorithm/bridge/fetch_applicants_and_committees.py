@@ -111,17 +111,18 @@ def fetch_committee_times(periodId):
 
 def format_match_results(match_results: MeetingMatch, applicants: List[dict], periodId) -> List[Dict]:
     transformed_results = {}
-    applicant_dict = {str(applicant['_id']): applicant['name'] for applicant in applicants}
+    applicant_dict = {str(applicant['_id']): {'name': applicant['name'], 'email': applicant['email']} for applicant in applicants}
     
     for result in match_results['matchings']:
         applicant_id = str(result[1])
-        applicant_name = applicant_dict.get(applicant_id, 'Unknown')
+        applicant_info = applicant_dict.get(applicant_id, {'name': 'Unknown', 'email': 'Unknown'})
         
         if applicant_id not in transformed_results:
             transformed_results[applicant_id] = {
                 "periodId": periodId,
                 "applicantId": applicant_id,
-                "applicantName": applicant_name,
+                "applicantName": applicant_info['name'],
+                "applicantEmail": applicant_info['email'],
                 "interviews": []
             }
         
@@ -137,6 +138,7 @@ def format_match_results(match_results: MeetingMatch, applicants: List[dict], pe
         })
 
     return list(transformed_results.values())
+
 
 def create_applicant_objects(applicants_data: List[dict], all_committees: dict[str, Committee]) -> set[Applicant]:
     applicants = set()
