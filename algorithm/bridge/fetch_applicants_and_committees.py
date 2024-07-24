@@ -20,6 +20,7 @@ def main():
         
         now = datetime.now(timezone.utc)
 
+        #or period["name"] == "Juli Opptak"
         if  (application_end > now and period["hasSentInterviewTimes"] == False and interview_end < now):
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
@@ -37,7 +38,7 @@ def main():
             
             match_result = match_meetings(applicant_objects, committee_objects)
             
-            send_to_db(match_result, applicants, period["_id"])
+            send_to_db(match_result, applicants, periodId)
             return match_result
         
         
@@ -137,12 +138,10 @@ def format_match_results(match_results: MeetingMatch, applicants: List[dict], pe
 
     return list(transformed_results.values())
 
-
 def create_applicant_objects(applicants_data: List[dict], all_committees: dict[str, Committee]) -> set[Applicant]:
     applicants = set()
     for data in applicants_data:
-        applicant = Applicant(name=data['name'], email=data['email'], id=data['_id'])
-        
+        applicant = Applicant(name=data['name'], email=data['email'], id=str(data['_id']))
         
         optional_committee_names = data.get('optionalCommittees', [])
         optional_committees = {all_committees[name] for name in optional_committee_names if name in all_committees}
@@ -161,9 +160,6 @@ def create_applicant_objects(applicants_data: List[dict], all_committees: dict[s
             
         applicants.add(applicant)
     return applicants
-
-
-
 
 def create_committee_objects(committee_data: List[dict]) -> set[Committee]:
     committees = set()
