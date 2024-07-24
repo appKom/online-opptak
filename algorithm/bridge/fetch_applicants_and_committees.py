@@ -7,19 +7,20 @@ import certifi
 def main():
     periods = fetch_periods()
     
-    #Sjekker om perioden er før intervjutiden og etter søknadstiden, og returnerer søkere og komitétider dersom det er tilfelle
+    #Sjekker om perioden er etter søknadstiden og før intervjuslutt og hasSentInterviewtimes er false, og returnerer søkere og komitétider dersom det er tilfelle
     for period in periods:
         periodId = str(period["_id"])
-        interview_start = datetime.fromisoformat(period["interviewPeriod"]["start"].replace("Z", "+00:00"))
+        interview_end = datetime.fromisoformat(period["interviewPeriod"]["end"].replace("Z", "+00:00"))
         application_end = datetime.fromisoformat(period["applicationPeriod"]["end"].replace("Z", "+00:00"))
+        
         
         now = datetime.now(timezone.utc)
 
-        if interview_start < now and application_end > now:
+        if  application_end > now and period["hasSentInterviewTimes"] == False and interview_end < now:
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
-            # print(applicants)
-            # print(committee_times)
+            print(applicants)
+            print(committee_times)
             
             return applicants, committee_times
         
