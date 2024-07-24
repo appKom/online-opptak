@@ -113,7 +113,7 @@ export type algorithmType = {
     end: string;
     committeeName: string;
   }[];
-}[];
+};
 
 export type committeeEmails = {
   name_short: string;

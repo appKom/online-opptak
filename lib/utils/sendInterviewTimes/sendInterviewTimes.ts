@@ -9,9 +9,9 @@ import {
   algorithmType,
 } from "../../types/types";
 
-import { algorithmTestData } from "./tempEmailTestData";
 import { changeDisplayName } from "../toString";
 import {
+  fetchAlgorithmData,
   fetchCommitteeEmails,
   fetchCommitteeInterviewTimes,
   fetchPeriod,
@@ -28,7 +28,7 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
     await fetchCommitteeInterviewTimes(periodId);
   const committeeEmails: committeeEmails[] = await fetchCommitteeEmails();
 
-  const algorithmData: algorithmType = algorithmTestData;
+  const algorithmData: algorithmType[] = await fetchAlgorithmData(periodId);
 
   const applicantsToEmail: emailApplicantInterviewType[] = formatApplicants(
     algorithmData,
@@ -48,7 +48,7 @@ export const sendOutInterviewTimes = async ({ periodId }: Props) => {
 };
 
 const formatApplicants = (
-  algorithmData: algorithmType,
+  algorithmData: algorithmType[],
   periodId: string,
   period: periodType,
   committeeEmails: committeeEmails[],

@@ -1,4 +1,5 @@
 import {
+  algorithmType,
   committeeEmails,
   committeeInterviewType,
   periodType,
@@ -44,5 +45,22 @@ export const fetchCommitteeEmails = async (): Promise<committeeEmails[]> => {
   } catch (error) {
     console.error(error);
     throw new Error("Failed to fetch committee emails");
+  }
+};
+
+export const fetchAlgorithmData = async (
+  periodId: string
+): Promise<algorithmType[]> => {
+  try {
+    const reponse = await fetch(`/interviews/${periodId}`);
+    const data = await reponse.json();
+    if (!Array.isArray(data)) {
+      throw new Error("Expected an array from the interviews API response");
+    }
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to fetch algorithm data");
   }
 };
