@@ -18,7 +18,7 @@ export const validatePeriod = (
   }
 
   if (appEnd > intStart) {
-    toast.error("Søknadsperioden må slutte før intervju perioden starter.");
+    toast.error("Søknadsperioden må slutte før intervjuperioden starter.");
     return false;
   }
 

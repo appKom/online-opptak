@@ -1,4 +1,4 @@
-import { BaseSyntheticEvent, useEffect } from "react";
+import { BaseSyntheticEvent, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import FullCalendar from "@fullcalendar/react";
@@ -11,6 +11,7 @@ import Button from "../Button";
 import ImportantNote from "../ImportantNote";
 
 interface Interview {
+  title: string;
   start: string;
   end: string;
 }
@@ -41,6 +42,12 @@ const CommitteeInterviewTimes = ({
     useState<boolean>(false);
   const [countdown, setCountdown] = useState<string>("");
 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [currentSelection, setCurrentSelection] = useState<any>(null);
+  const [roomInput, setRoomInput] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const calendarRef = useRef<FullCalendar>(null);
+
   useEffect(() => {
     if (period) {
       setVisibleRange({
@@ -65,6 +72,7 @@ const CommitteeInterviewTimes = ({
         setHasAlreadySubmitted(true);
         const events = committeeInterviewTimes.availabletimes.map(
           (at: any) => ({
+            title: at.room,
             start: new Date(at.start).toISOString(),
             end: new Date(at.end).toISOString(),
           })
@@ -80,17 +88,60 @@ const CommitteeInterviewTimes = ({
     }
   }, [committeeInterviewTimes]);
 
-  const createInterval = (selectionInfo: any) => {
-    const event = {
-      title: "",
-      start: selectionInfo.start,
-      end: selectionInfo.end,
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isModalOpen) {
+        if (event.key === "Enter") {
+          handleRoomSubmit();
+        } else if (event.key === "Escape") {
+          setIsModalOpen(false);
+        }
+      }
     };
-    selectionInfo.view.calendar.addEvent(event);
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModalOpen, roomInput]);
+
+  useEffect(() => {
+    if (isModalOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isModalOpen]);
+
+  const handleDateSelect = (selectionInfo: any) => {
+    setCurrentSelection(selectionInfo);
+    setIsModalOpen(true);
+  };
+
+  const handleRoomSubmit = () => {
+    if (!roomInput) {
+      toast.error("Vennligst skriv inn et romnavn");
+      return;
+    }
+
+    const event = {
+      title: roomInput,
+      start: currentSelection.start,
+      end: currentSelection.end,
+    };
+
+    const calendarApi = currentSelection.view.calendar;
+    calendarApi.addEvent(event);
+    calendarApi.render(); // Force the calendar to re-render
+
     addCell([
-      selectionInfo.start.toISOString(),
-      selectionInfo.end.toISOString(),
+      roomInput,
+      currentSelection.start.toISOString(),
+      currentSelection.end.toISOString(),
     ]);
+
+    setRoomInput("");
+    setIsModalOpen(false);
+    setCalendarEvents((prevEvents) => [...prevEvents, event]); // Trigger re-render
   };
 
   const submit = async (e: BaseSyntheticEvent) => {
@@ -141,7 +192,10 @@ const CommitteeInterviewTimes = ({
   };
 
   const addCell = (cell: string[]) => {
-    setMarkedCells([...markedCells, { start: cell[0], end: cell[1] }]);
+    setMarkedCells([
+      ...markedCells,
+      { title: cell[0], start: cell[1], end: cell[2] },
+    ]);
   };
 
   const updateInterviewInterval = (e: BaseSyntheticEvent) => {
@@ -150,11 +204,10 @@ const CommitteeInterviewTimes = ({
 
   const renderEventContent = (eventContent: any) => {
     return (
-      <div>
-        <span>{eventContent.timeText}</span>
+      <div className="relative flex flex-col p-4">
         {!hasAlreadySubmitted && (
           <button
-            className="ml-2"
+            className="absolute top-0 right-0 m-2"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -169,10 +222,13 @@ const CommitteeInterviewTimes = ({
             <img
               src="/close.svg"
               alt="close icon"
-              style={{ width: "22px", height: "22px" }}
+              style={{ width: "20px", height: "20px" }}
             />
           </button>
         )}
+        <h1 className="text-sm sm:text-xl md:text-2xl lg:text-3xl break-words">
+          {eventContent.event.title}
+        </h1>
       </div>
     );
   };
@@ -186,6 +242,7 @@ const CommitteeInterviewTimes = ({
         const startDateTime = new Date(startDateTimeString);
         const endDateTime = new Date(endDatetimeString);
         return {
+          room: event.title,
           start: startDateTime.toISOString(),
           end: endDateTime.toISOString(),
         };
@@ -290,8 +347,8 @@ const CommitteeInterviewTimes = ({
 
       <p className="px-5 my-5 text-lg text-center">
         Velg ledige tider ved å trykke på eller dra over flere celler.
-        <br></br>Intervjuene vil bli satt opp etter hverandre fra første ledige
-        tid.
+        <br />
+        Intervjuene vil bli satt opp etter hverandre fra første ledige tid.
       </p>
       <form className="flex flex-col text-center">
         {hasAlreadySubmitted ? (
@@ -320,6 +377,7 @@ const CommitteeInterviewTimes = ({
         )}
         <div className="mx-4 sm:mx-20">
           <FullCalendar
+            ref={calendarRef}
             eventClassNames={"dark:bg-online-darkBlue"}
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
@@ -332,7 +390,7 @@ const CommitteeInterviewTimes = ({
             selectable={!hasAlreadySubmitted}
             selectMirror={true}
             height="auto"
-            select={createInterval}
+            select={handleDateSelect}
             slotDuration={`00:${interviewInterval}`}
             businessHours={{ startTime: "08:00", endTime: "18:00" }}
             weekends={false}
@@ -378,6 +436,31 @@ const CommitteeInterviewTimes = ({
           />
         </div>
       </form>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-5 rounded shadow-lg">
+            <h2 className="mb-4 text-xl font-semibold">
+              Skriv inn navn på rom:
+            </h2>
+            <input
+              ref={inputRef}
+              type="text"
+              className="my-2 p-2 w-full rounded-lg dark:bg-gray-900  border-gray-900 dark:border-white transition-none outline-none"
+              value={roomInput}
+              onChange={(e) => setRoomInput(e.target.value)}
+            />
+            <div className="flex flex-row justify-center gap-2 mt-4">
+              <Button
+                title="Avbryt"
+                onClick={() => setIsModalOpen(false)}
+                color="orange"
+              />
+              <Button title="Ok" onClick={handleRoomSubmit} color="blue" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -12,10 +12,10 @@ const Home = () => {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-5 px-5">
         <AuthenticationIllustration className="h-52" />
-        <p className="text-lg flex text-center">
+        <p className="flex text-lg text-center">
           Vennligst logg inn for å få tilgang til opptakssystemet
         </p>
-        <div className="flex md:hidden w-full items-center justify-center">
+        <div className="flex items-center justify-center w-full md:hidden">
           <Button title={"Logg inn"} color={"blue"} onClick={handleLogin} />
         </div>
       </div>
@@ -33,7 +33,7 @@ const Home = () => {
             Her skal det stå masse kult om komitéopptak og sånn og om at man må
             bli med i komité og at dette er det bra opptakssystem og sånn.
           </p>
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4 sm:flex-row">
             <Button
               title="Søk nå"
               color="blue"
@@ -41,6 +41,7 @@ const Home = () => {
               href="/apply"
             />
             <Button title="Om opptak" color="white" href="/about" />
+            <Button title="Komiteer" color="white" href="/committees" />
           </div>
         </div>
         <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">

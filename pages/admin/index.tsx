@@ -81,7 +81,7 @@ const Admin = () => {
         <Button
           title="Ny opptaksperiode"
           color="blue"
-          onClick={() => router.push("/admin/new-period")}
+          href="/admin/new-period"
         />
       </div>
 

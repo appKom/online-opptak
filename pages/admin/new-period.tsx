@@ -28,6 +28,7 @@ const NewPeriod = () => {
     },
     committees: [],
     optionalCommittees: [],
+    hasSentInterviewTimes: false,
   });
 
   const updateApplicationPeriodDates = ({
@@ -124,7 +125,7 @@ const NewPeriod = () => {
     <>
       <div className="flex flex-col items-center justify-center py-5">
         <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
-          Ny søknadsperiode
+          Ny opptaksperiode
         </h1>
 
         <div className="flex flex-col items-center w-full pb-10">
@@ -205,7 +206,7 @@ const NewPeriod = () => {
               onClick={handlePreviewPeriod}
             />
             <Button
-              title="Opprett søknadsperiode"
+              title="Opprett opptaksperiode"
               color="blue"
               onClick={handleAddPeriod}
             />
