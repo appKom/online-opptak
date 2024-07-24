@@ -11,7 +11,7 @@ export const validateApplication = (applicationData: any) => {
   // Check if ntnu email is used
   if (applicationData.email.includes("ntnu.no")) {
     toast.error(
-      "Vi har problemer med å sende e-post til ntnu.no-adresser. Vennligst bruk en annen e-postadresse."
+      "Vi har problemer med å sende e-post til NTNU e-poster. Vennligst bruk en annen e-postadresse."
     );
     return false;
   }
