@@ -28,6 +28,7 @@ const NewPeriod = () => {
     },
     committees: [],
     optionalCommittees: [],
+    hasSentInterviewTimes: false,
   });
 
   const updateApplicationPeriodDates = ({
