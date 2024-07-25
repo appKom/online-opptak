@@ -190,7 +190,7 @@ const Application: NextPage = () => {
             onClick={handleDeleteApplication}
           />
         )}
-        {applicantData.application && (
+        {applicantData?.application && (
           <div className="w-full max-w-md">
             <ApplicantCard
               applicant={applicantData.application}
