@@ -94,7 +94,9 @@ export const validateCommittee = (data: any, period: periodType): boolean => {
 
       return (
         startTime >= new Date(period.interviewPeriod.start) &&
-        endTime <= new Date(period.interviewPeriod.end)
+        startTime <= new Date(period.interviewPeriod.end) &&
+        endTime <= new Date(period.interviewPeriod.end) &&
+        endTime >= new Date(period.interviewPeriod.start)
       );
     }
   );
