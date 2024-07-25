@@ -64,7 +64,9 @@ export const isApplicantType = (
         typeof time.start === "string" &&
         typeof time.end === "string" &&
         new Date(time.start) >= new Date(period.interviewPeriod.start) &&
-        new Date(time.end) <= new Date(period.interviewPeriod.end)
+        new Date(time.start) <= new Date(period.interviewPeriod.end) &&
+        new Date(time.end) <= new Date(period.interviewPeriod.end) &&
+        new Date(time.end) >= new Date(period.interviewPeriod.start)
     );
 
   const hasOptionalFields =
