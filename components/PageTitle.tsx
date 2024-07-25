@@ -19,10 +19,10 @@ const PageTitle = ({
           {mainTitle}
         </h2>
         {subTitle && (
-          <p className="text-xl text-gray-500 dark:text-gray-400">
+          <div className="text-xl text-gray-500 dark:text-gray-400">
             {boldSubTitle && <span className="font-semibold">{boldSubTitle}{boldSubTitle && subTitle && ":"}&nbsp;</span>}
             {subTitle}
-          </p>
+          </div>
         )}
       </div>
     </div>

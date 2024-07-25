@@ -74,7 +74,7 @@ const Apply = () => {
             <h3 className="text-4xl font-bold tracking-tight text-center dark:text-white">
               Nåværende opptaksperioder
             </h3>
-            <div className="flex flex-wrap justify-center max-w-full gap-5">
+            <div className="flex flex-col items-center max-w-full gap-5">
               {currentPeriods.map((period: periodType, index: number) => (
                 <PeriodCard key={index} period={period} />
               ))}

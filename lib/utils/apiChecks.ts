@@ -25,7 +25,7 @@ export const checkOwId = (res: NextApiResponse, session: any, id: string) => {
 };
 
 export const isInCommitee = (res: NextApiResponse, session: any) => {
-  if (!session?.user?.isCommitee) {
+  if (!session?.user?.isCommittee) {
     res.status(403).json({ error: "Access denied, unauthorized" });
     return false;
   }

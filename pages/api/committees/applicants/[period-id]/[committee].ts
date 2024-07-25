@@ -23,7 +23,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .json({ error: "Invalid or missing periodId parameter" });
   }
 
-  if (!session.user?.isCommitee || !session.user.committees) {
+  if (!session.user?.isCommittee || !session.user.committees) {
     return res.status(403).json({ error: "Access denied, unauthorized" });
   }
 

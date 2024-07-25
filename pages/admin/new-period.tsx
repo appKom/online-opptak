@@ -10,6 +10,9 @@ import TextAreaInput from "../../components/form/TextAreaInput";
 import TextInput from "../../components/form/TextInput";
 import { DeepPartial, periodType } from "../../lib/types/types";
 import { validatePeriod } from "../../lib/utils/PeriodValidator";
+import { useQuery } from "@tanstack/react-query";
+import { fetchOwCommittees } from "../../lib/api/committees";
+import ErrorPage from "../../components/ErrorPage";
 
 const NewPeriod = () => {
   const router = useRouter();
@@ -30,6 +33,28 @@ const NewPeriod = () => {
     optionalCommittees: [],
     hasSentInterviewTimes: false,
   });
+
+  const {
+    data: owCommitteeData,
+    isError: owCommitteeIsError,
+    isLoading: owCommitteeIsLoading,
+  } = useQuery({
+    queryKey: ["ow-committees"],
+    queryFn: fetchOwCommittees,
+  });
+
+  useEffect(() => {
+    if (!owCommitteeData) return;
+    setAvailableCommittees(
+      owCommitteeData.map(
+        ({ name_short, email }: { name_short: string; email: string }) => ({
+          name: name_short,
+          value: name_short,
+          description: email,
+        })
+      )
+    );
+  }, [owCommitteeData]);
 
   const updateApplicationPeriodDates = ({
     start,
@@ -66,33 +91,6 @@ const NewPeriod = () => {
   const [availableCommittees, setAvailableCommittees] = useState<
     { name: string; value: string; description: string }[]
   >([]);
-  const [isLoadingCommittees, setIsLoadingCommittees] = useState(true);
-
-  useEffect(() => {
-    const fetchCommittees = async () => {
-      setIsLoadingCommittees(true);
-      try {
-        const response = await fetch("/api/periods/ow-committees");
-        if (!response.ok) throw new Error("Failed to fetch committees");
-        const committees = await response.json();
-        setAvailableCommittees(
-          committees.map(
-            ({ name_short, email }: { name_short: string; email: string }) => ({
-              name: name_short,
-              value: name_short,
-              description: email,
-            })
-          )
-        );
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load committees");
-      } finally {
-        setIsLoadingCommittees(false);
-      }
-    };
-    fetchCommittees();
-  }, []);
 
   const handleAddPeriod = async () => {
     if (!validatePeriod(periodData)) {
@@ -120,6 +118,8 @@ const NewPeriod = () => {
   const handlePreviewPeriod = () => {
     setShowPreview((prev) => !prev);
   };
+
+  if (owCommitteeIsError) return <ErrorPage />;
 
   return (
     <>
@@ -163,7 +163,7 @@ const NewPeriod = () => {
             updateDates={updateInterviewPeriodDates}
           />
 
-          {isLoadingCommittees ? (
+          {owCommitteeIsLoading ? (
             <div className="animate-pulse">Laster komiteer...</div>
           ) : (
             <div>
