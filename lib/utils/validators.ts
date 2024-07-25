@@ -10,6 +10,12 @@ export const isApplicantType = (
   period: periodType
 ): data is applicantType => {
   // Check for each basic property type
+  const periodIdStr =
+    typeof data.periodId === "object"
+      ? data.periodId.toString()
+      : data.periodId;
+  const periodIdFromPeriodStr = period._id.toString();
+
   const hasBasicFields =
     typeof data.owId === "string" &&
     typeof data.name === "string" &&
@@ -22,6 +28,7 @@ export const isApplicantType = (
       data.bankom === "no" ||
       data.bankom === "maybe") &&
     (typeof data.periodId === "string" || typeof data.periodId === "object") &&
+    periodIdStr === periodIdFromPeriodStr &&
     data.date instanceof Date;
 
   // Check that the preferences object exists and contains the required fields
@@ -32,28 +39,23 @@ export const isApplicantType = (
     committee.toLowerCase()
   );
 
+  const first = (data.preferences as preferencesType).first;
+  const second = (data.preferences as preferencesType).second;
+  const third = (data.preferences as preferencesType).third;
+
   const hasPreferencesFields =
     (data.preferences as preferencesType) &&
-    typeof (data.preferences as preferencesType).first === "string" &&
-    (typeof (data.preferences as preferencesType).second === "string" ||
-      (data.preferences as preferencesType).second === "") &&
-    (typeof (data.preferences as preferencesType).third === "string" ||
-      (data.preferences as preferencesType).third === "") &&
+    typeof first === "string" &&
+    (typeof second === "string" || second === "") &&
+    (typeof third === "string" || third === "") &&
     // Ensure that non-empty preferences are unique
-    (data.preferences as preferencesType).first !==
-      (data.preferences as preferencesType).second &&
-    ((data.preferences as preferencesType).first === "" ||
-      (data.preferences as preferencesType).first !==
-        (data.preferences as preferencesType).third) &&
-    ((data.preferences as preferencesType).second === "" ||
-      (data.preferences as preferencesType).second !==
-        (data.preferences as preferencesType).third) &&
+    first !== second &&
+    (first === "" || first !== third) &&
+    (second === "" || second !== third) &&
     // Ensure preferences are in period committees or empty
-    committees.includes((data.preferences as preferencesType).first) &&
-    ((data.preferences as preferencesType).second === "" ||
-      committees.includes((data.preferences as preferencesType).second)) &&
-    ((data.preferences as preferencesType).third === "" ||
-      committees.includes((data.preferences as preferencesType).third));
+    committees.includes(first) &&
+    (second === "" || committees.includes(second)) &&
+    (third === "" || committees.includes(third));
 
   // Check that the selectedTimes array is valid
 
