@@ -10,11 +10,13 @@ import TextAreaInput from "../../components/form/TextAreaInput";
 import TextInput from "../../components/form/TextInput";
 import { DeepPartial, periodType } from "../../lib/types/types";
 import { validatePeriod } from "../../lib/utils/PeriodValidator";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchOwCommittees } from "../../lib/api/committees";
 import ErrorPage from "../../components/ErrorPage";
+import { createPeriod } from "../../lib/api/periodApi";
 
 const NewPeriod = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [showPreview, setShowPreview] = useState(false);
 
@@ -41,6 +43,15 @@ const NewPeriod = () => {
   } = useQuery({
     queryKey: ["ow-committees"],
     queryFn: fetchOwCommittees,
+  });
+
+  const createPeriodMutation = useMutation({
+    mutationFn: createPeriod,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        // TODO: try to update cache instead
+        queryKey: ["periods"],
+      }),
   });
 
   useEffect(() => {
@@ -92,27 +103,18 @@ const NewPeriod = () => {
     { name: string; value: string; description: string }[]
   >([]);
 
-  const handleAddPeriod = async () => {
-    if (!validatePeriod(periodData)) {
-      return;
-    }
-    try {
-      const response = await fetch("/api/periods", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(periodData),
-      });
-      if (!response.ok) {
-        throw new Error(`Error creating applicant: ${response.statusText}`);
-      }
-
+  useEffect(() => {
+    if (createPeriodMutation.isSuccess) {
       toast.success("Periode opprettet");
       router.push("/admin");
-    } catch (error) {
-      toast.error("Det skjedde en feil, vennligst prøv igjen");
     }
+    if (createPeriodMutation.isError) toast.error("Noe gikk galt, prøv igjen");
+  }, [createPeriodMutation, router]);
+
+  const handleAddPeriod = async () => {
+    if (!validatePeriod(periodData)) return;
+
+    createPeriodMutation.mutate(periodData as periodType);
   };
 
   const handlePreviewPeriod = () => {
