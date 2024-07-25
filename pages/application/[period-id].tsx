@@ -16,6 +16,10 @@ import ApplicantCard from "../../components/applicantoverview/ApplicantCard";
 import LoadingPage from "../../components/LoadingPage";
 import { formatDateNorwegian } from "../../lib/utils/dateUtils";
 import PageTitle from "../../components/PageTitle";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPeriodById } from "../../lib/api/periodApi";
+import { fetchApplicantByPeriodAndId } from "../../lib/api/applicantApi";
+import ErrorPage from "../../components/ErrorPage";
 
 interface FetchedApplicationData {
   exists: boolean;
@@ -26,14 +30,12 @@ const Application: NextPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
+  const applicantId = session?.user?.owId;
 
   const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(true);
   const [periodExists, setPeriodExists] = useState(false);
-  const [fetchedApplicationData, setFetchedApplicationData] =
-    useState<FetchedApplicationData | null>(null);
 
   const [activeTab, setActiveTab] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [applicationData, setApplicationData] = useState<
     DeepPartial<applicantType>
   >({
@@ -53,53 +55,31 @@ const Application: NextPage = () => {
   const [period, setPeriod] = useState<periodType>();
   const [isApplicationPeriodOver, setIsApplicationPeriodOver] = useState(false);
 
+  const { data: periodData, isError: periodIsError, isLoading: periodIsLoading } = useQuery({
+    queryKey: ['periods', periodId],
+    queryFn: fetchPeriodById,
+  });
+
+  const { data: applicantData, isError: applicantIsError, isLoading: applicantIsLoading } = useQuery({
+    queryKey: ['applicants', periodId, applicantId],
+    queryFn: fetchApplicantByPeriodAndId,
+  });
+
   useEffect(() => {
-    if (!period) {
-      return;
-    }
+    if (!periodData) return;
+
+    setPeriod(periodData.period);
+    setPeriodExists(periodData.exists);
 
     const currentDate = new Date().toISOString();
-    if (new Date(period.applicationPeriod.end) < new Date(currentDate)) {
+    if (new Date(periodData.period.applicationPeriod.end) < new Date(currentDate)) {
       setIsApplicationPeriodOver(true);
     }
-  }, [period]);
+  }, [periodData]);
 
   useEffect(() => {
-    const checkPeriodAndApplicationStatus = async () => {
-      if (!periodId || !session?.user?.owId) return;
-
-      try {
-        const periodResponse = await fetch(`/api/periods/${periodId}`);
-        const periodData = await periodResponse.json();
-        if (periodResponse.ok) {
-          setPeriod(periodData.period);
-          setPeriodExists(periodData.exists);
-          fetchApplicationData();
-        } else {
-          throw new Error(periodData.error || "Unknown error");
-        }
-      } catch (error) {
-        console.error("Error checking period:", error);
-      }
-
-      try {
-        const applicationResponse = await fetch(
-          `/api/applicants/${periodId}/${session.user.owId}`
-        );
-        const applicationData = await applicationResponse.json();
-
-        if (!applicationResponse.ok) {
-          throw new Error(applicationData.error || "Unknown error");
-        }
-      } catch (error) {
-        console.error("Error checking application status:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkPeriodAndApplicationStatus();
-  }, [session?.user?.owId, periodId]);
+    setHasAlreadySubmitted(applicantData?.exists);
+  }, [applicantData]);
 
   const handleSubmitApplication = async () => {
     if (!validateApplication(applicationData)) return;
@@ -135,31 +115,6 @@ const Application: NextPage = () => {
       } else {
         toast.error("Det skjedde en feil, vennligst prøv igjen");
       }
-    } finally {
-      fetchApplicationData();
-    }
-  };
-
-  const fetchApplicationData = async () => {
-    if (!session?.user?.owId || !periodId) return;
-
-    try {
-      const response = await fetch(
-        `/api/applicants/${periodId}/${session.user.owId}`
-      );
-      const data = await response.json();
-      if (!data.exists) {
-        setHasAlreadySubmitted(false);
-      } else {
-        setFetchedApplicationData(data);
-      }
-
-      if (!response.ok) {
-        throw new Error(data.error || "Unknown error");
-      }
-    } catch (error) {
-      console.error("Error fetching application data:", error);
-      toast.error("Failed to fetch application data.");
     }
   };
 
@@ -190,7 +145,8 @@ const Application: NextPage = () => {
     }
   };
 
-  if (isLoading) return <LoadingPage />;
+  if (periodIsLoading || applicantIsLoading) return <LoadingPage />;
+  if (periodIsError || applicantIsError) return <ErrorPage />;
 
   if (!periodExists) {
     return (
@@ -224,10 +180,10 @@ const Application: NextPage = () => {
             onClick={handleDeleteApplication}
           />
         )}
-        {fetchedApplicationData && (
+        {applicantData && (
           <div className="w-full max-w-md">
             <ApplicantCard
-              applicant={fetchedApplicationData.application}
+              applicant={applicantData.application}
               includePreferences={true}
             />
           </div>

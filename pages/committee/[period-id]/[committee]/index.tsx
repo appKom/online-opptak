@@ -20,6 +20,9 @@ import { changeDisplayName } from "../../../../lib/utils/toString";
 import Custom404 from "../../../404";
 import PageTitle from "../../../../components/PageTitle";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPeriodById } from "../../../../lib/api/periodApi";
+import ErrorPage from "../../../../components/ErrorPage";
 
 const CommitteeApplicantOverView: NextPage = () => {
   const { data: session } = useSession();
@@ -38,21 +41,14 @@ const CommitteeApplicantOverView: NextPage = () => {
 
   const [singleCommitteeInPeriod, setSingleCommitteeInPeriod] = useState<boolean>(true);
 
+  const { data: periodData, isError: periodIsError, isLoading: periodIsLoading } = useQuery({
+    queryKey: ['periods', periodId],
+    queryFn: fetchPeriodById,
+  });
+
   useEffect(() => {
-    if (!session || !periodId) return;
-
-    const fetchPeriod = async () => {
-      try {
-        const res = await fetch(`/api/periods/${periodId}`);
-        const data = await res.json();
-        setPeriod(data.period);
-      } catch (error) {
-        console.error("Failed to fetch interview periods:", error);
-      }
-    };
-
-    fetchPeriod();
-  }, [periodId]);
+    setPeriod(periodData?.period);
+  }, [periodData]);
 
   useEffect(() => {
     const userCommittees = session?.user?.committees?.map(c => c.toLowerCase()) || [];
@@ -121,13 +117,9 @@ const CommitteeApplicantOverView: NextPage = () => {
     checkAccess();
   }, [period]);
 
-  if (loading) {
-    return <LoadingPage />;
-  }
-
-  if (!session || !hasAccess) {
-    return <Custom404 />;
-  }
+  if (loading || periodIsLoading) return <LoadingPage />;
+  if (!hasAccess) return <Custom404 />;
+  if (periodIsError) return <ErrorPage />;
 
   const interviewPeriodEnd = period?.interviewPeriod.end
     ? new Date(period.interviewPeriod.end)

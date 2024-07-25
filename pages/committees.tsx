@@ -2,19 +2,36 @@ import { useEffect, useState } from "react";
 import LoadingPage from "../components/LoadingPage";
 import { owCommitteeType, periodType } from "../lib/types/types";
 import CommitteeAboutCard from "../components/CommitteeAboutCard";
+import { useQuery } from "@tanstack/react-query";
+import { fetchOwCommittees } from "../lib/api/committees";
+import ErrorPage from "../components/ErrorPage";
+
+const excludedCommittees = ["Faddere"];
 
 const Committees = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
   const [periods, setPeriods] = useState<periodType[]>([]);
 
-  const excludedCommittees = ["Faddere"];
+  const {
+    data: owCommitteeData,
+    isError: owCommitteeIsError,
+    isLoading: owCommitteeIsLoading,
+  } = useQuery({
+    queryKey: ["ow-committees"],
+    queryFn: fetchOwCommittees,
+  });
 
-  const filterCommittees = (committees: owCommitteeType[]) => {
-    return committees.filter(
-      (committee) => !excludedCommittees.includes(committee.name_short)
+  useEffect(() => {
+    if (!owCommitteeData) return;
+
+    const filteredCommittees = owCommitteeData.filter(
+      (committee: owCommitteeType) =>
+        !excludedCommittees.includes(committee.name_short)
     );
-  };
+
+    setCommittees(filteredCommittees);
+  }, [owCommitteeData]);
 
   const fetchPeriods = async () => {
     try {
@@ -23,48 +40,13 @@ const Committees = () => {
       setPeriods(data.periods);
     } catch (error) {
       console.error("Failed to fetch periods:", error);
-    }
-  };
-
-  const fetchCommittees = async () => {
-    try {
-      const response = await fetch("/api/periods/ow-committees");
-      const data = await response.json();
-
-      const filteredData = filterCommittees(data);
-
-      const cachedData = JSON.parse(
-        localStorage.getItem("committeesCache") || "[]"
-      );
-
-      if (JSON.stringify(filteredData) !== JSON.stringify(cachedData)) {
-        localStorage.setItem("committeesCache", JSON.stringify(filteredData));
-        setCommittees(filteredData);
-      } else {
-        setCommittees(cachedData);
-      }
-      console.log(filteredData);
-    } catch (error) {
-      console.error("Failed to fetch committees:", error);
-      const cachedData = JSON.parse(
-        localStorage.getItem("committeesCache") || "[]"
-      );
-      setCommittees(cachedData);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    const cachedData = JSON.parse(
-      localStorage.getItem("committeesCache") || "[]"
-    );
-    if (cachedData.length > 0) {
-      setCommittees(cachedData);
-      setIsLoading(false);
-    }
     fetchPeriods();
-    fetchCommittees();
   }, []);
 
   const hasPeriod = (committee: any) => {
@@ -95,7 +77,8 @@ const Committees = () => {
     });
   };
 
-  if (isLoading) return <LoadingPage />;
+  if (owCommitteeIsLoading || isLoading) return <LoadingPage />;
+  if (owCommitteeIsError) return <ErrorPage />;
 
   return (
     <section className="bg-white dark:bg-gray-900">
