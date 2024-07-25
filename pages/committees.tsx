@@ -25,12 +25,12 @@ const Committees = () => {
   useEffect(() => {
     if (!owCommitteeData) return;
 
-    const filterCommittees = owCommitteeData.filter(
+    const filteredCommittees = owCommitteeData.filter(
       (committee: owCommitteeType) =>
         !excludedCommittees.includes(committee.name_short)
     );
 
-    setCommittees(filterCommittees);
+    setCommittees(filteredCommittees);
   }, [owCommitteeData]);
 
   const fetchPeriods = async () => {
