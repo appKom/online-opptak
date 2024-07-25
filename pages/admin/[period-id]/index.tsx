@@ -7,11 +7,11 @@ import ApplicantsOverview from "../../../components/applicantoverview/Applicants
 import { Tabs } from "../../../components/Tabs";
 import { CalendarIcon, InboxIcon } from "@heroicons/react/24/solid";
 import Button from "../../../components/Button";
-import { sendOutInterviewTimes } from "../../../lib/utils/sendInterviewTimes/sendInterviewTimes";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPeriodById } from "../../../lib/api/periodApi";
 import LoadingPage from "../../../components/LoadingPage";
 import ErrorPage from "../../../components/ErrorPage";
+import toast from "react-hot-toast";
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -30,6 +30,25 @@ const Admin = () => {
     setPeriod(data?.period);
     setCommittees(data?.period.committees);
   }, [data, session?.user?.owId]);
+
+  const sendOutInterviewTimes = async ({ periodId }: { periodId: string }) => {
+    try {
+      const response = await fetch(`/api/interviews/${periodId}`, {
+        method: "POST",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to send out interview times");
+      }
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      toast.success("Intervjutider er sendt ut! (Sjekk konsoll loggen)");
+      return data;
+    } catch (error) {
+      toast.error("Failed to send out interview times");
+    }
+  };
 
   if (session?.user?.role !== "admin") return <NotFound />;
   if (isLoading) return <LoadingPage />;

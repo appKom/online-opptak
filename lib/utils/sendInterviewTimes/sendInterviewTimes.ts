@@ -10,60 +10,61 @@ import {
 } from "../../types/types";
 
 import { changeDisplayName } from "../toString";
-import {
-  fetchAlgorithmData,
-  fetchCommitteeEmails,
-  fetchCommitteeInterviewTimes,
-  fetchPeriod,
-} from "./fetchFunctions";
+import { fetchCommitteeEmails } from "./fetchFunctions";
 import { formatAndSendEmails } from "./formatAndSend";
 import toast from "react-hot-toast";
+import { getPeriodById } from "../../mongo/periods";
+import { getCommitteesByPeriod } from "../../mongo/committees";
+import { getInterviewsByPeriod } from "../../mongo/interviews";
 
 interface Props {
   periodId: string;
 }
 
 export const sendOutInterviewTimes = async ({ periodId }: Props) => {
-  const period: periodType = await fetchPeriod(periodId);
-  const committeeInterviewTimes: committeeInterviewType[] =
-    await fetchCommitteeInterviewTimes(periodId);
-  const committeeEmails: committeeEmails[] = await fetchCommitteeEmails();
-
-  const algorithmData: algorithmType[] = await fetchAlgorithmData(periodId);
-
-  const applicantsToEmail: emailApplicantInterviewType[] = formatApplicants(
-    algorithmData,
-    periodId,
-    period,
-    committeeEmails,
-    committeeInterviewTimes
-  );
-
-  const committeesToEmail: emailCommitteeInterviewType[] =
-    formatCommittees(applicantsToEmail);
-
-  const dataToSend = {
-    committeesToEmail,
-    applicantsToEmail,
-  };
-
   try {
-    const response = await fetch(`/api/interviews/send/${period?._id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dataToSend),
-    });
+    const periodData = await getPeriodById(periodId);
 
-    if (!response.ok) {
-      throw new Error("Failed to submit data");
+    if (!periodData.exists || !periodData.period) {
+      return { error: "Failed to find period" };
+    }
+    const period: periodType = periodData.period;
+
+    const commmitteeInterviewTimesData = await getCommitteesByPeriod(periodId);
+
+    if (!commmitteeInterviewTimesData || commmitteeInterviewTimesData.error) {
+      return { error: "Failed to find committee interview times" };
     }
 
-    const result = await response.json();
-    toast.success("Intervjutider er sendt inn!");
+    const committeeInterviewTimes: committeeInterviewType[] =
+      commmitteeInterviewTimesData.result || [];
+
+    const committeeEmails: committeeEmails[] = await fetchCommitteeEmails();
+
+    const fetchedAlgorithmData = await getInterviewsByPeriod(periodId);
+
+    const algorithmData: algorithmType[] =
+      fetchedAlgorithmData.interviews || [];
+
+    const applicantsToEmail: emailApplicantInterviewType[] = formatApplicants(
+      algorithmData,
+      periodId,
+      period,
+      committeeEmails,
+      committeeInterviewTimes
+    );
+
+    const committeesToEmail: emailCommitteeInterviewType[] =
+      formatCommittees(applicantsToEmail);
+
+    const dataToSend = {
+      committeesToEmail,
+      applicantsToEmail,
+    };
+
+    formatAndSendEmails(dataToSend);
   } catch (error) {
-    toast.error("Kunne ikke sende inn!");
+    return { error: "Failed to send out interview times" };
   }
 };
 

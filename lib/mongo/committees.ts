@@ -1,11 +1,10 @@
 import { Collection, Db, MongoClient, ObjectId, UpdateResult } from "mongodb";
 import clientPromise from "./mongodb";
 import { commiteeType } from "../types/types";
-import { co } from "@fullcalendar/core/internal-common";
 
 let client: MongoClient;
 let db: Db;
-let committees: Collection<commiteeType>;
+let committees: Collection<any>;
 
 async function init() {
   if (db) return;
@@ -73,7 +72,7 @@ export const getCommitteesByPeriod = async (periodId: string) => {
   try {
     if (!committees) await init();
     const result = await committees.find({ periodId: periodId }).toArray();
-    return { committees: result };
+    return { result };
   } catch (error) {
     return { error: "Failed to fetch committees" };
   }

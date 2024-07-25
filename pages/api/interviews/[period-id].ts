@@ -7,7 +7,7 @@ import {
   isAdmin,
   isInCommitee,
 } from "../../../lib/utils/apiChecks";
-import { getInterviewsByPeriod } from "../../../lib/mongo/interviews";
+import { sendOutInterviewTimes } from "../../../lib/utils/sendInterviewTimes/sendInterviewTimes";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -22,18 +22,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!hasSession(res, session)) return;
   if (!isInCommitee(res, session)) return;
 
-  if (req.method === "GET") {
+  if (req.method === "POST") {
     if (!isAdmin(res, session)) return;
 
     try {
-      const interviews = await getInterviewsByPeriod(periodId);
-      return res.status(200).json({ interviews });
+      const result = await sendOutInterviewTimes({ periodId });
+      if (result && result.error) {
+        throw new Error(result.error);
+      }
+
+      if (result?.error) throw new Error(result.error);
+      return res.status(201).json({ result });
     } catch (error: any) {
       return res.status(500).json({ error: error.message });
     }
   }
 
-  res.setHeader("Allow", ["GET"]);
+  res.setHeader("Allow", ["POST"]);
   res.status(405).end(`Method ${req.method} is not allowed.`);
 };
 
