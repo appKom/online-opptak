@@ -25,6 +25,13 @@ export const isApplicantType = (
     data.date instanceof Date;
 
   // Check that the preferences object exists and contains the required fields
+  const committees = period.committees.map((committee) =>
+    committee.toLowerCase()
+  );
+  const optionalCommittees = period.optionalCommittees.map((committee) =>
+    committee.toLowerCase()
+  );
+
   const hasPreferencesFields =
     (data.preferences as preferencesType) &&
     typeof (data.preferences as preferencesType).first === "string" &&
@@ -42,17 +49,13 @@ export const isApplicantType = (
       (data.preferences as preferencesType).second !==
         (data.preferences as preferencesType).third) &&
     // Ensure preferences are in period committees or empty
-    period.committees.includes((data.preferences as preferencesType).first) &&
+    committees.includes((data.preferences as preferencesType).first) &&
     ((data.preferences as preferencesType).second === "" ||
-      period.committees.includes(
-        (data.preferences as preferencesType).second
-      )) &&
+      committees.includes((data.preferences as preferencesType).second)) &&
     ((data.preferences as preferencesType).third === "" ||
-      period.committees.includes((data.preferences as preferencesType).third));
+      committees.includes((data.preferences as preferencesType).third));
 
   // Check that the selectedTimes array is valid
-  const interviewStart = period.interviewPeriod.start;
-  const interviewEnd = period.interviewPeriod.end;
 
   const hasSelectedTimes =
     Array.isArray(data.selectedTimes) &&
@@ -60,8 +63,8 @@ export const isApplicantType = (
       (time: { start: any; end: any }) =>
         typeof time.start === "string" &&
         typeof time.end === "string" &&
-        new Date(time.start) >= interviewStart &&
-        new Date(time.end) <= interviewEnd
+        new Date(time.start) >= new Date(period.interviewPeriod.start) &&
+        new Date(time.end) <= new Date(period.interviewPeriod.end)
     );
 
   const hasOptionalFields =
@@ -69,8 +72,7 @@ export const isApplicantType = (
     Array.isArray(data.optionalCommittees) &&
     data.optionalCommittees.every(
       (committee: any) =>
-        typeof committee === "string" &&
-        period.optionalCommittees.includes(committee)
+        typeof committee === "string" && optionalCommittees.includes(committee)
     );
 
   return (
