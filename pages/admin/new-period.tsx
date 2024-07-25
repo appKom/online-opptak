@@ -44,15 +44,17 @@ const NewPeriod = () => {
   });
 
   useEffect(() => {
-    setAvailableCommittees(
-      owCommitteeData.map(
-        ({ name_short, email }: { name_short: string; email: string }) => ({
-          name: name_short,
-          value: name_short,
-          description: email,
-        })
-      )
-    );
+    if (owCommitteeData) {
+      setAvailableCommittees(
+        owCommitteeData.map(
+          ({ name_short, email }: { name_short: string; email: string }) => ({
+            name: name_short,
+            value: name_short,
+            description: email,
+          })
+        )
+      );
+    }
   }, [owCommitteeData]);
 
   const updateApplicationPeriodDates = ({
