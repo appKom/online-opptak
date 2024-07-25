@@ -3,7 +3,7 @@ import { createApplicant, getApplicants } from "../../../lib/mongo/applicants";
 import { authOptions } from "../auth/[...nextauth]";
 import { getPeriodById } from "../../../lib/mongo/periods";
 import { getServerSession } from "next-auth";
-import { emailDataType } from "../../../lib/types/types";
+import { applicantType, emailDataType } from "../../../lib/types/types";
 import { isApplicantType } from "../../../lib/utils/validators";
 import { isAdmin, hasSession, checkOwId } from "../../../lib/utils/apiChecks";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
@@ -26,20 +26,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "POST") {
-      const requestBody = req.body;
+      const requestBody: applicantType = req.body;
       requestBody.date = new Date(new Date().getTime() + 60 * 60 * 2000); // add date with norwegain time (GMT+2)
-
-      if (!isApplicantType(req.body)) {
-        return res.status(400).json({ error: "Invalid data format" });
-      }
-
-      if (!checkOwId(res, session, requestBody.owId)) return;
 
       const { period } = await getPeriodById(String(requestBody.periodId));
 
       if (!period) {
         return res.status(400).json({ error: "Invalid period id" });
       }
+
+      if (!isApplicantType(req.body, period)) {
+        return res.status(400).json({ error: "Invalid data format" });
+      }
+
+      if (!checkOwId(res, session, requestBody.owId)) return;
 
       const now = new Date();
       const applicationStart = period.applicationPeriod.start;
