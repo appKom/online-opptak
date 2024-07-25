@@ -8,7 +8,12 @@ import {
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]";
 import { hasSession, isInCommitee } from "../../../../../lib/utils/apiChecks";
-import { isCommitteeType } from "../../../../../lib/utils/validators";
+import {
+  isCommitteeType,
+  validateCommittee,
+} from "../../../../../lib/utils/validators";
+import { commiteeType } from "../../../../../lib/types/types";
+import { getPeriodById } from "../../../../../lib/mongo/periods";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -24,9 +29,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!isInCommitee(res, session)) return;
 
   if (req.method === "POST") {
-    const committeeData = req.body;
+    const committeeData: commiteeType = req.body;
 
     if (!isCommitteeType(req.body)) {
+      return res.status(400).json({ error: "Invalid data format" });
+    }
+
+    const { period } = await getPeriodById(String(committeeData.periodId));
+    if (!period) {
+      return res.status(400).json({ error: "Invalid periodId" });
+    }
+
+    if (!validateCommittee(committeeData, period)) {
       return res.status(400).json({ error: "Invalid data format" });
     }
 
