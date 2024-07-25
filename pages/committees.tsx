@@ -5,11 +5,11 @@ import CommitteeAboutCard from "../components/CommitteeAboutCard";
 import { useQuery } from "@tanstack/react-query";
 import { fetchOwCommittees } from "../lib/api/committees";
 import ErrorPage from "../components/ErrorPage";
+import { fetchPeriods } from "../lib/api/periodApi";
 
 const excludedCommittees = ["Faddere"];
 
 const Committees = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
   const [periods, setPeriods] = useState<periodType[]>([]);
 
@@ -20,6 +20,15 @@ const Committees = () => {
   } = useQuery({
     queryKey: ["ow-committees"],
     queryFn: fetchOwCommittees,
+  });
+
+  const {
+    data: periodsData,
+    isError: periodsIsError,
+    isLoading: periodsIsLoading,
+  } = useQuery({
+    queryKey: ["periods"],
+    queryFn: fetchPeriods,
   });
 
   useEffect(() => {
@@ -33,26 +42,14 @@ const Committees = () => {
     setCommittees(filteredCommittees);
   }, [owCommitteeData]);
 
-  const fetchPeriods = async () => {
-    try {
-      const response = await fetch("/api/periods");
-      const data = await response.json();
-      setPeriods(data.periods);
-    } catch (error) {
-      console.error("Failed to fetch periods:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchPeriods();
-  }, []);
+    if (!periodsData) return;
 
-  const hasPeriod = (committee: any) => {
-    if (!Array.isArray(periods)) {
-      return false;
-    }
+    setPeriods(periodsData.periods);
+  }, [periodsData]);
+
+  const hasPeriod = (committee: owCommitteeType) => {
+    if (!Array.isArray(periods)) return false;
 
     const today = new Date();
 
@@ -77,8 +74,8 @@ const Committees = () => {
     });
   };
 
-  if (owCommitteeIsLoading || isLoading) return <LoadingPage />;
-  if (owCommitteeIsError) return <ErrorPage />;
+  if (owCommitteeIsLoading || periodsIsLoading) return <LoadingPage />;
+  if (owCommitteeIsError || periodsIsError) return <ErrorPage />;
 
   return (
     <section className="bg-white dark:bg-gray-900">

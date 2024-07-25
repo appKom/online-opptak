@@ -47,6 +47,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { message } = req.body;
 
     try {
+      if (typeof message !== "string") {
+        return res.status(400).json({ error: "Invalid message parameter" });
+      }
+
       const { updatedMessage, error } = await updateCommitteeMessage(
         selectedCommittee,
         periodId,
