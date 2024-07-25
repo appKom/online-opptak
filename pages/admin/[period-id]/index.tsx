@@ -23,7 +23,9 @@ const Admin = () => {
 
   useEffect(() => {
     setPeriod(data?.period);
-    setCommittees(data?.period.committees);
+    setCommittees(
+      data?.period?.committees.concat(data.period.optionalCommittees)
+    );
   }, [data, session?.user?.owId]);
 
   if (session?.user?.role !== "admin") return <NotFound />;
