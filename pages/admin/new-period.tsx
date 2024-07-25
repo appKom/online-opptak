@@ -44,6 +44,7 @@ const NewPeriod = () => {
   });
 
   useEffect(() => {
+    if (!owCommitteeData) return;
     setAvailableCommittees(
       owCommitteeData.map(
         ({ name_short, email }: { name_short: string; email: string }) => ({
