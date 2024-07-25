@@ -39,9 +39,7 @@ export const isApplicantType = (
     committee.toLowerCase()
   );
 
-  const first = (data.preferences as preferencesType).first;
-  const second = (data.preferences as preferencesType).second;
-  const third = (data.preferences as preferencesType).third;
+  const { first, second, third } = data.preferences as preferencesType;
 
   const hasPreferencesFields =
     (data.preferences as preferencesType) &&
