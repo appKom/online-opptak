@@ -68,6 +68,7 @@ const Application: NextPage = () => {
     data: applicantData,
     isError: applicantIsError,
     isLoading: applicantIsLoading,
+    refetch: refetchApplicant,
   } = useQuery({
     queryKey: ["applicants", periodId, applicantId],
     queryFn: fetchApplicantByPeriodAndId,
@@ -109,6 +110,7 @@ const Application: NextPage = () => {
       if (response.ok) {
         toast.success("Søknad sendt inn");
         setHasAlreadySubmitted(true);
+        refetchApplicant();
       } else {
         if (
           responseData.error ===
