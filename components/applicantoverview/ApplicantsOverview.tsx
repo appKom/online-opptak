@@ -91,13 +91,12 @@ const ApplicantsOverview = ({
             applicant.preferences.second.toLowerCase() ===
               selectedCommittee.toLowerCase() ||
             applicant.preferences.third.toLowerCase() ===
-              selectedCommittee.toLowerCase()
-          );
-        } else {
-          return applicant.preferences.some(
-            (preference) =>
-              preference.committee.toLowerCase() ===
-              selectedCommittee.toLowerCase()
+              selectedCommittee.toLowerCase() ||
+            applicant.optionalCommittees.some(
+              (optionalCommittee) =>
+                optionalCommittee.toLowerCase() ===
+                selectedCommittee.toLowerCase()
+            )
           );
         }
       });
