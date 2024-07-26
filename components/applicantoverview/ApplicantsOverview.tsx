@@ -8,6 +8,12 @@ import {
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
 import ApplicantTable from "./ApplicantTable";
 import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
+import { useQuery } from "@tanstack/react-query";
+import {
+  fetchApplicantsByPeriodId,
+  fetchApplicantsByPeriodIdAndCommittee,
+} from "../../lib/api/applicantApi";
+import ErrorPage from "../ErrorPage";
 
 interface Props {
   period?: periodType | null;
@@ -42,54 +48,36 @@ const ApplicantsOverview = ({
 
   const [applicants, setApplicants] = useState<applicantType[]>([]);
   const [years, setYears] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   const bankomOptions: string[] = ["yes", "no", "maybe"];
 
-  const apiUrl = includePreferences
-    ? `/api/applicants/${period?._id}`
-    : `/api/committees/applicants/${period?._id}/${committee}`;
+  const {
+    data: applicantsData,
+    isError: applicantsIsError,
+    isLoading: applicantsIsLoading,
+  } = useQuery({
+    queryKey: ["applicants", period?._id, committee],
+    queryFn: includePreferences
+      ? fetchApplicantsByPeriodId
+      : fetchApplicantsByPeriodIdAndCommittee,
+  });
 
   useEffect(() => {
-    const fetchApplicants = async () => {
-      try {
-        const response = await fetch(apiUrl, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+    if (!applicantsData) return;
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch applicants");
-        }
+    const dataType = includePreferences
+      ? applicantsData.applications
+      : applicantsData.applicants;
 
-        const data = await response.json();
-        const dataType = includePreferences
-          ? data.applications
-          : data.applicants;
+    setApplicants(dataType);
 
-        setApplicants(dataType);
-
-        const uniqueYears: string[] = Array.from(
-          new Set(
-            dataType.map((applicant: applicantType) =>
-              applicant.grade.toString()
-            )
-          )
-        );
-        setYears(uniqueYears);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    if (period) {
-      fetchApplicants();
-    }
-  }, [period]);
+    const uniqueYears: string[] = Array.from(
+      new Set(
+        dataType.map((applicant: applicantType) => applicant.grade.toString())
+      )
+    );
+    setYears(uniqueYears);
+  }, [applicantsData, includePreferences]);
 
   useEffect(() => {
     let filtered: applicantType[] = applicants;
@@ -103,13 +91,12 @@ const ApplicantsOverview = ({
             applicant.preferences.second.toLowerCase() ===
               selectedCommittee.toLowerCase() ||
             applicant.preferences.third.toLowerCase() ===
-              selectedCommittee.toLowerCase()
-          );
-        } else {
-          return applicant.preferences.some(
-            (preference) =>
-              preference.committee.toLowerCase() ===
-              selectedCommittee.toLowerCase()
+              selectedCommittee.toLowerCase() ||
+            applicant.optionalCommittees.some(
+              (optionalCommittee) =>
+                optionalCommittee.toLowerCase() ===
+                selectedCommittee.toLowerCase()
+            )
           );
         }
       });
@@ -165,17 +152,8 @@ const ApplicantsOverview = ({
     };
   }, [filterMenuRef]);
 
-  if (isLoading) {
-    return <ApplicantOverviewSkeleton />;
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-5">
-        <p className="text-2xl">Det skjedde en feil, vennligst prøv igjen</p>
-      </div>
-    );
-  }
+  if (applicantsIsLoading) return <ApplicantOverviewSkeleton />;
+  if (applicantsIsError) return <ErrorPage />;
 
   return (
     <div className="flex flex-col items-center px-5">
