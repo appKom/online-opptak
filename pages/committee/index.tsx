@@ -90,10 +90,10 @@ const Committee: NextPage = () => {
     <div className="flex flex-col items-center">
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">Velg opptak</h2>
       <div className="py-10">
-        {periodsIsLoading && !periods ? (
-          <Table columns={periodsColumns} rows={periods} />
+        {periodsIsLoading ? (
+          <TableSkeleton columns={periodsColumns} />
         ) : (
-          <TableSkeleton />
+          <Table columns={periodsColumns} rows={periods} />
         )}
       </div>
     </div>
