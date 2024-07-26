@@ -10,6 +10,7 @@ import { deletePeriodById, fetchPeriods } from "../../lib/api/periodApi";
 import LoadingPage from "../../components/LoadingPage";
 import ErrorPage from "../../components/ErrorPage";
 import toast from "react-hot-toast";
+import { TableSkeleton } from "../../components/skeleton/TableSkeleton";
 
 const Admin = () => {
   const queryClient = useQueryClient();
@@ -80,7 +81,6 @@ const Admin = () => {
   ];
 
   if (!session || session.user?.role !== "admin") return <NotFound />;
-  if (periodsIsLoading) return <LoadingPage />;
   if (periodsIsError) return <ErrorPage />;
 
   return (
@@ -97,7 +97,9 @@ const Admin = () => {
         />
       </div>
 
-      {periods.length > 0 && (
+      {!periodsIsLoading ? (
+        <TableSkeleton columns={periodsColumns} />
+      ) : (
         <Table
           columns={periodsColumns}
           rows={periods}
