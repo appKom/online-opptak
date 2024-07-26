@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
           committees: committeeData.results.map((committee: any) =>
             committee.name_short.toLowerCase()
           ),
-          isCommitee: userInfo.is_committee,
+          isCommittee: userInfo.is_committee,
         };
       },
     }),
@@ -75,7 +75,7 @@ export const authOptions: NextAuthOptions = {
         token.grade = user.grade;
         token.subId = user.subId;
         token.committees = user.committees;
-        token.isCommitee = user.isCommitee;
+        token.isCommittee = user.isCommittee;
         token.role = adminEmails.includes(user.email) ? "admin" : "user";
       }
       return token;
@@ -91,7 +91,7 @@ export const authOptions: NextAuthOptions = {
         session.user.grade = token.grade as number;
         session.user.id = token.id as string;
         session.user.committees = token.committees as string[];
-        session.user.isCommitee = token.isCommitee as boolean;
+        session.user.isCommittee = token.isCommittee as boolean;
       }
       return session;
     },

@@ -1,8 +1,10 @@
-import { QueryFunctionContext } from '@tanstack/react-query';
+import { QueryFunctionContext } from "@tanstack/react-query";
 
 export const fetchPeriodById = async (context: QueryFunctionContext) => {
   const id = context.queryKey[1];
-  return fetch(`/api/periods/${id}`).then(res =>
-    res.json()
-  );
-}
+  return fetch(`/api/periods/${id}`).then((res) => res.json());
+};
+
+export const fetchPeriods = async () => {
+  return fetch(`/api/periods`).then((res) => res.json());
+};

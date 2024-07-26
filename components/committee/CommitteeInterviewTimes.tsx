@@ -321,7 +321,7 @@ const CommitteeInterviewTimes = ({
     return "";
   };
 
-  if (!session || !session.user?.isCommitee) {
+  if (!session || !session.user?.isCommittee) {
     return <NotFound />;
   }
 

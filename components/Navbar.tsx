@@ -64,7 +64,7 @@ const Navbar = () => {
                   href="/admin"
                 />
               )}
-              {session.user?.isCommitee && (
+              {session.user?.isCommittee && (
                 <Button
                   title="For komiteer"
                   color="blue"

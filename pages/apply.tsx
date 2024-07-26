@@ -1,40 +1,40 @@
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { periodType } from "../lib/types/types";
 import PeriodCard from "../components/PeriodCard";
 import LoadingPage from "../components/LoadingPage";
+import { fetchPeriods } from "../lib/api/periodApi";
+import { useQuery } from "@tanstack/react-query";
+import ErrorPage from "../components/ErrorPage";
 
 const Apply = () => {
-  const { data: session } = useSession();
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    data: periodsData,
+    isError: periodsIsError,
+    isLoading: periodsIsLoading,
+  } = useQuery({
+    queryKey: ["periods"],
+    queryFn: fetchPeriods,
+  });
 
   useEffect(() => {
-    const fetchPeriods = async () => {
-      try {
-        setIsLoading(true);
-        const res = await fetch("/api/periods");
-        const data = await res.json();
-        const today = new Date();
+    if (!periodsData) return;
 
-        setCurrentPeriods(
-          data.periods.filter((period: periodType) => {
-            const startDate = new Date(period.applicationPeriod.start || "");
-            const endDate = new Date(period.applicationPeriod.end || "");
+    const today = new Date();
 
-            return startDate <= today && endDate >= today;
-          })
-        );
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch application periods:", error);
-      }
-    };
+    setCurrentPeriods(
+      periodsData.periods.filter((period: periodType) => {
+        const startDate = new Date(period.applicationPeriod.start || "");
+        const endDate = new Date(period.applicationPeriod.end || "");
 
-    session && fetchPeriods();
-  }, [session]);
+        return startDate <= today && endDate >= today;
+      })
+    );
+  }, [periodsData]);
 
-  if (isLoading) return <LoadingPage />;
+  if (periodsIsLoading) return <LoadingPage />;
+  if (periodsIsError) return <ErrorPage />;
 
   return (
     <div className="flex flex-col justify-between overflow-x-hidden text-online-darkBlue dark:text-white">
@@ -74,7 +74,7 @@ const Apply = () => {
             <h3 className="text-4xl font-bold tracking-tight text-center dark:text-white">
               Nåværende opptaksperioder
             </h3>
-            <div className="flex flex-wrap justify-center max-w-full gap-5">
+            <div className="flex flex-col items-center max-w-full gap-5">
               {currentPeriods.map((period: periodType, index: number) => (
                 <PeriodCard key={index} period={period} />
               ))}

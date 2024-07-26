@@ -55,13 +55,22 @@ const Application: NextPage = () => {
   const [period, setPeriod] = useState<periodType>();
   const [isApplicationPeriodOver, setIsApplicationPeriodOver] = useState(false);
 
-  const { data: periodData, isError: periodIsError, isLoading: periodIsLoading } = useQuery({
-    queryKey: ['periods', periodId],
+  const {
+    data: periodData,
+    isError: periodIsError,
+    isLoading: periodIsLoading,
+  } = useQuery({
+    queryKey: ["periods", periodId],
     queryFn: fetchPeriodById,
   });
 
-  const { data: applicantData, isError: applicantIsError, isLoading: applicantIsLoading } = useQuery({
-    queryKey: ['applicants', periodId, applicantId],
+  const {
+    data: applicantData,
+    isError: applicantIsError,
+    isLoading: applicantIsLoading,
+    refetch: refetchApplicant,
+  } = useQuery({
+    queryKey: ["applicants", periodId, applicantId],
     queryFn: fetchApplicantByPeriodAndId,
   });
 
@@ -72,7 +81,9 @@ const Application: NextPage = () => {
     setPeriodExists(periodData.exists);
 
     const currentDate = new Date().toISOString();
-    if (new Date(periodData.period.applicationPeriod.end) < new Date(currentDate)) {
+    if (
+      new Date(periodData.period.applicationPeriod.end) < new Date(currentDate)
+    ) {
       setIsApplicationPeriodOver(true);
     }
   }, [periodData]);
@@ -99,6 +110,7 @@ const Application: NextPage = () => {
       if (response.ok) {
         toast.success("Søknad sendt inn");
         setHasAlreadySubmitted(true);
+        refetchApplicant();
       } else {
         if (
           responseData.error ===
@@ -180,7 +192,7 @@ const Application: NextPage = () => {
             onClick={handleDeleteApplication}
           />
         )}
-        {applicantData && (
+        {applicantData?.application && (
           <div className="w-full max-w-md">
             <ApplicantCard
               applicant={applicantData.application}
@@ -195,7 +207,11 @@ const Application: NextPage = () => {
   return (
     <div>
       <div className="flex flex-col items-center justify-center py-5">
-        <PageTitle boldMainTitle={period?.name} subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""} boldSubTitle="Søknadsfrist" />
+        <PageTitle
+          boldMainTitle={period?.name}
+          subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""}
+          boldSubTitle="Søknadsfrist"
+        />
         <Tabs
           activeTab={activeTab}
           setActiveTab={setActiveTab}

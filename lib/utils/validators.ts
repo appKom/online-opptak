@@ -65,6 +65,50 @@ export const isCommitteeType = (data: any): data is commiteeType => {
 
   return hasBasicFields;
 };
+
+export const validateCommittee = (data: any, period: periodType): boolean => {
+  const hasBasicFields =
+    typeof data.period_name === "string" &&
+    typeof data.committee === "string" &&
+    typeof data.timeslot === "string" &&
+    Array.isArray(data.availabletimes) &&
+    data.availabletimes.every(
+      (time: { start: string; end: string }) =>
+        typeof time.start === "string" && typeof time.end === "string"
+    );
+
+  const isPeriodNameValid = data.periodId === String(period._id);
+
+  const committeeExists =
+    period.committees.some((committee) => {
+      return committee.toLowerCase() === data.committee.toLowerCase();
+    }) ||
+    period.optionalCommittees.some((committee) => {
+      return committee.toLowerCase() === data.committee.toLowerCase();
+    });
+
+  const isWithinInterviewPeriod = data.availabletimes.every(
+    (time: { start: string; end: string }) => {
+      const startTime = new Date(time.start);
+      const endTime = new Date(time.end);
+
+      return (
+        startTime >= new Date(period.interviewPeriod.start) &&
+        startTime <= new Date(period.interviewPeriod.end) &&
+        endTime <= new Date(period.interviewPeriod.end) &&
+        endTime >= new Date(period.interviewPeriod.start)
+      );
+    }
+  );
+
+  return (
+    hasBasicFields &&
+    isPeriodNameValid &&
+    committeeExists &&
+    isWithinInterviewPeriod
+  );
+};
+
 export const isPeriodType = (data: any): data is periodType => {
   const isDateString = (str: any): boolean => {
     return typeof str === "string" && !isNaN(Date.parse(str));
