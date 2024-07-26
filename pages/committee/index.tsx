@@ -8,6 +8,7 @@ import LoadingPage from "../../components/LoadingPage";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPeriods } from "../../lib/api/periodApi";
 import ErrorPage from "../../components/ErrorPage";
+import { TableSkeleton } from "../../components/skeleton/TableSkeleton";
 
 const Committee: NextPage = () => {
   const { data: session } = useSession();
@@ -83,15 +84,16 @@ const Committee: NextPage = () => {
   ];
 
   if (!session || !session.user?.isCommittee) return <p>Ingen tilgang!</p>;
-  if (periodsIsLoading) return <LoadingPage />;
   if (periodsIsError) return <ErrorPage />;
 
   return (
     <div className="flex flex-col items-center">
       <h2 className="mt-5 mb-6 text-3xl font-bold text-center">Velg opptak</h2>
       <div className="py-10">
-        {periods.length > 0 && (
+        {periodsIsLoading && !periods ? (
           <Table columns={periodsColumns} rows={periods} />
+        ) : (
+          <TableSkeleton />
         )}
       </div>
     </div>
