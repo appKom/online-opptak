@@ -66,7 +66,8 @@ export const isApplicantType = (
         new Date(time.start) >= new Date(period.interviewPeriod.start) &&
         new Date(time.start) <= new Date(period.interviewPeriod.end) &&
         new Date(time.end) <= new Date(period.interviewPeriod.end) &&
-        new Date(time.end) >= new Date(period.interviewPeriod.start)
+        new Date(time.end) >= new Date(period.interviewPeriod.start) &&
+        new Date(time.start) < new Date(time.end)
     );
 
   const hasOptionalFields =
@@ -129,7 +130,8 @@ export const validateCommittee = (data: any, period: periodType): boolean => {
         startTime >= new Date(period.interviewPeriod.start) &&
         startTime <= new Date(period.interviewPeriod.end) &&
         endTime <= new Date(period.interviewPeriod.end) &&
-        endTime >= new Date(period.interviewPeriod.start)
+        endTime >= new Date(period.interviewPeriod.start) &&
+        startTime < endTime
       );
     }
   );
