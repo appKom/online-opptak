@@ -27,6 +27,7 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   //Tihi
   useEffect(() => {
     console.log(Signature);
+    console.log("jo tester");
   }, []);
 
   useEffect(() => {
