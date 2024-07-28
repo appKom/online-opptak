@@ -6,30 +6,31 @@ import {
 } from "../types/types";
 
 export const isApplicantType = (
-  data: applicantType,
+  applicant: applicantType,
   period: periodType
-): data is applicantType => {
+): applicant is applicantType => {
   // Check for each basic property type
   const periodIdStr =
-    typeof data.periodId === "object"
-      ? data.periodId.toString()
-      : data.periodId;
+    typeof applicant.periodId === "object"
+      ? applicant.periodId.toString()
+      : applicant.periodId;
   const periodIdFromPeriodStr = period._id.toString();
 
   const hasBasicFields =
-    typeof data.owId === "string" &&
-    typeof data.name === "string" &&
-    typeof data.email === "string" &&
-    typeof data.phone === "string" &&
-    typeof data.grade === "string" &&
-    typeof data.about === "string" &&
-    typeof data.bankom === "string" &&
-    (data.bankom === "yes" ||
-      data.bankom === "no" ||
-      data.bankom === "maybe") &&
-    (typeof data.periodId === "string" || typeof data.periodId === "object") &&
+    typeof applicant.owId === "string" &&
+    typeof applicant.name === "string" &&
+    typeof applicant.email === "string" &&
+    typeof applicant.phone === "string" &&
+    typeof applicant.grade === "string" &&
+    typeof applicant.about === "string" &&
+    typeof applicant.bankom === "string" &&
+    (applicant.bankom === "yes" ||
+      applicant.bankom === "no" ||
+      applicant.bankom === "maybe") &&
+    (typeof applicant.periodId === "string" ||
+      typeof applicant.periodId === "object") &&
     periodIdStr === periodIdFromPeriodStr &&
-    data.date instanceof Date;
+    applicant.date instanceof Date;
 
   // Check that the preferences object exists and contains the required fields
   const committees = period.committees.map((committee) =>
@@ -39,10 +40,10 @@ export const isApplicantType = (
     committee.toLowerCase()
   );
 
-  const { first, second, third } = data.preferences as preferencesType;
+  const { first, second, third } = applicant.preferences as preferencesType;
 
   const hasPreferencesFields =
-    (data.preferences as preferencesType) &&
+    (applicant.preferences as preferencesType) &&
     typeof first === "string" &&
     (typeof second === "string" || second === "") &&
     (typeof third === "string" || third === "") &&
@@ -58,8 +59,8 @@ export const isApplicantType = (
   // Check that the selectedTimes array is valid
 
   const hasSelectedTimes =
-    Array.isArray(data.selectedTimes) &&
-    data.selectedTimes.every(
+    Array.isArray(applicant.selectedTimes) &&
+    applicant.selectedTimes.every(
       (time: { start: any; end: any }) =>
         typeof time.start === "string" &&
         typeof time.end === "string" &&
@@ -71,9 +72,9 @@ export const isApplicantType = (
     );
 
   const hasOptionalFields =
-    data.optionalCommittees &&
-    Array.isArray(data.optionalCommittees) &&
-    data.optionalCommittees.every(
+    applicant.optionalCommittees &&
+    Array.isArray(applicant.optionalCommittees) &&
+    applicant.optionalCommittees.every(
       (committee: any) =>
         typeof committee === "string" && optionalCommittees.includes(committee)
     );
