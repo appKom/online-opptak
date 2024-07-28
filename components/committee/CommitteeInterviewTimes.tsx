@@ -36,6 +36,7 @@ const CommitteeInterviewTimes = ({
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
+  const [interviewsPlanned, setInterviewsPlanned] = useState<number>(0);
 
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
@@ -112,6 +113,12 @@ const CommitteeInterviewTimes = ({
     }
   }, [isModalOpen]);
 
+  useEffect(() => {
+    if (calendarEvents.length > 0) {
+      calculateInterviewsPlanned();
+    }
+  }, [calendarEvents, selectedTimeslot]);
+
   const handleDateSelect = (selectionInfo: any) => {
     setCurrentSelection(selectionInfo);
     setIsModalOpen(true);
@@ -131,7 +138,7 @@ const CommitteeInterviewTimes = ({
 
     const calendarApi = currentSelection.view.calendar;
     calendarApi.addEvent(event);
-    calendarApi.render(); // Force the calendar to re-render
+    calendarApi.render();
 
     addCell([
       roomInput,
@@ -141,7 +148,7 @@ const CommitteeInterviewTimes = ({
 
     setRoomInput("");
     setIsModalOpen(false);
-    setCalendarEvents((prevEvents) => [...prevEvents, event]); // Trigger re-render
+    setCalendarEvents((prevEvents) => [...prevEvents, event]);
   };
 
   const submit = async (e: BaseSyntheticEvent) => {
@@ -321,6 +328,20 @@ const CommitteeInterviewTimes = ({
     return "";
   };
 
+  const calculateInterviewsPlanned = () => {
+    const totalMinutes = calendarEvents.reduce((acc, event) => {
+      const start = new Date(event.start);
+      const end = new Date(event.end);
+      const duration = (end.getTime() - start.getTime()) / 1000 / 60;
+      return acc + duration;
+    }, 0);
+
+    const plannedInterviews = Math.floor(
+      totalMinutes / parseInt(selectedTimeslot)
+    );
+    setInterviewsPlanned(plannedInterviews);
+  };
+
   if (!session || !session.user?.isCommittee) {
     return <NotFound />;
   }
@@ -375,6 +396,7 @@ const CommitteeInterviewTimes = ({
             </select>
           </div>
         )}
+        <p className="py-5 text-lg">{`${interviewsPlanned} intervjuer planlagt`}</p>
         <div className="mx-4 sm:mx-20">
           <FullCalendar
             ref={calendarRef}
