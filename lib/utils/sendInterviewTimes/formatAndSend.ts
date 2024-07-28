@@ -59,7 +59,7 @@ export const formatAndSendEmails = async ({
       });
 
       emailBody += `</ul> <br/> <br/> <p>Skjedd en feil? Ta kontakt med <a href="mailto:appkom@online.ntnu.no">Appkom</a>❤️</p>`;
-      phoneBody += `Skjedd en feil? Ta kontakt med Appkom❤️`;
+      phoneBody += `Skjedd en feil? Ta kontakt med Appkom`;
 
       // await sendEmail({
       //   sesClient: sesClient,
