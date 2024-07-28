@@ -22,7 +22,7 @@ export const formatAndSendEmails = async ({
 
     // Send email to each applicant
     for (const applicant of applicantsToEmail) {
-      const typedApplicant: emailApplicantInterviewType = applicantsToEmail[0];
+      const typedApplicant: emailApplicantInterviewType = applicant;
       const applicantEmail = [typedApplicant.applicantEmail];
       const subject = `Hei, ${typedApplicant.applicantName}, her er dine intervjutider:`;
 
@@ -71,14 +71,14 @@ export const formatAndSendEmails = async ({
 
       let toPhoneNumber = "+47";
       toPhoneNumber += typedApplicant.applicantPhone;
-      sendSMS(toPhoneNumber, phoneBody);
+      // sendSMS(toPhoneNumber, phoneBody);
 
       console.log(applicantEmail[0], "\n", subject, "\n", emailBody);
     }
 
     // Send email to each committee
     for (const committee of committeesToEmail) {
-      const typedCommittee: emailCommitteeInterviewType = committeesToEmail[0];
+      const typedCommittee: emailCommitteeInterviewType = committee;
       const committeeEmail = [typedCommittee.committeeEmail];
       const subject = `${changeDisplayName(
         typedCommittee.committeeName

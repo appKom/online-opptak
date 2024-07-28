@@ -88,7 +88,7 @@ const formatApplicants = (
           time.committee.toLowerCase() === interview.committeeName.toLowerCase()
       );
 
-      let room = "";
+      let room = "Info kommer";
 
       if (committeeTime) {
         const availableTime = committeeTime.availabletimes.find(
