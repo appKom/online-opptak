@@ -9,10 +9,8 @@ import {
   algorithmType,
 } from "../../types/types";
 
-import { changeDisplayName } from "../toString";
 import { fetchCommitteeEmails } from "./fetchFunctions";
 import { formatAndSendEmails } from "./formatAndSend";
-import toast from "react-hot-toast";
 import { getPeriodById } from "../../mongo/periods";
 import { getCommitteesByPeriod } from "../../mongo/committees";
 import { getInterviewsByPeriod } from "../../mongo/interviews";
@@ -118,6 +116,7 @@ const formatApplicants = (
       period_name: period.name,
       applicantName: app.applicantName,
       applicantEmail: app.applicantEmail,
+      applicantPhone: app.applicantPhone,
       committees: committees,
     };
 

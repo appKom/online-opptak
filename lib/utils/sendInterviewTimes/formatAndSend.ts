@@ -21,7 +21,7 @@ export const formatAndSendEmails = async ({
     const sesClient = new SESClient({ region: "eu-north-1" });
 
     // Send email to each applicant
-    if (applicantsToEmail.length > 0) {
+    for (const applicant of applicantsToEmail) {
       const typedApplicant: emailApplicantInterviewType = applicantsToEmail[0];
       const applicantEmail = [typedApplicant.applicantEmail];
       const subject = `Hei, ${typedApplicant.applicantName}, her er dine intervjutider:`;
