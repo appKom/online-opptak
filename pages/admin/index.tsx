@@ -97,7 +97,7 @@ const Admin = () => {
         />
       </div>
 
-      {!periodsIsLoading ? (
+      {periodsIsLoading ? (
         <TableSkeleton columns={periodsColumns} />
       ) : (
         <Table
