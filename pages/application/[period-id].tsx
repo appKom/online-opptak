@@ -76,6 +76,7 @@ const Application: NextPage = () => {
 
   useEffect(() => {
     if (!periodData) return;
+    if (!periodData.period) return;
 
     setPeriod(periodData.period);
     setPeriodExists(periodData.exists);

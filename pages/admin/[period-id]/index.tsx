@@ -28,7 +28,9 @@ const Admin = () => {
 
   useEffect(() => {
     setPeriod(data?.period);
-    setCommittees(data?.period.committees);
+    setCommittees(
+      data?.period.committees.concat(data?.period.optionalCommittees)
+    );
   }, [data, session?.user?.owId]);
 
   const sendOutInterviewTimes = async ({ periodId }: { periodId: string }) => {
@@ -49,6 +51,8 @@ const Admin = () => {
       toast.error("Failed to send out interview times");
     }
   };
+
+  console.log(committees);
 
   if (session?.user?.role !== "admin") return <NotFound />;
   if (isLoading) return <LoadingPage />;

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { periodType } from "../lib/types/types";
 import PeriodCard from "../components/PeriodCard";
-import LoadingPage from "../components/LoadingPage";
 import { fetchPeriods } from "../lib/api/periodApi";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../components/ErrorPage";
+import { PeriodSkeletonPage } from "../components/PeriodSkeleton";
 
 const Apply = () => {
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
@@ -33,7 +33,7 @@ const Apply = () => {
     );
   }, [periodsData]);
 
-  if (periodsIsLoading) return <LoadingPage />;
+  if (periodsIsLoading) return <PeriodSkeletonPage />;
   if (periodsIsError) return <ErrorPage />;
 
   return (
