@@ -141,6 +141,7 @@ export type emailApplicantInterviewType = {
   period_name: string;
   applicantName: string;
   applicantEmail: string;
+  applicantPhone: string;
   committees: {
     committeeName: string;
     committeeEmail: string;
