@@ -5,6 +5,7 @@ import LoadingPage from "../components/LoadingPage";
 import { fetchPeriods } from "../lib/api/periodApi";
 import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../components/ErrorPage";
+import Link from "next/link";
 
 const Apply = () => {
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
@@ -44,29 +45,28 @@ const Apply = () => {
             <h1 className="text-3xl ">Ingen åpne opptak for øyeblikket</h1>
             <p className="w-10/12 max-w-2xl text-center text-md ">
               Opptak til{" "}
-              <a
-                href="/committees"
-                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-              >
-                komiteene
-              </a>{" "}
+              <Link href="/committees">
+                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
+                  komiteene
+                </a>
+              </Link>{" "}
               skjer vanligvis i august etter fadderuka. Noen komiteer har
-              vanligvis suppleringsopptak i februar.{<br></br>} <br></br> Følg
-              med på{" "}
-              <a
-                href="https://online.ntnu.no"
-                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-              >
-                online.ntnu.no
-              </a>{" "}
+              vanligvis suppleringsopptak i februar.
+              <br />
+              <br />
+              Følg med på{" "}
+              <Link href="https://online.ntnu.no">
+                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
+                  online.ntnu.no
+                </a>
+              </Link>{" "}
               eller på vår{" "}
-              <a
-                href="https://www.facebook.com/groups/1547182375336132"
-                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-              >
-                Facebook
-              </a>{" "}
-              side for kunngjøringer!
+              <Link href="https://www.facebook.com/groups/1547182375336132">
+                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
+                  Facebook-gruppe
+                </a>
+              </Link>{" "}
+              for kunngjøringer!
             </p>
           </div>
         ) : (
