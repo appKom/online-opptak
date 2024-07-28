@@ -45,7 +45,7 @@ const Apply = () => {
             <p className="w-10/12 max-w-2xl text-center text-md ">
               Opptak til{" "}
               <a
-                href="https://online.ntnu.no/applications"
+                href="/committees"
                 className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
               >
                 komiteene
