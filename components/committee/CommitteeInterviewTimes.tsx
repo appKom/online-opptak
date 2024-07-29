@@ -49,8 +49,7 @@ const CommitteeInterviewTimes = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const calendarRef = useRef<FullCalendar>(null);
 
-  const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false);
-  useUnsavedChangesWarning(unsavedChanges);
+  const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
 
   useEffect(() => {
     if (period) {

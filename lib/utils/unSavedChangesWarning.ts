@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-const useUnsavedChangesWarning = (unsavedChanges: any) => {
+const useUnsavedChangesWarning = () => {
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const useUnsavedChangesWarning = (unsavedChanges: any) => {
     };
   }, [unsavedChanges, router.events]);
 
-  return null;
+  return { unsavedChanges, setUnsavedChanges };
 };
 
 export default useUnsavedChangesWarning;
