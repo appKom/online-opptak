@@ -11,7 +11,6 @@ interface Props {
   period: periodType | null;
   committee: string;
   committeeInterviewTimes: committeeInterviewType | null;
-  tabClicked: number;
 }
 
 const SendCommitteeMessage = ({

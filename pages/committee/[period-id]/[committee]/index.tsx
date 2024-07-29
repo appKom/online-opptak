@@ -171,10 +171,7 @@ const CommitteeApplicantOverView: NextPage = () => {
 
       <Tabs
         activeTab={activeTab}
-        setActiveTab={(index) => {
-          setActiveTab(index);
-          setTabClicked(index);
-        }}
+        setActiveTab={setActiveTab}
         content={[
           {
             title: "Intervjutider",
@@ -195,7 +192,6 @@ const CommitteeApplicantOverView: NextPage = () => {
                 period={period}
                 committee={committee}
                 committeeInterviewTimes={committeeInterviewTimes}
-                tabClicked={tabClicked}
               />
             ),
           },
