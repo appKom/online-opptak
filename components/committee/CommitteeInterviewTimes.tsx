@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import NotFound from "../../pages/404";
 import Button from "../Button";
 import ImportantNote from "../ImportantNote";
+import useUnsavedChangesWarning from "../../lib/utils/unSavedChangesWarning";
 
 interface Interview {
   title: string;
@@ -48,6 +49,8 @@ const CommitteeInterviewTimes = ({
   const [roomInput, setRoomInput] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
   const calendarRef = useRef<FullCalendar>(null);
+
+  const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
 
   useEffect(() => {
     if (period) {
@@ -122,6 +125,7 @@ const CommitteeInterviewTimes = ({
   const handleDateSelect = (selectionInfo: any) => {
     setCurrentSelection(selectionInfo);
     setIsModalOpen(true);
+    setUnsavedChanges(true);
   };
 
   const handleRoomSubmit = () => {
@@ -184,6 +188,7 @@ const CommitteeInterviewTimes = ({
       const result = await response.json();
       toast.success("Tidene er sendt inn!");
       setHasAlreadySubmitted(true);
+      setUnsavedChanges(false);
     } catch (error) {
       toast.error("Kunne ikke sende inn!");
     }
@@ -196,6 +201,7 @@ const CommitteeInterviewTimes = ({
       )
     );
     event.remove();
+    setUnsavedChanges(true);
   };
 
   const addCell = (cell: string[]) => {
@@ -203,10 +209,12 @@ const CommitteeInterviewTimes = ({
       ...markedCells,
       { title: cell[0], start: cell[1], end: cell[2] },
     ]);
+    setUnsavedChanges(true);
   };
 
   const updateInterviewInterval = (e: BaseSyntheticEvent) => {
     setInterviewInterval(parseInt(e.target.value));
+    setUnsavedChanges(true);
   };
 
   const renderEventContent = (eventContent: any) => {
@@ -259,6 +267,7 @@ const CommitteeInterviewTimes = ({
 
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTimeslot(e.target.value);
+    setUnsavedChanges(true);
   };
 
   const deleteSubmission = async (e: BaseSyntheticEvent) => {
@@ -280,6 +289,7 @@ const CommitteeInterviewTimes = ({
 
       setHasAlreadySubmitted(false);
       setCalendarEvents([]);
+      setUnsavedChanges(false);
     } catch (error: any) {
       console.error("Error deleting submission:", error);
       toast.error("Klarte ikke å slette innsendingen");

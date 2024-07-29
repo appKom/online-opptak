@@ -7,7 +7,7 @@ import { fetchOwCommittees } from "../lib/api/committees";
 import ErrorPage from "../components/ErrorPage";
 import { fetchPeriods } from "../lib/api/periodApi";
 
-const excludedCommittees = ["Faddere"];
+const excludedCommittees = ["Faddere", "Output"];
 
 const Committees = () => {
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
