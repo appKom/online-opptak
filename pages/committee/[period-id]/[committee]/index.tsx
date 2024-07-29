@@ -50,6 +50,7 @@ const CommitteeApplicantOverview: NextPage = () => {
     data: interviewTimesData,
     isError: interviewTimesIsError,
     isLoading: interviewTimesIsLoading,
+    refetch: refetchInterviewTimes,
   } = useQuery({
     queryKey: ["interviewTimes", periodId, committee],
     queryFn: fetchCommitteeTimes,
@@ -135,7 +136,10 @@ const CommitteeApplicantOverview: NextPage = () => {
 
       <Tabs
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={(index) => {
+          refetchInterviewTimes();
+          setActiveTab(index);
+        }}
         content={[
           {
             title: "Intervjutider",
