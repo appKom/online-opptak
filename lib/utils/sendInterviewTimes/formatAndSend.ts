@@ -5,7 +5,7 @@ import {
 } from "../../types/types";
 import { changeDisplayName } from "../toString";
 import { formatDateHours } from "../dateUtils";
-import sendEmail from "../sendEmail";
+import sendEmail from "../../email/sendEmail";
 import sendSMS from "./sendSMS";
 
 interface sendInterviewTimesProps {
@@ -62,8 +62,6 @@ export const formatAndSendEmails = async ({
       phoneBody += `Skjedd en feil? Ta kontakt med Appkom`;
 
       await sendEmail({
-        sesClient: sesClient,
-        fromEmail: "opptak@online.ntnu.no",
         toEmails: applicantEmail,
         subject: subject,
         htmlContent: emailBody,
@@ -107,8 +105,6 @@ export const formatAndSendEmails = async ({
       body += `</ul> <br/> <br/> <p>Skjedd en feil? Ta kontakt med <a href="mailto:appkom@online.ntnu.no">Appkom</a>❤️</p>`;
 
       await sendEmail({
-        sesClient: sesClient,
-        fromEmail: "opptak@online.ntnu.no",
         toEmails: committeeEmail,
         subject: subject,
         htmlContent: body,
