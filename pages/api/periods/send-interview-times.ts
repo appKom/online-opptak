@@ -4,7 +4,6 @@ import { sendOutInterviewTimes } from "../../../lib/utils/sendInterviewTimes/sen
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     if (req.method === "POST") {
-      //Vill dette expose en sårbarhet?
       const result = await sendOutInterviewTimes();
       if (result === undefined) {
         throw new Error("An error occurred");
