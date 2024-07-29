@@ -7,7 +7,7 @@ import {
 } from "../../lib/types/types";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
 import ApplicantTable from "./ApplicantTable";
-import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
+import ApplicantOverviewSkeleton from "../skeleton/ApplicantOverviewSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchApplicantsByPeriodId,
