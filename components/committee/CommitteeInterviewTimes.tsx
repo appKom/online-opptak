@@ -50,6 +50,8 @@ const CommitteeInterviewTimes = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const calendarRef = useRef<FullCalendar>(null);
 
+  const [deadLineHasPassed, setDeadLineHasPassed] = useState<boolean>(false);
+
   const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
 
   useEffect(() => {
@@ -307,11 +309,15 @@ const CommitteeInterviewTimes = ({
   }, [period]);
 
   const getSubmissionDeadline = (): string => {
-    const deadlineIso = period!.interviewPeriod.start;
+    const deadlineIso = period!.applicationPeriod.end;
 
-    if (deadlineIso != null) {
+    if (deadlineIso != null && !deadLineHasPassed) {
       const deadlineDate = new Date(deadlineIso);
       const now = new Date();
+
+      if (now > deadlineDate) {
+        setDeadLineHasPassed(true);
+      }
 
       let delta = Math.floor((deadlineDate.getTime() - now.getTime()) / 1000);
 
@@ -356,7 +362,7 @@ const CommitteeInterviewTimes = ({
     return <NotFound />;
   }
 
-  if (period!.interviewPeriod.start < new Date()) {
+  if (deadLineHasPassed) {
     return (
       <div className="flex items-center justify-center h-screen">
         <h2 className="mt-5 mb-6 text-3xl font-bold">
