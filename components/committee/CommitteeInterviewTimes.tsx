@@ -290,7 +290,7 @@ const CommitteeInterviewTimes = ({
   }, [period]);
 
   const getSubmissionDeadline = (): string => {
-    const deadlineIso = period!.interviewPeriod.start;
+    const deadlineIso = period!.applicationPeriod.end;
 
     if (deadlineIso != null) {
       const deadlineDate = new Date(deadlineIso);
@@ -325,7 +325,7 @@ const CommitteeInterviewTimes = ({
     return <NotFound />;
   }
 
-  if (period!.interviewPeriod.start < new Date()) {
+  if (period!.applicationPeriod.end < new Date()) {
     return (
       <div className="flex items-center justify-center h-screen">
         <h2 className="mt-5 mb-6 text-3xl font-bold">
