@@ -10,10 +10,7 @@ export const isApplicantType = (
   period: periodType
 ): applicant is applicantType => {
   // Check for each basic property type
-  const applicantPeriodId =
-    typeof applicant.periodId === "object"
-      ? applicant.periodId.toString()
-      : applicant.periodId;
+  const applicantPeriodId = applicant.periodId.toString();
   const periodIdFromPeriodStr = period._id.toString();
 
   const { owId, name, email, phone, grade, about, bankom, date } = applicant;
@@ -27,8 +24,7 @@ export const isApplicantType = (
     typeof about === "string" &&
     typeof bankom === "string" &&
     (bankom === "yes" || bankom === "no" || bankom === "maybe") &&
-    (typeof applicantPeriodId === "string" ||
-      typeof applicantPeriodId === "object") &&
+    typeof applicantPeriodId === "string" &&
     applicantPeriodId === periodIdFromPeriodStr &&
     date instanceof Date;
 
@@ -61,7 +57,7 @@ export const isApplicantType = (
   const hasSelectedTimes =
     Array.isArray(applicant.selectedTimes) &&
     applicant.selectedTimes.every(
-      (time: { start: any; end: any }) =>
+      (time: { start: string; end: string }) =>
         typeof time.start === "string" &&
         typeof time.end === "string" &&
         new Date(time.start) >= interviewPeriodStart &&
