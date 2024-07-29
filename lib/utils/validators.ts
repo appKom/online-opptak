@@ -10,33 +10,30 @@ export const isApplicantType = (
   period: periodType
 ): applicant is applicantType => {
   // Check for each basic property type
-  const periodIdStr =
+  const applicantPeriodId =
     typeof applicant.periodId === "object"
       ? applicant.periodId.toString()
       : applicant.periodId;
   const periodIdFromPeriodStr = period._id.toString();
 
+  const { owId, name, email, phone, grade, about, bankom, date } = applicant;
+
   const hasBasicFields =
-    typeof applicant.owId === "string" &&
-    typeof applicant.name === "string" &&
-    typeof applicant.email === "string" &&
-    typeof applicant.phone === "string" &&
-    typeof applicant.grade === "string" &&
-    typeof applicant.about === "string" &&
-    typeof applicant.bankom === "string" &&
-    (applicant.bankom === "yes" ||
-      applicant.bankom === "no" ||
-      applicant.bankom === "maybe") &&
-    (typeof applicant.periodId === "string" ||
-      typeof applicant.periodId === "object") &&
-    periodIdStr === periodIdFromPeriodStr &&
-    applicant.date instanceof Date;
+    typeof owId === "string" &&
+    typeof name === "string" &&
+    typeof email === "string" &&
+    typeof phone === "string" &&
+    typeof grade === "string" &&
+    typeof about === "string" &&
+    typeof bankom === "string" &&
+    (bankom === "yes" || bankom === "no" || bankom === "maybe") &&
+    (typeof applicantPeriodId === "string" ||
+      typeof applicantPeriodId === "object") &&
+    applicantPeriodId === periodIdFromPeriodStr &&
+    date instanceof Date;
 
   // Check that the preferences object exists and contains the required fields
-  const committees = period.committees.map((committee) =>
-    committee.toLowerCase()
-  );
-  const optionalCommittees = period.optionalCommittees.map((committee) =>
+  const periodCommittees = period.committees.map((committee) =>
     committee.toLowerCase()
   );
 
@@ -52,11 +49,14 @@ export const isApplicantType = (
     (first === "" || first !== third) &&
     (second === "" || second !== third) &&
     // Ensure preferences are in period committees or empty
-    committees.includes(first) &&
-    (second === "" || committees.includes(second)) &&
-    (third === "" || committees.includes(third));
+    periodCommittees.includes(first) &&
+    (second === "" || periodCommittees.includes(second)) &&
+    (third === "" || periodCommittees.includes(third));
 
   // Check that the selectedTimes array is valid
+
+  const interviewPeriodStart = new Date(period.interviewPeriod.start);
+  const interviewPeriodEnd = new Date(period.interviewPeriod.end);
 
   const hasSelectedTimes =
     Array.isArray(applicant.selectedTimes) &&
@@ -64,19 +64,25 @@ export const isApplicantType = (
       (time: { start: any; end: any }) =>
         typeof time.start === "string" &&
         typeof time.end === "string" &&
-        new Date(time.start) >= new Date(period.interviewPeriod.start) &&
-        new Date(time.start) <= new Date(period.interviewPeriod.end) &&
-        new Date(time.end) <= new Date(period.interviewPeriod.end) &&
-        new Date(time.end) >= new Date(period.interviewPeriod.start) &&
+        new Date(time.start) >= interviewPeriodStart &&
+        new Date(time.start) <= interviewPeriodEnd &&
+        new Date(time.end) <= interviewPeriodEnd &&
+        new Date(time.end) >= interviewPeriodStart &&
         new Date(time.start) < new Date(time.end)
     );
 
+  const periodOptionalCommittees = period.optionalCommittees.map((committee) =>
+    committee.toLowerCase()
+  );
+  const applicantOptionalCommittees = applicant.optionalCommittees;
+
   const hasOptionalFields =
-    applicant.optionalCommittees &&
-    Array.isArray(applicant.optionalCommittees) &&
-    applicant.optionalCommittees.every(
+    applicantOptionalCommittees &&
+    Array.isArray(applicantOptionalCommittees) &&
+    applicantOptionalCommittees.every(
       (committee: any) =>
-        typeof committee === "string" && optionalCommittees.includes(committee)
+        typeof committee === "string" &&
+        periodOptionalCommittees.includes(committee)
     );
 
   return (
