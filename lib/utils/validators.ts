@@ -11,7 +11,7 @@ export const isApplicantType = (
 ): applicant is applicantType => {
   // Check for each basic property type
   const applicantPeriodId = applicant.periodId.toString();
-  const periodIdFromPeriodStr = period._id.toString();
+  const periodId = period._id.toString();
 
   const { owId, name, email, phone, grade, about, bankom, date } = applicant;
 
@@ -25,7 +25,7 @@ export const isApplicantType = (
     typeof bankom === "string" &&
     (bankom === "yes" || bankom === "no" || bankom === "maybe") &&
     typeof applicantPeriodId === "string" &&
-    applicantPeriodId === periodIdFromPeriodStr &&
+    applicantPeriodId === periodId &&
     date instanceof Date;
 
   // Check that the preferences object exists and contains the required fields
