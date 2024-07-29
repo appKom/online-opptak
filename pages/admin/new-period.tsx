@@ -11,7 +11,7 @@ import TextInput from "../../components/form/TextInput";
 import { DeepPartial, periodType } from "../../lib/types/types";
 import { validatePeriod } from "../../lib/utils/PeriodValidator";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchOwCommittees } from "../../lib/api/committees";
+import { fetchOwCommittees } from "../../lib/api/committeesApi";
 import ErrorPage from "../../components/ErrorPage";
 import { createPeriod } from "../../lib/api/periodApi";
 

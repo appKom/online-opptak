@@ -3,7 +3,7 @@ import LoadingPage from "../components/LoadingPage";
 import { owCommitteeType, periodType } from "../lib/types/types";
 import CommitteeAboutCard from "../components/CommitteeAboutCard";
 import { useQuery } from "@tanstack/react-query";
-import { fetchOwCommittees } from "../lib/api/committees";
+import { fetchOwCommittees } from "../lib/api/committeesApi";
 import ErrorPage from "../components/ErrorPage";
 import { fetchPeriods } from "../lib/api/periodApi";
 
