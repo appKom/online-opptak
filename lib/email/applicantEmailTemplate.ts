@@ -31,8 +31,9 @@ export const generateApplicantEmail = (emailData: emailDataType) => {
       .header img {
         height: 40px;
       }
-      .content p {
+      p {
         margin-bottom: 10px;
+        margin-top: 10px;
       }
       .content strong {
         color: #2c3e50;
