@@ -30,7 +30,6 @@ export const generateApplicantEmail = (emailData: emailDataType) => {
       }
       .header img {
         height: 40px;
-        margin-bottom: 20px;
       }
       .content p {
         margin-bottom: 10px;
@@ -44,7 +43,7 @@ export const generateApplicantEmail = (emailData: emailDataType) => {
     <div class="container">
       <div class="header">
         <img src="https://www.ntnu.no/documents/144448/0/Online_logo_2021.png/fcc93412-84f4-5f39-a7e0-ba269d1ed807?t=1620030827984" alt="Online Logo" />
-        Vi har mottatt din søknad!
+        <p>Vi har mottatt din søknad!</p>
       </div>
       <div class="content">
         <p>Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over.</p>
