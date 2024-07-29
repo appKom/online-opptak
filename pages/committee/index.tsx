@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import Table from "../../components/Table";
 import { formatDate } from "../../lib/utils/dateUtils";
 import { periodType } from "../../lib/types/types";
-import LoadingPage from "../../components/LoadingPage";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPeriods } from "../../lib/api/periodApi";
 import ErrorPage from "../../components/ErrorPage";

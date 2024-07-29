@@ -7,7 +7,6 @@ import { formatDate } from "../../lib/utils/dateUtils";
 import NotFound from "../404";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deletePeriodById, fetchPeriods } from "../../lib/api/periodApi";
-import LoadingPage from "../../components/LoadingPage";
 import ErrorPage from "../../components/ErrorPage";
 import toast from "react-hot-toast";
 import { TableSkeleton } from "../../components/skeleton/TableSkeleton";

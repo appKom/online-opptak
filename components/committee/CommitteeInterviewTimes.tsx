@@ -54,7 +54,7 @@ const CommitteeInterviewTimes = ({
 
   const [deadLineHasPassed, setDeadLineHasPassed] = useState<boolean>(false);
 
-  const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
+  const { setUnsavedChanges } = useUnsavedChangesWarning();
 
   useEffect(() => {
     if (period) {
