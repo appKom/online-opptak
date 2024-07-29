@@ -15,6 +15,7 @@ interface Props {
 }
 
 const SendCommitteeMessage = ({
+  period,
   committee,
   committeeInterviewTimes,
 }: Props) => {
@@ -78,6 +79,16 @@ const SendCommitteeMessage = ({
       console.error("Error updating message:", error);
     }
   };
+
+  if (new Date(period!.applicationPeriod.end) < new Date()) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <h2 className="mt-5 mb-6 text-3xl font-bold">
+          Det er ikke lenger mulig å legge inn tider!
+        </h2>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-5 max-w-3xl mx-auto mb-5 px-10">

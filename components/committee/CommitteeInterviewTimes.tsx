@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import NotFound from "../../pages/404";
 import Button from "../Button";
 import ImportantNote from "../ImportantNote";
+import useUnsavedChangesWarning from "../../lib/utils/unSavedChangesWarning";
 
 interface Interview {
   title: string;
@@ -36,6 +37,7 @@ const CommitteeInterviewTimes = ({
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
+  const [interviewsPlanned, setInterviewsPlanned] = useState<number>(0);
 
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
@@ -47,6 +49,10 @@ const CommitteeInterviewTimes = ({
   const [roomInput, setRoomInput] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
   const calendarRef = useRef<FullCalendar>(null);
+
+  const [deadLineHasPassed, setDeadLineHasPassed] = useState<boolean>(false);
+
+  const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
 
   useEffect(() => {
     if (period) {
@@ -112,9 +118,16 @@ const CommitteeInterviewTimes = ({
     }
   }, [isModalOpen]);
 
+  useEffect(() => {
+    if (calendarEvents.length > 0) {
+      calculateInterviewsPlanned();
+    }
+  }, [calendarEvents, selectedTimeslot]);
+
   const handleDateSelect = (selectionInfo: any) => {
     setCurrentSelection(selectionInfo);
     setIsModalOpen(true);
+    setUnsavedChanges(true);
   };
 
   const handleRoomSubmit = () => {
@@ -131,7 +144,7 @@ const CommitteeInterviewTimes = ({
 
     const calendarApi = currentSelection.view.calendar;
     calendarApi.addEvent(event);
-    calendarApi.render(); // Force the calendar to re-render
+    calendarApi.render();
 
     addCell([
       roomInput,
@@ -141,7 +154,7 @@ const CommitteeInterviewTimes = ({
 
     setRoomInput("");
     setIsModalOpen(false);
-    setCalendarEvents((prevEvents) => [...prevEvents, event]); // Trigger re-render
+    setCalendarEvents((prevEvents) => [...prevEvents, event]);
   };
 
   const submit = async (e: BaseSyntheticEvent) => {
@@ -177,6 +190,7 @@ const CommitteeInterviewTimes = ({
       const result = await response.json();
       toast.success("Tidene er sendt inn!");
       setHasAlreadySubmitted(true);
+      setUnsavedChanges(false);
     } catch (error) {
       toast.error("Kunne ikke sende inn!");
     }
@@ -189,6 +203,7 @@ const CommitteeInterviewTimes = ({
       )
     );
     event.remove();
+    setUnsavedChanges(true);
   };
 
   const addCell = (cell: string[]) => {
@@ -196,10 +211,12 @@ const CommitteeInterviewTimes = ({
       ...markedCells,
       { title: cell[0], start: cell[1], end: cell[2] },
     ]);
+    setUnsavedChanges(true);
   };
 
   const updateInterviewInterval = (e: BaseSyntheticEvent) => {
     setInterviewInterval(parseInt(e.target.value));
+    setUnsavedChanges(true);
   };
 
   const renderEventContent = (eventContent: any) => {
@@ -252,6 +269,7 @@ const CommitteeInterviewTimes = ({
 
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTimeslot(e.target.value);
+    setUnsavedChanges(true);
   };
 
   const deleteSubmission = async (e: BaseSyntheticEvent) => {
@@ -273,6 +291,7 @@ const CommitteeInterviewTimes = ({
 
       setHasAlreadySubmitted(false);
       setCalendarEvents([]);
+      setUnsavedChanges(false);
     } catch (error: any) {
       console.error("Error deleting submission:", error);
       toast.error("Klarte ikke å slette innsendingen");
@@ -290,11 +309,15 @@ const CommitteeInterviewTimes = ({
   }, [period]);
 
   const getSubmissionDeadline = (): string => {
-    const deadlineIso = period!.interviewPeriod.start;
+    const deadlineIso = period!.applicationPeriod.end;
 
-    if (deadlineIso != null) {
+    if (deadlineIso != null && !deadLineHasPassed) {
       const deadlineDate = new Date(deadlineIso);
       const now = new Date();
+
+      if (now > deadlineDate) {
+        setDeadLineHasPassed(true);
+      }
 
       let delta = Math.floor((deadlineDate.getTime() - now.getTime()) / 1000);
 
@@ -321,11 +344,25 @@ const CommitteeInterviewTimes = ({
     return "";
   };
 
+  const calculateInterviewsPlanned = () => {
+    const totalMinutes = calendarEvents.reduce((acc, event) => {
+      const start = new Date(event.start);
+      const end = new Date(event.end);
+      const duration = (end.getTime() - start.getTime()) / 1000 / 60;
+      return acc + duration;
+    }, 0);
+
+    const plannedInterviews = Math.floor(
+      totalMinutes / parseInt(selectedTimeslot)
+    );
+    setInterviewsPlanned(plannedInterviews);
+  };
+
   if (!session || !session.user?.isCommittee) {
     return <NotFound />;
   }
 
-  if (period!.interviewPeriod.start < new Date()) {
+  if (deadLineHasPassed) {
     return (
       <div className="flex items-center justify-center h-screen">
         <h2 className="mt-5 mb-6 text-3xl font-bold">
@@ -375,6 +412,7 @@ const CommitteeInterviewTimes = ({
             </select>
           </div>
         )}
+        <p className="py-5 text-lg">{`${interviewsPlanned} intervjuer planlagt`}</p>
         <div className="mx-4 sm:mx-20">
           <FullCalendar
             ref={calendarRef}
