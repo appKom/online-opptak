@@ -122,3 +122,25 @@ export const deletePeriodById = async (periodId: string | ObjectId) => {
     return { error: "Failed to delete period" };
   }
 };
+
+export const updatePeriod = async (periodId: string) => {
+  try {
+    if (!periods) await init();
+
+    const result = await periods.findOneAndUpdate(
+      { periodId: periodId },
+      { $set: { hasSentInterviewTimes: true } },
+      { returnDocument: "after" }
+    );
+
+    const updatedPeriod = result;
+
+    if (updatedPeriod) {
+      return { updatedState: updatedPeriod.hasSentInterviewTimes };
+    } else {
+      return { error: "Failed to update hasSentInterviewTimes" };
+    }
+  } catch (error) {
+    return { error: "Failed to update hasSentInterviewTimes" };
+  }
+};

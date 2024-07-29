@@ -61,19 +61,17 @@ export const formatAndSendEmails = async ({
       emailBody += `</ul> <br/> <br/> <p>Skjedd en feil? Ta kontakt med <a href="mailto:appkom@online.ntnu.no">Appkom</a>❤️</p>`;
       phoneBody += `Skjedd en feil? Ta kontakt med Appkom`;
 
-      // await sendEmail({
-      //   sesClient: sesClient,
-      //   fromEmail: "opptak@online.ntnu.no",
-      //   toEmails: applicantEmail,
-      //   subject: subject,
-      //   htmlContent: emailBody,
-      // });
+      await sendEmail({
+        sesClient: sesClient,
+        fromEmail: "opptak@online.ntnu.no",
+        toEmails: applicantEmail,
+        subject: subject,
+        htmlContent: emailBody,
+      });
 
       let toPhoneNumber = "+47";
       toPhoneNumber += typedApplicant.applicantPhone;
-      // sendSMS(toPhoneNumber, phoneBody);
-
-      console.log(applicantEmail[0], "\n", subject, "\n", emailBody);
+      sendSMS(toPhoneNumber, phoneBody);
     }
 
     // Send email to each committee
@@ -108,15 +106,13 @@ export const formatAndSendEmails = async ({
 
       body += `</ul> <br/> <br/> <p>Skjedd en feil? Ta kontakt med <a href="mailto:appkom@online.ntnu.no">Appkom</a>❤️</p>`;
 
-      // await sendEmail({
-      //   sesClient: sesClient,
-      //   fromEmail: "opptak@online.ntnu.no",
-      //   toEmails: committeeEmail,
-      //   subject: subject,
-      //   htmlContent: body,
-      // });
-
-      console.log(committeeEmail[0], "\n", subject, "\n", body);
+      await sendEmail({
+        sesClient: sesClient,
+        fromEmail: "opptak@online.ntnu.no",
+        toEmails: committeeEmail,
+        subject: subject,
+        htmlContent: body,
+      });
     }
   } catch (error) {
     return { error: "Failed to send out interview times" };
