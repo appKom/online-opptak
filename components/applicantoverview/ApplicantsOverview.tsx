@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import {
   applicantType,
+  bankomOptionsType,
   committeePreferenceType,
   periodType,
   preferencesType,
@@ -43,16 +44,15 @@ const ApplicantsOverview = ({
     null
   );
   const [selectedYear, setSelectedYear] = useState<string>("");
-  const [selectedBankom, setSelectedBankom] = useState<
-    "yes" | "no" | "maybe" | undefined
-  >(undefined);
+  const [selectedBankom, setSelectedBankom] =
+    useState<bankomOptionsType>(undefined);
   const [filterMenuVisible, setFilterMenuVisible] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
 
   const [applicants, setApplicants] = useState<applicantType[]>([]);
   const years: string[] = ["1", "2", "3", "4", "5"];
 
-  const bankomOptions: ("yes" | "no" | "maybe")[] = ["yes", "no", "maybe"];
+  const bankomOptions: bankomOptionsType[] = ["yes", "no", "maybe"];
 
   const {
     data: applicantsData,
@@ -220,9 +220,7 @@ const ApplicantsOverview = ({
                     className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                     value={selectedBankom}
                     onChange={(e) =>
-                      setSelectedBankom(
-                        e.target.value as "yes" | "no" | "maybe" | undefined
-                      )
+                      setSelectedBankom(e.target.value as bankomOptionsType)
                     }
                   >
                     <option value="">Velg bankom</option>
