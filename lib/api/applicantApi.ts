@@ -1,4 +1,5 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
+import { applicantType } from "../types/types";
 
 export const fetchApplicantByPeriodAndId = async (
   context: QueryFunctionContext
@@ -25,4 +26,38 @@ export const fetchApplicantsByPeriodIdAndCommittee = async (
   return fetch(`/api/committees/applicants/${periodId}/${committee}`).then(
     (res) => res.json()
   );
+};
+
+export const createApplicant = async (applicant: applicantType) => {
+  const response = await fetch(`/api/applicants/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(applicant),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || "Unknown error occurred");
+  }
+  return data;
+};
+
+export const deleteApplicant = async ({
+  periodId,
+  owId,
+}: {
+  periodId: string;
+  owId: string;
+}) => {
+  const response = await fetch(`/api/applicants/${periodId}/${owId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete the application");
+  }
+
+  return response;
 };
