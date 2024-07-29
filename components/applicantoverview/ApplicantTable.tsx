@@ -1,4 +1,4 @@
-import { applicantType, preferencesType } from "../../lib/types/types";
+import { applicantType } from "../../lib/types/types";
 import ApplicantCard from "./ApplicantCard";
 
 interface Props {

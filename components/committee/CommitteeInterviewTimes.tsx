@@ -1,3 +1,5 @@
+import React from "react";
+
 import { BaseSyntheticEvent, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -52,7 +54,7 @@ const CommitteeInterviewTimes = ({
 
   const [deadLineHasPassed, setDeadLineHasPassed] = useState<boolean>(false);
 
-  const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
+  const { setUnsavedChanges } = useUnsavedChangesWarning();
 
   useEffect(() => {
     if (period) {
@@ -187,7 +189,6 @@ const CommitteeInterviewTimes = ({
         throw new Error("Failed to submit data");
       }
 
-      const result = await response.json();
       toast.success("Tidene er sendt inn!");
       setHasAlreadySubmitted(true);
       setUnsavedChanges(false);
@@ -243,7 +244,7 @@ const CommitteeInterviewTimes = ({
             />
           </button>
         )}
-        <h1 className="text-sm sm:text-xl md:text-2xl lg:text-3xl break-words">
+        <h1 className="text-sm break-words sm:text-xl md:text-2xl lg:text-3xl">
           {eventContent.event.title}
         </h1>
       </div>
@@ -477,14 +478,14 @@ const CommitteeInterviewTimes = ({
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="flex flex-col bg-gray-100 dark:bg-gray-800 p-5 rounded shadow-lg">
+          <div className="flex flex-col p-5 bg-gray-100 rounded shadow-lg dark:bg-gray-800">
             <h2 className="mb-4 text-xl font-semibold">
               Skriv inn navn på rom:
             </h2>
             <input
               ref={inputRef}
               type="text"
-              className="my-2 p-2 w-full rounded-lg dark:bg-gray-900  border-gray-900 dark:border-white transition-none outline-none"
+              className="w-full p-2 my-2 transition-none border-gray-900 rounded-lg outline-none dark:bg-gray-900 dark:border-white"
               value={roomInput}
               onChange={(e) => setRoomInput(e.target.value)}
             />

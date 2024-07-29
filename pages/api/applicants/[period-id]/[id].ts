@@ -7,7 +7,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
 import {
   hasSession,
-  isAdmin,
   checkOwId,
 } from "../../../../lib/utils/apiChecks";
 import { getPeriodById } from "../../../../lib/mongo/periods";

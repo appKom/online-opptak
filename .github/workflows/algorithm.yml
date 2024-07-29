@@ -1,16 +1,16 @@
 on:
   push:
-    paths: 
+    paths:
       - "algorithm/*"
   pull_request:
-    paths: 
+    paths:
       - "algorithm/*"
   workflow_dispatch:
 
 jobs:
   test:
     runs-on: "ubuntu-latest"
-    
+
     strategy:
       matrix:
         python-version: ["3.12"]
@@ -19,8 +19,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12' 
-    
+          python-version: '3.12'
+
       - name: Install mip_matching
         run: |
           cd algorithm
@@ -30,4 +30,3 @@ jobs:
         run: |
           cd algorithm
           python -m unittest discover -p "*test.py"
-          

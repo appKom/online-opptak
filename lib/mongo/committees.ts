@@ -1,7 +1,6 @@
-import { Collection, Db, MongoClient, ObjectId, UpdateResult } from "mongodb";
+import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
 import { commiteeType } from "../types/types";
-import { co } from "@fullcalendar/core/internal-common";
 
 let client: MongoClient;
 let db: Db;
@@ -22,15 +21,6 @@ async function init() {
 (async () => {
   await init();
 })();
-
-const userHasAccessList = (
-  userCommittees: string[],
-  dbCommittees: string[]
-) => {
-  return dbCommittees.some((dbCommittee) =>
-    userCommittees.includes(dbCommittee)
-  );
-};
 
 const userHasAccessCommittee = (
   userCommittees: string[],

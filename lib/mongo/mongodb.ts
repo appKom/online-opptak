@@ -9,6 +9,7 @@ let client: MongoClient = new MongoClient(URI, options);
 let clientPromise: Promise<MongoClient>;
 
 declare global {
+  // eslint-disable-next-line no-unused-vars
   var _mongoClientPromise: Promise<MongoClient>;
 }
 

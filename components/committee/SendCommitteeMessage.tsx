@@ -1,10 +1,8 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import Button from "../Button";
 import TextAreaInput from "../form/TextAreaInput";
-import LoadingPage from "../LoadingPage";
 import { useRouter } from "next/router";
 import { committeeInterviewType, periodType } from "../../lib/types/types";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 
 interface Props {

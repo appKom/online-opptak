@@ -28,8 +28,6 @@ const Admin = () => {
     );
   }, [data, session?.user?.owId]);
 
-  console.log(committees);
-
   if (session?.user?.role !== "admin") return <NotFound />;
   if (isLoading) return <LoadingPage />;
   if (isError) return <ErrorPage />;
