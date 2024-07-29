@@ -5,58 +5,73 @@ import { useEffect, useState } from "react";
 import { periodType } from "../../lib/types/types";
 import { formatDate } from "../../lib/utils/dateUtils";
 import NotFound from "../404";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deletePeriodById, fetchPeriods } from "../../lib/api/periodApi";
+import LoadingPage from "../../components/LoadingPage";
+import ErrorPage from "../../components/ErrorPage";
+import toast from "react-hot-toast";
+import { TableSkeleton } from "../../components/skeleton/TableSkeleton";
 
 const Admin = () => {
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
 
   const [periods, setPeriods] = useState<RowType[]>([]);
 
-  const fetchPeriods = async () => {
-    try {
-      const response = await fetch("/api/periods");
-      const data = await response.json();
-      setPeriods(
-        data.periods.map((period: periodType) => {
-          return {
-            id: period._id,
-            name: period.name,
-            application:
-              formatDate(period.applicationPeriod.start) +
-              " til " +
-              formatDate(period.applicationPeriod.end),
-            interview:
-              formatDate(period.interviewPeriod.start) +
-              " til " +
-              formatDate(period.interviewPeriod.end),
-            committees: period.committees,
-            link: `/admin/${period._id}`,
-          };
-        })
-      );
-    } catch (error) {
-      console.error("Failed to fetch application periods:", error);
-    }
-  };
+  const {
+    data: periodsData,
+    isError: periodsIsError,
+    isLoading: periodsIsLoading,
+  } = useQuery({
+    queryKey: ["periods"],
+    queryFn: fetchPeriods,
+  });
+
+  const deletePeriodByIdMutation = useMutation({
+    mutationFn: deletePeriodById,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        // TODO: try to update cache instead
+        queryKey: ["periods"],
+      }),
+  });
 
   useEffect(() => {
-    fetchPeriods();
-  }, []);
+    if (!periodsData) return;
+
+    setPeriods(
+      periodsData.periods.map((period: periodType) => {
+        return {
+          id: period._id,
+          name: period.name,
+          application:
+            formatDate(period.applicationPeriod.start) +
+            " til " +
+            formatDate(period.applicationPeriod.end),
+          interview:
+            formatDate(period.interviewPeriod.start) +
+            " til " +
+            formatDate(period.interviewPeriod.end),
+          committees: period.committees,
+          link: `/admin/${period._id}`,
+        };
+      })
+    );
+  }, [periodsData]);
 
   const deletePeriod = async (id: string, name: string) => {
     const isConfirmed = window.confirm(
       `Er det sikker på at du ønsker å slette ${name}?`
     );
     if (!isConfirmed) return;
-
-    try {
-      await fetch(`/api/periods/${id}`, {
-        method: "DELETE",
-      });
-      setPeriods(periods.filter((period) => period.id !== id));
-    } catch (error) {
-      console.error("Failed to delete period:", error);
-    }
+    deletePeriodByIdMutation.mutate(id);
   };
+
+  useEffect(() => {
+    if (deletePeriodByIdMutation.isSuccess) toast.success("Periode slettet");
+    if (deletePeriodByIdMutation.isError)
+      toast.error("Noe gikk galt, prøv igjen");
+  }, [deletePeriodByIdMutation]);
 
   const periodsColumns = [
     { label: "Navn", field: "name" },
@@ -65,9 +80,8 @@ const Admin = () => {
     { label: "Delete", field: "delete" },
   ];
 
-  if (!session || session.user?.role !== "admin") {
-    return <NotFound />;
-  }
+  if (!session || session.user?.role !== "admin") return <NotFound />;
+  if (periodsIsError) return <ErrorPage />;
 
   return (
     <div className="flex flex-col items-center justify-center py-5">
@@ -83,7 +97,9 @@ const Admin = () => {
         />
       </div>
 
-      {periods.length > 0 && (
+      {periodsIsLoading ? (
+        <TableSkeleton columns={periodsColumns} />
+      ) : (
         <Table
           columns={periodsColumns}
           rows={periods}

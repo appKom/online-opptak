@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BaseSyntheticEvent, useEffect } from "react";
+import { BaseSyntheticEvent, useEffect, useRef } from "react";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import FullCalendar from "@fullcalendar/react";
@@ -11,8 +11,10 @@ import toast from "react-hot-toast";
 import NotFound from "../../pages/404";
 import Button from "../Button";
 import ImportantNote from "../ImportantNote";
+import useUnsavedChangesWarning from "../../lib/utils/unSavedChangesWarning";
 
 interface Interview {
+  title: string;
   start: string;
   end: string;
 }
@@ -37,11 +39,22 @@ const CommitteeInterviewTimes = ({
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
   const [selectedTimeslot, setSelectedTimeslot] = useState<string>("15");
+  const [interviewsPlanned, setInterviewsPlanned] = useState<number>(0);
 
   const [calendarEvents, setCalendarEvents] = useState<Interview[]>([]);
   const [hasAlreadySubmitted, setHasAlreadySubmitted] =
     useState<boolean>(false);
   const [countdown, setCountdown] = useState<string>("");
+
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [currentSelection, setCurrentSelection] = useState<any>(null);
+  const [roomInput, setRoomInput] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const calendarRef = useRef<FullCalendar>(null);
+
+  const [deadLineHasPassed, setDeadLineHasPassed] = useState<boolean>(false);
+
+  const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
 
   useEffect(() => {
     if (period) {
@@ -67,6 +80,7 @@ const CommitteeInterviewTimes = ({
         setHasAlreadySubmitted(true);
         const events = committeeInterviewTimes.availabletimes.map(
           (at: any) => ({
+            title: at.room,
             start: new Date(at.start).toISOString(),
             end: new Date(at.end).toISOString(),
           })
@@ -82,17 +96,67 @@ const CommitteeInterviewTimes = ({
     }
   }, [committeeInterviewTimes]);
 
-  const createInterval = (selectionInfo: any) => {
-    const event = {
-      title: "",
-      start: selectionInfo.start,
-      end: selectionInfo.end,
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (isModalOpen) {
+        if (event.key === "Enter") {
+          handleRoomSubmit();
+        } else if (event.key === "Escape") {
+          setIsModalOpen(false);
+        }
+      }
     };
-    selectionInfo.view.calendar.addEvent(event);
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isModalOpen, roomInput]);
+
+  useEffect(() => {
+    if (isModalOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (calendarEvents.length > 0) {
+      calculateInterviewsPlanned();
+    }
+  }, [calendarEvents, selectedTimeslot]);
+
+  const handleDateSelect = (selectionInfo: any) => {
+    setCurrentSelection(selectionInfo);
+    setIsModalOpen(true);
+    setUnsavedChanges(true);
+  };
+
+  const handleRoomSubmit = () => {
+    if (!roomInput) {
+      toast.error("Vennligst skriv inn et romnavn");
+      return;
+    }
+
+    const event = {
+      title: roomInput,
+      start: currentSelection.start,
+      end: currentSelection.end,
+    };
+
+    const calendarApi = currentSelection.view.calendar;
+    calendarApi.addEvent(event);
+    calendarApi.render();
+
     addCell([
-      selectionInfo.start.toISOString(),
-      selectionInfo.end.toISOString(),
+      roomInput,
+      currentSelection.start.toISOString(),
+      currentSelection.end.toISOString(),
     ]);
+
+    setRoomInput("");
+    setIsModalOpen(false);
+    setCalendarEvents((prevEvents) => [...prevEvents, event]);
   };
 
   const submit = async (e: BaseSyntheticEvent) => {
@@ -127,6 +191,7 @@ const CommitteeInterviewTimes = ({
 
       toast.success("Tidene er sendt inn!");
       setHasAlreadySubmitted(true);
+      setUnsavedChanges(false);
     } catch (error) {
       toast.error("Kunne ikke sende inn!");
     }
@@ -139,23 +204,28 @@ const CommitteeInterviewTimes = ({
       )
     );
     event.remove();
+    setUnsavedChanges(true);
   };
 
   const addCell = (cell: string[]) => {
-    setMarkedCells([...markedCells, { start: cell[0], end: cell[1] }]);
+    setMarkedCells([
+      ...markedCells,
+      { title: cell[0], start: cell[1], end: cell[2] },
+    ]);
+    setUnsavedChanges(true);
   };
 
   const updateInterviewInterval = (e: BaseSyntheticEvent) => {
     setInterviewInterval(parseInt(e.target.value));
+    setUnsavedChanges(true);
   };
 
   const renderEventContent = (eventContent: any) => {
     return (
-      <div>
-        <span>{eventContent.timeText}</span>
+      <div className="relative flex flex-col p-4">
         {!hasAlreadySubmitted && (
           <button
-            className="ml-2"
+            className="absolute top-0 right-0 m-2"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -170,10 +240,13 @@ const CommitteeInterviewTimes = ({
             <img
               src="/close.svg"
               alt="close icon"
-              style={{ width: "22px", height: "22px" }}
+              style={{ width: "20px", height: "20px" }}
             />
           </button>
         )}
+        <h1 className="text-sm break-words sm:text-xl md:text-2xl lg:text-3xl">
+          {eventContent.event.title}
+        </h1>
       </div>
     );
   };
@@ -187,6 +260,7 @@ const CommitteeInterviewTimes = ({
         const startDateTime = new Date(startDateTimeString);
         const endDateTime = new Date(endDatetimeString);
         return {
+          room: event.title,
           start: startDateTime.toISOString(),
           end: endDateTime.toISOString(),
         };
@@ -196,6 +270,7 @@ const CommitteeInterviewTimes = ({
 
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedTimeslot(e.target.value);
+    setUnsavedChanges(true);
   };
 
   const deleteSubmission = async (e: BaseSyntheticEvent) => {
@@ -217,6 +292,7 @@ const CommitteeInterviewTimes = ({
 
       setHasAlreadySubmitted(false);
       setCalendarEvents([]);
+      setUnsavedChanges(false);
     } catch (error: any) {
       console.error("Error deleting submission:", error);
       toast.error("Klarte ikke å slette innsendingen");
@@ -234,11 +310,15 @@ const CommitteeInterviewTimes = ({
   }, [period]);
 
   const getSubmissionDeadline = (): string => {
-    const deadlineIso = period!.interviewPeriod.start;
+    const deadlineIso = period!.applicationPeriod.end;
 
-    if (deadlineIso != null) {
+    if (deadlineIso != null && !deadLineHasPassed) {
       const deadlineDate = new Date(deadlineIso);
       const now = new Date();
+
+      if (now > deadlineDate) {
+        setDeadLineHasPassed(true);
+      }
 
       let delta = Math.floor((deadlineDate.getTime() - now.getTime()) / 1000);
 
@@ -265,11 +345,25 @@ const CommitteeInterviewTimes = ({
     return "";
   };
 
-  if (!session || !session.user?.isCommitee) {
+  const calculateInterviewsPlanned = () => {
+    const totalMinutes = calendarEvents.reduce((acc, event) => {
+      const start = new Date(event.start);
+      const end = new Date(event.end);
+      const duration = (end.getTime() - start.getTime()) / 1000 / 60;
+      return acc + duration;
+    }, 0);
+
+    const plannedInterviews = Math.floor(
+      totalMinutes / parseInt(selectedTimeslot)
+    );
+    setInterviewsPlanned(plannedInterviews);
+  };
+
+  if (!session || !session.user?.isCommittee) {
     return <NotFound />;
   }
 
-  if (period!.interviewPeriod.start < new Date()) {
+  if (deadLineHasPassed) {
     return (
       <div className="flex items-center justify-center h-screen">
         <h2 className="mt-5 mb-6 text-3xl font-bold">
@@ -319,9 +413,11 @@ const CommitteeInterviewTimes = ({
             </select>
           </div>
         )}
+        <p className="py-5 text-lg">{`${interviewsPlanned} intervjuer planlagt`}</p>
         <div className="mx-4 sm:mx-20">
           <FullCalendar
-            eventClassNames="dark:bg-online-darkBlue"
+            ref={calendarRef}
+            eventClassNames={"dark:bg-online-darkBlue"}
             plugins={[timeGridPlugin, interactionPlugin]}
             initialView="timeGridWeek"
             headerToolbar={{
@@ -333,7 +429,7 @@ const CommitteeInterviewTimes = ({
             selectable={!hasAlreadySubmitted}
             selectMirror={true}
             height="auto"
-            select={createInterval}
+            select={handleDateSelect}
             slotDuration={`00:${interviewInterval}`}
             businessHours={{ startTime: "08:00", endTime: "18:00" }}
             weekends={false}
@@ -379,6 +475,31 @@ const CommitteeInterviewTimes = ({
           />
         </div>
       </form>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="flex flex-col p-5 bg-gray-100 rounded shadow-lg dark:bg-gray-800">
+            <h2 className="mb-4 text-xl font-semibold">
+              Skriv inn navn på rom:
+            </h2>
+            <input
+              ref={inputRef}
+              type="text"
+              className="w-full p-2 my-2 transition-none border-gray-900 rounded-lg outline-none dark:bg-gray-900 dark:border-white"
+              value={roomInput}
+              onChange={(e) => setRoomInput(e.target.value)}
+            />
+            <div className="flex flex-row justify-center gap-2 mt-4">
+              <Button
+                title="Avbryt"
+                onClick={() => setIsModalOpen(false)}
+                color="orange"
+              />
+              <Button title="Ok" onClick={handleRoomSubmit} color="blue" />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

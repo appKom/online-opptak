@@ -10,8 +10,13 @@ import TextAreaInput from "../../components/form/TextAreaInput";
 import TextInput from "../../components/form/TextInput";
 import { DeepPartial, periodType } from "../../lib/types/types";
 import { validatePeriod } from "../../lib/utils/PeriodValidator";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchOwCommittees } from "../../lib/api/committees";
+import ErrorPage from "../../components/ErrorPage";
+import { createPeriod } from "../../lib/api/periodApi";
 
 const NewPeriod = () => {
+  const queryClient = useQueryClient();
   const router = useRouter();
   const [showPreview, setShowPreview] = useState(false);
 
@@ -28,7 +33,39 @@ const NewPeriod = () => {
     },
     committees: [],
     optionalCommittees: [],
+    hasSentInterviewTimes: false,
   });
+
+  const {
+    data: owCommitteeData,
+    isError: owCommitteeIsError,
+    isLoading: owCommitteeIsLoading,
+  } = useQuery({
+    queryKey: ["ow-committees"],
+    queryFn: fetchOwCommittees,
+  });
+
+  const createPeriodMutation = useMutation({
+    mutationFn: createPeriod,
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        // TODO: try to update cache instead
+        queryKey: ["periods"],
+      }),
+  });
+
+  useEffect(() => {
+    if (!owCommitteeData) return;
+    setAvailableCommittees(
+      owCommitteeData.map(
+        ({ name_short, email }: { name_short: string; email: string }) => ({
+          name: name_short,
+          value: name_short,
+          description: email,
+        })
+      )
+    );
+  }, [owCommitteeData]);
 
   const updateApplicationPeriodDates = ({
     start,
@@ -65,60 +102,26 @@ const NewPeriod = () => {
   const [availableCommittees, setAvailableCommittees] = useState<
     { name: string; value: string; description: string }[]
   >([]);
-  const [isLoadingCommittees, setIsLoadingCommittees] = useState(true);
 
   useEffect(() => {
-    const fetchCommittees = async () => {
-      setIsLoadingCommittees(true);
-      try {
-        const response = await fetch("/api/periods/ow-committees");
-        if (!response.ok) throw new Error("Failed to fetch committees");
-        const committees = await response.json();
-        setAvailableCommittees(
-          committees.map(
-            ({ name_short, email }: { name_short: string; email: string }) => ({
-              name: name_short,
-              value: name_short,
-              description: email,
-            })
-          )
-        );
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load committees");
-      } finally {
-        setIsLoadingCommittees(false);
-      }
-    };
-    fetchCommittees();
-  }, []);
-
-  const handleAddPeriod = async () => {
-    if (!validatePeriod(periodData)) {
-      return;
-    }
-    try {
-      const response = await fetch("/api/periods", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(periodData),
-      });
-      if (!response.ok) {
-        throw new Error(`Error creating applicant: ${response.statusText}`);
-      }
-
+    if (createPeriodMutation.isSuccess) {
       toast.success("Periode opprettet");
       router.push("/admin");
-    } catch (error) {
-      toast.error("Det skjedde en feil, vennligst prøv igjen");
     }
+    if (createPeriodMutation.isError) toast.error("Noe gikk galt, prøv igjen");
+  }, [createPeriodMutation, router]);
+
+  const handleAddPeriod = async () => {
+    if (!validatePeriod(periodData)) return;
+
+    createPeriodMutation.mutate(periodData as periodType);
   };
 
   const handlePreviewPeriod = () => {
     setShowPreview((prev) => !prev);
   };
+
+  if (owCommitteeIsError) return <ErrorPage />;
 
   return (
     <>
@@ -162,7 +165,7 @@ const NewPeriod = () => {
             updateDates={updateInterviewPeriodDates}
           />
 
-          {isLoadingCommittees ? (
+          {owCommitteeIsLoading ? (
             <div className="animate-pulse">Laster komiteer...</div>
           ) : (
             <div>

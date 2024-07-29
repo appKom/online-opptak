@@ -7,6 +7,7 @@ import {
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]";
 import { hasSession, isInCommitee } from "../../../../../lib/utils/apiChecks";
+import { getPeriodById } from "../../../../../lib/mongo/periods";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -47,6 +48,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { message } = req.body;
 
     try {
+      if (typeof message !== "string") {
+        return res.status(400).json({ error: "Invalid message parameter" });
+      }
+
+      const { period } = await getPeriodById(String(periodId));
+      if (!period) {
+        return res.status(400).json({ error: "Invalid periodId" });
+      }
+
+      if (new Date() > new Date(period.applicationPeriod.end)) {
+        return res.status(400).json({ error: "Application period has ended" });
+      }
+
       const { updatedMessage, error } = await updateCommitteeMessage(
         selectedCommittee,
         periodId,
@@ -63,6 +77,15 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   if (req.method === "DELETE") {
     try {
+      const { period } = await getPeriodById(String(periodId));
+      if (!period) {
+        return res.status(400).json({ error: "Invalid periodId" });
+      }
+
+      if (new Date() > new Date(period.applicationPeriod.end)) {
+        return res.status(400).json({ error: "Application period has ended" });
+      }
+
       const { error } = await deleteCommittee(
         selectedCommittee,
         periodId,

@@ -76,9 +76,11 @@ export type periodType = {
   };
   committees: string[];
   optionalCommittees: string[];
+  hasSentInterviewTimes: boolean;
 };
 
 export type AvailableTime = {
+  room: string;
   start: string;
   end: string;
 };

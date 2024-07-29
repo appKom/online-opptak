@@ -13,5 +13,5 @@ export interface User {
   phone?: string;
   grade?: number;
   committees?: string[];
-  isCommitee: boolean;
+  isCommittee: boolean;
 }

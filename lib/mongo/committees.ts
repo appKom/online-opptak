@@ -104,6 +104,17 @@ export const createCommittee = async (
       return { error: "User does not have access to this committee" };
     }
 
+    const existingCommitteeTime = await committees.findOne({
+      committee: committeeData.committee,
+      periodId: committeeData.periodId,
+    });
+
+    if (existingCommitteeTime) {
+      return {
+        error: "409 Committee has already submited times for this period",
+      };
+    }
+
     if (!ObjectId.isValid(periodId)) {
       return { error: "Invalid periodId" };
     }
