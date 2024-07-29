@@ -50,7 +50,7 @@ const ApplicantsOverview = ({
   const filterMenuRef = useRef<HTMLDivElement>(null);
 
   const [applicants, setApplicants] = useState<applicantType[]>([]);
-  const [years, setYears] = useState<string[]>([]);
+  const years: string[] = ["1", "2", "3", "4", "5"];
 
   const bankomOptions: ("yes" | "no" | "maybe")[] = ["yes", "no", "maybe"];
 
@@ -73,13 +73,6 @@ const ApplicantsOverview = ({
       : applicantsData.applicants;
 
     setApplicants(dataType);
-
-    const uniqueYears: string[] = Array.from(
-      new Set(
-        dataType.map((applicant: applicantType) => applicant.grade.toString())
-      )
-    );
-    setYears(uniqueYears);
   }, [applicantsData, includePreferences]);
 
   useEffect(() => {
