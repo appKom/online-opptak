@@ -6,10 +6,10 @@ import { getServerSession } from "next-auth";
 import { emailDataType } from "../../../lib/types/types";
 import { isApplicantType } from "../../../lib/utils/validators";
 import { isAdmin, hasSession, checkOwId } from "../../../lib/utils/apiChecks";
+import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import capitalizeFirstLetter from "../../../lib/utils/capitalizeFirstLetter";
-import sendEmail from "../../../lib/email/sendEmail";
+import sendEmail from "../../../lib/utils/sendEmail";
 import { changeDisplayName } from "../../../lib/utils/toString";
-import { generateApplicantEmail } from "../../../lib/email/applicantEmailTemplate";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -54,6 +54,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       const { applicant, error } = await createApplicant(requestBody);
       if (error) throw new Error(error);
+
+      const sesClient = new SESClient({ region: "eu-north-1" });
 
       if (applicant != null) {
         let optionalCommitteesString = "";
@@ -101,9 +103,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
         try {
           await sendEmail({
+            sesClient: sesClient,
+            fromEmail: "opptak@online.ntnu.no",
             toEmails: emailData.emails,
             subject: "Vi har mottatt din søknad!",
-            htmlContent: generateApplicantEmail(emailData),
+            htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br><strong>E-post:</strong> ${emailData.emails[0]}<br><br><strong>Fullt navn:</strong> ${emailData.name}<br><br><strong>Telefonnummer:</strong> ${emailData.phone}<br><br><strong>Trinn:</strong> ${emailData.grade}<br><br><strong>Førstevalg:</strong> ${emailData.firstChoice}<br><br><strong>Andrevalg:</strong> ${emailData.secondChoice}<br><br><strong>Tredjevalg:</strong> ${emailData.thirdChoice}<br><br><strong>Ønsker du å være økonomiansvarlig:</strong> ${emailData.bankom}<br><br><strong> Andre valg:</strong> ${emailData.optionalCommittees}<br><br><strong>Kort om deg selv:</strong><br>${emailData.about}`,
           });
 
           console.log("Email sent to: ", emailData.emails);

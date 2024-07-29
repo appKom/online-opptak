@@ -2,12 +2,15 @@ import { NextApiRequest, NextApiResponse } from "next";
 import {
   getCommittees,
   createCommittee,
-  deleteCommittee,
-  updateCommitteeMessage,
+  getCommitteesByPeriod,
 } from "../../../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]";
-import { hasSession, isInCommitee } from "../../../../../lib/utils/apiChecks";
+import {
+  hasSession,
+  isAdmin,
+  isInCommitee,
+} from "../../../../../lib/utils/apiChecks";
 import {
   isCommitteeType,
   validateCommittee,
@@ -28,6 +31,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!hasSession(res, session)) return;
   if (!isInCommitee(res, session)) return;
 
+  if (req.method === "GET") {
+    if (!isAdmin(res, session)) return;
+
+    try {
+      const committees = await getCommitteesByPeriod(periodId);
+      return res.status(200).json({ committees });
+    } catch (error: any) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+
   if (req.method === "POST") {
     const committeeData: commiteeType = req.body;
 
@@ -38,10 +52,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const { period } = await getPeriodById(String(committeeData.periodId));
     if (!period) {
       return res.status(400).json({ error: "Invalid periodId" });
-    }
-
-    if (new Date() > new Date(period.applicationPeriod.end)) {
-      return res.status(400).json({ error: "Application period has ended" });
     }
 
     if (!validateCommittee(committeeData, period)) {
@@ -62,7 +72,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
   }
 
-  res.setHeader("Allow", ["POST"]);
+  res.setHeader("Allow", ["POST", "GET"]);
   res.status(405).end(`Method ${req.method} is not allowed.`);
 };
 

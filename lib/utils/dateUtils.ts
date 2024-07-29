@@ -25,15 +25,15 @@ export const formatDateHours = (inputDate: undefined | Date) => {
 export const formatDateNorwegian = (inputDate?: Date): string => {
   const date = new Date(inputDate || "");
 
-  const day = date.getDate().toString().padStart(2);
+  const day = date.getDate().toString().padStart(2, "0");
   const monthsNorwegian = [
     "jan",
     "feb",
-    "mar",
-    "apr",
+    "mars",
+    "april",
     "mai",
-    "jun",
-    "jul",
+    "juni",
+    "juli",
     "aug",
     "sep",
     "okt",
