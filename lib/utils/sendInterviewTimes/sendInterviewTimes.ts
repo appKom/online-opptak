@@ -24,7 +24,7 @@ export const sendOutInterviewTimes = async () => {
     for (const period of periodData.periods) {
       if (
         period.hasSentInterviewTimes === false &&
-        period.interviewPeriod.end < new Date()
+        period.applicationPeriod.end < new Date()
       ) {
         const periodId = String(period._id);
         try {
