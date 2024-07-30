@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import {
   applicantType,
+  bankomOptionsType,
   committeePreferenceType,
   periodType,
   preferencesType,
 } from "../../lib/types/types";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
-import ApplicantTable from "./ApplicantTable";
 import ApplicantOverviewSkeleton from "../skeleton/ApplicantOverviewSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -14,6 +14,8 @@ import {
   fetchApplicantsByPeriodIdAndCommittee,
 } from "../../lib/api/applicantApi";
 import ErrorPage from "../ErrorPage";
+import { getBankomValue } from "../../lib/utils/toString";
+import ApplicantCard from "./ApplicantCard";
 
 interface Props {
   period?: periodType | null;
@@ -42,14 +44,15 @@ const ApplicantsOverview = ({
     null
   );
   const [selectedYear, setSelectedYear] = useState<string>("");
-  const [selectedBankom, setSelectedBankom] = useState<string>("");
+  const [selectedBankom, setSelectedBankom] =
+    useState<bankomOptionsType>(undefined);
   const [filterMenuVisible, setFilterMenuVisible] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
 
   const [applicants, setApplicants] = useState<applicantType[]>([]);
-  const [years, setYears] = useState<string[]>([]);
+  const years: string[] = ["1", "2", "3", "4", "5"];
 
-  const bankomOptions: string[] = ["yes", "no", "maybe"];
+  const bankomOptions: bankomOptionsType[] = ["yes", "no", "maybe"];
 
   const {
     data: applicantsData,
@@ -70,13 +73,6 @@ const ApplicantsOverview = ({
       : applicantsData.applicants;
 
     setApplicants(dataType);
-
-    const uniqueYears: string[] = Array.from(
-      new Set(
-        dataType.map((applicant: applicantType) => applicant.grade.toString())
-      )
-    );
-    setYears(uniqueYears);
   }, [applicantsData, includePreferences]);
 
   useEffect(() => {
@@ -132,7 +128,7 @@ const ApplicantsOverview = ({
     setSearchQuery("");
     setSelectedCommittee(null);
     setSelectedYear("");
-    setSelectedBankom("");
+    setSelectedBankom(undefined);
   };
 
   useEffect(() => {
@@ -223,12 +219,14 @@ const ApplicantsOverview = ({
                   <select
                     className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                     value={selectedBankom}
-                    onChange={(e) => setSelectedBankom(e.target.value)}
+                    onChange={(e) =>
+                      setSelectedBankom(e.target.value as bankomOptionsType)
+                    }
                   >
                     <option value="">Velg bankom</option>
                     {bankomOptions.map((bankom) => (
                       <option key={bankom} value={bankom}>
-                        {bankom}
+                        {getBankomValue(bankom)}
                       </option>
                     ))}
                   </select>
@@ -248,10 +246,16 @@ const ApplicantsOverview = ({
 
       {filteredApplicants && filteredApplicants.length > 0 ? (
         <div className="w-full max-w-lg mx-auto">
-          <ApplicantTable
-            filteredApplications={filteredApplicants}
-            includePreferences={includePreferences}
-          />
+          <div className="flex flex-col ">
+            {filteredApplicants?.map((applicant) => (
+              <ApplicantCard
+                key={applicant.owId + applicant.name}
+                applicant={applicant}
+                includePreferences={includePreferences}
+              />
+            ))}
+            <p className="text-end ">{filteredApplicants?.length} resultater</p>
+          </div>
         </div>
       ) : (
         <p>Ingen søkere</p>
