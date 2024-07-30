@@ -30,6 +30,7 @@ export const generateApplicantEmail = (emailData: emailDataType) => {
       }
       .header img {
         height: 40px;
+        width: auto;
       }
       p {
         margin-bottom: 10px;
