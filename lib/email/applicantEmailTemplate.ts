@@ -12,29 +12,31 @@ export const generateApplicantEmail = (emailData: emailDataType) => {
         font-family: Arial, sans-serif;
         line-height: 1.6;
         color: #333;
-        padding: 20px;
+        padding: 0;
         background-color: #f9f9f9;
       }
       .container {
         max-width: 600px;
         margin: auto;
         background-color: #fff;
-        padding: 20px;
+        padding: 20px !important;
         border: 1px solid #ddd;
         border-radius: 8px;
       }
       .header {
         font-size: 24px;
         font-weight: bold;
-        margin-bottom: 20px;
       }
       .header img {
         height: 40px;
         width: auto;
       }
-      p {
-        margin-bottom: 10px;
+      .header p {
         margin-top: 10px;
+      }
+      p {
+        margin-top: 20px;
+        margin-bottom: 0;
       }
       .content strong {
         color: #2c3e50;
