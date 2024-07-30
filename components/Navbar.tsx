@@ -124,7 +124,11 @@ const Navbar = () => {
           onClick={() => router.push("https://www.bekk.no/")}
         />
         <div className="relative">
-          <button onClick={toggleDropdown} className="flex justify-end">
+          <button
+            onClick={toggleDropdown}
+            className="flex justify-end"
+            data-cy="toggle-dropdown"
+          >
             <Bars3Icon
               className={`w-10 h-10 text-gray-500 transition-transform transform dark:text-white ${
                 isDropdownOpen ? "rotate-45 opacity-0" : "rotate-0 opacity-100"
@@ -142,6 +146,7 @@ const Navbar = () => {
               handleLogin={handleLogin}
               handleLogout={handleLogout}
               toggleDropdown={toggleDropdown}
+              data-cy="dropdown-menu"
             />
           )}
         </div>
