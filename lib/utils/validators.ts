@@ -1,19 +1,19 @@
 import {
-  applicantType,
+  applicationType,
   commiteeType,
   periodType,
   preferencesType,
 } from "../types/types";
 
-export const isApplicantType = (
-  applicant: applicantType,
+export const isApplicationType = (
+  application: applicationType,
   period: periodType
-): applicant is applicantType => {
+): application is applicationType => {
   // Check for each basic property type
-  const applicantPeriodId = applicant.periodId.toString();
+  const applicationPeriodId = application.periodId.toString();
   const periodId = period._id.toString();
 
-  const { owId, name, email, phone, grade, about, bankom, date } = applicant;
+  const { owId, name, email, phone, grade, about, bankom, date } = application;
 
   const hasBasicFields =
     typeof owId === "string" &&
@@ -24,8 +24,8 @@ export const isApplicantType = (
     typeof about === "string" &&
     typeof bankom === "string" &&
     (bankom === "yes" || bankom === "no" || bankom === "maybe") &&
-    typeof applicantPeriodId === "string" &&
-    applicantPeriodId === periodId &&
+    typeof applicationPeriodId === "string" &&
+    applicationPeriodId === periodId &&
     date instanceof Date;
 
   // Check that the preferences object exists and contains the required fields
@@ -33,10 +33,10 @@ export const isApplicantType = (
     committee.toLowerCase()
   );
 
-  const { first, second, third } = applicant.preferences as preferencesType;
+  const { first, second, third } = application.preferences as preferencesType;
 
   const hasPreferencesFields =
-    (applicant.preferences as preferencesType) &&
+    (application.preferences as preferencesType) &&
     typeof first === "string" &&
     (typeof second === "string" || second === "") &&
     (typeof third === "string" || third === "") &&
@@ -55,8 +55,8 @@ export const isApplicantType = (
   const interviewPeriodEnd = new Date(period.interviewPeriod.end);
 
   const hasSelectedTimes =
-    Array.isArray(applicant.selectedTimes) &&
-    applicant.selectedTimes.every(
+    Array.isArray(application.selectedTimes) &&
+    application.selectedTimes.every(
       (time: { start: string; end: string }) =>
         typeof time.start === "string" &&
         typeof time.end === "string" &&
@@ -70,12 +70,12 @@ export const isApplicantType = (
   const periodOptionalCommittees = period.optionalCommittees.map((committee) =>
     committee.toLowerCase()
   );
-  const applicantOptionalCommittees = applicant.optionalCommittees;
+  const applicationOptionalCommittees = application.optionalCommittees;
 
   const hasOptionalFields =
-    applicantOptionalCommittees &&
-    Array.isArray(applicantOptionalCommittees) &&
-    applicantOptionalCommittees.every(
+    applicationOptionalCommittees &&
+    Array.isArray(applicationOptionalCommittees) &&
+    applicationOptionalCommittees.every(
       (committee: any) =>
         typeof committee === "string" &&
         periodOptionalCommittees.includes(committee)

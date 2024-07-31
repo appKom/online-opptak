@@ -8,21 +8,25 @@ import CheckBoxIcon from "../../components/icons/icons/CheckBoxIcon";
 import Button from "../../components/Button";
 import CalendarIcon from "../../components/icons/icons/CalendarIcon";
 import { Tabs } from "../../components/Tabs";
-import { DeepPartial, applicantType, periodType } from "../../lib/types/types";
+import {
+  DeepPartial,
+  applicationType,
+  periodType,
+} from "../../lib/types/types";
 import { useRouter } from "next/router";
 import Schedule from "../../components/committee/Schedule";
 import { validateApplication } from "../../lib/utils/validateApplication";
-import ApplicantCard from "../../components/applicantoverview/ApplicantCard";
+import ApplicationCard from "../../components/applicationoverview/ApplicationCard";
 import LoadingPage from "../../components/LoadingPage";
 import { formatDateNorwegian } from "../../lib/utils/dateUtils";
 import PageTitle from "../../components/PageTitle";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPeriodById } from "../../lib/api/periodApi";
 import {
-  createApplicant,
-  deleteApplicant,
-  fetchApplicantByPeriodAndId,
-} from "../../lib/api/applicantApi";
+  createApplication,
+  deleteApplication,
+  fetchApplicationByPeriodAndId,
+} from "../../lib/api/applicationApi";
 import ErrorPage from "../../components/ErrorPage";
 
 const Application: NextPage = () => {
@@ -30,11 +34,11 @@ const Application: NextPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
-  const applicantId = session?.user?.owId;
+  const applicationId = session?.user?.owId;
 
   const [activeTab, setActiveTab] = useState(0);
-  const [applicationData, setApplicationData] = useState<
-    DeepPartial<applicantType>
+  const [inputApplicationData, setInputApplicationData] = useState<
+    DeepPartial<applicationType>
   >({
     owId: session?.user?.owId,
     name: session?.user?.name,
@@ -62,19 +66,19 @@ const Application: NextPage = () => {
   });
 
   const {
-    data: applicantData,
-    isError: applicantIsError,
-    isLoading: applicantIsLoading,
+    data: applicationData,
+    isError: applicationIsError,
+    isLoading: applicationIsLoading,
   } = useQuery({
-    queryKey: ["applicant", periodId, applicantId],
-    queryFn: fetchApplicantByPeriodAndId,
+    queryKey: ["application", periodId, applicationId],
+    queryFn: fetchApplicationByPeriodAndId,
   });
 
-  const createApplicantMutation = useMutation({
-    mutationFn: createApplicant,
+  const createApplicationMutation = useMutation({
+    mutationFn: createApplication,
     onSuccess: () => {
-      queryClient.setQueryData(["applicant", periodId, applicantId], {
-        applicant: applicationData,
+      queryClient.setQueryData(["application", periodId, applicationId], {
+        application: inputApplicationData,
         exists: true,
       });
       toast.success("Søknad sendt inn");
@@ -88,10 +92,10 @@ const Application: NextPage = () => {
     },
   });
 
-  const deleteApplicantMutation = useMutation({
-    mutationFn: deleteApplicant,
+  const deleteApplicationMutation = useMutation({
+    mutationFn: deleteApplication,
     onSuccess: () => {
-      queryClient.setQueryData(["applicant", periodId, applicantId], null);
+      queryClient.setQueryData(["application", periodId, applicationId], null);
       toast.success("Søknad trukket tilbake");
       setActiveTab(0);
     },
@@ -112,9 +116,9 @@ const Application: NextPage = () => {
   }, [periodData]);
 
   const handleSubmitApplication = async () => {
-    if (!validateApplication(applicationData)) return;
-    applicationData.periodId = periodId as string;
-    createApplicantMutation.mutate(applicationData as applicantType);
+    if (!validateApplication(inputApplicationData)) return;
+    inputApplicationData.periodId = periodId as string;
+    createApplicationMutation.mutate(inputApplicationData as applicationType);
   };
 
   const handleDeleteApplication = async () => {
@@ -125,17 +129,17 @@ const Application: NextPage = () => {
 
     if (!confirm("Er du sikker på at du vil trekke tilbake søknaden?")) return;
 
-    deleteApplicantMutation.mutate({ periodId, owId: session?.user?.owId });
+    deleteApplicationMutation.mutate({ periodId, owId: session?.user?.owId });
   };
 
   if (
     periodIsLoading ||
-    applicantIsLoading ||
-    createApplicantMutation.isPending ||
-    deleteApplicantMutation.isPending
+    applicationIsLoading ||
+    createApplicationMutation.isPending ||
+    deleteApplicationMutation.isPending
   )
     return <LoadingPage />;
-  if (periodIsError || applicantIsError) return <ErrorPage />;
+  if (periodIsError || applicationIsError) return <ErrorPage />;
 
   if (!periodData?.exists)
     return (
@@ -146,7 +150,7 @@ const Application: NextPage = () => {
       </div>
     );
 
-  if (applicantData?.exists)
+  if (applicationData?.exists)
     return (
       <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
         <WellDoneIllustration className="h-32" />
@@ -168,10 +172,10 @@ const Application: NextPage = () => {
             onClick={handleDeleteApplication}
           />
         )}
-        {applicantData?.application && (
+        {applicationData?.application && (
           <div className="w-full max-w-md">
-            <ApplicantCard
-              applicant={applicantData.application}
+            <ApplicationCard
+              application={applicationData.application}
               includePreferences={true}
             />
           </div>
@@ -197,8 +201,8 @@ const Application: NextPage = () => {
               content: (
                 <>
                   <ApplicationForm
-                    applicationData={applicationData}
-                    setApplicationData={setApplicationData}
+                    applicationData={inputApplicationData}
+                    setApplicationData={setInputApplicationData}
                     availableCommittees={period?.committees || []}
                     optionalCommittees={period?.optionalCommittees || []}
                   />
@@ -207,7 +211,7 @@ const Application: NextPage = () => {
                       title="Videre"
                       color="blue"
                       onClick={() => {
-                        if (!validateApplication(applicationData)) return;
+                        if (!validateApplication(inputApplicationData)) return;
                         setActiveTab(activeTab + 1);
                       }}
                       size="small"
@@ -224,8 +228,8 @@ const Application: NextPage = () => {
                   <Schedule
                     interviewLength={Number(30)}
                     periodTime={period?.interviewPeriod}
-                    setApplicationData={setApplicationData}
-                    applicationData={applicationData}
+                    setApplicationData={setInputApplicationData}
+                    applicationData={inputApplicationData}
                   />
                   <div className="flex justify-center w-full mt-10">
                     <Button

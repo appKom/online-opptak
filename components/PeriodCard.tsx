@@ -5,8 +5,8 @@ import { formatDateNorwegian } from "../lib/utils/dateUtils";
 import Button from "./Button";
 import CheckIcon from "./icons/icons/CheckIcon";
 import { useQuery } from "@tanstack/react-query";
-import { fetchApplicantByPeriodAndId } from "../lib/api/applicantApi";
 import { PeriodSkeleton } from "./PeriodSkeleton";
+import { fetchApplicationByPeriodAndId } from "../lib/api/applicationApi";
 
 interface Props {
   period: periodType;
@@ -16,18 +16,18 @@ const PeriodCard = ({ period }: Props) => {
   const { data: session } = useSession();
   const [hasApplied, setHasApplied] = useState(false);
 
-  const { data: applicantData, isLoading: applicantIsLoading } = useQuery({
-    queryKey: ["applicants", period._id, session?.user?.owId],
-    queryFn: fetchApplicantByPeriodAndId,
+  const { data: applicationData, isLoading: applicationIsLoading } = useQuery({
+    queryKey: ["applications", period._id, session?.user?.owId],
+    queryFn: fetchApplicationByPeriodAndId,
   });
 
   useEffect(() => {
-    if (applicantData) {
-      setHasApplied(applicantData.exists);
+    if (applicationData) {
+      setHasApplied(applicationData.exists);
     }
-  }, [applicantData]);
+  }, [applicationData]);
 
-  if (applicantIsLoading) return <PeriodSkeleton />;
+  if (applicationIsLoading) return <PeriodSkeleton />;
 
   return (
     <div className="relative w-full max-w-md mx-auto break-words border rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:text-white">

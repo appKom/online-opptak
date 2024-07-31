@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getApplicantsForCommittee } from "../../../../../lib/mongo/applicants";
+import { getApplicationsForCommittee } from "../../../../../lib/mongo/applications";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]";
 
@@ -29,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     if (req.method === "GET") {
-      const { applicants, error } = await getApplicantsForCommittee(
+      const { applications, error } = await getApplicationsForCommittee(
         periodId,
         selectedCommittee,
         session.user.committees
@@ -37,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (error) {
         return res.status(500).json({ error });
       }
-      return res.status(200).json({ applicants });
+      return res.status(200).json({ applications });
     }
   } catch (error) {
     if (error instanceof Error) {

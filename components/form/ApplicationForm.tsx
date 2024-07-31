@@ -3,13 +3,13 @@ import RadioInput from "./RadioInput";
 import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
-import { DeepPartial, applicantType } from "../../lib/types/types";
+import { DeepPartial, applicationType } from "../../lib/types/types";
 import { changeDisplayName } from "../../lib/utils/toString";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 interface Props {
-  applicationData: DeepPartial<applicantType>;
+  applicationData: DeepPartial<applicationType>;
   setApplicationData: Function;
   availableCommittees: string[];
   optionalCommittees: string[];
@@ -65,8 +65,8 @@ export const ApplicationForm = (props: Props) => {
   }, [props.applicationData.email]);
 
   return (
-    <div className="flex justify-center items-center">
-      <form className="px-5 text-online-darkBlue dark:text-white max-w-sm w-full">
+    <div className="flex items-center justify-center">
+      <form className="w-full max-w-sm px-5 text-online-darkBlue dark:text-white">
         {isNtnuEmail && (
           <div className="px-5">
             <p className="text-red-500">

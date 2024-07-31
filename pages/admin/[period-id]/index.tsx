@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import router from "next/router";
 import { periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
-import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPeriodById } from "../../../lib/api/periodApi";
 import LoadingPage from "../../../components/LoadingPage";
 import ErrorPage from "../../../components/ErrorPage";
+import ApplicationsOverview from "../../../components/applicationoverview/ApplicationsOverview";
 
 const Admin = () => {
   const { data: session } = useSession();
@@ -35,7 +35,7 @@ const Admin = () => {
   if (isError) return <ErrorPage />;
 
   return (
-    <ApplicantsOverview
+    <ApplicationsOverview
       period={period}
       committees={committees}
       includePreferences={true}
