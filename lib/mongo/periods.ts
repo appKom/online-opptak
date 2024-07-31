@@ -123,7 +123,7 @@ export const deletePeriodById = async (periodId: string | ObjectId) => {
   }
 };
 
-export const updatePeriod = async (periodId: string) => {
+export const markInverviewsSentByPeriodId = async (periodId: string) => {
   try {
     if (!periods) await init();
 

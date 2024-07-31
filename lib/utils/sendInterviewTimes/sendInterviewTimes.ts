@@ -9,7 +9,7 @@ import {
 
 import { fetchCommitteeEmails } from "./fetchFunctions";
 import { formatAndSendEmails } from "./formatAndSend";
-import { getPeriods, updatePeriod } from "../../mongo/periods";
+import { getPeriods, markInverviewsSentByPeriodId } from "../../mongo/periods";
 import { getCommitteesByPeriod } from "../../mongo/committees";
 import { getInterviewsByPeriod } from "../../mongo/interviews";
 
@@ -70,7 +70,7 @@ export const sendOutInterviewTimes = async () => {
         } catch (error) {
           return { error: "Failed to send out interview times" };
         } finally {
-          updatePeriod(periodId);
+          markInverviewsSentByPeriodId(periodId);
         }
       }
     }
