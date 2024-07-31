@@ -14,7 +14,6 @@ import {
   fetchApplicantsByPeriodIdAndCommittee,
 } from "../../lib/api/applicantApi";
 import ErrorPage from "../ErrorPage";
-import { getBankomValue } from "../../lib/utils/toString";
 import ApplicantCard from "./ApplicantCard";
 
 interface Props {
@@ -52,7 +51,7 @@ const ApplicantsOverview = ({
   const [applicants, setApplicants] = useState<applicantType[]>([]);
   const years: string[] = ["1", "2", "3", "4", "5"];
 
-  const bankomOptions: bankomOptionsType[] = ["yes", "no", "maybe"];
+  const bankomOptions: bankomOptionsType[] = ["ja", "nei", "kanskje"];
 
   const {
     data: applicantsData,
@@ -224,9 +223,9 @@ const ApplicantsOverview = ({
                     }
                   >
                     <option value="">Velg bankom</option>
-                    {bankomOptions.map((bankom) => (
-                      <option key={bankom} value={bankom}>
-                        {getBankomValue(bankom)}
+                    {bankomOptions.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
                       </option>
                     ))}
                   </select>
