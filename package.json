@@ -9,7 +9,7 @@
     "lint": "next lint",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
-    "test": "cypress open"
+    "test": "set ENVIRONMENT=stage && cypress open"
   },
   "dependencies": {
     "@aws-sdk/client-ses": "^3.614.0",

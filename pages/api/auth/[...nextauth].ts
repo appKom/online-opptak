@@ -3,12 +3,24 @@ import Auth0Provider from "next-auth/providers/auth0";
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(",") || [];
 
+const isStageEnvironment = process.env.ENVIRONMENT === "stage";
+
+const env = process.env;
+
 export const authOptions: NextAuthOptions = {
   providers: [
     Auth0Provider({
-      clientId: process.env.AUTH0_CLIENT_ID || "",
-      clientSecret: process.env.AUTH0_CLIENT_SECRET || "",
-      issuer: process.env.AUTH0_ISSUER,
+      clientId:
+        (isStageEnvironment
+          ? env.STAGE_AUTH0_CLIENT_SECRET
+          : env.PROD_AUTH0_CLIENT_ID) || "",
+      clientSecret:
+        (isStageEnvironment
+          ? env.STAGE_AUTH0_CLIENT_SECRET
+          : env.PROD_AUTH0_CLIENT_SECRET) || "",
+      issuer:
+        (isStageEnvironment ? env.STAGE_AUTH0_ISSUER : env.PROD_AUTH0_ISSUER) ||
+        "",
       style: {
         logo: "/auth0.svg",
         logoDark: "/auth0-dark.svg",
@@ -19,7 +31,9 @@ export const authOptions: NextAuthOptions = {
       },
 
       async profile(profile, tokens) {
-        const apiUrl = "https://old.online.ntnu.no/api/v1/profile/";
+        const apiUrl = isStageEnvironment
+          ? "https://old.online.ntnu.no/api/v1/profile/"
+          : "https://dev.online.ntnu.no/api/v1/profile/";
 
         const headers = {
           Authorization: `Bearer ${tokens.access_token}`,
