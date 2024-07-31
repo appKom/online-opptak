@@ -4,11 +4,11 @@ import { useSession } from "next-auth/react";
 import Table from "../../components/Table";
 import { formatDate } from "../../lib/utils/dateUtils";
 import { periodType } from "../../lib/types/types";
-import LoadingPage from "../../components/LoadingPage";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPeriods } from "../../lib/api/periodApi";
 import ErrorPage from "../../components/ErrorPage";
 import { TableSkeleton } from "../../components/skeleton/TableSkeleton";
+import { SimpleTitle } from "../../components/Typography";
 
 const Committee: NextPage = () => {
   const { data: session } = useSession();
@@ -88,7 +88,7 @@ const Committee: NextPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="mt-5 mb-6 text-3xl font-bold text-center">Velg opptak</h2>
+      <SimpleTitle title="Velg opptak" />
       <div className="py-10">
         {periodsIsLoading ? (
           <TableSkeleton columns={periodsColumns} />

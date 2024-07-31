@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import ErrorPage from "../components/ErrorPage";
 import Link from "next/link";
 import { PeriodSkeletonPage } from "../components/PeriodSkeleton";
+import { SimpleTitle } from "../components/Typography";
 
 const Apply = () => {
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
@@ -39,10 +40,10 @@ const Apply = () => {
 
   return (
     <div className="flex flex-col justify-between overflow-x-hidden text-online-darkBlue dark:text-white">
-      <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
+      <div className="flex flex-col items-center justify-center gap-5 px-5">
         {currentPeriods.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-8">
-            <h1 className="text-3xl ">Ingen åpne opptak for øyeblikket</h1>
+            <SimpleTitle title="Ingen åpne opptak for øyeblikket" />
             <p className="w-10/12 max-w-2xl text-center text-md ">
               Opptak til{" "}
               <Link href="/committees">
@@ -71,9 +72,7 @@ const Apply = () => {
           </div>
         ) : (
           <div className="flex flex-col gap-10">
-            <h3 className="text-4xl font-bold tracking-tight text-center dark:text-white">
-              Nåværende opptaksperioder
-            </h3>
+            <SimpleTitle title="Nåværende opptaksperioder" />
             <div className="flex flex-col items-center max-w-full gap-5">
               {currentPeriods.map((period: periodType, index: number) => (
                 <PeriodCard key={index} period={period} />
