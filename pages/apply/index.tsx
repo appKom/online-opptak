@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { periodType } from "../lib/types/types";
-import PeriodCard from "../components/PeriodCard";
-import { fetchPeriods } from "../lib/api/periodApi";
-import { useQuery } from "@tanstack/react-query";
-import ErrorPage from "../components/ErrorPage";
 import Link from "next/link";
-import { PeriodSkeletonPage } from "../components/PeriodSkeleton";
+import { useQuery } from "@tanstack/react-query";
+import ErrorPage from "../../components/ErrorPage";
+import PeriodCard from "../../components/PeriodCard";
+import { PeriodSkeletonPage } from "../../components/PeriodSkeleton";
+import { fetchPeriods } from "../../lib/api/periodApi";
+import { periodType } from "../../lib/types/types";
 
 const Apply = () => {
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
