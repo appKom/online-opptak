@@ -1,17 +1,17 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { applicantType, preferencesType } from "../types/types";
+import { applicationType, preferencesType } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
-let applicants: Collection<applicantType>;
+let applications: Collection<applicationType>;
 
 async function init() {
   if (db) return;
   try {
     client = await clientPromise;
     db = client.db();
-    applicants = db.collection("applicant");
+    applications = db.collection("application");
   } catch (error) {
     console.error(error);
     throw new Error("Failed to establish connection to database");
@@ -22,45 +22,45 @@ async function init() {
   await init();
 })();
 
-export const createApplicant = async (applicantData: applicantType) => {
+export const createApplication = async (applicationData: applicationType) => {
   try {
-    if (!applicants) await init();
+    if (!applications) await init();
 
-    const existingApplicant = await applicants.findOne({
-      owId: applicantData.owId,
-      periodId: applicantData.periodId,
+    const existingApplication = await applications.findOne({
+      owId: applicationData.owId,
+      periodId: applicationData.periodId,
     });
 
-    if (existingApplicant) {
+    if (existingApplication) {
       return { error: "409 Application already exists for this period" };
     }
 
-    const result = await applicants.insertOne(applicantData);
+    const result = await applications.insertOne(applicationData);
     if (result.insertedId) {
-      const insertedApplicant = await applicants.findOne({
+      const insertedApplication = await applications.findOne({
         _id: result.insertedId,
       });
-      if (insertedApplicant) {
-        return { applicant: insertedApplicant };
+      if (insertedApplication) {
+        return { application: insertedApplication };
       } else {
-        return { error: "Failed to retrieve the created applicant" };
+        return { error: "Failed to retrieve the created application" };
       }
     } else {
-      return { error: "Failed to create applicant" };
+      return { error: "Failed to create application" };
     }
   } catch (error) {
     console.error(error);
-    return { error: "Failed to create applicant" };
+    return { error: "Failed to create application" };
   }
 };
 
-export const getApplicants = async () => {
+export const getApplications = async () => {
   try {
-    if (!applicants) await init();
-    const result = await applicants.find({}).toArray();
-    return { applicants: result };
+    if (!applications) await init();
+    const result = await applications.find({}).toArray();
+    return { applications: result };
   } catch (error) {
-    return { error: "Failed to fetch applicants" };
+    return { error: "Failed to fetch applications" };
   }
 };
 
@@ -69,9 +69,9 @@ export const getApplication = async (
   periodId: string | ObjectId
 ) => {
   try {
-    if (!applicants) await init();
+    if (!applications) await init();
 
-    const result = await applicants.findOne({
+    const result = await applications.findOne({
       owId: id,
       periodId: periodId,
     });
@@ -83,11 +83,11 @@ export const getApplication = async (
   }
 };
 
-export const getApplications = async (periodId: string) => {
+export const getApplicationsByPeriodId = async (periodId: string) => {
   try {
-    if (!applicants) await init();
+    if (!applications) await init();
 
-    const result = await applicants
+    const result = await applications
       .find({ periodId: periodId }) // No ObjectId conversion needed
       .toArray();
 
@@ -98,16 +98,16 @@ export const getApplications = async (periodId: string) => {
   }
 };
 
-export const getApplicantsForCommittee = async (
+export const getApplicationsForCommittee = async (
   periodId: string,
   selectedCommittee: string,
   userCommittees: string[]
 ) => {
   try {
-    if (!applicants) await init();
+    if (!applications) await init();
 
     // Henter alle søkere for perioden
-    const result = await applicants.find({ periodId: periodId }).toArray();
+    const result = await applications.find({ periodId: periodId }).toArray();
 
     // Type guard
     const isPreferencesType = (
@@ -123,24 +123,24 @@ export const getApplicantsForCommittee = async (
 
     // Filtrerer søkerne slik at kun brukere som er i komiteen som har blitt søkt på ser søkeren
     // Fjerner prioriterings informasjon
-    const filteredApplicants = result
-      .map((applicant) => {
+    const filteredApplications = result
+      .map((application) => {
         let preferencesArray: string[] = [];
-        if (isPreferencesType(applicant.preferences)) {
+        if (isPreferencesType(application.preferences)) {
           preferencesArray = [
-            applicant.preferences.first,
-            applicant.preferences.second,
-            applicant.preferences.third,
+            application.preferences.first,
+            application.preferences.second,
+            application.preferences.third,
           ];
-        } else if (Array.isArray(applicant.preferences)) {
-          preferencesArray = applicant.preferences.map(
+        } else if (Array.isArray(application.preferences)) {
+          preferencesArray = application.preferences.map(
             (pref) => pref.committee
           );
         }
 
-        if (applicant.optionalCommittees != null) {
-          if (applicant.optionalCommittees.length > 0) {
-            for (const committee of applicant.optionalCommittees) {
+        if (application.optionalCommittees != null) {
+          if (application.optionalCommittees.length > 0) {
+            for (const committee of application.optionalCommittees) {
               preferencesArray.push(committee);
             }
           }
@@ -151,14 +151,14 @@ export const getApplicantsForCommittee = async (
           userCommittees.includes(preference)
         );
 
-        applicant.optionalCommittees = [];
+        application.optionalCommittees = [];
 
         const isSelectedCommitteePresent =
           preferencesArray.includes(selectedCommittee);
 
         if (hasCommonCommittees && isSelectedCommitteePresent) {
           // Fjerner prioriteringer
-          const { preferences, ...rest } = applicant;
+          const { preferences, ...rest } = application;
           const filteredPreferences = preferencesArray
             .filter((preference) => userCommittees.includes(preference))
             .map((committee) => ({ committee }));
@@ -167,12 +167,12 @@ export const getApplicantsForCommittee = async (
         }
         return null;
       })
-      .filter((applicant) => applicant !== null);
+      .filter((application) => application !== null);
 
-    return { applicants: filteredApplicants };
+    return { applications: filteredApplications };
   } catch (error) {
     console.error(error);
-    return { error: "Failed to fetch applicants" };
+    return { error: "Failed to fetch applications" };
   }
 };
 
@@ -181,9 +181,9 @@ export const deleteApplication = async (
   periodId: string | ObjectId
 ) => {
   try {
-    if (!applicants) await init();
+    if (!applications) await init();
 
-    const result = await applicants.deleteOne({
+    const result = await applications.deleteOne({
       owId: owId,
       periodId: periodId,
     });

@@ -1,8 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  deleteApplication,
-  getApplication,
-} from "../../../../lib/mongo/applicants";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
 import {
@@ -11,6 +7,10 @@ import {
   checkOwId,
 } from "../../../../lib/utils/apiChecks";
 import { getPeriodById } from "../../../../lib/mongo/periods";
+import {
+  deleteApplication,
+  getApplication,
+} from "../../../../lib/mongo/applications";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);

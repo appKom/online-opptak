@@ -1,6 +1,6 @@
 import { emailDataType } from "../types/types";
 
-export const generateApplicantEmail = (emailData: emailDataType) => {
+export const generateApplicationEmail = (emailData: emailDataType) => {
   return `
   <!DOCTYPE html>
   <html lang="no">
