@@ -6,6 +6,11 @@ import { changeDisplayName } from "../toString";
 import { formatDateHours } from "../dateUtils";
 import sendEmail from "../../email/sendEmail";
 import sendSMS from "./sendSMS";
+import {
+  formatApplicantInterviewEmail,
+  formatCommitteeInterviewEmail,
+} from "./formatInterviewEmail";
+import { formatInterviewSMS } from "./formatInterviewSMS";
 
 interface sendInterviewTimesProps {
   committeesToEmail: emailCommitteeInterviewType[];
@@ -23,40 +28,8 @@ export const formatAndSendEmails = async ({
       const applicantEmail = [typedApplicant.applicantEmail];
       const subject = `Hei, ${typedApplicant.applicantName}, her er dine intervjutider:`;
 
-      let emailBody = `<p>Hei <strong>${typedApplicant.applicantName}</strong>,</p><p>Her er dine intervjutider for ${typedApplicant.period_name}:</p><ul><br/>`;
-      let phoneBody = `Hei ${typedApplicant.applicantName}, her er dine intervjutider for ${typedApplicant.period_name}: \n \n`;
-
-      typedApplicant.committees.sort((a, b) => {
-        return (
-          new Date(a.interviewTime.start).getTime() -
-          new Date(b.interviewTime.start).getTime()
-        );
-      });
-
-      typedApplicant.committees.forEach((committee) => {
-        emailBody += `<li><b>Komite:</b> ${changeDisplayName(
-          committee.committeeName
-        )}<br>`;
-        emailBody += `<b>Start:</b> ${formatDateHours(
-          new Date(committee.interviewTime.start)
-        )}<br>`;
-        emailBody += `<b>Slutt:</b> ${formatDateHours(
-          new Date(committee.interviewTime.end)
-        )}<br>`;
-        emailBody += `<b>Rom:</b> ${committee.interviewTime.room}</li><br>`;
-
-        phoneBody += `Komite: ${changeDisplayName(committee.committeeName)} \n`;
-        phoneBody += `Start: ${formatDateHours(
-          new Date(committee.interviewTime.start)
-        )}\n`;
-        phoneBody += `Slutt: ${formatDateHours(
-          new Date(committee.interviewTime.end)
-        )}\n`;
-        phoneBody += `Rom: ${committee.interviewTime.room} \n \n`;
-      });
-
-      emailBody += `</ul> <br/> <br/> <p>Skjedd en feil? Ta kontakt med <a href="mailto:appkom@online.ntnu.no">Appkom</a>❤️</p>`;
-      phoneBody += `Skjedd en feil? Ta kontakt med Appkom`;
+      const emailBody = formatApplicantInterviewEmail(typedApplicant);
+      const phoneBody = formatInterviewSMS(typedApplicant);
 
       await sendEmail({
         toEmails: applicantEmail,
@@ -77,34 +50,12 @@ export const formatAndSendEmails = async ({
         typedCommittee.committeeName
       )} sine intervjutider for ${typedCommittee.period_name}`;
 
-      let body = `<p>Hei <strong>${changeDisplayName(
-        typedCommittee.committeeName
-      )}</strong>,</p><p>Her er deres intervjutider:</p><ul>`;
-
-      typedCommittee.applicants.sort((a, b) => {
-        return (
-          new Date(a.interviewTime.start).getTime() -
-          new Date(b.interviewTime.start).getTime()
-        );
-      });
-
-      typedCommittee.applicants.forEach((applicant) => {
-        body += `<li><b>Navn:</b> ${applicant.applicantName}<br>`;
-        body += `<b>Start:</b> ${formatDateHours(
-          new Date(applicant.interviewTime.start)
-        )}<br>`;
-        body += `<b>Slutt:</b> ${formatDateHours(
-          new Date(applicant.interviewTime.end)
-        )}<br>`;
-        body += `<b>Rom:</b> ${applicant.interviewTime.room}</li><br>`;
-      });
-
-      body += `</ul> <br/> <br/> <p>Skjedd en feil? Ta kontakt med <a href="mailto:appkom@online.ntnu.no">Appkom</a>❤️</p>`;
+      const emailBody = formatCommitteeInterviewEmail(typedCommittee);
 
       await sendEmail({
         toEmails: committeeEmail,
         subject: subject,
-        htmlContent: body,
+        htmlContent: emailBody,
       });
     }
   } catch (error) {
