@@ -1,4 +1,3 @@
-import { SESClient } from "@aws-sdk/client-ses";
 import {
   emailCommitteeInterviewType,
   emailApplicantInterviewType,
@@ -18,8 +17,6 @@ export const formatAndSendEmails = async ({
   applicantsToEmail,
 }: sendInterviewTimesProps) => {
   try {
-    const sesClient = new SESClient({ region: "eu-north-1" });
-
     // Send email to each applicant
     for (const applicant of applicantsToEmail) {
       const typedApplicant: emailApplicantInterviewType = applicant;
