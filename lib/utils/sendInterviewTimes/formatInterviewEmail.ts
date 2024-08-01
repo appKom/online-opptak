@@ -22,10 +22,10 @@ export const formatApplicantInterviewEmail = (
       committee.committeeName
     )}<br>`;
     emailBody += `<b>Start:</b> ${formatDateHours(
-      new Date(committee.interviewTime.start)
+      committee.interviewTime.start
     )}<br>`;
     emailBody += `<b>Slutt:</b> ${formatDateHours(
-      new Date(committee.interviewTime.end)
+      committee.interviewTime.end
     )}<br>`;
     emailBody += `<b>Rom:</b> ${committee.interviewTime.room}</li><br>`;
   });
@@ -53,10 +53,10 @@ export const formatCommitteeInterviewEmail = (
     emailBody += `<li><b>Navn:</b> ${applicant.applicantName}<br>`;
     emailBody += `<b>Telefon:</b> ${applicant.applicantPhone} <br> `;
     emailBody += `<b>Start:</b> ${formatDateHours(
-      new Date(applicant.interviewTime.start)
+      applicant.interviewTime.start
     )}<br>`;
     emailBody += `<b>Slutt:</b> ${formatDateHours(
-      new Date(applicant.interviewTime.end)
+      applicant.interviewTime.end
     )}<br>`;
     emailBody += `<b>Rom:</b> ${applicant.interviewTime.room}</li><br>`;
   });
