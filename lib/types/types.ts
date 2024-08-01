@@ -48,7 +48,7 @@ export type applicantType = {
   periodId: string | ObjectId;
 };
 
-export type bankomOptionsType = "yes" | "no" | "maybe" | undefined;
+export type bankomOptionsType = "ja" | "nei" | "kanskje" | undefined;
 
 // applicantType modified to fit email content
 export type emailDataType = {
