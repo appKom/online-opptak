@@ -16,12 +16,14 @@ import {
 import ErrorPage from "../ErrorPage";
 import { getBankomValue } from "../../lib/utils/toString";
 import ApplicantCard from "./ApplicantCard";
+import { SimpleTitle } from "../Typography";
 
 interface Props {
   period?: periodType | null;
   committees?: string[] | null;
   committee?: string;
   includePreferences: boolean;
+  showPeriodName?: boolean;
 }
 
 const isPreferencesType = (
@@ -35,6 +37,7 @@ const ApplicantsOverview = ({
   committees,
   committee,
   includePreferences,
+  showPeriodName,
 }: Props) => {
   const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
     []
@@ -152,14 +155,12 @@ const ApplicantsOverview = ({
   if (applicantsIsError) return <ErrorPage />;
 
   return (
-    <div className="flex flex-col items-center px-5">
-      <h2 className="mt-5 mb-6 text-3xl font-bold items-start text-start">
-        {period?.name}
-      </h2>
+    <div className="flex flex-col items-center">
+      {showPeriodName && <SimpleTitle title={period?.name || ""} />}
 
-      <div className="w-full max-w-lg mx-auto mb-5">
-        <div className="flex flex-row mb-2 align-end justify-between relative">
-          <p className="dark:text-gray-300 text-gray-800 text-sm">
+      <div className="w-full max-w-lg mx-auto mt-10 mb-5">
+        <div className="relative flex flex-row justify-between mb-2 align-end">
+          <p className="text-sm text-gray-800 dark:text-gray-300">
             Søk etter navn eller filtrer
           </p>
           <div className="flex flex-row gap-2 relative">

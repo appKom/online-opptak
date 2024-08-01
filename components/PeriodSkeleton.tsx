@@ -1,3 +1,5 @@
+import { SimpleTitle } from "./Typography";
+
 export const PeriodSkeleton = () => {
   return (
     <div className="w-full max-w-md p-4 border border-gray-200 rounded shadow animate-pulse md:p-6 dark:border-gray-700 ">
@@ -11,16 +13,10 @@ export const PeriodSkeleton = () => {
 
 export const PeriodSkeletonPage = () => {
   return (
-    <div className="flex flex-col justify-between overflow-x-hidden text-online-darkBlue dark:text-white">
-      <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
-        <div className="flex flex-col gap-10">
-          <h3 className="text-4xl font-bold tracking-tight text-center dark:text-white">
-            Nåværende opptaksperioder
-          </h3>
-          <div className="flex flex-col items-center max-w-full gap-5">
-            <PeriodSkeleton />
-          </div>
-        </div>
+    <div className="flex flex-col gap-10 my-10">
+      <SimpleTitle title="Nåværende opptaksperioder" />
+      <div className="flex flex-col items-center max-w-full gap-5">
+        <PeriodSkeleton />
       </div>
     </div>
   );
