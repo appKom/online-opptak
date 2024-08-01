@@ -51,6 +51,7 @@ export const formatCommitteeInterviewEmail = (
 
   committee.applicants.forEach((applicant) => {
     emailBody += `<li><b>Navn:</b> ${applicant.applicantName}<br>`;
+    emailBody += `<b>Telefon:</b> ${applicant.applicantPhone} <br> `;
     emailBody += `<b>Start:</b> ${formatDateHours(
       new Date(applicant.interviewTime.start)
     )}<br>`;

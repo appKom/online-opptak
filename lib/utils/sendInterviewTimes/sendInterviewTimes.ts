@@ -158,6 +158,7 @@ const formatCommittees = (
 
       committeesToEmail[committee.committeeName].applicants.push({
         applicantName: applicant.applicantName,
+        applicantPhone: applicant.applicantPhone,
         applicantEmail: applicant.applicantEmail,
         interviewTime: committee.interviewTime,
       });
