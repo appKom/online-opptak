@@ -39,6 +39,7 @@ const Admin = () => {
       period={period}
       committees={committees}
       includePreferences={true}
+      showPeriodName
     />
   );
 };

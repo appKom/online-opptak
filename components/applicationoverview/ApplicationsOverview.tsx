@@ -16,12 +16,14 @@ import {
   fetchApplicationsByPeriodIdAndCommittee,
 } from "../../lib/api/applicationApi";
 import ApplicationOverviewSkeleton from "../skeleton/ApplicationOverviewSkeleton";
+import { SimpleTitle } from "../Typography";
 
 interface Props {
   period?: periodType | null;
   committees?: string[] | null;
   committee?: string;
   includePreferences: boolean;
+  showPeriodName?: boolean;
 }
 
 const isPreferencesType = (
@@ -35,6 +37,7 @@ const ApplicationsOverview = ({
   committees,
   committee,
   includePreferences,
+  showPeriodName,
 }: Props) => {
   const [filteredApplications, setFilteredApplications] = useState<
     applicationType[]
@@ -152,12 +155,10 @@ const ApplicationsOverview = ({
   if (applicationsIsError) return <ErrorPage />;
 
   return (
-    <div className="flex flex-col items-center px-5">
-      <h2 className="items-start mt-5 mb-6 text-3xl font-bold text-start">
-        {period?.name}
-      </h2>
+    <div className="flex flex-col items-center">
+      {showPeriodName && <SimpleTitle title={period?.name || ""} />}
 
-      <div className="w-full max-w-lg mx-auto mb-5">
+      <div className="w-full max-w-lg mx-auto mt-10 mb-5">
         <div className="relative flex flex-row justify-between mb-2 align-end">
           <p className="text-sm text-gray-800 dark:text-gray-300">
             Søk etter navn eller filtrer

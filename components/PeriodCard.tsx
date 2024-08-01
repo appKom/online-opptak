@@ -60,7 +60,7 @@ const PeriodCard = ({ period }: Props) => {
             title={hasApplied ? "Se søknad" : "Søk nå"}
             size="small"
             color="white"
-            href={`/application/${period._id}`}
+            href={`/apply/${period._id}`}
           />
         </div>
       </div>

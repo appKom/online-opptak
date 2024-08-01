@@ -35,9 +35,9 @@ export default function Schedule({
   const getDatesWithinPeriod = (
     periodTime: any
   ): { [date: string]: string } => {
-    const startDate = new Date(periodTime.start);
+    const startDate = new Date(periodTime?.start);
     startDate.setHours(startDate.getHours() + 2);
-    const endDate = new Date(periodTime.end);
+    const endDate = new Date(periodTime?.end);
     endDate.setHours(endDate.getHours() + 2);
     const dates: { [date: string]: string } = {};
     const dayNames = ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"];

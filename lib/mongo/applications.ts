@@ -11,7 +11,7 @@ async function init() {
   try {
     client = await clientPromise;
     db = client.db();
-    applications = db.collection("application");
+    applications = db.collection("applications");
   } catch (error) {
     console.error(error);
     throw new Error("Failed to establish connection to database");

@@ -18,12 +18,12 @@ import CommitteeInterviewTimes from "../../../../components/committee/CommitteeI
 import LoadingPage from "../../../../components/LoadingPage";
 import { changeDisplayName } from "../../../../lib/utils/toString";
 import Custom404 from "../../../404";
-import PageTitle from "../../../../components/PageTitle";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { fetchPeriodById } from "../../../../lib/api/periodApi";
 import ErrorPage from "../../../../components/ErrorPage";
 import { fetchCommitteeTimes } from "../../../../lib/api/committeesApi";
+import { MainTitle, SimpleTitle } from "../../../../components/Typography";
 
 const CommitteeApplicationOverview: NextPage = () => {
   const { data: session } = useSession();
@@ -95,8 +95,8 @@ const CommitteeApplicationOverview: NextPage = () => {
 
   if (interviewAccessExpired) {
     return (
-      <div className="flex flex-col items-center justify-center h-full px-20 text-center">
-        <h1 className="text-3xl">Opptaket er ferdig!</h1>
+      <div className="flex flex-col items-center justify-center h-full text-center">
+        <SimpleTitle title="Opptaket er ferdig!" />
         <br />
         <p className="text-lg">
           Du kan ikke lenger se søkere eller planlegge intervjuer.
@@ -110,14 +110,15 @@ const CommitteeApplicationOverview: NextPage = () => {
           >
             Appkom
           </a>
+          .
         </p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <PageTitle
+    <div className="flex flex-col items-center gap-5">
+      <MainTitle
         boldMainTitle={period?.name}
         subTitle={
           <div className="inline-flex flex-row items-center">
