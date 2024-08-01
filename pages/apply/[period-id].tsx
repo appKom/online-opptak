@@ -15,7 +15,6 @@ import { validateApplication } from "../../lib/utils/validateApplication";
 import ApplicantCard from "../../components/applicantoverview/ApplicantCard";
 import LoadingPage from "../../components/LoadingPage";
 import { formatDateNorwegian } from "../../lib/utils/dateUtils";
-import PageTitle from "../../components/PageTitle";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchPeriodById } from "../../lib/api/periodApi";
 import {
@@ -24,6 +23,7 @@ import {
   fetchApplicantByPeriodAndId,
 } from "../../lib/api/applicantApi";
 import ErrorPage from "../../components/ErrorPage";
+import { MainTitle, SimpleTitle } from "../../components/Typography";
 
 const Application: NextPage = () => {
   const queryClient = useQueryClient();
@@ -138,13 +138,7 @@ const Application: NextPage = () => {
   if (periodIsError || applicantIsError) return <ErrorPage />;
 
   if (!periodData?.exists)
-    return (
-      <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
-          Opptaket finnes ikke
-        </h1>
-      </div>
-    );
+    return <SimpleTitle title="Opptaket finnes ikke" size="large" />;
 
   if (applicantData?.exists)
     return (
@@ -182,7 +176,7 @@ const Application: NextPage = () => {
   return (
     <div>
       <div className="flex flex-col items-center justify-center py-5">
-        <PageTitle
+        <MainTitle
           boldMainTitle={period?.name}
           subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""}
           boldSubTitle="Søknadsfrist"
