@@ -14,16 +14,12 @@ export const formatInterviewSMS = (applicant: emailApplicantInterviewType) => {
 
   applicant.committees.forEach((committee) => {
     phoneBody += `Komite: ${changeDisplayName(committee.committeeName)} \n`;
-    phoneBody += `Start: ${formatDateHours(
-      new Date(committee.interviewTime.start)
-    )}\n`;
-    phoneBody += `Slutt: ${formatDateHours(
-      new Date(committee.interviewTime.end)
-    )}\n`;
+    phoneBody += `Start: ${formatDateHours(committee.interviewTime.start)}\n`;
+    phoneBody += `Slutt: ${formatDateHours(committee.interviewTime.end)}\n`;
     phoneBody += `Rom: ${committee.interviewTime.room} \n \n`;
   });
 
-  phoneBody += `Skjedd en feil? Ta kontakt med Appkom`;
+  phoneBody += `Skjedd en feil? Ta kontakt med appkom@online.ntnu.no`;
 
   return phoneBody;
 };
