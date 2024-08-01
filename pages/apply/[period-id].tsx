@@ -175,7 +175,7 @@ const Application: NextPage = () => {
 
   return (
     <div>
-      <div className="flex flex-col items-center justify-center py-5">
+      <div className="flex flex-col items-center gap-5">
         <MainTitle
           boldMainTitle={period?.name}
           subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""}

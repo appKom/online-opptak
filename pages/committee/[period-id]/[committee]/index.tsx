@@ -117,7 +117,7 @@ const CommitteeApplicantOverview: NextPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center gap-5">
       <MainTitle
         boldMainTitle={period?.name}
         subTitle={
