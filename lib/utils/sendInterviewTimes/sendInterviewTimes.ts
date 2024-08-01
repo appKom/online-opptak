@@ -15,63 +15,44 @@ import { getInterviewsByPeriod } from "../../mongo/interviews";
 
 export const sendOutInterviewTimes = async () => {
   try {
-    const periodData = await getPeriods();
+    const { periods } = await getPeriods();
 
-    if (!periodData || !periodData.periods) {
+    if (!periods) {
       return { error: "Failed to find period" };
     }
 
-    for (const period of periodData.periods) {
+    for (const period of periods) {
       if (
         period.hasSentInterviewTimes === false &&
         period.applicationPeriod.end < new Date()
       ) {
         const periodId = String(period._id);
-        try {
-          const commmitteeInterviewTimesData =
-            await getCommitteesByPeriod(periodId);
 
-          if (
-            !commmitteeInterviewTimesData ||
-            commmitteeInterviewTimesData.error
-          ) {
-            return { error: "Failed to find committee interview times" };
-          }
-
-          const committeeInterviewTimes: committeeInterviewType[] =
-            commmitteeInterviewTimesData.result || [];
-
-          const committeeEmails: committeeEmails[] =
-            await fetchCommitteeEmails();
-
-          const fetchedAlgorithmData = await getInterviewsByPeriod(periodId);
-
-          const algorithmData: algorithmType[] =
-            fetchedAlgorithmData.interviews || [];
-
-          const applicantsToEmail: emailApplicantInterviewType[] =
-            formatApplicants(
-              algorithmData,
-              periodId,
-              period,
-              committeeEmails,
-              committeeInterviewTimes
-            );
-
-          const committeesToEmail: emailCommitteeInterviewType[] =
-            formatCommittees(applicantsToEmail);
-
-          const dataToSend = {
-            committeesToEmail,
-            applicantsToEmail,
-          };
-
-          formatAndSendEmails(dataToSend);
-        } catch (error) {
-          return { error: "Failed to send out interview times" };
-        } finally {
-          markInverviewsSentByPeriodId(periodId);
+        const committeeInterviewTimesData =
+          await getCommitteesByPeriod(periodId);
+        if (!committeeInterviewTimesData || committeeInterviewTimesData.error) {
+          return { error: "Failed to find committee interview times" };
         }
+
+        const committeeInterviewTimes =
+          committeeInterviewTimesData.result || [];
+        const committeeEmails = await fetchCommitteeEmails();
+
+        const fetchedAlgorithmData = await getInterviewsByPeriod(periodId);
+        const algorithmData = fetchedAlgorithmData.interviews || [];
+
+        const applicantsToEmail = formatApplicants(
+          algorithmData,
+          periodId,
+          period,
+          committeeEmails,
+          committeeInterviewTimes
+        );
+
+        const committeesToEmail = formatCommittees(applicantsToEmail);
+
+        await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
+        markInverviewsSentByPeriodId(periodId);
       }
     }
   } catch (error) {
