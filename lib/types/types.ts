@@ -36,7 +36,7 @@ export type applicantType = {
   grade: string;
   about: string;
   preferences: preferencesType | committeePreferenceType[];
-  bankom: "yes" | "no" | "maybe";
+  bankom: bankomOptionsType;
   optionalCommittees: string[];
   selectedTimes: [
     {
@@ -47,6 +47,8 @@ export type applicantType = {
   date: Date;
   periodId: string | ObjectId;
 };
+
+export type bankomOptionsType = "yes" | "no" | "maybe" | undefined;
 
 // applicantType modified to fit email content
 export type emailDataType = {
