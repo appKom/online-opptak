@@ -35,6 +35,7 @@ export default function Schedule({
   const getDatesWithinPeriod = (
     periodTime: any
   ): { [date: string]: string } => {
+    if (!periodTime) return {};
     const startDate = new Date(periodTime.start);
     startDate.setHours(startDate.getHours() + 2);
     const endDate = new Date(periodTime.end);
