@@ -7,10 +7,10 @@ import { formatDate } from "../../lib/utils/dateUtils";
 import NotFound from "../404";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deletePeriodById, fetchPeriods } from "../../lib/api/periodApi";
-import LoadingPage from "../../components/LoadingPage";
 import ErrorPage from "../../components/ErrorPage";
 import toast from "react-hot-toast";
 import { TableSkeleton } from "../../components/skeleton/TableSkeleton";
+import { SimpleTitle } from "../../components/Typography";
 
 const Admin = () => {
   const queryClient = useQueryClient();
@@ -84,12 +84,10 @@ const Admin = () => {
   if (periodsIsError) return <ErrorPage />;
 
   return (
-    <div className="flex flex-col items-center justify-center py-5">
-      <h1 className="my-10 text-3xl font-semibold text-center dark:text-gray-200 text-online-darkBlue">
-        Opptaksperioder
-      </h1>
+    <div className="flex flex-col items-center justify-center">
+      <SimpleTitle title="Opptaksperioder" />
 
-      <div className="pb-10">
+      <div className="py-10">
         <Button
           title="Ny opptaksperiode"
           color="blue"
