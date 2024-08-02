@@ -9,7 +9,7 @@ import {
 
 import { fetchCommitteeEmails } from "./fetchFunctions";
 import { formatAndSendEmails } from "./formatAndSend";
-import { getPeriods, markInverviewsSentByPeriodId } from "../../mongo/periods";
+import { getPeriods, markInterviewsSentByPeriodId } from "../../mongo/periods";
 import { getCommitteesByPeriod } from "../../mongo/committees";
 import { getInterviewsByPeriod } from "../../mongo/interviews";
 
@@ -52,7 +52,7 @@ export const sendOutInterviewTimes = async () => {
         const committeesToEmail = formatCommittees(applicantsToEmail);
 
         await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
-        markInverviewsSentByPeriodId(periodId);
+        markInterviewsSentByPeriodId(periodId);
       }
     }
   } catch (error) {
