@@ -1,40 +1,40 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import { applicantType } from "../types/types";
+import { applicationType } from "../types/types";
 
-export const fetchApplicantByPeriodAndId = async (
+export const fetchApplicationByPeriodAndId = async (
   context: QueryFunctionContext
 ) => {
   const periodId = context.queryKey[1];
-  const applicantId = context.queryKey[2];
-  return fetch(`/api/applicants/${periodId}/${applicantId}`).then((res) =>
+  const applicationId = context.queryKey[2];
+  return fetch(`/api/applications/${periodId}/${applicationId}`).then((res) =>
     res.json()
   );
 };
 
-export const fetchApplicantsByPeriodId = async (
+export const fetchApplicationsByPeriodId = async (
   context: QueryFunctionContext
 ) => {
   const periodId = context.queryKey[1];
-  return fetch(`/api/applicants/${periodId}`).then((res) => res.json());
+  return fetch(`/api/applications/${periodId}`).then((res) => res.json());
 };
 
-export const fetchApplicantsByPeriodIdAndCommittee = async (
+export const fetchApplicationsByPeriodIdAndCommittee = async (
   context: QueryFunctionContext
 ) => {
   const periodId = context.queryKey[1];
   const committee = context.queryKey[2];
-  return fetch(`/api/committees/applicants/${periodId}/${committee}`).then(
+  return fetch(`/api/committees/applications/${periodId}/${committee}`).then(
     (res) => res.json()
   );
 };
 
-export const createApplicant = async (applicant: applicantType) => {
-  const response = await fetch(`/api/applicants/`, {
+export const createApplication = async (application: applicationType) => {
+  const response = await fetch(`/api/applications/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(applicant),
+    body: JSON.stringify(application),
   });
 
   const data = await response.json();
@@ -44,14 +44,14 @@ export const createApplicant = async (applicant: applicantType) => {
   return data;
 };
 
-export const deleteApplicant = async ({
+export const deleteApplication = async ({
   periodId,
   owId,
 }: {
   periodId: string;
   owId: string;
 }) => {
-  const response = await fetch(`/api/applicants/${periodId}/${owId}`, {
+  const response = await fetch(`/api/applications/${periodId}/${owId}`, {
     method: "DELETE",
   });
 

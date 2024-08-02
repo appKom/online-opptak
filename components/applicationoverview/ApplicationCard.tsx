@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { applicantType } from "../../lib/types/types";
+import { applicationType } from "../../lib/types/types";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { changeDisplayName, getBankomValue } from "../../lib/utils/toString";
 
 interface Props {
-  applicant: applicantType | undefined;
+  application: applicationType | undefined;
   includePreferences: boolean;
 }
 
-const ApplicantCard = ({ applicant, includePreferences }: Props) => {
+const ApplicationCard = ({ application, includePreferences }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const preferences = applicant?.preferences || {};
+  const preferences = application?.preferences || {};
   const filteredPreferences = Object.entries(preferences).filter(
     ([key, value]) => value
   );
@@ -27,9 +27,9 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         className="flex items-center justify-between cursor-pointer"
       >
         <div>
-          <h2 className="text-lg font-semibold">{applicant?.name}</h2>
+          <h2 className="text-lg font-semibold">{application?.name}</h2>
           <p className="text-gray-800 dark:text-gray-300">
-            {applicant?.grade}. Klasse
+            {application?.grade}. Klasse
           </p>
         </div>
         <ChevronDownIcon
@@ -44,12 +44,12 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         }`}
       >
         <h1 className="text-lg font-semibold">Kontakt:</h1>
-        <p>E-post: {applicant?.email}</p>
-        <p>Telefon: {applicant?.phone}</p>
+        <p>E-post: {application?.email}</p>
+        <p>Telefon: {application?.phone}</p>
 
         {includePreferences && (
           <div>
-            <h1 className="text-lg font-semibold pt-3">Komiteer:</h1>
+            <h1 className="pt-3 text-lg font-semibold">Komiteer:</h1>
             <ul>
               {filteredPreferences.map(([key, value], index) => (
                 <li key={index}>{`${index + 1}. ${changeDisplayName(
@@ -58,11 +58,11 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
               ))}
             </ul>
 
-            {applicant?.optionalCommittees && (
+            {application?.optionalCommittees && (
               <div className="pt-3">
                 <h1 className="text-lg font-semibold">Andre valg:</h1>
                 <p>
-                  {applicant?.optionalCommittees
+                  {application?.optionalCommittees
                     ?.map(changeDisplayName)
                     .join(", ") || "Ingen valg"}{" "}
                 </p>
@@ -71,16 +71,16 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
           </div>
         )}
 
-        <h1 className="text-lg font-semibold pt-3">Om:</h1>
+        <h1 className="pt-3 text-lg font-semibold">Om:</h1>
         <p>
-          Ønsker å være økonomiansvarlig: {getBankomValue(applicant?.bankom)}
+          Ønsker å være økonomiansvarlig: {getBankomValue(application?.bankom)}
         </p>
         <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
-          <p className="whitespace-pre-wrap">{applicant?.about}</p>
+          <p className="whitespace-pre-wrap">{application?.about}</p>
         </div>
       </div>
     </div>
   );
 };
 
-export default ApplicantCard;
+export default ApplicationCard;

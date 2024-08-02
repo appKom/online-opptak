@@ -6,7 +6,7 @@ import {
   periodType,
 } from "../../../../lib/types/types";
 import { useRouter } from "next/router";
-import ApplicantsOverview from "../../../../components/applicantoverview/ApplicantsOverview";
+import ApplicationsOverview from "../../../../components/applicationoverview/ApplicationsOverview";
 import {
   CalendarIcon,
   InboxIcon,
@@ -25,7 +25,7 @@ import ErrorPage from "../../../../components/ErrorPage";
 import { fetchCommitteeTimes } from "../../../../lib/api/committeesApi";
 import { MainTitle, SimpleTitle } from "../../../../components/Typography";
 
-const CommitteeApplicantOverview: NextPage = () => {
+const CommitteeApplicationOverview: NextPage = () => {
   const { data: session } = useSession();
   const { query } = useRouter();
   const periodId = query["period-id"] as string;
@@ -168,7 +168,7 @@ const CommitteeApplicantOverview: NextPage = () => {
             title: "Søkere",
             icon: <UserGroupIcon className="w-5 h-5" />,
             content: (
-              <ApplicantsOverview
+              <ApplicationsOverview
                 period={period}
                 committee={committee}
                 includePreferences={false}
@@ -181,4 +181,4 @@ const CommitteeApplicantOverview: NextPage = () => {
   );
 };
 
-export default CommitteeApplicantOverview;
+export default CommitteeApplicationOverview;

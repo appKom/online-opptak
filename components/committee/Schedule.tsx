@@ -1,14 +1,14 @@
 import ScheduleColumn from "./ScheduleColumn";
 import getTimeSlots from "../../lib/utils/getTimeSlots";
 import { useState, useEffect } from "react";
-import { DeepPartial, applicantType } from "../../lib/types/types";
+import { DeepPartial, applicationType } from "../../lib/types/types";
 import ImportantNote from "../ImportantNote";
 
 interface Props {
   interviewLength: number;
   periodTime: any;
   setApplicationData: Function;
-  applicationData: DeepPartial<applicantType>;
+  applicationData: DeepPartial<applicationType>;
 }
 
 interface TimeSlot {

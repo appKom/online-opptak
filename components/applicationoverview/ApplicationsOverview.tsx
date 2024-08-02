@@ -1,21 +1,21 @@
 import { useEffect, useState, useRef } from "react";
 import {
-  applicantType,
+  applicationType,
   bankomOptionsType,
   committeePreferenceType,
   periodType,
   preferencesType,
 } from "../../lib/types/types";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
-import ApplicantOverviewSkeleton from "../skeleton/ApplicantOverviewSkeleton";
 import { useQuery } from "@tanstack/react-query";
-import {
-  fetchApplicantsByPeriodId,
-  fetchApplicantsByPeriodIdAndCommittee,
-} from "../../lib/api/applicantApi";
 import ErrorPage from "../ErrorPage";
 import { getBankomValue } from "../../lib/utils/toString";
-import ApplicantCard from "./ApplicantCard";
+import ApplicationCard from "./ApplicationCard";
+import {
+  fetchApplicationsByPeriodId,
+  fetchApplicationsByPeriodIdAndCommittee,
+} from "../../lib/api/applicationApi";
+import ApplicationOverviewSkeleton from "../skeleton/ApplicationOverviewSkeleton";
 import { SimpleTitle } from "../Typography";
 
 interface Props {
@@ -32,16 +32,16 @@ const isPreferencesType = (
   return (preferences as preferencesType).first !== undefined;
 };
 
-const ApplicantsOverview = ({
+const ApplicationsOverview = ({
   period,
   committees,
   committee,
   includePreferences,
   showPeriodName,
 }: Props) => {
-  const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
-    []
-  );
+  const [filteredApplications, setFilteredApplications] = useState<
+    applicationType[]
+  >([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCommittee, setSelectedCommittee] = useState<string | null>(
     null
@@ -52,46 +52,46 @@ const ApplicantsOverview = ({
   const [filterMenuVisible, setFilterMenuVisible] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
 
-  const [applicants, setApplicants] = useState<applicantType[]>([]);
+  const [applications, setApplications] = useState<applicationType[]>([]);
   const years: string[] = ["1", "2", "3", "4", "5"];
 
   const bankomOptions: bankomOptionsType[] = ["yes", "no", "maybe"];
 
   const {
-    data: applicantsData,
-    isError: applicantsIsError,
-    isLoading: applicantsIsLoading,
+    data: applicationsData,
+    isError: applicationsIsError,
+    isLoading: applicationsIsLoading,
   } = useQuery({
-    queryKey: ["applicants", period?._id, committee],
+    queryKey: ["applications", period?._id, committee],
     queryFn: includePreferences
-      ? fetchApplicantsByPeriodId
-      : fetchApplicantsByPeriodIdAndCommittee,
+      ? fetchApplicationsByPeriodId
+      : fetchApplicationsByPeriodIdAndCommittee,
   });
 
   useEffect(() => {
-    if (!applicantsData) return;
+    if (!applicationsData) return;
 
     const dataType = includePreferences
-      ? applicantsData.applications
-      : applicantsData.applicants;
+      ? applicationsData.applications
+      : applicationsData.applications;
 
-    setApplicants(dataType);
-  }, [applicantsData, includePreferences]);
+    setApplications(dataType);
+  }, [applicationsData, includePreferences]);
 
   useEffect(() => {
-    let filtered: applicantType[] = applicants;
+    let filtered: applicationType[] = applications;
 
     if (selectedCommittee) {
-      filtered = filtered.filter((applicant) => {
-        if (isPreferencesType(applicant.preferences)) {
+      filtered = filtered.filter((application) => {
+        if (isPreferencesType(application.preferences)) {
           return (
-            applicant.preferences.first.toLowerCase() ===
+            application.preferences.first.toLowerCase() ===
               selectedCommittee.toLowerCase() ||
-            applicant.preferences.second.toLowerCase() ===
+            application.preferences.second.toLowerCase() ===
               selectedCommittee.toLowerCase() ||
-            applicant.preferences.third.toLowerCase() ===
+            application.preferences.third.toLowerCase() ===
               selectedCommittee.toLowerCase() ||
-            applicant.optionalCommittees.some(
+            application.optionalCommittees.some(
               (optionalCommittee) =>
                 optionalCommittee.toLowerCase() ===
                 selectedCommittee.toLowerCase()
@@ -103,28 +103,28 @@ const ApplicantsOverview = ({
 
     if (selectedYear) {
       filtered = filtered.filter(
-        (applicant) => applicant.grade.toString() === selectedYear
+        (application) => application.grade.toString() === selectedYear
       );
     }
 
     if (selectedBankom) {
       filtered = filtered.filter(
-        (applicant) => applicant.bankom === selectedBankom
+        (application) => application.bankom === selectedBankom
       );
     }
 
     if (searchQuery) {
       const regex = new RegExp(searchQuery.split("").join(".*"), "i");
-      filtered = filtered.filter((applicant) => regex.test(applicant.name));
+      filtered = filtered.filter((application) => regex.test(application.name));
     }
 
-    setFilteredApplicants(filtered);
+    setFilteredApplications(filtered);
   }, [
     selectedCommittee,
     selectedYear,
     searchQuery,
     selectedBankom,
-    applicants,
+    applications,
   ]);
 
   const resetFilters = () => {
@@ -151,8 +151,8 @@ const ApplicantsOverview = ({
     };
   }, [filterMenuRef]);
 
-  if (applicantsIsLoading) return <ApplicantOverviewSkeleton />;
-  if (applicantsIsError) return <ErrorPage />;
+  if (applicationsIsLoading) return <ApplicationOverviewSkeleton />;
+  if (applicationsIsError) return <ErrorPage />;
 
   return (
     <div className="flex flex-col items-center">
@@ -163,13 +163,13 @@ const ApplicantsOverview = ({
           <p className="text-sm text-gray-800 dark:text-gray-300">
             Søk etter navn eller filtrer
           </p>
-          <div className="flex flex-row gap-2 relative">
-            {applicants.length > filteredApplicants.length && (
+          <div className="relative flex flex-row gap-2">
+            {applications.length > filteredApplications.length && (
               <p
-                className="text-blue-800 dark:text-blue-400 text-sm cursor-pointer"
+                className="text-sm text-blue-800 cursor-pointer dark:text-blue-400"
                 onClick={resetFilters}
               >
-                (Vis alle {applicants.length})
+                (Vis alle {applications.length})
               </p>
             )}
             <AdjustmentsHorizontalIcon
@@ -181,13 +181,13 @@ const ApplicantsOverview = ({
             {filterMenuVisible && (
               <div
                 ref={filterMenuRef}
-                className="absolute right-0 top-10 w-48 bg-white dark:bg-online-darkBlue border border-gray-300 dark:border-gray-600 p-4 rounded shadow-lg z-10"
+                className="absolute right-0 z-10 w-48 p-4 bg-white border border-gray-300 rounded shadow-lg top-10 dark:bg-online-darkBlue dark:border-gray-600"
               >
                 {committees && (
                   <div className="mb-4">
-                    <label className="block text-sm mb-2">Velg komite</label>
+                    <label className="block mb-2 text-sm">Velg komite</label>
                     <select
-                      className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+                      className="w-full p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                       value={selectedCommittee ?? ""}
                       onChange={(e) => setSelectedCommittee(e.target.value)}
                     >
@@ -201,9 +201,9 @@ const ApplicantsOverview = ({
                   </div>
                 )}
                 <div className="mb-4">
-                  <label className="block text-sm mb-2">Velg klasse</label>
+                  <label className="block mb-2 text-sm">Velg klasse</label>
                   <select
-                    className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+                    className="w-full p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                     value={selectedYear}
                     onChange={(e) => setSelectedYear(e.target.value)}
                   >
@@ -216,9 +216,9 @@ const ApplicantsOverview = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm mb-2">Velg bankom</label>
+                  <label className="block mb-2 text-sm">Velg bankom</label>
                   <select
-                    className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
+                    className="w-full p-2 text-black border border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                     value={selectedBankom}
                     onChange={(e) =>
                       setSelectedBankom(e.target.value as bankomOptionsType)
@@ -245,17 +245,19 @@ const ApplicantsOverview = ({
         />
       </div>
 
-      {filteredApplicants && filteredApplicants.length > 0 ? (
+      {filteredApplications && filteredApplications.length > 0 ? (
         <div className="w-full max-w-lg mx-auto">
           <div className="flex flex-col ">
-            {filteredApplicants?.map((applicant) => (
-              <ApplicantCard
-                key={applicant.owId + applicant.name}
-                applicant={applicant}
+            {filteredApplications?.map((application) => (
+              <ApplicationCard
+                key={application.owId + application.name}
+                application={application}
                 includePreferences={includePreferences}
               />
             ))}
-            <p className="text-end ">{filteredApplicants?.length} resultater</p>
+            <p className="text-end ">
+              {filteredApplications?.length} resultater
+            </p>
           </div>
         </div>
       ) : (
@@ -265,4 +267,4 @@ const ApplicantsOverview = ({
   );
 };
 
-export default ApplicantsOverview;
+export default ApplicationsOverview;

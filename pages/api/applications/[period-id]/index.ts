@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getApplications } from "../../../../lib/mongo/applicants";
+import { getApplicationsByPeriodId } from "../../../../lib/mongo/applications";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
 import { hasSession, isAdmin } from "../../../../lib/utils/apiChecks";
@@ -19,7 +19,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     if (req.method === "GET") {
-      const { applications, exists, error } = await getApplications(periodId);
+      const { applications, exists, error } =
+        await getApplicationsByPeriodId(periodId);
       if (error) {
         return res.status(500).json({ error });
       }

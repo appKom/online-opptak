@@ -28,7 +28,7 @@ export type committeePreferenceType = {
   committee: string;
 };
 
-export type applicantType = {
+export type applicationType = {
   owId: string;
   name: string;
   email: string;
@@ -50,7 +50,7 @@ export type applicantType = {
 
 export type bankomOptionsType = "yes" | "no" | "maybe" | undefined;
 
-// applicantType modified to fit email content
+// applicationType modified to fit email content
 export type emailDataType = {
   name: string;
   emails: string[];

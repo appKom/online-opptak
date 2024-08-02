@@ -6,7 +6,7 @@ import {
   ChevronDownIcon,
 } from "@heroicons/react/24/solid";
 
-const ApplicantOverviewSkeleton = () => {
+const ApplicationOverviewSkeleton = () => {
   const theme = useTheme();
 
   return (
@@ -14,15 +14,15 @@ const ApplicantOverviewSkeleton = () => {
       baseColor={theme === "dark" ? "#202020" : "#e0e0e0"}
       highlightColor={theme === "dark" ? "#444" : "#f5f5f5"}
     >
-      <div className="flex justify-center px-5 w-full">
+      <div className="flex justify-center w-full px-5">
         <div className="flex flex-col items-center w-full max-w-lg">
-          <Skeleton width={200} height={30} className="mt-5 mb-6 py-4" />
-          <div className="w-full max-w-lg mx-auto mb-5 pt-1">
-            <div className="flex flex-row mb-2 align-end justify-between relative">
-              <p className="dark:text-gray-300 text-gray-800 text-sm">
+          <Skeleton width={200} height={30} className="py-4 mt-5 mb-6" />
+          <div className="w-full max-w-lg pt-1 mx-auto mb-5">
+            <div className="relative flex flex-row justify-between mb-2 align-end">
+              <p className="text-sm text-gray-800 dark:text-gray-300">
                 Søk etter navn eller filtrer
               </p>
-              <div className="flex flex-row gap-2 relative">
+              <div className="relative flex flex-row gap-2">
                 <AdjustmentsHorizontalIcon
                   className={`w-8 h-8 cursor-pointer transition-transform duration-300 transform filter-icon`}
                   onClick={() => {}}
@@ -71,4 +71,4 @@ const ApplicantOverviewSkeleton = () => {
   );
 };
 
-export default ApplicantOverviewSkeleton;
+export default ApplicationOverviewSkeleton;
