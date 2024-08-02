@@ -105,8 +105,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             subject: "Vi har mottatt din søknad!",
             htmlContent: generateApplicantEmail(emailData),
           });
-
-          console.log("Email sent to: ", emailData.emails);
         } catch (error) {
           console.error("Error sending email: ", error);
           throw error;
