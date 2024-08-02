@@ -12,28 +12,31 @@ export const generateApplicantEmail = (emailData: emailDataType) => {
         font-family: Arial, sans-serif;
         line-height: 1.6;
         color: #333;
-        padding: 20px;
+        padding: 0;
         background-color: #f9f9f9;
       }
       .container {
         max-width: 600px;
         margin: auto;
         background-color: #fff;
-        padding: 20px;
+        padding: 20px !important;
         border: 1px solid #ddd;
         border-radius: 8px;
       }
       .header {
         font-size: 24px;
         font-weight: bold;
-        margin-bottom: 20px;
       }
       .header img {
         height: 40px;
-        margin-bottom: 20px;
+        width: auto;
       }
-      .content p {
-        margin-bottom: 10px;
+      .header p {
+        margin-top: 10px;
+      }
+      p {
+        margin-top: 20px;
+        margin-bottom: 0;
       }
       .content strong {
         color: #2c3e50;
@@ -44,7 +47,7 @@ export const generateApplicantEmail = (emailData: emailDataType) => {
     <div class="container">
       <div class="header">
         <img src="https://www.ntnu.no/documents/144448/0/Online_logo_2021.png/fcc93412-84f4-5f39-a7e0-ba269d1ed807?t=1620030827984" alt="Online Logo" />
-        Vi har mottatt din søknad!
+        <p>Vi har mottatt din søknad!</p>
       </div>
       <div class="content">
         <p>Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over.</p>
