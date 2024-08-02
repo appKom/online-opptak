@@ -25,7 +25,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       return res.status(201).json({ message: "Period created successfully" });
     }
   } catch {
-    res.status(500).json("An error occurred");
+    return res.status(500).json("An error occurred");
   }
 
   res.setHeader("Allow", ["POST"]);
