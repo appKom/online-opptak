@@ -17,7 +17,7 @@ const PeriodCard = ({ period }: Props) => {
   const [hasApplied, setHasApplied] = useState(false);
 
   const { data: applicationData, isLoading: applicationIsLoading } = useQuery({
-    queryKey: ["applications", period._id, session?.user?.owId],
+    queryKey: ["application", period._id, session?.user?.owId],
     queryFn: fetchApplicationByPeriodAndId,
   });
 
