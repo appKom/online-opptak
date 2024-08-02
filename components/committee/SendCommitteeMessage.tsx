@@ -1,17 +1,15 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 import Button from "../Button";
 import TextAreaInput from "../form/TextAreaInput";
-import LoadingPage from "../LoadingPage";
 import { useRouter } from "next/router";
 import { committeeInterviewType, periodType } from "../../lib/types/types";
-import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { SimpleTitle } from "../Typography";
 
 interface Props {
   period: periodType | null;
   committee: string;
   committeeInterviewTimes: committeeInterviewType | null;
-  tabClicked: number;
 }
 
 const SendCommitteeMessage = ({
@@ -80,21 +78,17 @@ const SendCommitteeMessage = ({
     }
   };
 
-  if (new Date(period!.applicationPeriod.end) < new Date()) {
+  if (new Date(period!.applicationPeriod.end) < new Date())
     return (
-      <div className="flex items-center justify-center h-screen">
-        <h2 className="mt-5 mb-6 text-3xl font-bold">
-          Det er ikke lenger mulig å legge inn tider!
-        </h2>
-      </div>
+      <SimpleTitle
+        title="Det er ikke lenger mulig å sende melding"
+        size="medium"
+      />
     );
-  }
 
   return (
-    <div className="flex flex-col gap-5 max-w-3xl mx-auto mb-5 px-10">
-      <h1 className="font-bold text-2xl text-center">
-        Skriv en egendefinert melding!
-      </h1>
+    <div className="flex flex-col max-w-3xl gap-5 px-10 mx-auto">
+      <SimpleTitle title="Skriv en egendefinert melding" size="medium" />
 
       {!committeeHasSubmitedTimes && (
         <p className="text-red-500 text-center">
@@ -110,9 +104,7 @@ const SendCommitteeMessage = ({
             value={message}
             label={""}
             maxLength={1000}
-            placeholder="Hei, så hyggelig at du har søkt Testkom.
-          Vi ser fram til møte med deg. Gi oss gjerne beskjed om du har noen spørsmål. Mvh. Testkom. 
-          "
+            placeholder="Hei, så hyggelig at du har søkt Testkom. Vi ser fram til møte med deg. Gi oss gjerne beskjed om du har noen spørsmål. Mvh. Testkom."
           />
 
           <Button
