@@ -12,7 +12,7 @@ export const authOptions: NextAuthOptions = {
     Auth0Provider({
       clientId:
         (isStageEnvironment
-          ? env.STAGE_AUTH0_CLIENT_SECRET
+          ? env.STAGE_AUTH0_CLIENT_ID
           : env.PROD_AUTH0_CLIENT_ID) || "",
       clientSecret:
         (isStageEnvironment
@@ -32,8 +32,8 @@ export const authOptions: NextAuthOptions = {
 
       async profile(profile, tokens) {
         const apiUrl = isStageEnvironment
-          ? "https://old.online.ntnu.no/api/v1/profile/"
-          : "https://dev.online.ntnu.no/api/v1/profile/";
+          ? "https://dev.online.ntnu.no/api/v1/profile/"
+          : "https://old.online.ntnu.no/api/v1/profile/";
 
         const headers = {
           Authorization: `Bearer ${tokens.access_token}`,
@@ -108,6 +108,12 @@ export const authOptions: NextAuthOptions = {
         session.user.isCommittee = token.isCommittee as boolean;
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url.startsWith(baseUrl)) return url;
+      // Allows relative callback URLs
+      else if (url.startsWith("/")) return new URL(url, baseUrl).toString();
+      return baseUrl;
     },
   },
 };

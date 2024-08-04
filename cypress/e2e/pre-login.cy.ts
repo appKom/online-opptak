@@ -1,6 +1,6 @@
 describe("Home Page Tests", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/");
+    cy.visit("/");
   });
 
   it("should display login prompt when user is not logged in", () => {
@@ -19,7 +19,7 @@ describe("Home Page Tests", () => {
 
 describe("Navbar Component Tests", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/");
+    cy.visit("/");
   });
 
   it("should display login button when user is not logged in", () => {
@@ -40,7 +40,7 @@ describe("Navbar Component Tests", () => {
 
 describe("Footer Component Tests", () => {
   beforeEach(() => {
-    cy.visit("http://localhost:3000/");
+    cy.visit("/");
   });
 
   it("should display correct contact information", () => {
