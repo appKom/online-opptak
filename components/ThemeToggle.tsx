@@ -30,6 +30,7 @@ const ThemeToggle = () => {
         <button
           className="p-2 transition duration-300 ease-in-out rounded-full group"
           onClick={toggleTheme}
+          data-cy="theme-toggle"
         >
           {theme === "dark" ? (
             <MoonIconSolid className="w-6 h-6 transition-transform duration-300 ease-in-out text-online-orange group-hover:scale-110" />

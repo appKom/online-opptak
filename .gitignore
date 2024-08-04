@@ -2,6 +2,7 @@
 
 # env
 .env
+cypress.env.json
 
 # dependencies
 /node_modules
