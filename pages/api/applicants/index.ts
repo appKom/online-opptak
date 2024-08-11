@@ -55,63 +55,63 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { applicant, error } = await createApplicant(requestBody);
       if (error) throw new Error(error);
 
-      if (applicant != null) {
-        let optionalCommitteesString = "";
-        if (applicant.optionalCommittees.length > 0) {
-          optionalCommitteesString = applicant.optionalCommittees
-            ?.map(changeDisplayName)
-            .join(", ");
-        } else {
-          optionalCommitteesString = "Ingen";
-        }
+      // if (applicant != null) {
+      //   let optionalCommitteesString = "";
+      //   if (applicant.optionalCommittees.length > 0) {
+      //     optionalCommitteesString = applicant.optionalCommittees
+      //       ?.map(changeDisplayName)
+      //       .join(", ");
+      //   } else {
+      //     optionalCommitteesString = "Ingen";
+      //   }
 
-        const emailData: emailDataType = {
-          name: applicant.name,
-          emails: [applicant.email],
-          phone: applicant.phone,
-          grade: applicant.grade,
-          about: applicant.about.replace(/\n/g, "<br>"),
-          firstChoice: "Tom",
-          secondChoice: "Tom",
-          thirdChoice: "Tom",
-          bankom:
-            applicant.bankom == "yes"
-              ? "Ja"
-              : applicant.bankom == "no"
-              ? "Nei"
-              : "Kanskje",
-          optionalCommittees: optionalCommitteesString,
-        };
+      //   const emailData: emailDataType = {
+      //     name: applicant.name,
+      //     emails: [applicant.email],
+      //     phone: applicant.phone,
+      //     grade: applicant.grade,
+      //     about: applicant.about.replace(/\n/g, "<br>"),
+      //     firstChoice: "Tom",
+      //     secondChoice: "Tom",
+      //     thirdChoice: "Tom",
+      //     bankom:
+      //       applicant.bankom == "yes"
+      //         ? "Ja"
+      //         : applicant.bankom == "no"
+      //         ? "Nei"
+      //         : "Kanskje",
+      //     optionalCommittees: optionalCommitteesString,
+      //   };
 
-        //Type guard
-        if (!Array.isArray(applicant.preferences)) {
-          emailData.firstChoice =
-            applicant.preferences.first == "onlineil"
-              ? "Online IL"
-              : capitalizeFirstLetter(applicant.preferences.first);
-          emailData.secondChoice =
-            applicant.preferences.second == "onlineil"
-              ? "Online IL"
-              : capitalizeFirstLetter(applicant.preferences.second);
-          emailData.thirdChoice =
-            applicant.preferences.third == "onlineil"
-              ? "Online IL"
-              : capitalizeFirstLetter(applicant.preferences.third);
-        }
+      //   //Type guard
+      //   if (!Array.isArray(applicant.preferences)) {
+      //     emailData.firstChoice =
+      //       applicant.preferences.first == "onlineil"
+      //         ? "Online IL"
+      //         : capitalizeFirstLetter(applicant.preferences.first);
+      //     emailData.secondChoice =
+      //       applicant.preferences.second == "onlineil"
+      //         ? "Online IL"
+      //         : capitalizeFirstLetter(applicant.preferences.second);
+      //     emailData.thirdChoice =
+      //       applicant.preferences.third == "onlineil"
+      //         ? "Online IL"
+      //         : capitalizeFirstLetter(applicant.preferences.third);
+      //   }
 
-        try {
-          await sendEmail({
-            toEmails: emailData.emails,
-            subject: "Vi har mottatt din søknad!",
-            htmlContent: generateApplicantEmail(emailData),
-          });
+      //   try {
+      //     await sendEmail({
+      //       toEmails: emailData.emails,
+      //       subject: "Vi har mottatt din søknad!",
+      //       htmlContent: generateApplicantEmail(emailData),
+      //     });
 
-          console.log("Email sent to: ", emailData.emails);
-        } catch (error) {
-          console.error("Error sending email: ", error);
-          throw error;
-        }
-      }
+      //     console.log("Email sent to: ", emailData.emails);
+      //   } catch (error) {
+      //     console.error("Error sending email: ", error);
+      //     throw error;
+      //   }
+      // }
 
       return res.status(201).json({ applicant });
     }

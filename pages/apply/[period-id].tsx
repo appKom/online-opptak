@@ -112,7 +112,7 @@ const Application: NextPage = () => {
   }, [periodData]);
 
   const handleSubmitApplication = async () => {
-    if (!validateApplication(applicationData)) return;
+    // if (!validateApplication(applicationData)) return;
     applicationData.periodId = periodId as string;
     createApplicantMutation.mutate(applicationData as applicantType);
   };
@@ -140,38 +140,38 @@ const Application: NextPage = () => {
   if (!periodData?.exists)
     return <SimpleTitle title="Opptaket finnes ikke" size="large" />;
 
-  if (applicantData?.exists)
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
-        <WellDoneIllustration className="h-32" />
-        <p className="max-w-md text-lg text-center">
-          Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!
-        </p>
-        <p className="max-w-md text-lg text-center">
-          Du vil få enda en e-post med intervjutider når søknadsperioden er over
-          (rundt {formatDateNorwegian(period?.applicationPeriod?.end)}).
-        </p>
-        <p className="max-w-md text-center text-gray-500">
-          (Hvis du ikke finner e-posten din, sjekk søppelpost- eller
-          spam-mappen.)
-        </p>
-        {!isApplicationPeriodOver && (
-          <Button
-            title="Trekk tilbake søknad"
-            color="white"
-            onClick={handleDeleteApplication}
-          />
-        )}
-        {applicantData?.application && (
-          <div className="w-full max-w-md">
-            <ApplicantCard
-              applicant={applicantData.application}
-              includePreferences={true}
-            />
-          </div>
-        )}
-      </div>
-    );
+  // if (applicantData?.exists)
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
+  //       <WellDoneIllustration className="h-32" />
+  //       <p className="max-w-md text-lg text-center">
+  //         Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!
+  //       </p>
+  //       <p className="max-w-md text-lg text-center">
+  //         Du vil få enda en e-post med intervjutider når søknadsperioden er over
+  //         (rundt {formatDateNorwegian(period?.applicationPeriod?.end)}).
+  //       </p>
+  //       <p className="max-w-md text-center text-gray-500">
+  //         (Hvis du ikke finner e-posten din, sjekk søppelpost- eller
+  //         spam-mappen.)
+  //       </p>
+  //       {!isApplicationPeriodOver && (
+  //         <Button
+  //           title="Trekk tilbake søknad"
+  //           color="white"
+  //           onClick={handleDeleteApplication}
+  //         />
+  //       )}
+  //       {applicantData?.application && (
+  //         <div className="w-full max-w-md">
+  //           <ApplicantCard
+  //             applicant={applicantData.application}
+  //             includePreferences={true}
+  //           />
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
 
   return (
     <div>

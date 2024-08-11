@@ -26,14 +26,14 @@ export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
-    const existingApplicant = await applicants.findOne({
-      owId: applicantData.owId,
-      periodId: applicantData.periodId,
-    });
+    // const existingApplicant = await applicants.findOne({
+    //   owId: applicantData.owId,
+    //   periodId: applicantData.periodId,
+    // });
 
-    if (existingApplicant) {
-      return { error: "409 Application already exists for this period" };
-    }
+    // if (existingApplicant) {
+    //   return { error: "409 Application already exists for this period" };
+    // }
 
     const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
