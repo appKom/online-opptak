@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { periodType } from "../lib/types/types";
-import PeriodCard from "../components/PeriodCard";
-import { fetchPeriods } from "../lib/api/periodApi";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import ErrorPage from "../components/ErrorPage";
-import { PeriodSkeletonPage } from "../components/PeriodSkeleton";
+import ErrorPage from "../../components/ErrorPage";
+import PeriodCard from "../../components/PeriodCard";
+import { fetchPeriods } from "../../lib/api/periodApi";
+import { periodType } from "../../lib/types/types";
+import { PeriodSkeletonPage } from "../../components/PeriodSkeleton";
+import { SimpleTitle } from "../../components/Typography";
 
 const Apply = () => {
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
@@ -38,42 +40,39 @@ const Apply = () => {
 
   return (
     <div className="flex flex-col justify-between overflow-x-hidden text-online-darkBlue dark:text-white">
-      <div className="flex flex-col items-center justify-center gap-5 px-5 my-10">
+      <div className="flex flex-col items-center justify-center gap-5 px-5">
         {currentPeriods.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-8">
-            <h1 className="text-3xl ">Ingen åpne opptak for øyeblikket</h1>
+            <SimpleTitle title="Ingen åpne opptak for øyeblikket" />
             <p className="w-10/12 max-w-2xl text-center text-md ">
               Opptak til{" "}
-              <a
-                href="https://online.ntnu.no/applications"
-                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-              >
-                komiteene
-              </a>{" "}
+              <Link href="/committees">
+                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
+                  komiteene
+                </a>
+              </Link>{" "}
               skjer vanligvis i august etter fadderuka. Noen komiteer har
-              vanligvis suppleringsopptak i februar.{<br></br>} <br></br> Følg
-              med på{" "}
-              <a
-                href="https://online.ntnu.no"
-                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-              >
-                online.ntnu.no
-              </a>{" "}
+              vanligvis suppleringsopptak i februar.
+              <br />
+              <br />
+              Følg med på{" "}
+              <Link href="https://online.ntnu.no">
+                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
+                  online.ntnu.no
+                </a>
+              </Link>{" "}
               eller på vår{" "}
-              <a
-                href="https://www.facebook.com/groups/1547182375336132"
-                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
-              >
-                Facebook
-              </a>{" "}
-              side for kunngjøringer!
+              <Link href="https://www.facebook.com/groups/1547182375336132">
+                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
+                  Facebook-gruppe
+                </a>
+              </Link>{" "}
+              for kunngjøringer!
             </p>
           </div>
         ) : (
           <div className="flex flex-col gap-10">
-            <h3 className="text-4xl font-bold tracking-tight text-center dark:text-white">
-              Nåværende opptaksperioder
-            </h3>
+            <SimpleTitle title="Nåværende opptaksperioder" />
             <div className="flex flex-col items-center max-w-full gap-5">
               {currentPeriods.map((period: periodType, index: number) => (
                 <PeriodCard key={index} period={period} />

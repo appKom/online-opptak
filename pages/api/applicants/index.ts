@@ -3,7 +3,7 @@ import { createApplicant, getApplicants } from "../../../lib/mongo/applicants";
 import { authOptions } from "../auth/[...nextauth]";
 import { getPeriodById } from "../../../lib/mongo/periods";
 import { getServerSession } from "next-auth";
-import { emailDataType } from "../../../lib/types/types";
+import { applicantType, emailDataType } from "../../../lib/types/types";
 import { isApplicantType } from "../../../lib/utils/validators";
 import { isAdmin, hasSession, checkOwId } from "../../../lib/utils/apiChecks";
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
@@ -26,20 +26,20 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     if (req.method === "POST") {
-      const requestBody = req.body;
+      const requestBody: applicantType = req.body;
       requestBody.date = new Date(new Date().getTime() + 60 * 60 * 2000); // add date with norwegain time (GMT+2)
-
-      if (!isApplicantType(req.body)) {
-        return res.status(400).json({ error: "Invalid data format" });
-      }
-
-      if (!checkOwId(res, session, requestBody.owId)) return;
 
       const { period } = await getPeriodById(String(requestBody.periodId));
 
       if (!period) {
         return res.status(400).json({ error: "Invalid period id" });
       }
+
+      if (!isApplicantType(req.body, period)) {
+        return res.status(400).json({ error: "Invalid data format" });
+      }
+
+      if (!checkOwId(res, session, requestBody.owId)) return;
 
       const now = new Date();
       const applicationStart = period.applicationPeriod.start;
@@ -109,8 +109,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             subject: "Vi har mottatt din søknad!",
             htmlContent: `Dette er en bekreftelse på at vi har mottatt din søknad. Du vil motta en ny e-post med intervjutider etter søkeperioden er over. Her er en oppsummering av din søknad:<br><br><strong>E-post:</strong> ${emailData.emails[0]}<br><br><strong>Fullt navn:</strong> ${emailData.name}<br><br><strong>Telefonnummer:</strong> ${emailData.phone}<br><br><strong>Trinn:</strong> ${emailData.grade}<br><br><strong>Førstevalg:</strong> ${emailData.firstChoice}<br><br><strong>Andrevalg:</strong> ${emailData.secondChoice}<br><br><strong>Tredjevalg:</strong> ${emailData.thirdChoice}<br><br><strong>Ønsker du å være økonomiansvarlig:</strong> ${emailData.bankom}<br><br><strong> Andre valg:</strong> ${emailData.optionalCommittees}<br><br><strong>Kort om deg selv:</strong><br>${emailData.about}`,
           });
-
-          console.log("Email sent to: ", emailData.emails);
         } catch (error) {
           console.error("Error sending email: ", error);
           throw error;

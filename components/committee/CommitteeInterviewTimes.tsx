@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import NotFound from "../../pages/404";
 import Button from "../Button";
 import ImportantNote from "../ImportantNote";
+import { SimpleTitle } from "../Typography";
 
 interface Interview {
   title: string;
@@ -325,15 +326,13 @@ const CommitteeInterviewTimes = ({
     return <NotFound />;
   }
 
-  if (period!.interviewPeriod.start < new Date()) {
+  if (deadLineHasPassed)
     return (
-      <div className="flex items-center justify-center h-screen">
-        <h2 className="mt-5 mb-6 text-3xl font-bold">
-          Det er ikke lenger mulig å legge inn tider!
-        </h2>
-      </div>
+      <SimpleTitle
+        title="Det er ikke lenger mulig å legge inn tider"
+        size="medium"
+      />
     );
-  }
 
   return (
     <div className="flex flex-col items-center">
