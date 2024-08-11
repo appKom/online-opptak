@@ -14,9 +14,16 @@ export const formatInterviewSMS = (applicant: emailApplicantInterviewType) => {
 
   applicant.committees.forEach((committee) => {
     phoneBody += `Komite: ${changeDisplayName(committee.committeeName)} \n`;
-    phoneBody += `Tid: ${formatDateHours(
-      new Date(committee.interviewTime.start)
-    )}\n`;
+
+    if (committee.interviewTime.start !== "Ikke satt") {
+      phoneBody += `Tid: ${formatDateHours(
+        new Date(committee.interviewTime.start)
+      )}\n`;
+    }
+
+    if (committee.interviewTime.start === "Ikke satt") {
+      phoneBody += `Tid: Ikke satt \n`;
+    }
 
     phoneBody += `Rom: ${committee.interviewTime.room} \n \n`;
   });

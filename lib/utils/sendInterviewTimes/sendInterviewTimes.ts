@@ -5,6 +5,8 @@ import {
   emailCommitteeInterviewType,
   periodType,
   algorithmType,
+  preferencesType,
+  committeePreferenceType,
 } from "../../types/types";
 
 import { fetchCommitteeEmails } from "./fetchFunctions";
@@ -12,6 +14,7 @@ import { formatAndSendEmails } from "./formatAndSend";
 import { getPeriods, markInterviewsSentByPeriodId } from "../../mongo/periods";
 import { getCommitteesByPeriod } from "../../mongo/committees";
 import { getInterviewsByPeriod } from "../../mongo/interviews";
+import { getApplication, getApplicationById } from "../../mongo/applicants";
 
 export const sendOutInterviewTimes = async () => {
   try {
@@ -23,10 +26,13 @@ export const sendOutInterviewTimes = async () => {
 
     for (const period of periods) {
       if (
-        period.hasSentInterviewTimes === false &&
-        period.applicationPeriod.end < new Date()
+        (period.hasSentInterviewTimes === false &&
+          period.applicationPeriod.end < new Date()) ||
+        period.name === "FAKE TEST OPPTAK!"
       ) {
         const periodId = String(period._id);
+
+        console.log("hei");
 
         const committeeInterviewTimesData =
           await getCommitteesByPeriod(periodId);
@@ -41,7 +47,7 @@ export const sendOutInterviewTimes = async () => {
         const fetchedAlgorithmData = await getInterviewsByPeriod(periodId);
         const algorithmData = fetchedAlgorithmData.interviews || [];
 
-        const applicantsToEmail = formatApplicants(
+        const applicantsToEmail = await formatApplicants(
           algorithmData,
           periodId,
           period,
@@ -52,7 +58,7 @@ export const sendOutInterviewTimes = async () => {
         const committeesToEmail = formatCommittees(applicantsToEmail);
 
         await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
-        markInterviewsSentByPeriodId(periodId);
+        // markInterviewsSentByPeriodId(periodId);
       }
     }
   } catch (error) {
@@ -60,16 +66,46 @@ export const sendOutInterviewTimes = async () => {
   }
 };
 
-const formatApplicants = (
+const formatApplicants = async (
   algorithmData: algorithmType[],
   periodId: string,
   period: periodType,
   committeeEmails: committeeEmails[],
   committeeInterviewTimes: committeeInterviewType[]
-): emailApplicantInterviewType[] => {
+): Promise<emailApplicantInterviewType[]> => {
   const applicantsToEmailMap: emailApplicantInterviewType[] = [];
 
   for (const app of algorithmData) {
+    const dbApplication = await getApplicationById(app.applicantId, periodId);
+
+    if (!dbApplication || !dbApplication.application) continue;
+
+    const preferencesCommittees: string[] =
+      "first" in dbApplication.application.preferences
+        ? [
+            dbApplication.application.preferences.first,
+            dbApplication.application.preferences.second,
+            dbApplication.application.preferences.third,
+          ].filter((committee) => committee !== "")
+        : dbApplication.application.preferences.map(
+            (preference: committeePreferenceType) => preference.committee
+          );
+
+    const allCommittees = [
+      ...preferencesCommittees,
+      ...dbApplication.application.optionalCommittees,
+    ];
+
+    console.log(allCommittees);
+
+    const scheduledCommittees = app.interviews.map(
+      (interview) => interview.committeeName
+    );
+
+    const missingCommittees = allCommittees.filter(
+      (committee) => !scheduledCommittees.includes(committee)
+    );
+
     const committees = app.interviews.map((interview) => {
       const committeeEmail = committeeEmails.find(
         (email) =>
@@ -104,6 +140,23 @@ const formatApplicants = (
         },
       };
     });
+
+    for (const missingCommittee of missingCommittees) {
+      const committeeEmail = committeeEmails.find(
+        (email) =>
+          email.name_short.toLowerCase() === missingCommittee.toLowerCase()
+      );
+
+      committees.push({
+        committeeName: missingCommittee,
+        committeeEmail: committeeEmail?.email || "",
+        interviewTime: {
+          start: "Ikke satt",
+          end: "Ikke satt",
+          room: "Ikke satt",
+        },
+      });
+    }
 
     const applicantToEmail = {
       periodId: periodId,

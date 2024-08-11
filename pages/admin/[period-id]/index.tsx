@@ -35,7 +35,7 @@ const Admin = () => {
 
   const sendOutInterviewTimes = async ({ periodId }: { periodId: string }) => {
     try {
-      const response = await fetch(`/api/interviews/${periodId}`, {
+      const response = await fetch(`/api/periods/send-interview-times`, {
         method: "POST",
       });
       if (!response.ok) {

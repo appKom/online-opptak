@@ -32,14 +32,21 @@ export const formatAndSendEmails = async ({
       const phoneBody = formatInterviewSMS(typedApplicant);
 
       await sendEmail({
-        toEmails: applicantEmail,
+        // toEmails: applicantEmail,
+        toEmails: [
+          "fhansteen@gmail.com",
+          "julian.ottosen@online.ntnu.no",
+          "jorgen.galdal@online.ntnu.no",
+        ],
         subject: subject,
         htmlContent: emailBody,
       });
 
-      let toPhoneNumber = "+47";
-      toPhoneNumber += typedApplicant.applicantPhone;
-      sendSMS(toPhoneNumber, phoneBody);
+      // let toPhoneNumber = "+47";
+      // toPhoneNumber += typedApplicant.applicantPhone;
+      // sendSMS(toPhoneNumber, phoneBody);
+
+      console.log(emailBody);
     }
 
     // Send email to each committee
@@ -53,10 +60,17 @@ export const formatAndSendEmails = async ({
       const emailBody = formatCommitteeInterviewEmail(typedCommittee);
 
       await sendEmail({
-        toEmails: committeeEmail,
+        // toEmails: committeeEmail,
+        toEmails: [
+          "fhansteen@gmail.com",
+          "julian.ottosen@online.ntnu.no",
+          "jorgen.galdal@online.ntnu.no",
+        ],
         subject: subject,
         htmlContent: emailBody,
       });
+
+      console.log(emailBody);
     }
   } catch (error) {
     return { error: "Failed to send out interview times" };

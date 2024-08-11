@@ -21,12 +21,20 @@ export const formatApplicantInterviewEmail = (
     emailBody += `<li><b>Komite:</b> ${changeDisplayName(
       committee.committeeName
     )}<br>`;
-    emailBody += `<b>Start:</b> ${formatDateHours(
-      new Date(committee.interviewTime.start)
-    )}<br>`;
-    emailBody += `<b>Slutt:</b> ${formatDateHours(
-      new Date(committee.interviewTime.end)
-    )}<br>`;
+
+    if (committee.interviewTime.start !== "Ikke satt") {
+      emailBody += `<b>Start:</b> ${formatDateHours(
+        new Date(committee.interviewTime.start)
+      )}<br>`;
+      emailBody += `<b>Slutt:</b> ${formatDateHours(
+        new Date(committee.interviewTime.end)
+      )}<br>`;
+    }
+    if (committee.interviewTime.start === "Ikke satt") {
+      emailBody += `<b>Start:</b> Ikke satt<br>`;
+      emailBody += `<b>Slutt:</b> Ikke satt<br>`;
+    }
+
     emailBody += `<b>Rom:</b> ${committee.interviewTime.room}</li><br>`;
   });
 
@@ -52,12 +60,20 @@ export const formatCommitteeInterviewEmail = (
   committee.applicants.forEach((applicant) => {
     emailBody += `<li><b>Navn:</b> ${applicant.applicantName}<br>`;
     emailBody += `<b>Telefon:</b> ${applicant.applicantPhone} <br> `;
-    emailBody += `<b>Start:</b> ${formatDateHours(
-      new Date(applicant.interviewTime.start)
-    )}<br>`;
-    emailBody += `<b>Slutt:</b> ${formatDateHours(
-      new Date(applicant.interviewTime.end)
-    )}<br>`;
+
+    if (applicant.interviewTime.start !== "Ikke satt") {
+      emailBody += `<b>Start:</b> ${formatDateHours(
+        new Date(applicant.interviewTime.start)
+      )}<br>`;
+      emailBody += `<b>Slutt:</b> ${formatDateHours(
+        new Date(applicant.interviewTime.end)
+      )}<br>`;
+    }
+
+    if (applicant.interviewTime.start === "Ikke satt") {
+      emailBody += `<b>Start:</b> Ikke satt<br>`;
+      emailBody += `<b>Slutt:</b> Ikke satt<br>`;
+    }
     emailBody += `<b>Rom:</b> ${applicant.interviewTime.room}</li><br>`;
   });
 
