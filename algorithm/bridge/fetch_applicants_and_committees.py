@@ -49,17 +49,17 @@ def send_to_db(match_result: MeetingMatch, applicants: List[dict], periodId):
     print("Sending to db")
     print(formatted_results)
     
-    # mongo_uri = os.getenv("MONGODB_URI")
-    # db_name = os.getenv("DB_NAME")
-    # client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
+    mongo_uri = os.getenv("MONGODB_URI")
+    db_name = os.getenv("DB_NAME")
+    client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
     
-    # db = client[db_name] # type: ignore
+    db = client[db_name] # type: ignore
     
-    # collection = db["interviews"]
+    collection = db["interviews"]
     
-    # collection.insert_many(formatted_results)
+    collection.insert_many(formatted_results)
     
-    # client.close()
+    client.close()
 
         
 
