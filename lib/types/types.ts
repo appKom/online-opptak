@@ -108,9 +108,6 @@ export type owCommitteeType = {
 };
 
 export type algorithmType = {
-  applicantName: string;
-  applicantEmail: string;
-  applicantPhone: string;
   applicantId: string;
   interviews: {
     start: string;

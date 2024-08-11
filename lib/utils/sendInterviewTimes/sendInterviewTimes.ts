@@ -161,9 +161,9 @@ const formatApplicants = async (
     const applicantToEmail = {
       periodId: periodId,
       period_name: period.name,
-      applicantName: app.applicantName,
-      applicantEmail: app.applicantEmail,
-      applicantPhone: app.applicantPhone,
+      applicantName: dbApplication.application.name,
+      applicantEmail: dbApplication.application.email,
+      applicantPhone: dbApplication.application.phone,
       committees: committees,
     };
 
