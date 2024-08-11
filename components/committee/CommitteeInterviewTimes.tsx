@@ -11,6 +11,8 @@ import Button from "../Button";
 import ImportantNote from "../ImportantNote";
 import useUnsavedChangesWarning from "../../lib/utils/unSavedChangesWarning";
 import { SimpleTitle } from "../Typography";
+import { useQuery } from "@tanstack/react-query";
+import { fetchApplicantsByPeriodIdAndCommittee } from "../../lib/api/applicantApi";
 
 interface Interview {
   title: string;
@@ -55,6 +57,8 @@ const CommitteeInterviewTimes = ({
 
   const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
 
+  const [numberOfApplications, setNumberOfApplications] = useState<number>(0);
+
   useEffect(() => {
     if (period) {
       setVisibleRange({
@@ -63,6 +67,21 @@ const CommitteeInterviewTimes = ({
       });
     }
   }, [period]);
+
+  const {
+    data: applicantsData,
+    isError: applicantsIsError,
+    isLoading: applicantsIsLoading,
+  } = useQuery({
+    queryKey: ["applicants", period?._id, committee],
+    queryFn: fetchApplicantsByPeriodIdAndCommittee,
+  });
+
+  useEffect(() => {
+    if (applicantsData) {
+      setNumberOfApplications(applicantsData.applicants.length);
+    }
+  }, [applicantsData]);
 
   useEffect(() => {
     if (committee && committeeInterviewTimes) {
@@ -163,6 +182,14 @@ const CommitteeInterviewTimes = ({
     const formattedEvents = formatEventsForExport(markedCells);
     if (formattedEvents.length === 0) {
       toast.error("Fyll inn minst et gyldig tidspunkt");
+      return;
+    }
+
+    if (interviewsPlanned < numberOfApplications) {
+      console.log(interviewsPlanned, numberOfApplications);
+      toast.error(
+        "Du har valgt færre tider enn antall søkere. Vennligst legg til flere tider."
+      );
       return;
     }
 
@@ -411,7 +438,7 @@ const CommitteeInterviewTimes = ({
             </select>
           </div>
         )}
-        <p className="py-5 text-lg">{`${interviewsPlanned} intervjuer planlagt`}</p>
+        <p className="py-5 text-lg">{`${interviewsPlanned} / ${numberOfApplications} intervjuer planlagt`}</p>
         <div className="mx-4 sm:mx-20">
           <FullCalendar
             ref={calendarRef}
