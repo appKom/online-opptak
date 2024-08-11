@@ -1,4 +1,5 @@
 from typing import TypedDict
+
 from mip_matching.TimeInterval import TimeInterval
 from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
@@ -12,14 +13,12 @@ class MeetingMatch(TypedDict):
     solver_status: mip.OptimizationStatus
     matched_meetings: int
     total_wanted_meetings: int
-    matchings: list[tuple[str, Applicant, Committee, TimeInterval]]
+    matchings: list[tuple[Applicant, Committee, TimeInterval]]
+
 
 def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> MeetingMatch:
     """Matches meetings and returns a MeetingMatch-object"""
     model = mip.Model(sense=mip.MAXIMIZE)
-    
-    for applicant in applicants:
-        print(f"Applicant: {applicant.name}, Committees: {[str(committee) for committee in applicant.get_committees()]}")
 
     m = {}
 
@@ -66,22 +65,21 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
     solver_status = model.optimize()
 
     # Få de faktiske møtetidene
-    matched_meetings: int = 0
+    antall_matchede_møter: int = 0
     matchings: list = []
-    for (applicant, committee, interval), variable in m.items():
+    for name, variable in m.items():
         if variable.x:
-            matched_meetings += 1
-            matchings.append((applicant.email, applicant.id, committee, interval))
-            print(f"{(applicant, committee, interval)}")
+            antall_matchede_møter += 1
+            matchings.append(name)
+            print(f"{name}")
 
-
-    total_wanted_meetings = sum(
+    antall_ønskede_møter = sum(
         len(applicant.get_committees()) for applicant in applicants)
 
     match_object: MeetingMatch = {
         "solver_status": solver_status,
-        "matched_meetings": matched_meetings,
-        "total_wanted_meetings": total_wanted_meetings,
+        "matched_meetings": antall_matchede_møter,
+        "total_wanted_meetings": antall_ønskede_møter,
         "matchings": matchings,
     }
 

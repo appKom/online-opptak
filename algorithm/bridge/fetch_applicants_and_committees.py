@@ -49,17 +49,17 @@ def send_to_db(match_result: MeetingMatch, applicants: List[dict], periodId):
     print("Sending to db")
     print(formatted_results)
     
-    mongo_uri = os.getenv("MONGODB_URI")
-    db_name = os.getenv("DB_NAME")
-    client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
+    # mongo_uri = os.getenv("MONGODB_URI")
+    # db_name = os.getenv("DB_NAME")
+    # client = MongoClient(mongo_uri, tlsCAFile=certifi.where())
     
-    db = client[db_name] # type: ignore
+    # db = client[db_name] # type: ignore
     
-    collection = db["interviews"]
+    # collection = db["interviews"]
     
-    collection.insert_many(formatted_results)
+    # collection.insert_many(formatted_results)
     
-    client.close()
+    # client.close()
 
         
 
@@ -112,24 +112,21 @@ def fetch_committee_times(periodId):
 
 def format_match_results(match_results: MeetingMatch, applicants: List[dict], periodId) -> List[Dict]:
     transformed_results = {}
-    applicant_dict = {str(applicant['_id']): {'name': applicant['name'], 'email': applicant['email'], 'phone': applicant['phone']} for applicant in applicants}
+    # applicant_dict = {str(applicant['_id']): {'name': applicant['name'], 'email': applicant['email'], 'phone': applicant['phone']} for applicant in applicants}
     
     for result in match_results['matchings']:
-        applicant_id = str(result[1])
-        applicant_info = applicant_dict.get(applicant_id, {'name': 'Unknown', 'email': 'Unknown'})
+        applicant_id = str(result[0])
+        
         
         if applicant_id not in transformed_results:
             transformed_results[applicant_id] = {
                 "periodId": periodId,
                 "applicantId": applicant_id,
-                "applicantName": applicant_info['name'],
-                "applicantEmail": applicant_info['email'],
-                "applicantPhone": applicant_info['phone'],
                 "interviews": []
             }
         
-        committee = result[2]
-        time_interval = result[3]
+        committee = result[1]
+        time_interval = result[2]
         start = time_interval.start.isoformat()
         end = time_interval.end.isoformat()
         
@@ -145,7 +142,7 @@ def format_match_results(match_results: MeetingMatch, applicants: List[dict], pe
 def create_applicant_objects(applicants_data: List[dict], all_committees: dict[str, Committee]) -> set[Applicant]:
     applicants = set()
     for data in applicants_data:
-        applicant = Applicant(name=data['name'], email=data['email'], phone=data['phone'], id=str(data['_id']))
+        applicant = Applicant(name=str(data['_id']))
         
         optional_committee_names = data.get('optionalCommittees', [])
         optional_committees = {all_committees[name] for name in optional_committee_names if name in all_committees}
