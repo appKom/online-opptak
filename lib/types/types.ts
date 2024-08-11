@@ -130,6 +130,7 @@ export type emailCommitteeInterviewType = {
   committeeEmail: string;
   applicants: {
     applicantName: string;
+    applicantPhone: string;
     applicantEmail: string;
     interviewTime: {
       start: string;

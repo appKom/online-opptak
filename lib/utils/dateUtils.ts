@@ -22,6 +22,23 @@ export const formatDateHours = (inputDate: undefined | Date) => {
   return `${formatDateNorwegian(inputDate)}, ${hours}:${minutes}`; //  - ${hours}:${minutes}
 };
 
+export const formatDateForSMS = (
+  start: undefined | Date,
+  end: undefined | Date
+) => {
+  const startDate = new Date(start || "");
+  const endDate = new Date(end || "");
+
+  const startHour = startDate.getHours().toString().padStart(2, "0");
+  const startMinute = startDate.getMinutes().toString().padStart(2, "0");
+  const endHour = endDate.getHours().toString().padStart(2, "0");
+  const endMinute = endDate.getMinutes().toString().padStart(2, "0");
+
+  return `${formatDateNorwegian(
+    startDate
+  )}, ${startHour}:${startMinute} til ${endHour}:${endMinute}`; //  - ${hours}:${minutes}
+};
+
 export const formatDateNorwegian = (inputDate?: Date): string => {
   const date = new Date(inputDate || "");
 
