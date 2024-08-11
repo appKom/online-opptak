@@ -19,9 +19,10 @@ def main():
         application_end = datetime.fromisoformat(period["applicationPeriod"]["end"].replace("Z", "+00:00"))
         
         now = datetime.now(timezone.utc)
+        
 
         #or period["name"] == "Juli Opptak"
-        if  (application_end > now and period["hasSentInterviewTimes"] == False and interview_end < now):
+        if  (application_end > now and period["hasSentInterviewTimes"] == False and interview_end < now) or period["name"] == "FAKE TEST OPPTAK!":
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
             
@@ -77,7 +78,7 @@ def connect_to_db(collection_name):
     return collection, client
 
 def fetch_periods():
-    collection, client = connect_to_db("period")
+    collection, client = connect_to_db("periods")
     
     periods = collection.find()
     
@@ -88,7 +89,7 @@ def fetch_periods():
     return periods
 
 def fetch_applicants(periodId):
-    collection, client = connect_to_db("applicant")
+    collection, client = connect_to_db("applications")
     
     applicants = collection.find({"periodId": periodId})
     
@@ -99,7 +100,7 @@ def fetch_applicants(periodId):
     return applicants
 
 def fetch_committee_times(periodId):
-    collection, client = connect_to_db("committee")
+    collection, client = connect_to_db("committees")
     
     committee_times = collection.find({"periodId": periodId})
     
