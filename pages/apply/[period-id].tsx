@@ -113,6 +113,13 @@ const Application: NextPage = () => {
 
   const handleSubmitApplication = async () => {
     if (!validateApplication(applicationData)) return;
+
+    // Validate selected times
+    if (applicationData.selectedTimes && applicationData.selectedTimes.length === 0) {
+      toast.error("Velg minst én tilgjengelig tid");
+      return false;
+    }
+
     applicationData.periodId = periodId as string;
     createApplicantMutation.mutate(applicationData as applicantType);
   };
