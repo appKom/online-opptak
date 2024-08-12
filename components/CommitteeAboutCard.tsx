@@ -15,7 +15,7 @@ const CommitteeAboutCard = ({
   return (
     <div>
       <img
-        src={image?.xs || "/Online_svart_o.svg"}
+        src={image?.sm || "/Online_svart_o.svg"}
         alt={name_long}
         className="w-24 h-24 p-1 mb-2 bg-white rounded-full"
       />
