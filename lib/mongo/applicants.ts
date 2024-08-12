@@ -114,7 +114,7 @@ export const getApplicantsForCommittee = async (
     const period: periodType | undefined = periodData.period;
 
     if (!period) {
-      return null;
+      return { error: "Period not found" };
     }
 
     // Type guard
