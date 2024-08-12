@@ -130,7 +130,7 @@ const Committees = () => {
             ),
           },
           {
-            title: "Node Komitéer",
+            title: "Nodekomitéer",
             icon: <UserIcon className="w-5 h-5" />,
             content: (
               <div className="max-w-screen-2xl px-4 mx-auto bg-white sm:py-6 lg:px-6 dark:bg-gray-900">
