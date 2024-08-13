@@ -186,7 +186,6 @@ const CommitteeInterviewTimes = ({
     }
 
     if (interviewsPlanned < numberOfApplications) {
-      console.log(interviewsPlanned, numberOfApplications);
       toast.error(
         "Du har valgt færre tider enn antall søkere. Vennligst legg til flere tider."
       );
