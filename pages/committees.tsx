@@ -8,7 +8,7 @@ import ErrorPage from "../components/ErrorPage";
 import { fetchPeriods } from "../lib/api/periodApi";
 import { MainTitle } from "../components/Typography";
 
-const excludedCommittees = ["Faddere"];
+const excludedCommittees = ["Faddere", "Output"];
 
 const Committees = () => {
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
