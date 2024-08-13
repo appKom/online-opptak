@@ -3,6 +3,7 @@ import {
   emailCommitteeInterviewType,
 } from "../types/types";
 import { formatDateHours } from "../utils/dateUtils";
+
 import { changeDisplayName } from "../utils/toString";
 
 export const formatApplicantInterviewEmail = (
@@ -23,10 +24,8 @@ export const formatApplicantInterviewEmail = (
     )}<br>`;
 
     if (committee.interviewTime.start !== "Ikke satt") {
-      emailBody += `<b>Start:</b> ${formatDateHours(
-        new Date(committee.interviewTime.start)
-      )}<br>`;
-      emailBody += `<b>Slutt:</b> ${formatDateHours(
+      emailBody += `<b>Tid:</b> ${formatDateHours(
+        new Date(committee.interviewTime.start),
         new Date(committee.interviewTime.end)
       )}<br>`;
     }
@@ -62,10 +61,8 @@ export const formatCommitteeInterviewEmail = (
     emailBody += `<b>Telefon:</b> ${applicant.applicantPhone} <br> `;
 
     if (applicant.interviewTime.start !== "Ikke satt") {
-      emailBody += `<b>Start:</b> ${formatDateHours(
-        new Date(applicant.interviewTime.start)
-      )}<br>`;
-      emailBody += `<b>Slutt:</b> ${formatDateHours(
+      emailBody += `<b>Tid:</b> ${formatDateHours(
+        new Date(applicant.interviewTime.start),
         new Date(applicant.interviewTime.end)
       )}<br>`;
     }

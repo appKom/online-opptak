@@ -10,19 +10,7 @@ export const formatDate = (inputDate: undefined | Date) => {
   return `${day}.${month}.${year}`; //  - ${hours}:${minutes}
 };
 
-export const formatDateHours = (inputDate: undefined | Date) => {
-  const date = new Date(inputDate || "");
-
-  const day = date.getUTCDate().toString().padStart(2, "0");
-  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-  const year = date.getUTCFullYear();
-  const hours = date.getUTCHours().toString().padStart(2, "0");
-  const minutes = date.getUTCMinutes().toString().padStart(2, "0");
-
-  return `${formatDateNorwegian(inputDate)}, ${hours}:${minutes}`;
-};
-
-export const formatDateForSMS = (
+export const formatDateHours = (
   start: undefined | Date,
   end: undefined | Date
 ) => {

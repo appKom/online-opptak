@@ -1,7 +1,7 @@
 import { getApplication } from "../mongo/applicants";
 import { getCommitteesByPeriod } from "../mongo/committees";
 import { getInterviewsByPeriod } from "../mongo/interviews";
-import { getPeriodById, getPeriods } from "../mongo/periods";
+import { getPeriodById } from "../mongo/periods";
 import {
   committeeEmails,
   committeeInterviewType,
@@ -84,8 +84,6 @@ const formatApplicants = async (
       ...preferencesCommittees,
       ...dbApplication.application.optionalCommittees,
     ];
-
-    console.log(allCommittees);
 
     const scheduledCommittees = app.interviews.map(
       (interview) => interview.committeeName
