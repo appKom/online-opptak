@@ -23,7 +23,7 @@ export const isApplicantType = (
     typeof grade === "string" &&
     typeof about === "string" &&
     typeof bankom === "string" &&
-    (bankom === "yes" || bankom === "no" || bankom === "maybe") &&
+    (bankom === "ja" || bankom === "nei" || bankom === "kanskje") &&
     typeof applicantPeriodId === "string" &&
     applicantPeriodId === periodId &&
     date instanceof Date;
