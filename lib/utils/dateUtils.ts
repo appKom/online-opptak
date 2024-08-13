@@ -24,7 +24,7 @@ export const formatDateHours = (
 
   return `${formatDateNorwegian(
     startDate
-  )}, ${startHour}:${startMinute} til ${endHour}:${endMinute}`; //  - ${hours}:${minutes}
+  )}, ${startHour}:${startMinute} til ${endHour}:${endMinute}`;
 };
 
 export const formatDateNorwegian = (inputDate?: Date): string => {
