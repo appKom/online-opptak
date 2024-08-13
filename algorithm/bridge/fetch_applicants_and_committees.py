@@ -32,7 +32,6 @@ def main():
             all_committees = {committee.name: committee for committee in committee_objects}
             
             applicant_objects = create_applicant_objects(applicants, all_committees)
-            committee_objects = create_committee_objects(committee_times)
             
             print(applicant_objects)
             print(committee_objects)
