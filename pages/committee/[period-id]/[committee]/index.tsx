@@ -104,12 +104,12 @@ const CommitteeApplicantOverview: NextPage = () => {
         <p className="text-lg">
           Har det skjedd noe feil eller trenger du tilgang til informasjonen? Ta
           kontakt med{" "}
-          <a
+          <Link
             className="font-semibold underline transition-all hover:text-online-orange"
             href="mailto:appkom@online.ntnu.no"
           >
             Appkom
-          </a>
+          </Link>
           .
         </p>
       </div>
@@ -124,10 +124,11 @@ const CommitteeApplicantOverview: NextPage = () => {
           <div className="inline-flex flex-row items-center">
             {changeDisplayName(committee)}
             {!singleCommitteeInPeriod && (
-              <Link href={`/committee/${periodId}`}>
-                <a className="ml-1 text-sm text-blue-500 hover:text-blue-800">
-                  (Bytt)
-                </a>
+              <Link
+                href={`/committee/${periodId}`}
+                className="ml-1 text-sm text-blue-500 hover:text-blue-800"
+              >
+                (Bytt)
               </Link>
             )}
           </div>

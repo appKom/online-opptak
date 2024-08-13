@@ -35,17 +35,15 @@ const Navbar = () => {
   return (
     <div>
       <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-200 dark:border-0 dark:bg-gray-800">
-        <Link href="/" passHref>
-          <a aria-label="Online logo">
-            <Image
-              src={onlineLogoSrc}
-              width={100 * 1.5}
-              height={30 * 1.5}
-              priority
-              alt="Online logo"
-              className="transition-all cursor-pointer hover:opacity-60"
-            />
-          </a>
+        <Link href="/" passHref aria-label="Online logo">
+          <Image
+            src={onlineLogoSrc}
+            width={100 * 1.5}
+            height={30 * 1.5}
+            priority
+            alt="Online logo"
+            className="transition-all cursor-pointer hover:opacity-60"
+          />
         </Link>
         <div className="flex flex-col items-end gap-2 sm:flex-row sm:gap-5 sm:items-center text-online-darkTeal dark:text-white">
           {session ? (
@@ -94,15 +92,13 @@ const Navbar = () => {
           )}
           <ThemeToggle />
           <Link href="https://www.bekk.no/">
-            <a>
-              <Image
-                src={bekkLogoSrc}
-                width={100}
-                height={30 * 1.5}
-                alt="Bekk logo"
-                className="transition-all cursor-pointer hover:opacity-60"
-              />
-            </a>
+            <Image
+              src={bekkLogoSrc}
+              width={100}
+              height={30 * 1.5}
+              alt="Bekk logo"
+              className="transition-all cursor-pointer hover:opacity-60"
+            />
           </Link>
         </div>
       </div>

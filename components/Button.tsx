@@ -39,11 +39,9 @@ const Button = (props: Props) => {
 
   if (props.href) {
     return (
-      <Link href={props.href}>
-        <a className={className}>
-          {props.title}
-          {props.icon}
-        </a>
+      <Link href={props.href} className={className}>
+        {props.title}
+        {props.icon}
       </Link>
     );
   }
