@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { sendOutInterviewTimes } from "../../../lib/utils/sendInterviewTimes/sendInterviewTimes";
+import { sendOutInterviewTimes } from "../../../lib/sendInterviewTimes/sendInterviewTimes";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const secret = process.env.SEND_INTERVIEW_TIMES_SECRET;
