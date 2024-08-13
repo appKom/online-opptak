@@ -27,6 +27,10 @@ export const sendOutInterviewTimes = async ({
       return { error: "Failed to find period" };
     }
 
+    if (period.hasSentInterviewTimes) {
+      return { error: "Interview times already sent" };
+    }
+
     const committeeInterviewTimesData = await getCommitteesByPeriod(periodId);
     if (!committeeInterviewTimesData || committeeInterviewTimesData.error) {
       return { error: "Failed to find committee interview times" };
