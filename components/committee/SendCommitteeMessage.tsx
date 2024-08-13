@@ -13,6 +13,7 @@ interface Props {
 }
 
 const SendCommitteeMessage = ({
+  period,
   committee,
   committeeInterviewTimes,
 }: Props) => {
