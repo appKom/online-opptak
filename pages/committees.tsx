@@ -114,9 +114,12 @@ const Committees = () => {
             title: "Komitéer",
             icon: <UsersIcon className="w-5 h-5" />,
             content: (
-              <div className="max-w-screen-2xl px-4 mx-auto bg-white sm:py-6 lg:px-6 dark:bg-gray-900">
+              <div className="w-10/12 px-4 mx-auto bg-white sm:py-6 lg:px-6 dark:bg-gray-900">
                 <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
-                  {committees?.sort((a, b) => Number(hasPeriod(b)) - Number(hasPeriod(a)))
+                  {committees
+                    ?.sort(
+                      (a, b) => Number(hasPeriod(b)) - Number(hasPeriod(a))
+                    )
                     .map((committee, index) => {
                       return (
                         <CommitteeAboutCard
@@ -134,9 +137,12 @@ const Committees = () => {
             title: "Nodekomitéer",
             icon: <UserIcon className="w-5 h-5" />,
             content: (
-              <div className="max-w-screen-2xl px-4 mx-auto bg-white sm:py-6 lg:px-6 dark:bg-gray-900">
+              <div className="w-10/12 px-4 mx-auto bg-white sm:py-6 lg:px-6 dark:bg-gray-900">
                 <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
-                  {nodeCommittees?.sort((a, b) => Number(hasPeriod(b)) - Number(hasPeriod(a)))
+                  {nodeCommittees
+                    ?.sort(
+                      (a, b) => Number(hasPeriod(b)) - Number(hasPeriod(a))
+                    )
                     .map((committee, index) => {
                       return (
                         <CommitteeAboutCard
