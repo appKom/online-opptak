@@ -1,7 +1,7 @@
 import { getApplication } from "../mongo/applicants";
 import { getCommitteesByPeriod } from "../mongo/committees";
 import { getInterviewsByPeriod } from "../mongo/interviews";
-import { getPeriodById } from "../mongo/periods";
+import { getPeriodById, markInterviewsSentByPeriodId } from "../mongo/periods";
 import {
   committeeEmails,
   committeeInterviewType,
@@ -53,7 +53,7 @@ export const sendOutInterviewTimes = async ({
     const committeesToEmail = formatCommittees(applicantsToEmail);
 
     await formatAndSendEmails({ committeesToEmail, applicantsToEmail });
-    // markInterviewsSentByPeriodId(periodId);
+    markInterviewsSentByPeriodId(periodId);
   } catch (error) {
     return { error: "Failed to send out interview times" };
   }
