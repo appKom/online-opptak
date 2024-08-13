@@ -70,12 +70,6 @@ export const validateApplication = (applicationData: any) => {
     return false;
   }
 
-  // Validate selected times
-  if (selectedTimes.length === 0) {
-    toast.error("Velg minst én tilgjengelig tid");
-    return false;
-  }
-
   for (const time of selectedTimes) {
     const startTime = new Date(time.start);
     const endTime = new Date(time.end);
