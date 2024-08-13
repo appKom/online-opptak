@@ -77,9 +77,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           secondChoice: "Tom",
           thirdChoice: "Tom",
           bankom:
-            applicant.bankom == "yes"
+            applicant.bankom == "ja"
               ? "Ja"
-              : applicant.bankom == "no"
+              : applicant.bankom == "nei"
               ? "Nei"
               : "Kanskje",
           optionalCommittees: optionalCommitteesString,
