@@ -11,7 +11,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     if (req.method === "POST") {
-      if (isAdmin(res, req)) {
+      if (!isAdmin(res, req)) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
