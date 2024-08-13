@@ -17,7 +17,7 @@ const CommitteeAboutCard = ({
       <img
         src={image?.sm || "/Online_svart_o.svg"}
         alt={name_long}
-        className="w-24 h-24 p-1 mb-2 bg-white rounded-full"
+        className="w-16 h-16 p-1 mb-2 bg-white rounded-full md:w-24 md:h-24"
       />
 
       <div className="flex items-center gap-2">
