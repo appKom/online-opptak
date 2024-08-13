@@ -19,7 +19,7 @@ export const formatApplicantInterviewEmail = (
   });
 
   applicant.committees.forEach((committee) => {
-    emailBody += `<li><b>Komite:</b> ${changeDisplayName(
+    emailBody += `<li><b>Komité:</b> ${changeDisplayName(
       committee.committeeName
     )}<br>`;
 
