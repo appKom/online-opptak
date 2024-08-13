@@ -35,9 +35,12 @@ const Admin = () => {
 
   const sendOutInterviewTimes = async ({ periodId }: { periodId: string }) => {
     try {
-      const response = await fetch(`/api/periods/send-interview-times`, {
-        method: "POST",
-      });
+      const response = await fetch(
+        `/api/periods/send-interview-times/${periodId}`,
+        {
+          method: "POST",
+        }
+      );
       if (!response.ok) {
         throw new Error("Failed to send out interview times");
       }

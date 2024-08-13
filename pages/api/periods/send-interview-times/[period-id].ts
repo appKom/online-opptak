@@ -1,15 +1,21 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { sendOutInterviewTimes } from "../../../lib/sendInterviewTimes/sendInterviewTimes";
-import { isAdmin } from "../../../lib/utils/apiChecks";
+import { sendOutInterviewTimes } from "../../../../lib/sendInterviewTimes/sendInterviewTimes";
+import { isAdmin } from "../../../../lib/utils/apiChecks";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const periodId = req.query.id;
+
+  if (typeof periodId !== "string") {
+    return res.status(400).json({ error: "Invalid ID format" });
+  }
+
   try {
     if (req.method === "POST") {
       if (isAdmin(res, req)) {
         return res.status(401).json({ error: "Unauthorized" });
       }
 
-      const result = await sendOutInterviewTimes();
+      const result = await sendOutInterviewTimes({ periodId });
       if (result === undefined) {
         throw new Error("An error occurred");
       }
