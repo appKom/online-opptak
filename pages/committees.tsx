@@ -16,6 +16,32 @@ const excludedCommittees = ["Faddere", "Output"];
 
 const otherCommittees = ["Jubkom", "Velkom", "Ekskom", "Debug"];
 
+const hasPeriod = (committee: owCommitteeType, periods: periodType[]) => {
+  if (!Array.isArray(periods)) return false;
+
+  const today = new Date();
+
+  if (committee.name_short === "Bankom") {
+    return periods.some((period) => {
+      const applicationStart = new Date(period.applicationPeriod.start);
+      const applicationEnd = new Date(period.applicationPeriod.end);
+      return applicationStart <= today && applicationEnd >= today;
+    });
+  }
+
+  return periods.some((period) => {
+    const applicationStart = new Date(period.applicationPeriod.start);
+    const applicationEnd = new Date(period.applicationPeriod.end);
+
+    return (
+      applicationStart <= today &&
+      applicationEnd >= today &&
+      (period.committees.includes(committee.name_short) ||
+        period.optionalCommittees.includes(committee.name_short))
+    );
+  });
+};
+
 const Committees = () => {
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
   const [nodeCommittees, setNodeCommittees] = useState<owCommitteeType[]>([]);
@@ -65,32 +91,6 @@ const Committees = () => {
     setPeriods(periodsData.periods);
   }, [periodsData]);
 
-  const hasPeriod = (committee: owCommitteeType) => {
-    if (!Array.isArray(periods)) return false;
-
-    const today = new Date();
-
-    if (committee.name_short === "Bankom") {
-      return periods.some((period) => {
-        const applicationStart = new Date(period.applicationPeriod.start);
-        const applicationEnd = new Date(period.applicationPeriod.end);
-        return applicationStart <= today && applicationEnd >= today;
-      });
-    }
-
-    return periods.some((period) => {
-      const applicationStart = new Date(period.applicationPeriod.start);
-      const applicationEnd = new Date(period.applicationPeriod.end);
-
-      return (
-        applicationStart <= today &&
-        applicationEnd >= today &&
-        (period.committees.includes(committee.name_short) ||
-          period.optionalCommittees.includes(committee.name_short))
-      );
-    });
-  };
-
   if (owCommitteeIsLoading || periodsIsLoading) return <LoadingPage />;
   if (owCommitteeIsError || periodsIsError) return <ErrorPage />;
 
@@ -113,47 +113,13 @@ const Committees = () => {
           {
             title: "Komitéer",
             icon: <UsersIcon className="w-5 h-5" />,
-            content: (
-              <div className="w-10/12 px-4 mx-auto bg-white sm:py-6 lg:px-6 dark:bg-gray-900">
-                <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
-                  {committees
-                    ?.sort(
-                      (a, b) => Number(hasPeriod(b)) - Number(hasPeriod(a))
-                    )
-                    .map((committee, index) => {
-                      return (
-                        <CommitteeAboutCard
-                          key={index}
-                          committee={committee}
-                          hasPeriod={hasPeriod(committee)}
-                        />
-                      );
-                    })}
-                </div>
-              </div>
-            ),
+            content: <CommitteList committees={committees} periods={periods} />,
           },
           {
             title: "Nodekomitéer",
             icon: <UserIcon className="w-5 h-5" />,
             content: (
-              <div className="w-10/12 px-4 mx-auto bg-white sm:py-6 lg:px-6 dark:bg-gray-900">
-                <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
-                  {nodeCommittees
-                    ?.sort(
-                      (a, b) => Number(hasPeriod(b)) - Number(hasPeriod(a))
-                    )
-                    .map((committee, index) => {
-                      return (
-                        <CommitteeAboutCard
-                          key={index}
-                          committee={committee}
-                          hasPeriod={hasPeriod(committee)}
-                        />
-                      );
-                    })}
-                </div>
-              </div>
+              <CommitteList committees={nodeCommittees} periods={periods} />
             ),
           },
         ]}
@@ -163,3 +129,30 @@ const Committees = () => {
 };
 
 export default Committees;
+
+const CommitteList = ({
+  committees,
+  periods,
+}: {
+  committees: owCommitteeType[];
+  periods: periodType[];
+}) => (
+  <div className="w-10/12 px-4 mx-auto bg-white lg:px-6 dark:bg-gray-900">
+    <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
+      {committees
+        ?.sort(
+          (a, b) =>
+            Number(hasPeriod(b, periods)) - Number(hasPeriod(a, periods))
+        )
+        .map((committee, index) => {
+          return (
+            <CommitteeAboutCard
+              key={index}
+              committee={committee}
+              hasPeriod={hasPeriod(committee, periods)}
+            />
+          );
+        })}
+    </div>
+  </div>
+);
