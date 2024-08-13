@@ -116,6 +116,8 @@ export const validateCommittee = (data: any, period: periodType): boolean => {
 
   const isPeriodNameValid = data.periodId === String(period._id);
 
+  const isBeforeDeadline = new Date() <= new Date(period.applicationPeriod.end);
+
   const committeeExists =
     period.committees.some((committee) => {
       return committee.toLowerCase() === data.committee.toLowerCase();
@@ -143,7 +145,8 @@ export const validateCommittee = (data: any, period: periodType): boolean => {
     hasBasicFields &&
     isPeriodNameValid &&
     committeeExists &&
-    isWithinInterviewPeriod
+    isWithinInterviewPeriod &&
+    isBeforeDeadline
   );
 };
 
