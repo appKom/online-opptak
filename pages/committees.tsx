@@ -73,7 +73,7 @@ const Committees = () => {
       (committee: owCommitteeType) =>
         otherCommittees.includes(committee.name_short)
     );
-    setNodeCommittees(filterNodeCommittees);
+    setNodeCommittees(shuffleList(filterNodeCommittees));
 
     let filteredCommittees = owCommitteeData.filter(
       (committee: owCommitteeType) =>
@@ -81,8 +81,7 @@ const Committees = () => {
         !otherCommittees.includes(committee.name_short)
     );
 
-    filteredCommittees = shuffleList(filteredCommittees);
-    setCommittees(filteredCommittees);
+    setCommittees(shuffleList(filteredCommittees));
   }, [owCommitteeData]);
 
   useEffect(() => {
