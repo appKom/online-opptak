@@ -65,27 +65,6 @@ export const getApplicants = async () => {
   }
 };
 
-export const getApplicationById = async (
-  id: string,
-  periodId: string | ObjectId
-) => {
-  try {
-    if (!applicants) await init();
-
-    const objectId = new ObjectId(id);
-
-    const result = await applicants.findOne({
-      _id: objectId,
-      periodId: periodId,
-    });
-
-    return { application: result, exists: !!result };
-  } catch (error) {
-    console.error(error);
-    return { error: "Failed to fetch application", exists: false };
-  }
-};
-
 export const getApplication = async (
   id: string,
   periodId: string | ObjectId

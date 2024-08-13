@@ -1,4 +1,4 @@
-import { getApplicationById } from "../mongo/applicants";
+import { getApplication } from "../mongo/applicants";
 import { getCommitteesByPeriod } from "../mongo/committees";
 import { getInterviewsByPeriod } from "../mongo/interviews";
 import { getPeriods } from "../mongo/periods";
@@ -75,7 +75,7 @@ const formatApplicants = async (
   const applicantsToEmailMap: emailApplicantInterviewType[] = [];
 
   for (const app of algorithmData) {
-    const dbApplication = await getApplicationById(app.applicantId, periodId);
+    const dbApplication = await getApplication(app.applicantId, periodId);
 
     if (!dbApplication || !dbApplication.application) continue;
 
