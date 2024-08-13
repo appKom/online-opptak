@@ -1,16 +1,16 @@
 import {
   emailCommitteeInterviewType,
   emailApplicantInterviewType,
-} from "../../types/types";
-import { changeDisplayName } from "../toString";
-import { formatDateHours } from "../dateUtils";
-import sendEmail from "../../email/sendEmail";
+} from "../types/types";
+
+import sendEmail from "../email/sendEmail";
 import sendSMS from "./sendSMS";
 import {
   formatApplicantInterviewEmail,
   formatCommitteeInterviewEmail,
 } from "./formatInterviewEmail";
 import { formatInterviewSMS } from "./formatInterviewSMS";
+import { changeDisplayName } from "../utils/toString";
 
 interface sendInterviewTimesProps {
   committeesToEmail: emailCommitteeInterviewType[];

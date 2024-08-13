@@ -1,3 +1,7 @@
+import { getApplicationById } from "../mongo/applicants";
+import { getCommitteesByPeriod } from "../mongo/committees";
+import { getInterviewsByPeriod } from "../mongo/interviews";
+import { getPeriods } from "../mongo/periods";
 import {
   committeeEmails,
   committeeInterviewType,
@@ -7,14 +11,9 @@ import {
   algorithmType,
   preferencesType,
   committeePreferenceType,
-} from "../../types/types";
-
+} from "../types/types";
 import { fetchCommitteeEmails } from "./fetchFunctions";
 import { formatAndSendEmails } from "./formatAndSend";
-import { getPeriods, markInterviewsSentByPeriodId } from "../../mongo/periods";
-import { getCommitteesByPeriod } from "../../mongo/committees";
-import { getInterviewsByPeriod } from "../../mongo/interviews";
-import { getApplication, getApplicationById } from "../../mongo/applicants";
 
 export const sendOutInterviewTimes = async () => {
   try {

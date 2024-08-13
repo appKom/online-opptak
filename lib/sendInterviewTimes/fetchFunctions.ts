@@ -1,4 +1,4 @@
-import { committeeEmails, owCommitteeType } from "../../types/types";
+import { committeeEmails, owCommitteeType } from "../types/types";
 
 export const fetchCommitteeEmails = async (): Promise<committeeEmails[]> => {
   try {

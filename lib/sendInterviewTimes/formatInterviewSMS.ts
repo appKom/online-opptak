@@ -1,6 +1,6 @@
-import { emailApplicantInterviewType } from "../../types/types";
-import { formatDateHours } from "../dateUtils";
-import { changeDisplayName } from "../toString";
+import { emailApplicantInterviewType } from "../types/types";
+import { formatDateHours } from "../utils/dateUtils";
+import { changeDisplayName } from "../utils/toString";
 
 export const formatInterviewSMS = (applicant: emailApplicantInterviewType) => {
   let phoneBody = `Hei ${applicant.applicantName}, her er dine intervjutider for ${applicant.period_name}: \n \n`;

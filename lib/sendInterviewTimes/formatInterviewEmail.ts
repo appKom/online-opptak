@@ -1,9 +1,9 @@
 import {
   emailApplicantInterviewType,
   emailCommitteeInterviewType,
-} from "../../types/types";
-import { formatDateHours } from "../dateUtils";
-import { changeDisplayName } from "../toString";
+} from "../types/types";
+import { formatDateHours } from "../utils/dateUtils";
+import { changeDisplayName } from "../utils/toString";
 
 export const formatApplicantInterviewEmail = (
   applicant: emailApplicantInterviewType
