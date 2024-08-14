@@ -41,17 +41,14 @@ export const formatAndSendEmails = async ({
     // Send email to each committee
     committeesToEmail.forEach(
       async (committee: emailCommitteeInterviewType) => {
-        const committeeEmail = [committee.committeeEmail];
         const subject = `${changeDisplayName(
           committee.committeeName
         )} sine intervjutider for ${committee.period_name}`;
 
-        const emailBody = formatCommitteeInterviewEmail(committee);
-
         await sendEmail({
-          toEmails: committeeEmail,
+          toEmails: [committee.committeeEmail],
           subject: subject,
-          htmlContent: emailBody,
+          htmlContent: formatCommitteeInterviewEmail(committee),
         });
       }
     );
