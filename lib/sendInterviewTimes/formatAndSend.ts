@@ -33,7 +33,6 @@ export const formatAndSendEmails = async ({
 
         await sendEmail({
           toEmails: applicantEmail,
-          // toEmails: ["fhansteen@gmail.com"],
           subject: subject,
           htmlContent: emailBody,
         });
@@ -55,7 +54,6 @@ export const formatAndSendEmails = async ({
 
         await sendEmail({
           toEmails: committeeEmail,
-          // toEmails: ["fhansteen@gmail.com"],
           subject: subject,
           htmlContent: emailBody,
         });
