@@ -4,20 +4,6 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-export type commiteeType = {
-  periodId: string;
-  period_name: string;
-  committee: string;
-  availableTimes: [
-    {
-      start: string;
-      end: string;
-    },
-  ];
-  timeslot: string;
-  message: string;
-};
-
 export type preferencesType = {
   first: string;
   second: string;

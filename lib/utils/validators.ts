@@ -1,6 +1,6 @@
 import {
   applicantType,
-  commiteeType,
+  committeeInterviewType,
   periodType,
   preferencesType,
 } from "../types/types";
@@ -89,7 +89,7 @@ export const isApplicantType = (
   );
 };
 
-export const isCommitteeType = (data: any): data is commiteeType => {
+export const isCommitteeType = (data: any): data is committeeInterviewType => {
   const hasBasicFields =
     typeof data.period_name === "string" &&
     typeof data.committee === "string" &&
