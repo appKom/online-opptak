@@ -15,14 +15,13 @@ def main():
     
     for period in periods:
         periodId = str(period["_id"])
-        interview_end = datetime.fromisoformat(period["interviewPeriod"]["end"].replace("Z", "+00:00"))
         application_end = datetime.fromisoformat(period["applicationPeriod"]["end"].replace("Z", "+00:00"))
         
         now = datetime.now(timezone.utc)
         
 
         #or period["name"] == "Juli Opptak"
-        if  (application_end > now and period["hasSentInterviewTimes"] == False and interview_end < now) or period["name"] == "FAKE TEST OPPTAK!":
+        if  (application_end < now and period["hasSentInterviewTimes"] == False):
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
             
@@ -101,7 +100,6 @@ def fetch_committee_times(periodId):
 
 def format_match_results(match_results: MeetingMatch, applicants: List[dict], periodId) -> List[Dict]:
     transformed_results = {}
-    # applicant_dict = {str(applicant['_id']): {'name': applicant['name'], 'email': applicant['email'], 'phone': applicant['phone']} for applicant in applicants}
     
     for result in match_results['matchings']:
         applicant_id = str(result[0])
