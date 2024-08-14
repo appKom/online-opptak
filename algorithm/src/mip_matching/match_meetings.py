@@ -5,7 +5,7 @@ from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
 
-from itertools import permutations
+from itertools import combinations
 
 
 class MeetingMatch(TypedDict):
@@ -51,7 +51,7 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
             if applicant == applicant_candidate:
                 potential_interviews.add((committee, interval))
 
-        for interview_a, interview_b in permutations(potential_interviews, r=2):
+        for interview_a, interview_b in combinations(potential_interviews, r=2):
             if interview_a[1].intersects(interview_b[1]):
                 model += m[(applicant, *interview_a)] + \
                     m[(applicant, *interview_b)] <= 1
