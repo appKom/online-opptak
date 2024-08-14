@@ -40,10 +40,10 @@ const Button = (props: Props) => {
   if (props.href) {
     return (
       <Link href={props.href}>
-        <div className={className}>
+        <button className={className}>
           {props.title}
           {props.icon}
-        </div>
+        </button>
       </Link>
     );
   }
