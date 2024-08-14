@@ -15,14 +15,13 @@ def main():
     
     for period in periods:
         periodId = str(period["_id"])
-        interview_end = datetime.fromisoformat(period["interviewPeriod"]["end"].replace("Z", "+00:00"))
         application_end = datetime.fromisoformat(period["applicationPeriod"]["end"].replace("Z", "+00:00"))
         
         now = datetime.now(timezone.utc)
         
 
         #or period["name"] == "Juli Opptak"
-        if  (application_end > now and period["hasSentInterviewTimes"] == False and interview_end < now) or period["name"] == "FAKE TEST OPPTAK!":
+        if  (application_end < now and period["hasSentInterviewTimes"] == False):
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
             
