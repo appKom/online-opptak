@@ -1,6 +1,5 @@
 from __future__ import annotations
 from datetime import datetime, timedelta, date, time
-# import ..algorithm.mip_matching.core.Applicant.py as applicant
 
 from mip_matching.TimeInterval import TimeInterval
 from mip_matching.Committee import Committee
@@ -12,6 +11,7 @@ from faker import Faker
 
 import unittest
 import random
+from itertools import combinations
 
 
 def print_matchings(committees: list[Committee],
@@ -58,6 +58,20 @@ class MipTest(unittest.TestCase):
             for interval, load in load_per_interval.items():
                 self.assertGreaterEqual(committee.get_capacity(interval), load,
                                         f"Constraint \"Number of interviews per slot per committee cannot exceed capacity\" failed for Committee {committee} and interval {interval}")
+
+        # Overlapping interviews per applicant
+        interviews_per_applicant: dict[Applicant,
+                                       set[tuple[Committee, TimeInterval]]] = {}
+        for applicant, committee, interval in matchings:
+            if applicant not in interviews_per_applicant:
+                interviews_per_applicant[applicant] = set()
+
+            interviews_per_applicant[applicant].add((committee, interval))
+
+        for applicant, interviews in interviews_per_applicant.items():
+            for interview_a, interview_b in combinations(interviews, r=2):
+                self.assertFalse(interview_a[1].intersects(interview_b[1]), f"Constraint \"Applicant cannot have time-overlapping interviews\" failed for {
+                    applicant}'s interviews with {interview_a[0]} ({interview_a[1]}) and {interview_b[0]} ({interview_b[1]})")
 
     def test_fixed_small(self):
         """Small, fixed test with all capacities set to one"""
