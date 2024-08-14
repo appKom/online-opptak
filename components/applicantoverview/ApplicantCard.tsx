@@ -73,7 +73,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
 
         <h1 className="pt-3 text-lg font-semibold">Om:</h1>
         <p>Ønsker å være økonomiansvarlig: {applicant?.bankom}</p>
-        <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
+        <div className="p-4 mt-2 border-solid border-2 border-gray-200 dark:border-gray-700 rounded-lg">
           <p className="whitespace-pre-wrap">{applicant?.about}</p>
         </div>
       </div>
