@@ -1,4 +1,4 @@
-import { getApplication } from "../mongo/applicants";
+import { getApplication, getApplicationByMongoId } from "../mongo/applicants";
 import { getCommitteesByPeriod } from "../mongo/committees";
 import { getInterviewsByPeriod } from "../mongo/interviews";
 import { getPeriodById, markInterviewsSentByPeriodId } from "../mongo/periods";
@@ -22,12 +22,13 @@ export const sendOutInterviewTimes = async ({
 }) => {
   try {
     const { period } = await getPeriodById(periodId);
-
     if (!period) {
+      console.log("Failed to find period");
       return { error: "Failed to find period" };
     }
 
     if (period.hasSentInterviewTimes) {
+      console.log("Interview times already sent");
       return { error: "Interview times already sent" };
     }
 
@@ -37,6 +38,7 @@ export const sendOutInterviewTimes = async ({
     }
 
     const committeeInterviewTimes = committeeInterviewTimesData.result || [];
+
     const committeeEmails = await fetchCommitteeEmails();
 
     const fetchedAlgorithmData = await getInterviewsByPeriod(periodId);
@@ -49,6 +51,8 @@ export const sendOutInterviewTimes = async ({
       committeeEmails,
       committeeInterviewTimes
     );
+
+    console.log(applicantsToEmail);
 
     const committeesToEmail = formatCommittees(applicantsToEmail);
 
@@ -69,7 +73,12 @@ const formatApplicants = async (
   const applicantsToEmailMap: emailApplicantInterviewType[] = [];
 
   for (const app of algorithmData) {
-    const dbApplication = await getApplication(app.applicantId, periodId);
+    const dbApplication = await getApplicationByMongoId(
+      app.applicantId,
+      periodId
+    );
+
+    console.log(dbApplication);
 
     if (!dbApplication || !dbApplication.application) continue;
 

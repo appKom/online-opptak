@@ -17,8 +17,8 @@ export const formatInterviewSMS = (applicant: emailApplicantInterviewType) => {
 
     if (committee.interviewTime.start !== "Ikke satt") {
       phoneBody += `Tid: ${formatDateHours(
-        new Date(committee.interviewTime.start),
-        new Date(committee.interviewTime.end)
+        committee.interviewTime.start,
+        committee.interviewTime.end
       )}\n`;
     }
 

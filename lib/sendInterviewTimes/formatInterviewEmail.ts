@@ -25,8 +25,8 @@ export const formatApplicantInterviewEmail = (
 
     if (committee.interviewTime.start !== "Ikke satt") {
       emailBody += `<b>Tid:</b> ${formatDateHours(
-        new Date(committee.interviewTime.start),
-        new Date(committee.interviewTime.end)
+        committee.interviewTime.start,
+        committee.interviewTime.end
       )}<br>`;
     }
     if (committee.interviewTime.start === "Ikke satt") {
@@ -47,7 +47,9 @@ export const formatCommitteeInterviewEmail = (
 ) => {
   let emailBody = `<p>Hei <strong>${changeDisplayName(
     committee.committeeName
-  )}</strong>,</p><p>Her er deres intervjutider:</p><ul>`;
+  )}</strong>,</p><p>Her er deres intervjutider for ${
+    committee.applicants.length
+  } søkere:</p><ul>`;
 
   committee.applicants.sort((a, b) => {
     return (
@@ -62,8 +64,8 @@ export const formatCommitteeInterviewEmail = (
 
     if (applicant.interviewTime.start !== "Ikke satt") {
       emailBody += `<b>Tid:</b> ${formatDateHours(
-        new Date(applicant.interviewTime.start),
-        new Date(applicant.interviewTime.end)
+        applicant.interviewTime.start,
+        applicant.interviewTime.end
       )}<br>`;
     }
 

@@ -11,16 +11,19 @@ export const formatDate = (inputDate: undefined | Date) => {
 };
 
 export const formatDateHours = (
-  start: undefined | Date,
-  end: undefined | Date
+  start: undefined | string,
+  end: undefined | string
 ) => {
-  const startDate = new Date(start || "");
-  const endDate = new Date(end || "");
+  const startDate = start ? new Date(Date.parse(start)) : undefined;
+  const endDate = end ? new Date(Date.parse(end)) : undefined;
 
-  const startHour = startDate.getHours().toString().padStart(2, "0");
-  const startMinute = startDate.getMinutes().toString().padStart(2, "0");
-  const endHour = endDate.getHours().toString().padStart(2, "0");
-  const endMinute = endDate.getMinutes().toString().padStart(2, "0");
+  const startHour =
+    startDate?.getUTCHours().toString().padStart(2, "0") || "00";
+  const startMinute =
+    startDate?.getUTCMinutes().toString().padStart(2, "0") || "00";
+  const endHour = endDate?.getUTCHours().toString().padStart(2, "0") || "00";
+  const endMinute =
+    endDate?.getUTCMinutes().toString().padStart(2, "0") || "00";
 
   return `${formatDateNorwegian(
     startDate
@@ -28,9 +31,11 @@ export const formatDateHours = (
 };
 
 export const formatDateNorwegian = (inputDate?: Date): string => {
-  const date = new Date(inputDate || "");
+  if (!inputDate) return "";
 
-  const day = date.getDate().toString().padStart(2);
+  const date = new Date(Date.parse(inputDate.toISOString()));
+
+  const day = date.getUTCDate().toString().padStart(2, "0");
   const monthsNorwegian = [
     "jan",
     "feb",
@@ -45,7 +50,7 @@ export const formatDateNorwegian = (inputDate?: Date): string => {
     "nov",
     "des",
   ];
-  const month = monthsNorwegian[date.getMonth()];
+  const month = monthsNorwegian[date.getUTCMonth()];
 
   return `${day}. ${month}`;
 };
