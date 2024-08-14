@@ -88,29 +88,3 @@ class TimeInterval:
             local_end += length
 
         return result
-
-
-"""
-Dette er gammel kode som nå er flyttet til de passende komité-/søker-klassene.
-Foreløpig beholdt for referanse.
-"""
-# class TimeIntervals:
-#     def __init__(self, initial_list: list[TimeInterval] = None):
-#         self.list: list[TimeInterval] = initial_list if initial_list else []
-
-#     def add(self, interval: TimeInterval):
-#         self.list.append(interval)
-
-#     def recursive_intersection(self, other: TimeIntervals):
-#         """
-#         Returnerer alle tidsintervallene i *other* som er inneholdt i et av *self* sine intervaller"""
-#         result = TimeIntervals()
-
-#         for self_interval, other_interval in itertools.product(self.list, other.list):
-#             if self_interval.contains(other_interval):
-#                 result.add(other_interval)
-
-#         return result
-
-#     def __iter__(self):
-#         return self.list.__iter__()

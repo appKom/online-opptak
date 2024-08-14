@@ -1,17 +1,10 @@
 from __future__ import annotations
 from datetime import timedelta
-import sys
-print(sys.path)
-print(__name__)
-# sys.path.append("C:\\Users\\Jørgen Galdal\\Documents\\lokalSkoleprogrammering\\appkom\\OnlineOpptak\\algorithm\\mip_matching")
 
 from mip_matching.Applicant import Applicant
+from mip_matching.TimeInterval import TimeInterval
 
 from typing import Iterator
-# from typing import TYPE_CHECKING
-# if TYPE_CHECKING:
-#     # Unngår cyclic import
-from mip_matching.TimeInterval import TimeInterval
 
 
 class Committee:
