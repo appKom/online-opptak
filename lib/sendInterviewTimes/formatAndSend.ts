@@ -25,20 +25,16 @@ export const formatAndSendEmails = async ({
     // Send email to each applicant
     applicantsToEmail.forEach(
       async (applicant: emailApplicantInterviewType) => {
-        const applicantEmail = [applicant.applicantEmail];
-        const subject = `Hei, ${applicant.applicantName}, her er dine intervjutider:`;
-
-        const emailBody = formatApplicantInterviewEmail(applicant);
-        const phoneBody = formatInterviewSMS(applicant);
-
         await sendEmail({
-          toEmails: applicantEmail,
-          subject: subject,
-          htmlContent: emailBody,
+          toEmails: [applicant.applicantEmail],
+          subject: `Hei, ${applicant.applicantName}, her er dine intervjutider:`,
+          htmlContent: formatApplicantInterviewEmail(applicant),
         });
 
-        let toPhoneNumber = "+47" + applicant.applicantPhone;
-        sendSMS(toPhoneNumber, phoneBody);
+        sendSMS(
+          `+47${applicant.applicantPhone}`,
+          formatInterviewSMS(applicant)
+        );
       }
     );
 
