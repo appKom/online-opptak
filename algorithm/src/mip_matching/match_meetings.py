@@ -5,7 +5,8 @@ from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
 
-# from typing import TypedDict
+from datetime import timedelta
+from itertools import combinations
 
 
 class MeetingMatch(TypedDict):
@@ -58,8 +59,29 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                               # type: ignore
                               if (applicant, committee, interval) in m) <= 1
 
+    # Legger til målsetning om at man skal ha mellomrom mellom perioder
+    distance_variables = set()
+
+    APPLICANT_BUFFER_MODEL_WEIGHT = 0.001
+    APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
+    
+    for applicant in applicants:
+        potential_committees_with_intervals: set[tuple[Committee, TimeInterval]] = set()
+        for applicant_candidate, committee, interval in m:
+            if applicant == applicant_candidate:
+                potential_committees_with_intervals.add((committee, interval))
+
+        distance_variables.add(
+            mip.xsum(
+                APPLICANT_BUFFER_MODEL_WEIGHT * m[(applicant, *a)] * m[(applicant, *b)]
+                for a, b in combinations(potential_committees_with_intervals)  # type: ignore
+                if a[0] != b[0]
+                and a[1].is_within_distance(b[1], APPLICANT_BUFFER_LENGTH)
+            )
+        )
+
     # Setter mål til å være maksimering av antall møter
-    model.objective = mip.maximize(mip.xsum(m.values()))
+    model.objective = mip.maximize(mip.xsum(m.values()) + mip.xsum(distance_variables))
 
     # Kjør optimeringen
     solver_status = model.optimize()

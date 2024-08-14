@@ -50,3 +50,12 @@ For alle `k`:
 ## Mål
 
 Maksimere `sum(m(p, k, t))` for alle `p`, `k` og `t`
+
+### Sekundærmål
+
+- La det være et gitt mellomrom mellom hvert intervju for samme person.
+
+- [Ikke enda implementert] La det være færrest mulig og minst mulig mellomrom mellom intervjuene for komitéene.
+
+
+
