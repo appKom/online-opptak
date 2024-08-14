@@ -7,8 +7,8 @@ import {
   isCommitteeType,
   validateCommittee,
 } from "../../../../../lib/utils/validators";
-import { commiteeType } from "../../../../../lib/types/types";
 import { getPeriodById } from "../../../../../lib/mongo/periods";
+import { committeeInterviewType } from "../../../../../lib/types/types";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -24,7 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (!isInCommitee(res, session)) return;
 
   if (req.method === "POST") {
-    const committeeData: commiteeType = req.body;
+    const committeeData: committeeInterviewType = req.body;
 
     if (!isCommitteeType(req.body)) {
       return res.status(400).json({ error: "Invalid data format" });

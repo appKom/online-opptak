@@ -1,10 +1,10 @@
 import { Collection, Db, MongoClient, ObjectId, UpdateResult } from "mongodb";
 import clientPromise from "./mongodb";
-import { commiteeType } from "../types/types";
+import { committeeInterviewType } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
-let committees: Collection<any>;
+let committees: Collection<committeeInterviewType>;
 
 async function init() {
   if (db) return;
@@ -83,7 +83,7 @@ export const getCommitteesByPeriod = async (periodId: string) => {
 };
 
 export const createCommittee = async (
-  committeeData: commiteeType,
+  committeeData: committeeInterviewType,
   userCommittes: string[],
   periodId: string
 ) => {
