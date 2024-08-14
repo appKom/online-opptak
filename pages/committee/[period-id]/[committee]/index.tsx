@@ -13,135 +13,89 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
 import { Tabs } from "../../../../components/Tabs";
-import SendCommitteeMessage from "../../../../components/committee/SendCommitteeMessage";
 import CommitteeInterviewTimes from "../../../../components/committee/CommitteeInterviewTimes";
 import LoadingPage from "../../../../components/LoadingPage";
 import { changeDisplayName } from "../../../../lib/utils/toString";
 import Custom404 from "../../../404";
-import PageTitle from "../../../../components/PageTitle";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPeriodById } from "../../../../lib/api/periodApi";
+import ErrorPage from "../../../../components/ErrorPage";
+import { fetchCommitteeTimes } from "../../../../lib/api/committeesApi";
+import { MainTitle, SimpleTitle } from "../../../../components/Typography";
 
-const CommitteeApplicantOverView: NextPage = () => {
+const CommitteeApplicantOverview: NextPage = () => {
   const { data: session } = useSession();
-  const [loading, setLoading] = useState(true);
+  const { query } = useRouter();
+  const periodId = query["period-id"] as string;
+  const committee = query["committee"] as string;
 
-  const router = useRouter();
-  const periodId = router.query["period-id"] as string;
-  const committee = router.query["committee"] as string;
-  const [period, setPeriod] = useState<periodType | null>(null);
   const [activeTab, setActiveTab] = useState(0);
-  const [tabClicked, setTabClicked] = useState<number>(0);
-
   const [hasAccess, setHasAccess] = useState<boolean>(false);
-  const [committeeInterviewTimes, setCommitteeInterviewTimes] =
-    useState<committeeInterviewType | null>(null);
+  const [singleCommitteeInPeriod, setSingleCommitteeInPeriod] =
+    useState<boolean>(true);
 
-  const [singleCommitteeInPeriod, setSingleCommitteeInPeriod] = useState<boolean>(true);
+  const {
+    data: periodData,
+    isError: periodIsError,
+    isLoading: periodIsLoading,
+  } = useQuery({
+    queryKey: ["period", periodId],
+    queryFn: fetchPeriodById,
+    enabled: !!periodId,
+  });
 
-  useEffect(() => {
-    if (!session || !periodId) return;
+  const {
+    data: interviewTimesData,
+    isError: interviewTimesIsError,
+    isLoading: interviewTimesIsLoading,
+    refetch: refetchInterviewTimes,
+  } = useQuery({
+    queryKey: ["interviewTimes", periodId, committee],
+    queryFn: fetchCommitteeTimes,
+    enabled: !!periodId && !!committee,
+  });
 
-    const fetchPeriod = async () => {
-      try {
-        const res = await fetch(`/api/periods/${periodId}`);
-        const data = await res.json();
-        setPeriod(data.period);
-      } catch (error) {
-        console.error("Failed to fetch interview periods:", error);
-      }
-    };
-
-    fetchPeriod();
-  }, [periodId]);
-
-  useEffect(() => {
-    const userCommittees = session?.user?.committees?.map(c => c.toLowerCase()) || [];
-    const periodCommittees = [...(period?.committees || []), ...(period?.optionalCommittees || [])].map(c => c.toLowerCase());
-    setSingleCommitteeInPeriod(userCommittees.filter(c => periodCommittees.includes(c)).length === 1);
-  }, [period, session]);
-
-  useEffect(() => {
-    if (!session || !periodId || !committee) return;
-
-    const fetchCommitteeInterviewTimes = async () => {
-      if (!session.user?.committees?.includes(committee)) {
-        return;
-      }
-      if (period?._id === undefined) return;
-
-      try {
-        const response = await fetch(
-          `/api/committees/times/${period?._id}/${committee}`
-        );
-        const data = await response.json();
-
-        if (response.ok) {
-          setCommitteeInterviewTimes(data.committees[0]);
-        } else {
-          throw new Error(data.error || "Unknown error");
-        }
-      } catch (error) {
-        console.error("Error checking period:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCommitteeInterviewTimes();
-  }, [tabClicked, period]);
+  const period: periodType = periodData?.period;
+  const committeeInterviewTimes: committeeInterviewType =
+    interviewTimesData?.committees[0];
 
   useEffect(() => {
-    if (!session || !periodId || !committee) return;
+    if (!periodData?.period) return;
 
-    const checkAccess = () => {
-      if (!period) {
-        return;
-      }
-      const userCommittees = session?.user?.committees?.map((committee) =>
-        committee.toLowerCase()
-      );
-      const periodCommittees = period.committees.map((committee) =>
-        committee.toLowerCase()
-      );
+    const userCommittees =
+      session?.user?.committees?.map((c) => c.toLowerCase()) || [];
+    const periodCommittees = [
+      ...periodData.period.committees,
+      ...periodData.period.optionalCommittees,
+    ].map((c) => c.toLowerCase());
 
-      period.optionalCommittees.forEach((committee) => {
-        periodCommittees.push(committee.toLowerCase());
-      });
+    const commonCommittees = userCommittees.filter((committee) =>
+      periodCommittees.includes(committee)
+    );
 
-      const commonCommittees = userCommittees!.filter((committee) =>
-        periodCommittees.includes(committee)
-      );
-      if (commonCommittees.includes(committee)) {
-        setHasAccess(true);
-      } else {
-        setLoading(false);
-      }
-    };
+    setSingleCommitteeInPeriod(commonCommittees.length === 1);
+    setHasAccess(commonCommittees.includes(committee.toLowerCase()));
+  }, [periodData, session, committee]);
 
-    checkAccess();
-  }, [period]);
-
-  if (loading) {
-    return <LoadingPage />;
-  }
-
-  if (!session || !hasAccess) {
-    return <Custom404 />;
-  }
+  if (periodIsLoading || interviewTimesIsLoading) return <LoadingPage />;
+  if (periodIsError || interviewTimesIsError) return <ErrorPage />;
+  if (!hasAccess) return <Custom404 />;
 
   const interviewPeriodEnd = period?.interviewPeriod.end
     ? new Date(period.interviewPeriod.end)
     : null;
 
-  //Satt frist til 14 dager etter intervju perioden, så får man ikke tilgang
-  if (
+  // Satt frist til 14 dager etter intervju perioden, så får man ikke tilgang
+  const interviewAccessExpired =
     interviewPeriodEnd &&
     interviewPeriodEnd.getTime() + 14 * 24 * 60 * 60 * 1000 <
-      new Date().getTime()
-  ) {
+      new Date().getTime();
+
+  if (interviewAccessExpired) {
     return (
-      <div className="flex flex-col items-center justify-center h-full px-20 text-center">
-        <h1 className="text-3xl">Opptaket er ferdig!</h1>
+      <div className="flex flex-col items-center justify-center h-full text-center">
+        <SimpleTitle title="Opptaket er ferdig!" />
         <br />
         <p className="text-lg">
           Du kan ikke lenger se søkere eller planlegge intervjuer.
@@ -155,21 +109,24 @@ const CommitteeApplicantOverView: NextPage = () => {
           >
             Appkom
           </a>
+          .
         </p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <PageTitle
+    <div className="flex flex-col items-center gap-5">
+      <MainTitle
         boldMainTitle={period?.name}
         subTitle={
           <div className="inline-flex flex-row items-center">
             {changeDisplayName(committee)}
             {!singleCommitteeInPeriod && (
-              <Link href={"/committee/" + periodId}>
-                <a className="ml-1 text-sm text-blue-500 hover:text-blue-800">(Bytt)</a>
+              <Link href={`/committee/${periodId}`}>
+                <a className="ml-1 text-sm text-blue-500 hover:text-blue-800">
+                  (Bytt)
+                </a>
               </Link>
             )}
           </div>
@@ -180,8 +137,8 @@ const CommitteeApplicantOverView: NextPage = () => {
       <Tabs
         activeTab={activeTab}
         setActiveTab={(index) => {
+          refetchInterviewTimes();
           setActiveTab(index);
-          setTabClicked(index);
         }}
         content={[
           {
@@ -195,18 +152,7 @@ const CommitteeApplicantOverView: NextPage = () => {
               />
             ),
           },
-          {
-            title: "Melding",
-            icon: <InboxIcon className="w-5 h-5" />,
-            content: (
-              <SendCommitteeMessage
-                period={period}
-                committee={committee}
-                committeeInterviewTimes={committeeInterviewTimes}
-                tabClicked={tabClicked}
-              />
-            ),
-          },
+
           {
             title: "Søkere",
             icon: <UserGroupIcon className="w-5 h-5" />,
@@ -224,4 +170,4 @@ const CommitteeApplicantOverView: NextPage = () => {
   );
 };
 
-export default CommitteeApplicantOverView;
+export default CommitteeApplicantOverview;

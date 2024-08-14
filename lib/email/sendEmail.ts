@@ -1,18 +1,18 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 
 interface SendEmailProps {
-  sesClient: SESClient;
-  fromEmail: string;
   toEmails: string[];
   subject: string;
   htmlContent: string;
 }
 
 export default async function sendEmail(emailParams: SendEmailProps) {
+  const sesClient = new SESClient({ region: "eu-north-1" });
+  const fromEmail = "opptak@online.ntnu.no";
+
   try {
-    const sesClient = emailParams.sesClient;
     const params = {
-      Source: emailParams.fromEmail,
+      Source: fromEmail,
       Destination: {
         ToAddresses: emailParams.toEmails,
         CcAddresses: [],
@@ -32,7 +32,7 @@ export default async function sendEmail(emailParams: SendEmailProps) {
       },
       ReplyToAddresses: [],
     };
-  
+
     const command = new SendEmailCommand(params);
     await sesClient.send(command);
 

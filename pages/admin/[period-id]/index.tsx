@@ -1,50 +1,45 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import router from "next/router";
-import { applicantType, periodType } from "../../../lib/types/types";
+import { periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
 import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
+import { useQuery } from "@tanstack/react-query";
+import { fetchPeriodById } from "../../../lib/api/periodApi";
+import LoadingPage from "../../../components/LoadingPage";
+import ErrorPage from "../../../components/ErrorPage";
 
 const Admin = () => {
   const { data: session } = useSession();
   const periodId = router.query["period-id"];
+
   const [period, setPeriod] = useState<periodType | null>(null);
   const [committees, setCommittees] = useState<string[] | null>(null);
 
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["periods", periodId],
+    queryFn: fetchPeriodById,
+  });
+
   useEffect(() => {
-    const fetchPeriod = async () => {
-      if (!session || session.user?.role !== "admin") {
-        return;
-      }
-      if (periodId === undefined) return;
+    setPeriod(data?.period);
+    setCommittees(
+      data?.period.committees.concat(data?.period.optionalCommittees)
+    );
+  }, [data, session?.user?.owId]);
 
-      try {
-        const response = await fetch(`/api/periods/${periodId}`);
-        const data = await response.json();
-        if (response.ok) {
-          setPeriod(data.period);
-          setCommittees(data.period.committees);
-        } else {
-          throw new Error(data.error || "Unknown error");
-        }
-      } catch (error) {
-        console.error("Error checking period:", error);
-      } finally {
-      }
-    };
+  console.log(committees);
 
-    fetchPeriod();
-  }, [session?.user?.owId, periodId]);
-
-  if (!session || session.user?.role !== "admin") {
-    return <NotFound />;
-  }
+  if (session?.user?.role !== "admin") return <NotFound />;
+  if (isLoading) return <LoadingPage />;
+  if (isError) return <ErrorPage />;
 
   return (
     <ApplicantsOverview
       period={period}
       committees={committees}
       includePreferences={true}
+      showPeriodName
     />
   );
 };

@@ -1,19 +1,28 @@
 import { useEffect, useState, useRef } from "react";
 import {
   applicantType,
+  bankomOptionsType,
   committeePreferenceType,
   periodType,
   preferencesType,
 } from "../../lib/types/types";
 import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
-import ApplicantTable from "./ApplicantTable";
-import ApplicantOverviewSkeleton from "./ApplicantOverviewSkeleton";
+import ApplicantOverviewSkeleton from "../skeleton/ApplicantOverviewSkeleton";
+import { useQuery } from "@tanstack/react-query";
+import {
+  fetchApplicantsByPeriodId,
+  fetchApplicantsByPeriodIdAndCommittee,
+} from "../../lib/api/applicantApi";
+import ErrorPage from "../ErrorPage";
+import ApplicantCard from "./ApplicantCard";
+import { SimpleTitle } from "../Typography";
 
 interface Props {
-  period: periodType | null;
+  period?: periodType | null;
   committees?: string[] | null;
   committee?: string;
   includePreferences: boolean;
+  showPeriodName?: boolean;
 }
 
 const isPreferencesType = (
@@ -27,6 +36,7 @@ const ApplicantsOverview = ({
   committees,
   committee,
   includePreferences,
+  showPeriodName,
 }: Props) => {
   const [filteredApplicants, setFilteredApplicants] = useState<applicantType[]>(
     []
@@ -36,60 +46,36 @@ const ApplicantsOverview = ({
     null
   );
   const [selectedYear, setSelectedYear] = useState<string>("");
-  const [selectedBankom, setSelectedBankom] = useState<string>("");
+  const [selectedBankom, setSelectedBankom] =
+    useState<bankomOptionsType>(undefined);
   const [filterMenuVisible, setFilterMenuVisible] = useState(false);
   const filterMenuRef = useRef<HTMLDivElement>(null);
 
   const [applicants, setApplicants] = useState<applicantType[]>([]);
-  const [years, setYears] = useState<string[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const years: string[] = ["1", "2", "3", "4", "5"];
 
-  const bankomOptions: string[] = ["yes", "no", "maybe"];
+  const bankomOptions: bankomOptionsType[] = ["ja", "nei", "kanskje"];
 
-  const apiUrl = includePreferences
-    ? `/api/applicants/${period?._id}`
-    : `/api/committees/applicants/${period?._id}/${committee}`;
+  const {
+    data: applicantsData,
+    isError: applicantsIsError,
+    isLoading: applicantsIsLoading,
+  } = useQuery({
+    queryKey: ["applicants", period?._id, committee],
+    queryFn: includePreferences
+      ? fetchApplicantsByPeriodId
+      : fetchApplicantsByPeriodIdAndCommittee,
+  });
 
   useEffect(() => {
-    const fetchApplicants = async () => {
-      try {
-        const response = await fetch(apiUrl, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+    if (!applicantsData) return;
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch applicants");
-        }
+    const dataType = includePreferences
+      ? applicantsData.applications
+      : applicantsData.applicants;
 
-        const data = await response.json();
-        const dataType = includePreferences
-          ? data.applications
-          : data.applicants;
-
-        setApplicants(dataType);
-
-        const uniqueYears: string[] = Array.from(
-          new Set(
-            dataType.map((applicant: applicantType) =>
-              applicant.grade.toString()
-            )
-          )
-        );
-        setYears(uniqueYears);
-      } catch (error: any) {
-        setError(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    if (period) {
-      fetchApplicants();
-    }
-  }, [period]);
+    setApplicants(dataType);
+  }, [applicantsData, includePreferences]);
 
   useEffect(() => {
     let filtered: applicantType[] = applicants;
@@ -103,13 +89,12 @@ const ApplicantsOverview = ({
             applicant.preferences.second.toLowerCase() ===
               selectedCommittee.toLowerCase() ||
             applicant.preferences.third.toLowerCase() ===
-              selectedCommittee.toLowerCase()
-          );
-        } else {
-          return applicant.preferences.some(
-            (preference) =>
-              preference.committee.toLowerCase() ===
-              selectedCommittee.toLowerCase()
+              selectedCommittee.toLowerCase() ||
+            applicant.optionalCommittees.some(
+              (optionalCommittee) =>
+                optionalCommittee.toLowerCase() ===
+                selectedCommittee.toLowerCase()
+            )
           );
         }
       });
@@ -145,7 +130,7 @@ const ApplicantsOverview = ({
     setSearchQuery("");
     setSelectedCommittee(null);
     setSelectedYear("");
-    setSelectedBankom("");
+    setSelectedBankom(undefined);
   };
 
   useEffect(() => {
@@ -165,27 +150,16 @@ const ApplicantsOverview = ({
     };
   }, [filterMenuRef]);
 
-  if (isLoading) {
-    return <ApplicantOverviewSkeleton />;
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-5">
-        <p className="text-2xl">Det skjedde en feil, vennligst prøv igjen</p>
-      </div>
-    );
-  }
+  if (applicantsIsLoading) return <ApplicantOverviewSkeleton />;
+  if (applicantsIsError) return <ErrorPage />;
 
   return (
     <div className="flex flex-col items-center px-5">
-      <h2 className="mt-5 mb-6 text-3xl font-bold items-start text-start">
-        {period?.name}
-      </h2>
+      {showPeriodName && <SimpleTitle title={period?.name || ""} />}
 
-      <div className="w-full max-w-lg mx-auto mb-5">
-        <div className="flex flex-row mb-2 align-end justify-between relative">
-          <p className="dark:text-gray-300 text-gray-800 text-sm">
+      <div className="w-full max-w-lg mx-auto mt-10 mb-5">
+        <div className="relative flex flex-row justify-between mb-2 align-end">
+          <p className="text-sm text-gray-800 dark:text-gray-300">
             Søk etter navn eller filtrer
           </p>
           <div className="flex flex-row gap-2 relative">
@@ -245,12 +219,14 @@ const ApplicantsOverview = ({
                   <select
                     className="w-full p-2 border text-black border-gray-300 dark:bg-online-darkBlue dark:text-white dark:border-gray-600"
                     value={selectedBankom}
-                    onChange={(e) => setSelectedBankom(e.target.value)}
+                    onChange={(e) =>
+                      setSelectedBankom(e.target.value as bankomOptionsType)
+                    }
                   >
                     <option value="">Velg bankom</option>
-                    {bankomOptions.map((bankom) => (
-                      <option key={bankom} value={bankom}>
-                        {bankom}
+                    {bankomOptions.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
                       </option>
                     ))}
                   </select>
@@ -270,10 +246,16 @@ const ApplicantsOverview = ({
 
       {filteredApplicants && filteredApplicants.length > 0 ? (
         <div className="w-full max-w-lg mx-auto">
-          <ApplicantTable
-            filteredApplications={filteredApplicants}
-            includePreferences={includePreferences}
-          />
+          <div className="flex flex-col ">
+            {filteredApplicants?.map((applicant) => (
+              <ApplicantCard
+                key={applicant.owId + applicant.name}
+                applicant={applicant}
+                includePreferences={includePreferences}
+              />
+            ))}
+            <p className="text-end ">{filteredApplicants?.length} resultater</p>
+          </div>
         </div>
       ) : (
         <p>Ingen søkere</p>

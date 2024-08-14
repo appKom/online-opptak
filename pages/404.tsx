@@ -1,16 +1,13 @@
-// pages/404.js
-import Link from "next/link";
 import Button from "../components/Button";
 import Image from "next/image";
+import { SimpleTitle } from "../components/Typography";
 
 export default function Custom404() {
   return (
-    <div className="flex flex-col text-center p-10">
-      <h2 className="text-5xl font-bold text-center text-online-darkBlue dark:text-white">
-        404
-      </h2>
+    <div className="flex flex-col text-center">
+      <SimpleTitle title="404" />
 
-      <p className="py-5 text-lg">{"Denne siden finnes ikke"}</p>
+      <p className="py-5 text-lg">Denne siden finnes ikke</p>
       <div style={{ width: "100%", maxWidth: "500px", margin: "0 auto" }}>
         <Image
           src="/404.gif"

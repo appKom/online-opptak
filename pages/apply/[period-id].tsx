@@ -15,25 +15,24 @@ import { validateApplication } from "../../lib/utils/validateApplication";
 import ApplicantCard from "../../components/applicantoverview/ApplicantCard";
 import LoadingPage from "../../components/LoadingPage";
 import { formatDateNorwegian } from "../../lib/utils/dateUtils";
-import PageTitle from "../../components/PageTitle";
-
-interface FetchedApplicationData {
-  exists: boolean;
-  application: applicantType;
-}
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchPeriodById } from "../../lib/api/periodApi";
+import {
+  createApplicant,
+  deleteApplicant,
+  fetchApplicantByPeriodAndId,
+} from "../../lib/api/applicantApi";
+import ErrorPage from "../../components/ErrorPage";
+import { MainTitle, SimpleTitle } from "../../components/Typography";
 
 const Application: NextPage = () => {
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const router = useRouter();
   const periodId = router.query["period-id"] as string;
-
-  const [hasAlreadySubmitted, setHasAlreadySubmitted] = useState(true);
-  const [periodExists, setPeriodExists] = useState(false);
-  const [fetchedApplicationData, setFetchedApplicationData] =
-    useState<FetchedApplicationData | null>(null);
+  const applicantId = session?.user?.owId;
 
   const [activeTab, setActiveTab] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [applicationData, setApplicationData] = useState<
     DeepPartial<applicantType>
   >({
@@ -53,114 +52,76 @@ const Application: NextPage = () => {
   const [period, setPeriod] = useState<periodType>();
   const [isApplicationPeriodOver, setIsApplicationPeriodOver] = useState(false);
 
+  const {
+    data: periodData,
+    isError: periodIsError,
+    isLoading: periodIsLoading,
+  } = useQuery({
+    queryKey: ["periods", periodId],
+    queryFn: fetchPeriodById,
+  });
+
+  const {
+    data: applicantData,
+    isError: applicantIsError,
+    isLoading: applicantIsLoading,
+  } = useQuery({
+    queryKey: ["applicant", periodId, applicantId],
+    queryFn: fetchApplicantByPeriodAndId,
+  });
+
+  const createApplicantMutation = useMutation({
+    mutationFn: createApplicant,
+    onSuccess: () => {
+      queryClient.setQueryData(["applicant", periodId, applicantId], {
+        applicant: applicationData,
+        exists: true,
+      });
+      toast.success("Søknad sendt inn");
+    },
+    onError: (error) => {
+      if (error.message === "409 Application already exists for this period") {
+        toast.error("Du har allerede søkt for denne perioden");
+      } else {
+        toast.error("Det skjedde en feil, vennligst prøv igjen");
+      }
+    },
+  });
+
+  const deleteApplicantMutation = useMutation({
+    mutationFn: deleteApplicant,
+    onSuccess: () => {
+      queryClient.setQueryData(["applicant", periodId, applicantId], null);
+      toast.success("Søknad trukket tilbake");
+      setActiveTab(0);
+    },
+    onError: () => toast.error("Det skjedde en feil, vennligst prøv igjen"),
+  });
+
   useEffect(() => {
-    if (!period) {
-      return;
-    }
+    if (!periodData || !periodData.period) return;
+
+    setPeriod(periodData.period);
 
     const currentDate = new Date().toISOString();
-    if (new Date(period.applicationPeriod.end) < new Date(currentDate)) {
+    if (
+      new Date(periodData.period.applicationPeriod.end) < new Date(currentDate)
+    ) {
       setIsApplicationPeriodOver(true);
     }
-  }, [period]);
-
-  useEffect(() => {
-    const checkPeriodAndApplicationStatus = async () => {
-      if (!periodId || !session?.user?.owId) return;
-
-      try {
-        const periodResponse = await fetch(`/api/periods/${periodId}`);
-        const periodData = await periodResponse.json();
-        if (periodResponse.ok) {
-          setPeriod(periodData.period);
-          setPeriodExists(periodData.exists);
-          fetchApplicationData();
-        } else {
-          throw new Error(periodData.error || "Unknown error");
-        }
-      } catch (error) {
-        console.error("Error checking period:", error);
-      }
-
-      try {
-        const applicationResponse = await fetch(
-          `/api/applicants/${periodId}/${session.user.owId}`
-        );
-        const applicationData = await applicationResponse.json();
-
-        if (!applicationResponse.ok) {
-          throw new Error(applicationData.error || "Unknown error");
-        }
-      } catch (error) {
-        console.error("Error checking application status:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkPeriodAndApplicationStatus();
-  }, [session?.user?.owId, periodId]);
+  }, [periodData]);
 
   const handleSubmitApplication = async () => {
     if (!validateApplication(applicationData)) return;
 
-    try {
-      applicationData.periodId = periodId as string;
-      const response = await fetch("/api/applicants", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(applicationData),
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        toast.success("Søknad sendt inn");
-        setHasAlreadySubmitted(true);
-      } else {
-        if (
-          responseData.error ===
-          "409 Application already exists for this period"
-        ) {
-          toast.error("Du har allerede søkt for denne perioden");
-        } else {
-          throw new Error(`Error creating applicant: ${response.statusText}`);
-        }
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("Det skjedde en feil, vennligst prøv igjen");
-      }
-    } finally {
-      fetchApplicationData();
+    // Validate selected times
+    if (applicationData.selectedTimes && applicationData.selectedTimes.length === 0) {
+      toast.error("Velg minst én tilgjengelig tid");
+      return false;
     }
-  };
 
-  const fetchApplicationData = async () => {
-    if (!session?.user?.owId || !periodId) return;
-
-    try {
-      const response = await fetch(
-        `/api/applicants/${periodId}/${session.user.owId}`
-      );
-      const data = await response.json();
-      if (!data.exists) {
-        setHasAlreadySubmitted(false);
-      } else {
-        setFetchedApplicationData(data);
-      }
-
-      if (!response.ok) {
-        throw new Error(data.error || "Unknown error");
-      }
-    } catch (error) {
-      console.error("Error fetching application data:", error);
-      toast.error("Failed to fetch application data.");
-    }
+    applicationData.periodId = periodId as string;
+    createApplicantMutation.mutate(applicationData as applicantType);
   };
 
   const handleDeleteApplication = async () => {
@@ -171,38 +132,22 @@ const Application: NextPage = () => {
 
     if (!confirm("Er du sikker på at du vil trekke tilbake søknaden?")) return;
 
-    try {
-      const response = await fetch(
-        `/api/applicants/${periodId}/${session.user.owId}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to delete the application");
-      }
-
-      toast.success("Søknad trukket tilbake");
-      setHasAlreadySubmitted(false);
-    } catch (error) {
-      toast.error("Det skjedde en feil, vennligst prøv igjen");
-    }
+    deleteApplicantMutation.mutate({ periodId, owId: session?.user?.owId });
   };
 
-  if (isLoading) return <LoadingPage />;
+  if (
+    periodIsLoading ||
+    applicantIsLoading ||
+    createApplicantMutation.isPending ||
+    deleteApplicantMutation.isPending
+  )
+    return <LoadingPage />;
+  if (periodIsError || applicantIsError) return <ErrorPage />;
 
-  if (!periodExists) {
-    return (
-      <div className="flex flex-col items-center justify-center py-5">
-        <h1 className="my-10 text-3xl font-semibold text-center text-online-darkBlue dark:text-white">
-          Opptaket finnes ikke
-        </h1>
-      </div>
-    );
-  }
+  if (!periodData?.exists)
+    return <SimpleTitle title="Opptaket finnes ikke" size="large" />;
 
-  if (hasAlreadySubmitted) {
+  if (applicantData?.exists)
     return (
       <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
         <WellDoneIllustration className="h-32" />
@@ -224,22 +169,25 @@ const Application: NextPage = () => {
             onClick={handleDeleteApplication}
           />
         )}
-        {fetchedApplicationData && (
+        {applicantData?.application && (
           <div className="w-full max-w-md">
             <ApplicantCard
-              applicant={fetchedApplicationData.application}
+              applicant={applicantData.application}
               includePreferences={true}
             />
           </div>
         )}
       </div>
     );
-  }
 
   return (
     <div>
-      <div className="flex flex-col items-center justify-center py-5">
-        <PageTitle boldMainTitle={period?.name} subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""} boldSubTitle="Søknadsfrist" />
+      <div className="flex flex-col items-center gap-5">
+        <MainTitle
+          boldMainTitle={period?.name}
+          subTitle={formatDateNorwegian(period?.applicationPeriod.end) || ""}
+          boldSubTitle="Søknadsfrist"
+        />
         <Tabs
           activeTab={activeTab}
           setActiveTab={setActiveTab}

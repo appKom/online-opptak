@@ -35,9 +35,9 @@ export const ApplicationForm = (props: Props) => {
   const addOptionalCommittee = (committee: string, value: string) => {
     let updatedCommittees = [...selectedOptionalCommittees];
 
-    if (value === "yes" && !updatedCommittees.includes(committee)) {
+    if (value === "ja" && !updatedCommittees.includes(committee)) {
       updatedCommittees.push(committee);
-    } else if (value === "no" && updatedCommittees.includes(committee)) {
+    } else if (value === "nei" && updatedCommittees.includes(committee)) {
       updatedCommittees = updatedCommittees.filter(
         (item) => item !== committee
       );
@@ -182,12 +182,12 @@ export const ApplicationForm = (props: Props) => {
         <Line />
         <RadioInput
           values={[
-            ["Ja", "yes"],
-            ["Nei", "no"],
-            ["Usikker (gjerne spør om mer info på intervjuet)", "maybe"],
+            ["Ja", "ja"],
+            ["Nei", "nei"],
+            ["Usikker (gjerne spør om mer info på intervjuet)", "kanskje"],
           ]}
           label={
-            "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankkom)?"
+            "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankom)?"
           }
           updateInputValues={(value: boolean) =>
             props.setApplicationData({
@@ -200,8 +200,8 @@ export const ApplicationForm = (props: Props) => {
           <div key={committee}>
             <RadioInput
               values={[
-                ["Ja", "yes"],
-                ["Nei", "no"],
+                ["Ja", "ja"],
+                ["Nei", "nei"],
               ]}
               label={`Ønsker du å søke ${changeDisplayName(
                 committee

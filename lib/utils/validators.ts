@@ -1,55 +1,92 @@
-import { applicantType, commiteeType, periodType } from "../types/types";
+import {
+  applicantType,
+  commiteeType,
+  periodType,
+  preferencesType,
+} from "../types/types";
 
-export const isApplicantType = (data: any): data is applicantType => {
+export const isApplicantType = (
+  applicant: applicantType,
+  period: periodType
+): applicant is applicantType => {
   // Check for each basic property type
+  const applicantPeriodId = applicant.periodId.toString();
+  const periodId = period._id.toString();
+
+  const { owId, name, email, phone, grade, about, bankom, date } = applicant;
+
   const hasBasicFields =
-    typeof data.owId === "string" &&
-    typeof data.name === "string" &&
-    typeof data.email === "string" &&
-    typeof data.phone === "string" &&
-    typeof data.grade === "string" &&
-    typeof data.about === "string" &&
-    typeof data.bankom === "string" &&
-    (data.bankom === "yes" ||
-      data.bankom === "no" ||
-      data.bankom === "maybe") &&
-    (typeof data.periodId === "string" || typeof data.periodId === "object") &&
-    data.date instanceof Date;
+    typeof owId === "string" &&
+    typeof name === "string" &&
+    typeof email === "string" &&
+    typeof phone === "string" &&
+    typeof grade === "string" &&
+    typeof about === "string" &&
+    typeof bankom === "string" &&
+    (bankom === "ja" || bankom === "nei" || bankom === "kanskje") &&
+    typeof applicantPeriodId === "string" &&
+    applicantPeriodId === periodId &&
+    date instanceof Date;
 
   // Check that the preferences object exists and contains the required fields
+  const periodCommittees = period.committees.map((committee) =>
+    committee.toLowerCase()
+  );
+
+  const { first, second, third } = applicant.preferences as preferencesType;
+
   const hasPreferencesFields =
-    data.preferences &&
-    typeof data.preferences.first === "string" &&
-    typeof data.preferences.second === "string" &&
-    typeof data.preferences.third === "string" &&
+    (applicant.preferences as preferencesType) &&
+    typeof first === "string" &&
+    (typeof second === "string" || second === "") &&
+    (typeof third === "string" || third === "") &&
     // Ensure that non-empty preferences are unique
-    (data.preferences.first === "" ||
-      data.preferences.first !== data.preferences.second) &&
-    (data.preferences.first === "" ||
-      data.preferences.first !== data.preferences.third) &&
-    (data.preferences.second === "" ||
-      data.preferences.second !== data.preferences.third);
+    first !== second &&
+    (first === "" || first !== third) &&
+    (second === "" || second !== third) &&
+    // Ensure preferences are in period committees or empty
+    periodCommittees.includes(first) &&
+    (second === "" || periodCommittees.includes(second)) &&
+    (third === "" || periodCommittees.includes(third));
 
   // Check that the selectedTimes array is valid
-  const hasSelectedTimesFields =
-    Array.isArray(data.selectedTimes) &&
-    data.selectedTimes.every(
-      (time: { start: any; end: any }) =>
-        typeof time.start === "string" && typeof time.end === "string"
+
+  const interviewPeriodStart = new Date(period.interviewPeriod.start);
+  const interviewPeriodEnd = new Date(period.interviewPeriod.end);
+
+  const hasSelectedTimes =
+    Array.isArray(applicant.selectedTimes) &&
+    applicant.selectedTimes.every(
+      (time: { start: string; end: string }) =>
+        typeof time.start === "string" &&
+        typeof time.end === "string" &&
+        new Date(time.start) >= interviewPeriodStart &&
+        new Date(time.start) <= interviewPeriodEnd &&
+        new Date(time.end) <= interviewPeriodEnd &&
+        new Date(time.end) >= interviewPeriodStart &&
+        new Date(time.start) < new Date(time.end)
     );
+
+  const periodOptionalCommittees = period.optionalCommittees.map((committee) =>
+    committee.toLowerCase()
+  );
+  const applicantOptionalCommittees = applicant.optionalCommittees;
 
   const hasOptionalFields =
-    data.optionalCommittees &&
-    Array.isArray(data.optionalCommittees) &&
-    data.optionalCommittees.every(
-      (committee: any) => typeof committee === "string"
+    applicantOptionalCommittees &&
+    Array.isArray(applicantOptionalCommittees) &&
+    applicantOptionalCommittees.every(
+      (committee: any) =>
+        typeof committee === "string" &&
+        periodOptionalCommittees.includes(committee)
     );
 
-  // Combine all checks to determine if the data conforms to the applicantType
-  return hasBasicFields && hasPreferencesFields && hasOptionalFields;
-
-  /* && hasSelectedTimesFields */
-  // TODO: Uncomment the last check when the selectedTimes field is added to the applicantType
+  return (
+    hasBasicFields &&
+    hasPreferencesFields &&
+    hasOptionalFields &&
+    hasSelectedTimes
+  );
 };
 
 export const isCommitteeType = (data: any): data is commiteeType => {
@@ -65,6 +102,54 @@ export const isCommitteeType = (data: any): data is commiteeType => {
 
   return hasBasicFields;
 };
+
+export const validateCommittee = (data: any, period: periodType): boolean => {
+  const hasBasicFields =
+    typeof data.period_name === "string" &&
+    typeof data.committee === "string" &&
+    typeof data.timeslot === "string" &&
+    Array.isArray(data.availabletimes) &&
+    data.availabletimes.every(
+      (time: { start: string; end: string }) =>
+        typeof time.start === "string" && typeof time.end === "string"
+    );
+
+  const isPeriodNameValid = data.periodId === String(period._id);
+
+  const isBeforeDeadline = new Date() <= new Date(period.applicationPeriod.end);
+
+  const committeeExists =
+    period.committees.some((committee) => {
+      return committee.toLowerCase() === data.committee.toLowerCase();
+    }) ||
+    period.optionalCommittees.some((committee) => {
+      return committee.toLowerCase() === data.committee.toLowerCase();
+    });
+
+  const isWithinInterviewPeriod = data.availabletimes.every(
+    (time: { start: string; end: string }) => {
+      const startTime = new Date(time.start);
+      const endTime = new Date(time.end);
+
+      return (
+        startTime >= new Date(period.interviewPeriod.start) &&
+        startTime <= new Date(period.interviewPeriod.end) &&
+        endTime <= new Date(period.interviewPeriod.end) &&
+        endTime >= new Date(period.interviewPeriod.start) &&
+        startTime < endTime
+      );
+    }
+  );
+
+  return (
+    hasBasicFields &&
+    isPeriodNameValid &&
+    committeeExists &&
+    isWithinInterviewPeriod &&
+    isBeforeDeadline
+  );
+};
+
 export const isPeriodType = (data: any): data is periodType => {
   const isDateString = (str: any): boolean => {
     return typeof str === "string" && !isNaN(Date.parse(str));
