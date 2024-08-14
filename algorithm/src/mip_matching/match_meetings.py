@@ -5,6 +5,9 @@ from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
 
+from itertools import permutations
+
+
 class MeetingMatch(TypedDict):
     """Type definition of a meeting match object"""
     solver_status: mip.OptimizationStatus
@@ -43,17 +46,15 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
 
     # Legger inn begrensninger for at en person kun kan ha ett intervju på hvert tidspunkt
     for applicant in applicants:
-        potential_intervals = set()
+        potential_interviews: set[tuple[Committee, TimeInterval]] = set()
         for applicant_candidate, committee, interval in m:
             if applicant == applicant_candidate:
-                potential_intervals.add(interval)
+                potential_interviews.add((committee, interval))
 
-        for interval in potential_intervals:
-
-            model += mip.xsum(m[(applicant, committee, interval)]
-                              for committee in applicant.get_committees()
-                              # type: ignore
-                              if (applicant, committee, interval) in m) <= 1
+        for interview_a, interview_b in permutations(potential_interviews, r=2):
+            if interview_a[1].intersects(interview_b[1]):
+                model += m[(applicant, *interview_a)] + \
+                    m[(applicant, *interview_b)] <= 1
 
     # Setter mål til å være maksimering av antall møter
     model.objective = mip.maximize(mip.xsum(m.values()))
