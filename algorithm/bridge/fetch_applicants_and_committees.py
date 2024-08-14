@@ -100,7 +100,6 @@ def fetch_committee_times(periodId):
 
 def format_match_results(match_results: MeetingMatch, applicants: List[dict], periodId) -> List[Dict]:
     transformed_results = {}
-    # applicant_dict = {str(applicant['_id']): {'name': applicant['name'], 'email': applicant['email'], 'phone': applicant['phone']} for applicant in applicants}
     
     for result in match_results['matchings']:
         applicant_id = str(result[0])
