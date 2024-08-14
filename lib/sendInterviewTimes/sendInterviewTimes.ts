@@ -1,4 +1,4 @@
-import { getApplication, getApplicationByMongoId } from "../mongo/applicants";
+import { getApplicationByMongoId } from "../mongo/applicants";
 import { getCommitteesByPeriod } from "../mongo/committees";
 import { getInterviewsByPeriod } from "../mongo/interviews";
 import { getPeriodById, markInterviewsSentByPeriodId } from "../mongo/periods";
@@ -9,7 +9,6 @@ import {
   emailCommitteeInterviewType,
   periodType,
   algorithmType,
-  preferencesType,
   committeePreferenceType,
 } from "../types/types";
 import { fetchCommitteeEmails } from "./fetchFunctions";
@@ -23,12 +22,10 @@ export const sendOutInterviewTimes = async ({
   try {
     const { period } = await getPeriodById(periodId);
     if (!period) {
-      console.log("Failed to find period");
       return { error: "Failed to find period" };
     }
 
     if (period.hasSentInterviewTimes) {
-      console.log("Interview times already sent");
       return { error: "Interview times already sent" };
     }
 
@@ -51,8 +48,6 @@ export const sendOutInterviewTimes = async ({
       committeeEmails,
       committeeInterviewTimes
     );
-
-    console.log(applicantsToEmail);
 
     const committeesToEmail = formatCommittees(applicantsToEmail);
 
@@ -77,8 +72,6 @@ const formatApplicants = async (
       app.applicantId,
       periodId
     );
-
-    console.log(dbApplication);
 
     if (!dbApplication || !dbApplication.application) continue;
 
