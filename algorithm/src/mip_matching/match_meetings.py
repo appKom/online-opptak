@@ -5,9 +5,6 @@ from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
 
-# from typing import TypedDict
-
-
 class MeetingMatch(TypedDict):
     """Type definition of a meeting match object"""
     solver_status: mip.OptimizationStatus
