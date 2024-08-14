@@ -38,8 +38,7 @@ export const formatAndSendEmails = async ({
           htmlContent: emailBody,
         });
 
-        let toPhoneNumber = "+47";
-        toPhoneNumber += applicant.applicantPhone;
+        let toPhoneNumber = "+47" + applicant.applicantPhone;
         sendSMS(toPhoneNumber, phoneBody);
       }
     );
