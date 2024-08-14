@@ -25,12 +25,11 @@ export const formatAndSendEmails = async ({
     // Send email to each applicant
     applicantsToEmail.forEach(
       async (applicant: emailApplicantInterviewType) => {
-        const typedApplicant: emailApplicantInterviewType = applicant;
-        const applicantEmail = [typedApplicant.applicantEmail];
-        const subject = `Hei, ${typedApplicant.applicantName}, her er dine intervjutider:`;
+        const applicantEmail = [applicant.applicantEmail];
+        const subject = `Hei, ${applicant.applicantName}, her er dine intervjutider:`;
 
-        const emailBody = formatApplicantInterviewEmail(typedApplicant);
-        const phoneBody = formatInterviewSMS(typedApplicant);
+        const emailBody = formatApplicantInterviewEmail(applicant);
+        const phoneBody = formatInterviewSMS(applicant);
 
         await sendEmail({
           toEmails: applicantEmail,
@@ -40,7 +39,7 @@ export const formatAndSendEmails = async ({
         });
 
         let toPhoneNumber = "+47";
-        toPhoneNumber += typedApplicant.applicantPhone;
+        toPhoneNumber += applicant.applicantPhone;
         sendSMS(toPhoneNumber, phoneBody);
       }
     );
@@ -48,13 +47,12 @@ export const formatAndSendEmails = async ({
     // Send email to each committee
     committeesToEmail.forEach(
       async (committee: emailCommitteeInterviewType) => {
-        const typedCommittee: emailCommitteeInterviewType = committee;
-        const committeeEmail = [typedCommittee.committeeEmail];
+        const committeeEmail = [committee.committeeEmail];
         const subject = `${changeDisplayName(
-          typedCommittee.committeeName
-        )} sine intervjutider for ${typedCommittee.period_name}`;
+          committee.committeeName
+        )} sine intervjutider for ${committee.period_name}`;
 
-        const emailBody = formatCommitteeInterviewEmail(typedCommittee);
+        const emailBody = formatCommitteeInterviewEmail(committee);
 
         await sendEmail({
           toEmails: committeeEmail,
