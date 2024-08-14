@@ -11,7 +11,7 @@ const Footer = () => {
         >
           Appkom
         </Link>{" "}
-        {`:)`}
+        :)
       </div>
     </div>
   );
