@@ -9,6 +9,13 @@ from datetime import timedelta
 from itertools import combinations
 
 
+# Mål på hvor mye buffer skal vektlegges i matchingen (-1 tilsvarer vekten av ett intervju) 
+APPLICANT_BUFFER_MODEL_WEIGHT = 0.001
+
+# Hvor stort buffer man ønsker å ha mellom intervjuene
+APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
+
+
 class MeetingMatch(TypedDict):
     """Type definition of a meeting match object"""
     solver_status: mip.OptimizationStatus
@@ -59,11 +66,8 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                               # type: ignore
                               if (applicant, committee, interval) in m) <= 1
 
-    # Legger til målsetning om at man skal ha mellomrom mellom perioder
+    # Legger til sekundærmålsetning om at man skal ha mellomrom mellom perioder
     distance_variables = set()
-
-    APPLICANT_BUFFER_MODEL_WEIGHT = -0.001
-    APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
     
     for applicant in applicants:
         potential_committees_with_intervals: set[tuple[Committee, TimeInterval]] = set()
@@ -71,16 +75,18 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
             if applicant == applicant_candidate:
                 potential_committees_with_intervals.add((committee, interval))
 
+        # Trekker fra vekten dersom det prøves å planlegges et møte med mindre buffer enn ønsket
         distance_variables.add(
             mip.xsum(
-                APPLICANT_BUFFER_MODEL_WEIGHT * (m[(applicant, *a)] and m[(applicant, *b)])
+                -APPLICANT_BUFFER_MODEL_WEIGHT * (m[(applicant, *a)] and m[(applicant, *b)])
                 for a, b in combinations(potential_committees_with_intervals, r=2)  # type: ignore
-                if a[0] != b[0]
-                and a[1].is_within_distance(b[1], APPLICANT_BUFFER_LENGTH)
+                if a[0] != b[0]  # Ikke intervju med samme komite (blir ordnet over)
+                and a[1].is_within_distance(b[1], APPLICANT_BUFFER_LENGTH)  # Intervjuene er innenfor bufferlengden
             )
         )
 
     # Setter mål til å være maksimering av antall møter
+    # med sekundærmål om buffer
     model.objective = mip.maximize(mip.xsum(m.values()) + mip.xsum(distance_variables))
 
     # Kjør optimeringen
