@@ -26,7 +26,6 @@ def main():
             applicants = fetch_applicants(periodId)
             committee_times = fetch_committee_times(periodId)
             
-            
             committee_objects = create_committee_objects(committee_times)
             
             all_committees = {committee.name: committee for committee in committee_objects}
@@ -40,7 +39,6 @@ def main():
             
             send_to_db(match_result, applicants, periodId)
             return match_result
-        
         
 def send_to_db(match_result: MeetingMatch, applicants: List[dict], periodId):
     load_dotenv()
@@ -59,8 +57,6 @@ def send_to_db(match_result: MeetingMatch, applicants: List[dict], periodId):
     collection.insert_many(formatted_results)
     
     client.close()
-
-        
 
 def connect_to_db(collection_name):
     load_dotenv()
@@ -110,7 +106,6 @@ def format_match_results(match_results: MeetingMatch, applicants: List[dict], pe
     for result in match_results['matchings']:
         applicant_id = str(result[0])
         
-        
         if applicant_id not in transformed_results:
             transformed_results[applicant_id] = {
                 "periodId": periodId,
@@ -130,7 +125,6 @@ def format_match_results(match_results: MeetingMatch, applicants: List[dict], pe
         })
 
     return list(transformed_results.values())
-
 
 def create_applicant_objects(applicants_data: List[dict], all_committees: dict[str, Committee]) -> set[Applicant]:
     applicants = set()
