@@ -79,9 +79,7 @@ def connect_to_db(collection_name):
 def fetch_periods():
     collection, client = connect_to_db("periods")
     
-    periods = collection.find()
-    
-    periods = list(periods)
+    periods = list(collection.find())
     
     client.close()
     
@@ -90,9 +88,7 @@ def fetch_periods():
 def fetch_applicants(periodId):
     collection, client = connect_to_db("applications")
     
-    applicants = collection.find({"periodId": periodId})
-    
-    applicants = list(applicants)
+    applicants = list(collection.find({"periodId": periodId}))
     
     client.close()
     
@@ -101,9 +97,7 @@ def fetch_applicants(periodId):
 def fetch_committee_times(periodId):
     collection, client = connect_to_db("committees")
     
-    committee_times = collection.find({"periodId": periodId})
-    
-    committee_times = list(committee_times)
+    committee_times = list(collection.find({"periodId": periodId}))
     
     client.close()
     
