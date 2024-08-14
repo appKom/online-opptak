@@ -62,7 +62,7 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
     # Legger til målsetning om at man skal ha mellomrom mellom perioder
     distance_variables = set()
 
-    APPLICANT_BUFFER_MODEL_WEIGHT = 0.001
+    APPLICANT_BUFFER_MODEL_WEIGHT = -0.001
     APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
     
     for applicant in applicants:
@@ -73,8 +73,8 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
 
         distance_variables.add(
             mip.xsum(
-                APPLICANT_BUFFER_MODEL_WEIGHT * m[(applicant, *a)] * m[(applicant, *b)]
-                for a, b in combinations(potential_committees_with_intervals)  # type: ignore
+                APPLICANT_BUFFER_MODEL_WEIGHT * (m[(applicant, *a)] and m[(applicant, *b)])
+                for a, b in combinations(potential_committees_with_intervals, r=2)  # type: ignore
                 if a[0] != b[0]
                 and a[1].is_within_distance(b[1], APPLICANT_BUFFER_LENGTH)
             )
