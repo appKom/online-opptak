@@ -44,7 +44,7 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                               # type: ignore
                               for interval in applicant.get_fitting_committee_slots(committee)) <= 1
 
-    # Legger inn begrensninger for at en person kun kan ha ett intervju på hvert tidspunkt
+    # Legger inn begrensninger for at en søker ikke kan ha overlappende intervjutider
     for applicant in applicants:
         potential_interviews: set[tuple[Committee, TimeInterval]] = set()
         for applicant_candidate, committee, interval in m:
