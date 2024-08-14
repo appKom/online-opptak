@@ -1,10 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  getCommittees,
-  createCommittee,
-  deleteCommittee,
-  updateCommitteeMessage,
-} from "../../../../../lib/mongo/committees";
+import { createCommittee } from "../../../../../lib/mongo/committees";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../../auth/[...nextauth]";
 import { hasSession, isInCommitee } from "../../../../../lib/utils/apiChecks";

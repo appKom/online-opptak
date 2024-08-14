@@ -39,36 +39,6 @@ const userHasAccessCommittee = (
   return userCommittees.includes(dbCommittees);
 };
 
-export const updateCommitteeMessage = async (
-  committee: string,
-  periodId: string,
-  message: string,
-  userCommittees: string[]
-) => {
-  try {
-    if (!committees) await init();
-    if (!userHasAccessCommittee(userCommittees, committee)) {
-      return { error: "User does not have access to this committee" };
-    }
-
-    const result = await committees.findOneAndUpdate(
-      { committee: committee, periodId: periodId },
-      { $set: { message: message } },
-      { returnDocument: "after" }
-    );
-
-    const updatedCommittee = result;
-
-    if (updatedCommittee) {
-      return { updatedMessage: updatedCommittee.message };
-    } else {
-      return { error: "Failed to update message" };
-    }
-  } catch (error) {
-    return { error: "Failed to update message" };
-  }
-};
-
 export const getCommittees = async (
   periodId: string,
   selectedCommittee: string,
