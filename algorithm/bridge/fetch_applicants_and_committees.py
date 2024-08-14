@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import os
 import certifi
 from typing import List, Dict
@@ -164,7 +164,7 @@ def create_applicant_objects(applicants_data: List[dict], all_committees: dict[s
 def create_committee_objects(committee_data: List[dict]) -> set[Committee]:
     committees = set()
     for data in committee_data:
-        committee = Committee(name=data['committee'])
+        committee = Committee(name=data['committee'], interview_length=timedelta(minutes=int(data["timeslot"])))
         for interval_data in data['availabletimes']:
             interval = TimeInterval(
                 start=datetime.fromisoformat(interval_data['start'].replace("Z", "+00:00")),
