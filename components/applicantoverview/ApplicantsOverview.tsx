@@ -154,7 +154,7 @@ const ApplicantsOverview = ({
   if (applicantsIsError) return <ErrorPage />;
 
   return (
-    <div className="flex flex-col items-center px-6">
+    <div className="flex flex-col items-center px-5">
       {showPeriodName && <SimpleTitle title={period?.name || ""} />}
 
       <div className="w-full max-w-lg mx-auto mt-10 mb-5">
