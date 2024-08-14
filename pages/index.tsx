@@ -45,7 +45,7 @@ const Home = () => {
             <Button title="Komiteer" color="white" href="/committees" />
           </div>
         </div>
-        <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
+        <div className="hidden lg:mt-0 lg:col-span-5 lg:block">
           <FestivitiesIllustration className={""} />
         </div>
       </div>
