@@ -15,6 +15,7 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchApplicantsByPeriodIdAndCommittee } from "../../lib/api/applicantApi";
 
 interface Interview {
+  id: string;
   title: string;
   start: string;
   end: string;
@@ -98,6 +99,7 @@ const CommitteeInterviewTimes = ({
         setHasAlreadySubmitted(true);
         const events = committeeInterviewTimes.availabletimes.map(
           (at: any) => ({
+            id: calendarEvents.length.toString(),
             title: at.room,
             start: new Date(at.start).toISOString(),
             end: new Date(at.end).toISOString(),
@@ -156,21 +158,18 @@ const CommitteeInterviewTimes = ({
       return;
     }
 
-    const event = {
+    const event: Interview = {
+      id: calendarEvents.length.toString(),
       title: roomInput,
-      start: currentSelection.start,
-      end: currentSelection.end,
+      start: currentSelection.start.toISOString(),
+      end: currentSelection.end.toISOString(),
     };
 
     const calendarApi = currentSelection.view.calendar;
     calendarApi.addEvent(event);
     calendarApi.render();
 
-    addCell([
-      roomInput,
-      currentSelection.start.toISOString(),
-      currentSelection.end.toISOString(),
-    ]);
+    addCell(event);
 
     setRoomInput("");
     setIsModalOpen(false);
@@ -223,21 +222,20 @@ const CommitteeInterviewTimes = ({
     }
   };
 
-  const removeCell = (event: any) => {
+  const removeCell = (event: Interview) => {
     setMarkedCells((prevCells) =>
-      prevCells.filter(
-        (cell) => cell.start !== event.startStr && cell.end !== event.endStr
-      )
+      prevCells.filter((cell) => cell.id !== event.id)
     );
-    event.remove();
+
+    setCalendarEvents((prevEvents) =>
+      prevEvents.filter((evt) => evt.id !== event.id)
+    );
+
     setUnsavedChanges(true);
   };
 
-  const addCell = (cell: string[]) => {
-    setMarkedCells([
-      ...markedCells,
-      { title: cell[0], start: cell[1], end: cell[2] },
-    ]);
+  const addCell = (event: Interview) => {
+    setMarkedCells([...markedCells, event]);
     setUnsavedChanges(true);
   };
 
@@ -257,9 +255,10 @@ const CommitteeInterviewTimes = ({
               e.stopPropagation();
 
               removeCell({
-                startStr: eventContent.event.start.toISOString(),
-                endStr: eventContent.event.end.toISOString(),
-                remove: () => eventContent.event.remove(),
+                id: eventContent.event.id,
+                start: eventContent.event.start.toISOString(),
+                end: eventContent.event.end.toISOString(),
+                title: eventContent.event.title,
               });
             }}
           >
@@ -277,21 +276,16 @@ const CommitteeInterviewTimes = ({
     );
   };
 
-  const formatEventsForExport = (events: any[]) => {
-    return events
-      .map((event) => {
-        const startDateTimeString = `${event.start}`;
-        const endDatetimeString = `${event.end}`;
-
-        const startDateTime = new Date(startDateTimeString);
-        const endDateTime = new Date(endDatetimeString);
-        return {
-          room: event.title,
-          start: startDateTime.toISOString(),
-          end: endDateTime.toISOString(),
-        };
-      })
-      .filter((event) => event !== null);
+  const formatEventsForExport = (events: Interview[]) => {
+    return events.map((event) => {
+      const startDateTime = new Date(event.start);
+      const endDateTime = new Date(event.end);
+      return {
+        room: event.title,
+        start: startDateTime.toISOString(),
+        end: endDateTime.toISOString(),
+      };
+    });
   };
 
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
