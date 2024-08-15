@@ -9,8 +9,8 @@ from datetime import timedelta
 from itertools import combinations
 
 
-# Mål på hvor mye buffer skal vektlegges i matchingen (-1 tilsvarer vekten av ett intervju) 
-APPLICANT_BUFFER_MODEL_WEIGHT = 0.001
+# Mål på hvor mye buffer skal vektlegges i matchingen (1 tilsvarer vekten av ett intervju) 
+APPLICANT_BUFFER_MODEL_WEIGHT = 1.5
 
 # Hvor stort buffer man ønsker å ha mellom intervjuene
 APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
