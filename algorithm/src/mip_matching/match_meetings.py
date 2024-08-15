@@ -52,19 +52,17 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                               # type: ignore
                               for interval in applicant.get_fitting_committee_slots(committee)) <= 1
 
-    # Legger inn begrensninger for at en person kun kan ha ett intervju på hvert tidspunkt
+    # Legger inn begrensninger for at en søker ikke kan ha overlappende intervjutider
     for applicant in applicants:
-        potential_intervals = set()
+        potential_interviews: set[tuple[Committee, TimeInterval]] = set()
         for applicant_candidate, committee, interval in m:
             if applicant == applicant_candidate:
-                potential_intervals.add(interval)
+                potential_interviews.add((committee, interval))
 
-        for interval in potential_intervals:
-
-            model += mip.xsum(m[(applicant, committee, interval)]
-                              for committee in applicant.get_committees()
-                              # type: ignore
-                              if (applicant, committee, interval) in m) <= 1
+        for interview_a, interview_b in combinations(potential_interviews, r=2):
+            if interview_a[1].intersects(interview_b[1]):
+                model += m[(applicant, *interview_a)] + \
+                    m[(applicant, *interview_b)] <= 1
 
     # Legger til sekundærmålsetning om at man skal ha mellomrom mellom perioder
     distance_variables = set()
