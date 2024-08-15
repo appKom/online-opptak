@@ -46,26 +46,29 @@ const Apply = () => {
             <SimpleTitle title="Ingen åpne opptak for øyeblikket" />
             <p className="w-10/12 max-w-2xl text-center text-md ">
               Opptak til{" "}
-              <Link href="/committees">
-                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
-                  komiteene
-                </a>
+              <Link
+                href="/committees"
+                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
+              >
+                komiteene
               </Link>{" "}
               skjer vanligvis i august etter fadderuka. Noen komiteer har
               vanligvis suppleringsopptak i februar.
               <br />
               <br />
               Følg med på{" "}
-              <Link href="https://online.ntnu.no">
-                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
-                  online.ntnu.no
-                </a>
+              <Link
+                href="https://online.ntnu.no"
+                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
+              >
+                online.ntnu.no
               </Link>{" "}
               eller på vår{" "}
-              <Link href="https://www.facebook.com/groups/1547182375336132">
-                <a className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange">
-                  Facebook-gruppe
-                </a>
+              <Link
+                href="https://www.facebook.com/groups/1547182375336132"
+                className="underline text-online-darkBlue dark:text-white hover:text-online-orange dark:hover:text-online-orange"
+              >
+                Facebook-gruppe
               </Link>{" "}
               for kunngjøringer!
             </p>

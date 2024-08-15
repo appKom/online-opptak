@@ -39,13 +39,13 @@ export const Tabs = (props: TabsProps) => {
         <ul className="flex flex-wrap items-center gap-4 -mb-px text-sm font-medium">
           {props.content.map((tab, index) => (
             <li key={index}>
-              <a
+              <button
                 onClick={() => changeTab(index)}
                 className={getTabClass(index)}
               >
                 {tab.icon}
                 {tab.title}
-              </a>
+              </button>
             </li>
           ))}
         </ul>
