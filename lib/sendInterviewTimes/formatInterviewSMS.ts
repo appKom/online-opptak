@@ -23,7 +23,7 @@ export const formatInterviewSMS = (applicant: emailApplicantInterviewType) => {
     }
 
     if (committee.interviewTime.start === "Ikke satt") {
-      phoneBody += `Tid: Ikke satt \n`;
+      phoneBody += `Tid: Ikke satt. Komitéen vil ta kontakt for å avtale tidspunkt. \n`;
     }
 
     phoneBody += `Rom: ${committee.interviewTime.room} \n \n`;

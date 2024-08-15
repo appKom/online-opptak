@@ -30,8 +30,7 @@ export const formatApplicantInterviewEmail = (
       )}<br>`;
     }
     if (committee.interviewTime.start === "Ikke satt") {
-      emailBody += `<b>Start:</b> Ikke satt<br>`;
-      emailBody += `<b>Slutt:</b> Ikke satt<br>`;
+      emailBody += `<b>Tid:</b> Ikke satt. Komitéen vil ta kontakt med deg for å avtale tidspunkt.<br>`;
     }
 
     emailBody += `<b>Rom:</b> ${committee.interviewTime.room}</li><br>`;
@@ -70,8 +69,7 @@ export const formatCommitteeInterviewEmail = (
     }
 
     if (applicant.interviewTime.start === "Ikke satt") {
-      emailBody += `<b>Start:</b> Ikke satt<br>`;
-      emailBody += `<b>Slutt:</b> Ikke satt<br>`;
+      emailBody += `<b>Tid:</b> Ikke satt. Ta kontakt med søker for å avtale tidspunkt.`;
     }
     emailBody += `<b>Rom:</b> ${applicant.interviewTime.room}</li><br>`;
   });
