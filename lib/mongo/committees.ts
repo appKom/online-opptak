@@ -12,7 +12,7 @@ async function init() {
   try {
     client = await clientPromise;
     db = client.db();
-    committees = db.collection("committee");
+    committees = db.collection("committees");
   } catch (error) {
     console.error(error);
     throw new Error("Failed to establish connection to database");
@@ -37,36 +37,6 @@ const userHasAccessCommittee = (
   dbCommittees: string
 ) => {
   return userCommittees.includes(dbCommittees);
-};
-
-export const updateCommitteeMessage = async (
-  committee: string,
-  periodId: string,
-  message: string,
-  userCommittees: string[]
-) => {
-  try {
-    if (!committees) await init();
-    if (!userHasAccessCommittee(userCommittees, committee)) {
-      return { error: "User does not have access to this committee" };
-    }
-
-    const result = await committees.findOneAndUpdate(
-      { committee: committee, periodId: periodId },
-      { $set: { message: message } },
-      { returnDocument: "after" }
-    );
-
-    const updatedCommittee = result;
-
-    if (updatedCommittee) {
-      return { updatedMessage: updatedCommittee.message };
-    } else {
-      return { error: "Failed to update message" };
-    }
-  } catch (error) {
-    return { error: "Failed to update message" };
-  }
 };
 
 export const getCommittees = async (
@@ -112,6 +82,17 @@ export const createCommittee = async (
     if (!committees) await init();
     if (!userHasAccessCommittee(userCommittes, committeeData.committee)) {
       return { error: "User does not have access to this committee" };
+    }
+
+    const existingCommitteeTime = await committees.findOne({
+      committee: committeeData.committee,
+      periodId: committeeData.periodId,
+    });
+
+    if (existingCommitteeTime) {
+      return {
+        error: "409 Committee has already submited times for this period",
+      };
     }
 
     if (!ObjectId.isValid(periodId)) {

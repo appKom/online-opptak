@@ -5,7 +5,8 @@ import SelectInput from "./SelectInput";
 import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
 import { changeDisplayName } from "../../lib/utils/toString";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export const ApplicationForm = (props: Props) => {
+  const [isNtnuEmail, setIsNtnuEmail] = useState<boolean>(false);
   const availableCommittees = [["Ingen", ""]];
   const [selectedOptionalCommittees, setSelectedOptionalCommittees] = useState<
     string[]
@@ -33,9 +35,9 @@ export const ApplicationForm = (props: Props) => {
   const addOptionalCommittee = (committee: string, value: string) => {
     let updatedCommittees = [...selectedOptionalCommittees];
 
-    if (value === "yes" && !updatedCommittees.includes(committee)) {
+    if (value === "ja" && !updatedCommittees.includes(committee)) {
       updatedCommittees.push(committee);
-    } else if (value === "no" && updatedCommittees.includes(committee)) {
+    } else if (value === "nei" && updatedCommittees.includes(committee)) {
       updatedCommittees = updatedCommittees.filter(
         (item) => item !== committee
       );
@@ -48,9 +50,31 @@ export const ApplicationForm = (props: Props) => {
     });
   };
 
+  useEffect(() => {
+    if (
+      props.applicationData.email &&
+      props.applicationData.email.includes("ntnu.no")
+    ) {
+      setIsNtnuEmail(true);
+      // toast.error(
+      //   "Vi har problemer med å sende e-post til ntnu.no-adresser. Vennligst bruk en annen e-postadresse."
+      // );
+    } else {
+      setIsNtnuEmail(false);
+    }
+  }, [props.applicationData.email]);
+
   return (
     <div className="flex justify-center items-center">
       <form className="px-5 text-online-darkBlue dark:text-white max-w-sm w-full">
+        {isNtnuEmail && (
+          <div className="px-5">
+            <p className="text-red-500">
+              Vi har problemer med å sende e-post til NTNU e-poster. Vennligst
+              bruk en annen e-postadresse.
+            </p>
+          </div>
+        )}
         <TextInput
           label={"E-postadresse"}
           defaultValue={props.applicationData.email}
@@ -158,12 +182,12 @@ export const ApplicationForm = (props: Props) => {
         <Line />
         <RadioInput
           values={[
-            ["Ja", "yes"],
-            ["Nei", "no"],
-            ["Usikker (gjerne spør om mer info på intervjuet)", "maybe"],
+            ["Ja", "ja"],
+            ["Nei", "nei"],
+            ["Usikker (gjerne spør om mer info på intervjuet)", "kanskje"],
           ]}
           label={
-            "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankkom)?"
+            "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankom)?"
           }
           updateInputValues={(value: boolean) =>
             props.setApplicationData({
@@ -176,8 +200,8 @@ export const ApplicationForm = (props: Props) => {
           <div key={committee}>
             <RadioInput
               values={[
-                ["Ja", "yes"],
-                ["Nei", "no"],
+                ["Ja", "ja"],
+                ["Nei", "nei"],
               ]}
               label={`Ønsker du å søke ${changeDisplayName(
                 committee

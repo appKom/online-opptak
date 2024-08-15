@@ -5,39 +5,39 @@ const info = [
   {
     icon: <UserIcon className="w-8 h-8 text-red-500" />,
     color: "red",
-    title: "Søkere",
+    title: "Søker",
     content: [
       "Velg riktig opptaksperiode.",
       "Fyll inn søknad for opptaket og velg når du kan intervjues.",
-      "Send inn søknad og motta bekreftelse på epost.",
-      "Motta epost om innkalling til intervjuer når søknadsfristen er over.",
+      "Send inn søknad og motta bekreftelse på e-post.",
+      "Motta e-post om innkalling til intervjuer når søknadsfristen er over.",
     ],
   },
   {
     icon: <UserGroupIcon className="w-8 h-8 text-blue-500" />,
     color: "blue",
-    title: "Komiteer",
+    title: "Komitémedlem",
     content: [
       "Velg riktig opptaksperiode.",
       "Legg inn intervjutider for komiteen din innen søknadsfristen.",
-      "Motta epost om intervjutider for komiteen når søknadsfristen er over.",
+      "Motta e-post om intervjutider for komiteen når søknadsfristen er over.",
     ],
   },
   {
-    icon: <AdminIcon className="w-8 h-8 text-green-500" />,
-    color: "green",
-    title: "Admins",
+    icon: <AdminIcon className="w-8 h-8 text-yellow-500" />,
+    color: "yellow",
+    title: "Administrator",
     content: [
-      "Opprett opptaksperiode ved å velge datoer og komiteer for opptaket",
+      "Opprett opptaksperiode ved å velge datoer og komiteer for opptaket.",
     ],
   },
 ];
 
 const About = () => {
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex items-center justify-center h-full">
       <div className="w-[90%] md:w-[80%] xl:w-[65%]">
-        <h1 className="max-w-2xl mb-10 pt-5 text-4xl font-bold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">
+        <h1 className="max-w-2xl mb-10 text-4xl font-bold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">
           Hvordan fungerer opptak.online?
         </h1>
 
@@ -56,8 +56,8 @@ const About = () => {
                       ? "bg-red-100"
                       : item.color === "blue"
                       ? "bg-blue-100"
-                      : item.color === "green"
-                      ? "bg-green-100"
+                      : item.color === "yellow"
+                      ? "bg-yellow-100"
                       : ""
                   } rounded w-min h-min`}
                 >

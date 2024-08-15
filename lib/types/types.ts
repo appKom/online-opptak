@@ -36,7 +36,7 @@ export type applicantType = {
   grade: string;
   about: string;
   preferences: preferencesType | committeePreferenceType[];
-  bankom: "yes" | "no" | "maybe";
+  bankom: bankomOptionsType;
   optionalCommittees: string[];
   selectedTimes: [
     {
@@ -47,6 +47,8 @@ export type applicantType = {
   date: Date;
   periodId: string | ObjectId;
 };
+
+export type bankomOptionsType = "ja" | "nei" | "kanskje" | undefined;
 
 // applicantType modified to fit email content
 export type emailDataType = {
@@ -76,9 +78,11 @@ export type periodType = {
   };
   committees: string[];
   optionalCommittees: string[];
+  hasSentInterviewTimes: boolean;
 };
 
 export type AvailableTime = {
+  room: string;
   start: string;
   end: string;
 };
@@ -90,4 +94,14 @@ export type committeeInterviewType = {
   availabletimes: AvailableTime[];
   timeslot: string;
   message: string;
+};
+
+export type owCommitteeType = {
+  name_short: string;
+  name_long: string;
+  email?: string;
+  description_long?: string;
+  description_short?: string;
+  application_description?: string;
+  image?: { xs: string; sm: string };
 };

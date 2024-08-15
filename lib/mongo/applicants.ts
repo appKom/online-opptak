@@ -1,6 +1,7 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { applicantType, preferencesType } from "../types/types";
+import { applicantType, periodType, preferencesType } from "../types/types";
+import { getPeriodById } from "./periods";
 
 let client: MongoClient;
 let db: Db;
@@ -11,7 +12,7 @@ async function init() {
   try {
     client = await clientPromise;
     db = client.db();
-    applicants = db.collection("applicant");
+    applicants = db.collection("applications");
   } catch (error) {
     console.error(error);
     throw new Error("Failed to establish connection to database");
@@ -109,6 +110,13 @@ export const getApplicantsForCommittee = async (
     // Henter alle søkere for perioden
     const result = await applicants.find({ periodId: periodId }).toArray();
 
+    const periodData = await getPeriodById(periodId);
+    const period: periodType | undefined = periodData.period;
+
+    if (!period) {
+      return { error: "Period not found" };
+    }
+
     // Type guard
     const isPreferencesType = (
       preferences: any
@@ -152,6 +160,14 @@ export const getApplicantsForCommittee = async (
         );
 
         applicant.optionalCommittees = [];
+
+        if (new Date(period.interviewPeriod.start) > new Date()) {
+          applicant.name = "Skjult ";
+          applicant.phone = "Skjult";
+          applicant.email = "Skjult";
+          applicant.about = "Skjult";
+          applicant.grade = "-";
+        }
 
         const isSelectedCommitteePresent =
           preferencesArray.includes(selectedCommittee);
