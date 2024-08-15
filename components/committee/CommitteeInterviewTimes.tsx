@@ -223,13 +223,25 @@ const CommitteeInterviewTimes = ({
     }
   };
 
-  const removeCell = (event: any) => {
+  const removeCell = (event: Interview) => {
     setMarkedCells((prevCells) =>
       prevCells.filter(
-        (cell) => cell.start !== event.startStr && cell.end !== event.endStr
+        (cell) =>
+          new Date(cell.start).getTime() !== new Date(event.start).getTime() ||
+          new Date(cell.end).getTime() !== new Date(event.end).getTime() ||
+          cell.title !== event.title
       )
     );
-    event.remove();
+
+    setCalendarEvents((prevEvents) =>
+      prevEvents.filter(
+        (evt) =>
+          new Date(evt.start).getTime() !== new Date(event.start).getTime() ||
+          new Date(evt.end).getTime() !== new Date(event.end).getTime() ||
+          evt.title !== event.title
+      )
+    );
+
     setUnsavedChanges(true);
   };
 
@@ -257,9 +269,9 @@ const CommitteeInterviewTimes = ({
               e.stopPropagation();
 
               removeCell({
-                startStr: eventContent.event.start.toISOString(),
-                endStr: eventContent.event.end.toISOString(),
-                remove: () => eventContent.event.remove(),
+                start: eventContent.event.start.toISOString(),
+                end: eventContent.event.end.toISOString(),
+                title: eventContent.event.title,
               });
             }}
           >
