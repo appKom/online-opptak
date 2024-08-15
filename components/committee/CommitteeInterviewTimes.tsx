@@ -36,7 +36,6 @@ const CommitteeInterviewTimes = ({
 }: Props) => {
   const { data: session } = useSession();
 
-  const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(15);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
@@ -178,7 +177,7 @@ const CommitteeInterviewTimes = ({
 
   const submit = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const formattedEvents = formatEventsForExport(markedCells);
+    const formattedEvents = formatEventsForExport(calendarEvents);
     if (formattedEvents.length === 0) {
       toast.error("Fyll inn minst et gyldig tidspunkt");
       return;
@@ -223,10 +222,6 @@ const CommitteeInterviewTimes = ({
   };
 
   const removeCell = (event: Interview) => {
-    setMarkedCells((prevCells) =>
-      prevCells.filter((cell) => cell.id !== event.id)
-    );
-
     setCalendarEvents((prevEvents) =>
       prevEvents.filter((evt) => evt.id !== event.id)
     );
@@ -235,7 +230,7 @@ const CommitteeInterviewTimes = ({
   };
 
   const addCell = (event: Interview) => {
-    setMarkedCells([...markedCells, event]);
+    setCalendarEvents((prevEvents) => [...prevEvents, event]);
     setUnsavedChanges(true);
   };
 
