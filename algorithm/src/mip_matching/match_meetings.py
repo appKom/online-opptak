@@ -9,9 +9,6 @@ from datetime import timedelta
 from itertools import combinations
 
 
-# Mål på hvor mye buffer skal vektlegges i matchingen (1 tilsvarer vekten av ett intervju) 
-APPLICANT_BUFFER_MODEL_WEIGHT = 1.5
-
 # Hvor stort buffer man ønsker å ha mellom intervjuene
 APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
 
@@ -53,6 +50,7 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                               for interval in applicant.get_fitting_committee_slots(committee)) <= 1
 
     # Legger inn begrensninger for at en søker ikke kan ha overlappende intervjutider
+    # og minst har et buffer mellom hvert intervju som angitt
     for applicant in applicants:
         potential_interviews: set[tuple[Committee, TimeInterval]] = set()
         for applicant_candidate, committee, interval in m:
@@ -60,32 +58,12 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                 potential_interviews.add((committee, interval))
 
         for interview_a, interview_b in combinations(potential_interviews, r=2):
-            if interview_a[1].intersects(interview_b[1]):
+            if interview_a[1].intersects(interview_b[1]) or interview_a[1].is_within_distance(interview_b[1], APPLICANT_BUFFER_LENGTH):
                 model += m[(applicant, *interview_a)] + \
                     m[(applicant, *interview_b)] <= 1
 
-    # Legger til sekundærmålsetning om at man skal ha mellomrom mellom perioder
-    distance_variables = set()
-    
-    for applicant in applicants:
-        potential_committees_with_intervals: set[tuple[Committee, TimeInterval]] = set()
-        for applicant_candidate, committee, interval in m:
-            if applicant == applicant_candidate:
-                potential_committees_with_intervals.add((committee, interval))
-
-        # Trekker fra vekten dersom det prøves å planlegges et møte med mindre buffer enn ønsket
-        distance_variables.add(
-            mip.xsum(
-                -APPLICANT_BUFFER_MODEL_WEIGHT * (m[(applicant, *a)] and m[(applicant, *b)])
-                for a, b in combinations(potential_committees_with_intervals, r=2)  # type: ignore
-                if a[0] != b[0]  # Ikke intervju med samme komite (blir ordnet over)
-                and a[1].is_within_distance(b[1], APPLICANT_BUFFER_LENGTH)  # Intervjuene er innenfor bufferlengden
-            )
-        )
-
     # Setter mål til å være maksimering av antall møter
-    # med sekundærmål om buffer
-    model.objective = mip.maximize(mip.xsum(m.values()) + mip.xsum(distance_variables))
+    model.objective = mip.maximize(mip.xsum(m.values()))
 
     # Kjør optimeringen
     solver_status = model.optimize()
