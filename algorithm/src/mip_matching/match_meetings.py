@@ -5,7 +5,12 @@ from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
 
+from datetime import timedelta
 from itertools import combinations
+
+
+# Hvor stort buffer man ønsker å ha mellom intervjuene
+APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
 
 
 class MeetingMatch(TypedDict):
@@ -45,6 +50,7 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                               for interval in applicant.get_fitting_committee_slots(committee)) <= 1
 
     # Legger inn begrensninger for at en søker ikke kan ha overlappende intervjutider
+    # og minst har et buffer mellom hvert intervju som angitt
     for applicant in applicants:
         potential_interviews: set[tuple[Committee, TimeInterval]] = set()
         for applicant_candidate, committee, interval in m:
@@ -52,7 +58,7 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                 potential_interviews.add((committee, interval))
 
         for interview_a, interview_b in combinations(potential_interviews, r=2):
-            if interview_a[1].intersects(interview_b[1]):
+            if interview_a[1].intersects(interview_b[1]) or interview_a[1].is_within_distance(interview_b[1], APPLICANT_BUFFER_LENGTH):
                 model += m[(applicant, *interview_a)] + \
                     m[(applicant, *interview_b)] <= 1
 

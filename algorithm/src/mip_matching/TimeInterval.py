@@ -64,6 +64,9 @@ class TimeInterval:
     def divide(self, length: timedelta) -> list[TimeInterval]:
         return TimeInterval.divide_interval(self, length)
 
+    def is_within_distance(self, other: TimeInterval, distance: timedelta) -> bool:
+        return (self.end <= other.start and self.end + distance > other.start) or (other.end <= self.start and other.end + distance > self.start)
+
     @staticmethod
     def divide_interval(interval: TimeInterval, length: timedelta) -> list[TimeInterval]:
         """
