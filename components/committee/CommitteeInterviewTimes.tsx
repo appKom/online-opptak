@@ -35,8 +35,6 @@ const CommitteeInterviewTimes = ({
   committeeInterviewTimes,
 }: Props) => {
   const { data: session } = useSession();
-
-  const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(15);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
@@ -59,6 +57,10 @@ const CommitteeInterviewTimes = ({
   const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
 
   const [numberOfApplications, setNumberOfApplications] = useState<number>(0);
+
+  useEffect(() => {
+    console.log(calendarEvents);
+  }, [calendarEvents]);
 
   useEffect(() => {
     if (period) {
@@ -169,8 +171,6 @@ const CommitteeInterviewTimes = ({
     calendarApi.addEvent(event);
     calendarApi.render();
 
-    addCell(event);
-
     setRoomInput("");
     setIsModalOpen(false);
     setCalendarEvents((prevEvents) => [...prevEvents, event]);
@@ -178,7 +178,7 @@ const CommitteeInterviewTimes = ({
 
   const submit = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const formattedEvents = formatEventsForExport(markedCells);
+    const formattedEvents = formatEventsForExport(calendarEvents);
     if (formattedEvents.length === 0) {
       toast.error("Fyll inn minst et gyldig tidspunkt");
       return;
@@ -223,19 +223,10 @@ const CommitteeInterviewTimes = ({
   };
 
   const removeCell = (event: Interview) => {
-    setMarkedCells((prevCells) =>
-      prevCells.filter((cell) => cell.id !== event.id)
-    );
-
     setCalendarEvents((prevEvents) =>
       prevEvents.filter((evt) => evt.id !== event.id)
     );
 
-    setUnsavedChanges(true);
-  };
-
-  const addCell = (event: Interview) => {
-    setMarkedCells([...markedCells, event]);
     setUnsavedChanges(true);
   };
 
