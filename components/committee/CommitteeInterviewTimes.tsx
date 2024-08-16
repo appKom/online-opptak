@@ -59,10 +59,6 @@ const CommitteeInterviewTimes = ({
   const [numberOfApplications, setNumberOfApplications] = useState<number>(0);
 
   useEffect(() => {
-    console.log(calendarEvents);
-  }, [calendarEvents]);
-
-  useEffect(() => {
     if (period) {
       setVisibleRange({
         start: new Date(period!.interviewPeriod.start).toISOString(),
@@ -100,12 +96,15 @@ const CommitteeInterviewTimes = ({
       if (cleanCommittee === cleanSelectedCommittee) {
         setHasAlreadySubmitted(true);
         const events = committeeInterviewTimes.availabletimes.map(
-          (at: any) => ({
-            id: calendarEvents.length.toString(),
-            title: at.room,
-            start: new Date(at.start).toISOString(),
-            end: new Date(at.end).toISOString(),
-          })
+          (at: any) => (
+            console.log(at),
+            {
+              id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
+              title: at.room,
+              start: new Date(at.start).toISOString(),
+              end: new Date(at.end).toISOString(),
+            }
+          )
         );
 
         setCalendarEvents(events);
@@ -161,7 +160,7 @@ const CommitteeInterviewTimes = ({
     }
 
     const event: Interview = {
-      id: calendarEvents.length.toString(),
+      id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
       title: roomInput,
       start: currentSelection.start.toISOString(),
       end: currentSelection.end.toISOString(),
@@ -235,7 +234,7 @@ const CommitteeInterviewTimes = ({
     setUnsavedChanges(true);
   };
 
-  const renderEventContent = (eventContent: any) => {
+  const calendarEventStyle = (eventContent: { event: Interview }) => {
     return (
       <div className="relative flex flex-col p-4">
         {!hasAlreadySubmitted && (
@@ -247,8 +246,8 @@ const CommitteeInterviewTimes = ({
 
               removeCell({
                 id: eventContent.event.id,
-                start: eventContent.event.start.toISOString(),
-                end: eventContent.event.end.toISOString(),
+                start: eventContent.event.start,
+                end: eventContent.event.end,
                 title: eventContent.event.title,
               });
             }}
@@ -303,6 +302,7 @@ const CommitteeInterviewTimes = ({
 
       setHasAlreadySubmitted(false);
       setCalendarEvents([]);
+      setInterviewsPlanned(0);
       setUnsavedChanges(false);
     } catch (error: any) {
       console.error("Error deleting submission:", error);
@@ -445,7 +445,7 @@ const CommitteeInterviewTimes = ({
             slotMinTime="08:00"
             slotMaxTime="18:00"
             validRange={visibleRange}
-            eventContent={renderEventContent}
+            eventContent={calendarEventStyle}
             eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
             selectAllow={(selectInfo) => {
               const start = selectInfo.start;
