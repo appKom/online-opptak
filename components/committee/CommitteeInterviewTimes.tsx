@@ -447,6 +447,7 @@ const CommitteeInterviewTimes = ({
             weekends={false}
             slotMinTime="08:00"
             slotMaxTime="18:00"
+            allDaySlot={false}
             validRange={visibleRange}
             eventContent={calendarEventStyle}
             eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
