@@ -13,6 +13,8 @@ import useUnsavedChangesWarning from "../../lib/utils/unSavedChangesWarning";
 import { SimpleTitle } from "../Typography";
 import { useQuery } from "@tanstack/react-query";
 import { fetchApplicantsByPeriodIdAndCommittee } from "../../lib/api/applicantApi";
+import { CheckIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 interface Interview {
   id: string;
@@ -499,12 +501,18 @@ const CommitteeInterviewTimes = ({
               onChange={(e) => setRoomInput(e.target.value)}
             />
             <div className="flex flex-row justify-center gap-2 mt-4">
-              <Button
-                title="Avbryt"
+              <button
+                className="px-8 py-2 text-white bg-red-700 rounded-lg hover:bg-red-800"
                 onClick={() => setIsModalOpen(false)}
-                color="orange"
-              />
-              <Button title="Ok" onClick={handleRoomSubmit} color="blue" />
+              >
+                <XMarkIcon className="w-6 h-6 " />
+              </button>
+              <button
+                className="px-8 py-2 text-white bg-green-700 hover:bg-green-800 rounded-lg"
+                onClick={handleRoomSubmit}
+              >
+                <CheckIcon className="w-6 h-6" />
+              </button>
             </div>
           </div>
         </div>
