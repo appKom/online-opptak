@@ -98,15 +98,12 @@ const CommitteeInterviewTimes = ({
       if (cleanCommittee === cleanSelectedCommittee) {
         setHasAlreadySubmitted(true);
         const events = committeeInterviewTimes.availabletimes.map(
-          (at: any) => (
-            console.log(at),
-            {
-              id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
-              title: at.room,
-              start: new Date(at.start).toISOString(),
-              end: new Date(at.end).toISOString(),
-            }
-          )
+          (at: any) => ({
+            id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
+            title: at.room,
+            start: new Date(at.start).toISOString(),
+            end: new Date(at.end).toISOString(),
+          })
         );
 
         setCalendarEvents(events);
