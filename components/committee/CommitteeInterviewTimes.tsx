@@ -147,6 +147,10 @@ const CommitteeInterviewTimes = ({
     if (calendarEvents.length > 0) {
       calculateInterviewsPlanned();
     }
+
+    if (!calendarEvents || calendarEvents.length === 0) {
+      setInterviewsPlanned(0);
+    }
   }, [calendarEvents, selectedTimeslot]);
 
   const handleDateSelect = (selectionInfo: any) => {
