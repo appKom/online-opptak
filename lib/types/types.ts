@@ -4,20 +4,6 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-export type commiteeType = {
-  periodId: string;
-  period_name: string;
-  committee: string;
-  availableTimes: [
-    {
-      start: string;
-      end: string;
-    },
-  ];
-  timeslot: string;
-  message: string;
-};
-
 export type preferencesType = {
   first: string;
   second: string;
@@ -82,15 +68,16 @@ export type periodType = {
 };
 
 export type AvailableTime = {
-  room: string;
   start: string;
   end: string;
+  room: string;
 };
 
 export type committeeInterviewType = {
   periodId: string;
   period_name: string;
   committee: string;
+  committeeEmail: string;
   availabletimes: AvailableTime[];
   timeslot: string;
   message: string;
@@ -104,4 +91,52 @@ export type owCommitteeType = {
   description_short?: string;
   application_description?: string;
   image?: { xs: string; sm: string };
+};
+
+export type algorithmType = {
+  applicantId: string;
+  interviews: {
+    start: string;
+    end: string;
+    committeeName: string;
+  }[];
+};
+
+export type committeeEmails = {
+  name_short: string;
+  email: string;
+};
+
+export type emailCommitteeInterviewType = {
+  periodId: string;
+  period_name: string;
+  committeeName: string;
+  committeeEmail: string;
+  applicants: {
+    applicantName: string;
+    applicantPhone: string;
+    applicantEmail: string;
+    interviewTime: {
+      start: string;
+      end: string;
+      room: string;
+    };
+  }[];
+};
+
+export type emailApplicantInterviewType = {
+  periodId: string;
+  period_name: string;
+  applicantName: string;
+  applicantEmail: string;
+  applicantPhone: string;
+  committees: {
+    committeeName: string;
+    committeeEmail: string;
+    interviewTime: {
+      start: string;
+      end: string;
+      room: string;
+    };
+  }[];
 };

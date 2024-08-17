@@ -122,3 +122,23 @@ export const deletePeriodById = async (periodId: string | ObjectId) => {
     return { error: "Failed to delete period" };
   }
 };
+
+export const markInterviewsSentByPeriodId = async (periodId: string) => {
+  try {
+    if (!periods) await init();
+
+    const objectPeriodId = new ObjectId(periodId);
+
+    const result = await periods.findOneAndUpdate(
+      { _id: objectPeriodId },
+      {
+        $set: { hasSentInterviewTimes: true },
+      }
+    );
+    {
+      return { result: result };
+    }
+  } catch (error) {
+    return { error: "Failed to update hasSentInterviewTimes" };
+  }
+};
