@@ -30,7 +30,7 @@ export const formatDateHours = (
   )}, ${startHour}:${startMinute} til ${endHour}:${endMinute}`;
 };
 
-export const formatDateNorwegian = (inputDate?: Date | string): string => {
+export const formatDateNorwegian = (inputDate?: Date | string) => {
   if (!inputDate) return "";
 
   let date: Date;
@@ -38,9 +38,6 @@ export const formatDateNorwegian = (inputDate?: Date | string): string => {
     date = inputDate;
   } else {
     date = new Date(inputDate);
-    if (isNaN(date.getTime())) {
-      return "";
-    }
   }
 
   const day = date.getUTCDate().toString().padStart(2, "0");
