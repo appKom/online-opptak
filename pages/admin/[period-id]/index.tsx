@@ -34,6 +34,12 @@ const Admin = () => {
   }, [data, session?.user?.owId]);
 
   const sendOutInterviewTimes = async ({ periodId }: { periodId: string }) => {
+    const confirm = window.confirm(
+      "Er du sikker på at du vil sende ut intervju tider?"
+    );
+
+    if (!confirm) return;
+
     try {
       const response = await fetch(
         `/api/periods/send-interview-times/${periodId}`,
@@ -81,19 +87,27 @@ const Admin = () => {
               />
             ),
           },
-          {
-            title: "Send ut",
-            icon: <InboxIcon className="w-5 h-5" />,
-            content: (
-              <div className="flex flex-col items-center">
-                <Button
-                  title={"Send ut"}
-                  color={"blue"}
-                  onClick={() => sendOutInterviewTimes({ periodId })}
-                />
-              </div>
-            ),
-          },
+          //Super admin :)
+          ...(session?.user?.email &&
+          ["fhansteen@gmail.com", "jotto0214@gmail.com"].includes(
+            session.user.email
+          )
+            ? [
+                {
+                  title: "Send ut",
+                  icon: <InboxIcon className="w-5 h-5" />,
+                  content: (
+                    <div className="flex flex-col items-center">
+                      <Button
+                        title={"Send ut"}
+                        color={"blue"}
+                        onClick={() => sendOutInterviewTimes({ periodId })}
+                      />
+                    </div>
+                  ),
+                },
+              ]
+            : []),
         ]}
       />
     </div>
