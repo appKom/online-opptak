@@ -30,10 +30,18 @@ export const formatDateHours = (
   )}, ${startHour}:${startMinute} til ${endHour}:${endMinute}`;
 };
 
-export const formatDateNorwegian = (inputDate?: Date): string => {
+export const formatDateNorwegian = (inputDate?: Date | string): string => {
   if (!inputDate) return "";
 
-  const date = new Date(Date.parse(inputDate.toISOString()));
+  let date: Date;
+  if (inputDate instanceof Date) {
+    date = inputDate;
+  } else {
+    date = new Date(inputDate);
+    if (isNaN(date.getTime())) {
+      return "";
+    }
+  }
 
   const day = date.getUTCDate().toString().padStart(2, "0");
   const monthsNorwegian = [
