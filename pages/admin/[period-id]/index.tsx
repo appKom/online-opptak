@@ -99,7 +99,7 @@ const Admin = () => {
                   content: (
                     <div className="flex flex-col items-center">
                       <Button
-                        title={"Send ut"}
+                        title={"Send ut intervjutider"}
                         color={"blue"}
                         onClick={() => sendOutInterviewTimes({ periodId })}
                       />
