@@ -6,8 +6,7 @@ import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
 import { changeDisplayName } from "../../lib/utils/toString";
 import { useEffect, useState } from "react";
-import PhoneInput from "react-phone-input-2";
-
+import CustomPhoneInput from "./CustomPhoneInput";
 import "react-phone-input-2/lib/bootstrap.css";
 
 interface Props {
@@ -89,26 +88,13 @@ export const ApplicationForm = (props: Props) => {
           }
         />
 
-        <div className="w-full max-w-xs pb-2 mx-auto my-6">
-          <label className="px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200">
-            Telefonnummer
-          </label>
-          <PhoneInput
-            country="no"
-            inputStyle={{
-              width: "100%",
-              paddingTop: "0.5rem",
-              paddingBottom: "0.5rem",
-            }}
-            value={props.applicationData.phone}
-            onChange={(value) =>
-              props.setApplicationData({
-                ...props.applicationData,
-                phone: value,
-              })
-            }
-          />
-        </div>
+        <CustomPhoneInput
+          updateInputValues={(value: any) =>
+            props.setApplicationData({ ...props.applicationData, phone: value })
+          }
+          label="Telefonnummer"
+          defaultValue={props.applicationData.phone}
+        />
 
         <SelectInput
           required
