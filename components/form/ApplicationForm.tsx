@@ -6,7 +6,9 @@ import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
 import { changeDisplayName } from "../../lib/utils/toString";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import PhoneInput from "react-phone-input-2";
+
+import "react-phone-input-2/lib/bootstrap.css";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -56,9 +58,6 @@ export const ApplicationForm = (props: Props) => {
       props.applicationData.email.includes("ntnu.no")
     ) {
       setIsNtnuEmail(true);
-      // toast.error(
-      //   "Vi har problemer med å sende e-post til ntnu.no-adresser. Vennligst bruk en annen e-postadresse."
-      // );
     } else {
       setIsNtnuEmail(false);
     }
@@ -89,13 +88,24 @@ export const ApplicationForm = (props: Props) => {
             props.setApplicationData({ ...props.applicationData, name: value })
           }
         />
-        <TextInput
-          label={"Telefonummer"}
-          defaultValue={props.applicationData.phone}
-          updateInputValues={(value: any) =>
-            props.setApplicationData({ ...props.applicationData, phone: value })
-          }
-        />
+
+        <div className="w-full max-w-xs mx-auto my-6 pb-2">
+          <label className="px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200">
+            Telefonnummer
+          </label>
+          <PhoneInput
+            country={"no"}
+            inputStyle={{ width: "100%" }}
+            value={props.applicationData.phone}
+            onChange={(value) =>
+              props.setApplicationData({
+                ...props.applicationData,
+                phone: value,
+              })
+            }
+          />
+        </div>
+
         <SelectInput
           required
           defaultValue={

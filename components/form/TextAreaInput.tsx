@@ -29,7 +29,7 @@ const TextAreaInput = (props: Props) => {
         ></textarea>
         <label
           htmlFor="textAreaComponent"
-          className="absolute z-10 px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200"
+          className="absolute z-9 px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200"
         >
           {props.label}
         </label>
