@@ -10,5 +10,6 @@ declare namespace Cypress {
     _clearAuth0Cookie(): Chainable<any>;
     _clearAuth0SplittedCookies(): Chainable<any>;
     clearAuth0Cookies(): Chainable<any>;
+    loginToAuth0(username: string, password: string): Chainable<any>;
   }
 }

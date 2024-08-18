@@ -56,17 +56,14 @@ export const ApplicationForm = (props: Props) => {
       props.applicationData.email.includes("ntnu.no")
     ) {
       setIsNtnuEmail(true);
-      // toast.error(
-      //   "Vi har problemer med å sende e-post til ntnu.no-adresser. Vennligst bruk en annen e-postadresse."
-      // );
     } else {
       setIsNtnuEmail(false);
     }
   }, [props.applicationData.email]);
 
   return (
-    <div className="flex justify-center items-center">
-      <form className="px-5 text-online-darkBlue dark:text-white max-w-sm w-full">
+    <div className="flex items-center justify-center">
+      <form className="w-full max-w-sm px-5 text-online-darkBlue dark:text-white">
         {isNtnuEmail && (
           <div className="px-5">
             <p className="text-red-500">
