@@ -64,8 +64,8 @@ export const ApplicationForm = (props: Props) => {
   }, [props.applicationData.email]);
 
   return (
-    <div className="flex justify-center items-center">
-      <form className="px-5 text-online-darkBlue dark:text-white max-w-sm w-full">
+    <div className="flex items-center justify-center">
+      <form className="w-full max-w-sm px-5 text-online-darkBlue dark:text-white">
         {isNtnuEmail && (
           <div className="px-5">
             <p className="text-red-500">
@@ -89,13 +89,17 @@ export const ApplicationForm = (props: Props) => {
           }
         />
 
-        <div className="w-full max-w-xs mx-auto my-6 pb-2">
+        <div className="w-full max-w-xs pb-2 mx-auto my-6">
           <label className="px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200">
             Telefonnummer
           </label>
           <PhoneInput
-            country={"no"}
-            inputStyle={{ width: "100%" }}
+            country="no"
+            inputStyle={{
+              width: "100%",
+              paddingTop: "0.5rem",
+              paddingBottom: "0.5rem",
+            }}
             value={props.applicationData.phone}
             onChange={(value) =>
               props.setApplicationData({
