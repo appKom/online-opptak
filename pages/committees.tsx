@@ -137,7 +137,7 @@ const CommitteList = ({
   periods: periodType[];
 }) => (
   <div className="w-10/12 px-4 mx-auto bg-white lg:px-6 dark:bg-gray-900">
-    <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
+    <div className="space-y-8 md:grid lg:grid-cols-2 md:gap-12 md:space-y-0">
       {committees
         ?.sort(
           (a, b) =>
