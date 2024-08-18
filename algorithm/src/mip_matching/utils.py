@@ -17,7 +17,7 @@ def group_by_committee(meetings: list[tuple[Applicant, Committee, TimeInterval]]
     return result
 
 
-def measure_cluttering(meetings: list[tuple[Applicant, Committee, TimeInterval]]) -> int:
+def measure_clustering(meetings: list[tuple[Applicant, Committee, TimeInterval]]) -> int:
     grouped_meetings = group_by_committee(meetings)
 
     holes = 0
