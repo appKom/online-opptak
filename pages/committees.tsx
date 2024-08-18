@@ -96,7 +96,7 @@ const Committees = () => {
   return (
     <div className="flex flex-col items-center gap-5">
       <MainTitle
-        boldMainTitle={"Onlines komiteér"}
+        boldMainTitle={"Onlines komiteer"}
         subTitle={
           "Komitémedlemmer får Online til å gå rundt, og arbeider for at alle informatikkstudenter skal ha en flott studiehverdag."
         }
