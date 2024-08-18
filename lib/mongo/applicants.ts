@@ -182,7 +182,7 @@ export const getApplicantsForCommittee = async (
 
         applicant.optionalCommittees = [];
 
-        if (new Date(period.interviewPeriod.start) > new Date()) {
+        if (new Date(period.applicationPeriod.end) > new Date()) {
           applicant.name = "Skjult ";
           applicant.phone = "Skjult";
           applicant.email = "Skjult";
