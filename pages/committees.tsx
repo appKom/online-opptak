@@ -110,12 +110,12 @@ const Committees = () => {
         }}
         content={[
           {
-            title: "Komitéer",
+            title: "Komiteer",
             icon: <UsersIcon className="w-5 h-5" />,
             content: <CommitteList committees={committees} periods={periods} />,
           },
           {
-            title: "Nodekomitéer",
+            title: "Nodekomiteer",
             icon: <UserIcon className="w-5 h-5" />,
             content: (
               <CommitteList committees={nodeCommittees} periods={periods} />
