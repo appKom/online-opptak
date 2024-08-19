@@ -30,7 +30,7 @@ const Home = () => {
             Online Opptak
           </h1>
           <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
-            Her kan du søke for å bli en del av en av Onlines komitéer.
+            Her kan du søke for å bli en del av en av Onlines komiteer.
             Komitémedlemmene våre får Online til å gå rundt, og arbeider for at
             alle informatikkstudenter skal ha en flott studiehverdag.
           </p>

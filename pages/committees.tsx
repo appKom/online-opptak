@@ -96,7 +96,7 @@ const Committees = () => {
   return (
     <div className="flex flex-col items-center gap-5">
       <MainTitle
-        boldMainTitle={"Onlines komiteér"}
+        boldMainTitle={"Onlines komiteer"}
         subTitle={
           "Komitémedlemmer får Online til å gå rundt, og arbeider for at alle informatikkstudenter skal ha en flott studiehverdag."
         }
@@ -110,12 +110,12 @@ const Committees = () => {
         }}
         content={[
           {
-            title: "Komitéer",
+            title: "Komiteer",
             icon: <UsersIcon className="w-5 h-5" />,
             content: <CommitteList committees={committees} periods={periods} />,
           },
           {
-            title: "Nodekomitéer",
+            title: "Nodekomiteer",
             icon: <UserIcon className="w-5 h-5" />,
             content: (
               <CommitteList committees={nodeCommittees} periods={periods} />
@@ -137,7 +137,7 @@ const CommitteList = ({
   periods: periodType[];
 }) => (
   <div className="w-10/12 px-4 mx-auto bg-white lg:px-6 dark:bg-gray-900">
-    <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
+    <div className="space-y-8 md:grid lg:grid-cols-2 md:gap-12 md:space-y-0">
       {committees
         ?.sort(
           (a, b) =>
