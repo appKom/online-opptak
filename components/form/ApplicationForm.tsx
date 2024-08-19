@@ -130,8 +130,8 @@ export const ApplicationForm = (props: Props) => {
         <div className="flex justify-center">
           <label className="inline-block mt-6 text-gray-700 dark:text-white form-label">
             {availableCommittees.length > 2
-              ? `Velg opp til 3 komiteer`
-              : `Velg opp til ${availableCommittees.length - 1} komiteer`}
+              ? `Velg opptil 3 komiteer`
+              : `Velg opptil ${availableCommittees.length - 1} komiteer`}
           </label>
         </div>
         <SelectInput
