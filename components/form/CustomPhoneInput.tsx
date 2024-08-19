@@ -19,6 +19,12 @@ const CustomPhoneInput = (props: Props) => {
     borderColor: theme === "dark" ? "#4b5563" : "#d1d5db",
   };
 
+  const dropdownStyle = {
+    backgroundColor: theme === "dark" ? "#202c34" : "#fff",
+    color: theme === "dark" ? "#fff" : "#000",
+    borderColor: theme === "dark" ? "#4b5563" : "d1d5db",
+  };
+
   return (
     <div className="w-full max-w-xs pb-2 mx-auto my-6">
       <label className="px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200">
@@ -27,6 +33,7 @@ const CustomPhoneInput = (props: Props) => {
       <PhoneInput
         country="no"
         inputStyle={inputStyle}
+        dropdownStyle={dropdownStyle}
         value={props.defaultValue}
         onChange={(text) => props.updateInputValues(text)}
       />
