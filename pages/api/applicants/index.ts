@@ -65,23 +65,23 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       //     optionalCommitteesString = "Ingen";
       //   }
 
-      //   const emailData: emailDataType = {
-      //     name: applicant.name,
-      //     emails: [applicant.email],
-      //     phone: applicant.phone,
-      //     grade: applicant.grade,
-      //     about: applicant.about.replace(/\n/g, "<br>"),
-      //     firstChoice: "Tom",
-      //     secondChoice: "Tom",
-      //     thirdChoice: "Tom",
-      //     bankom:
-      //       applicant.bankom == "yes"
-      //         ? "Ja"
-      //         : applicant.bankom == "no"
-      //         ? "Nei"
-      //         : "Kanskje",
-      //     optionalCommittees: optionalCommitteesString,
-      //   };
+        const emailData: emailDataType = {
+          name: applicant.name,
+          emails: [applicant.email],
+          phone: applicant.phone,
+          grade: applicant.grade,
+          about: applicant.about.replace(/\n/g, "<br>"),
+          firstChoice: "Tom",
+          secondChoice: "Tom",
+          thirdChoice: "Tom",
+          bankom:
+            applicant.bankom == "ja"
+              ? "Ja"
+              : applicant.bankom == "nei"
+              ? "Nei"
+              : "Kanskje",
+          optionalCommittees: optionalCommitteesString,
+        };
 
       //   //Type guard
       //   if (!Array.isArray(applicant.preferences)) {
@@ -99,19 +99,17 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       //         : capitalizeFirstLetter(applicant.preferences.third);
       //   }
 
-      //   try {
-      //     await sendEmail({
-      //       toEmails: emailData.emails,
-      //       subject: "Vi har mottatt din søknad!",
-      //       htmlContent: generateApplicantEmail(emailData),
-      //     });
-
-      //     console.log("Email sent to: ", emailData.emails);
-      //   } catch (error) {
-      //     console.error("Error sending email: ", error);
-      //     throw error;
-      //   }
-      // }
+        try {
+          await sendEmail({
+            toEmails: emailData.emails,
+            subject: "Vi har mottatt din søknad!",
+            htmlContent: generateApplicantEmail(emailData),
+          });
+        } catch (error) {
+          console.error("Error sending email: ", error);
+          throw error;
+        }
+      }
 
       return res.status(201).json({ applicant });
     }

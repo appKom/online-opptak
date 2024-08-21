@@ -8,10 +8,12 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import LoadingPage from "../components/LoadingPage";
 import Signature from "../lib/utils/Signature";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Analytics } from "@vercel/analytics/react";
 
 const queryClient = new QueryClient({
-  defaultOptions: { // TODO: go over default options
+  defaultOptions: {
+    // TODO: go over default options
     queries: {
       staleTime: 1000 * 60 * 10,
     },
@@ -27,7 +29,6 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
   //Tihi
   useEffect(() => {
     console.log(Signature);
-    console.log("jo tester");
   }, []);
 
   useEffect(() => {
@@ -90,6 +91,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
           </QueryClientProvider>
         </SessionHandler>
       </div>
+      <Analytics />
     </SessionProvider>
   );
 }

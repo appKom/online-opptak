@@ -1,10 +1,10 @@
 on:
   push:
     paths: 
-      - "algorithm/*"
+      - "algorithm/**"
   pull_request:
     paths: 
-      - "algorithm/*"
+      - "algorithm/**"
   workflow_dispatch:
 
 jobs:

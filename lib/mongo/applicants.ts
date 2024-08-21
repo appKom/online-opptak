@@ -1,6 +1,7 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { applicantType, preferencesType } from "../types/types";
+import { applicantType, periodType, preferencesType } from "../types/types";
+import { getPeriodById } from "./periods";
 
 let client: MongoClient;
 let db: Db;
@@ -83,6 +84,27 @@ export const getApplication = async (
   }
 };
 
+export const getApplicationByMongoId = async (
+  id: string,
+  periodId: string | ObjectId
+) => {
+  try {
+    if (!applicants) await init();
+
+    const objectId = new ObjectId(id);
+
+    const result = await applicants.findOne({
+      _id: objectId,
+      periodId: periodId,
+    });
+
+    return { application: result, exists: !!result };
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to fetch application", exists: false };
+  }
+};
+
 export const getApplications = async (periodId: string) => {
   try {
     if (!applicants) await init();
@@ -108,6 +130,13 @@ export const getApplicantsForCommittee = async (
 
     // Henter alle søkere for perioden
     const result = await applicants.find({ periodId: periodId }).toArray();
+
+    const periodData = await getPeriodById(periodId);
+    const period: periodType | undefined = periodData.period;
+
+    if (!period) {
+      return { error: "Period not found" };
+    }
 
     // Type guard
     const isPreferencesType = (
@@ -152,6 +181,26 @@ export const getApplicantsForCommittee = async (
         );
 
         applicant.optionalCommittees = [];
+
+        const today = new Date();
+        const sevenDaysAfterInterviewEnd = new Date(period.interviewPeriod.end);
+        sevenDaysAfterInterviewEnd.setDate(
+          sevenDaysAfterInterviewEnd.getDate() + 7
+        );
+
+        if (
+          new Date(period.applicationPeriod.end) > today ||
+          today > sevenDaysAfterInterviewEnd
+        ) {
+          applicant.owId = "Skjult";
+          applicant.name = "Skjult";
+          applicant.date = today;
+          applicant.phone = "Skjult";
+          applicant.email = "Skjult";
+          applicant.about = "Skjult";
+          applicant.grade = "-";
+          applicant.selectedTimes = [{ start: "Skjult", end: "Skjult" }];
+        }
 
         const isSelectedCommitteePresent =
           preferencesArray.includes(selectedCommittee);

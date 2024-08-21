@@ -1,6 +1,6 @@
 import {
   applicantType,
-  commiteeType,
+  committeeInterviewType,
   periodType,
   preferencesType,
 } from "../types/types";
@@ -23,7 +23,7 @@ export const isApplicantType = (
     typeof grade === "string" &&
     typeof about === "string" &&
     typeof bankom === "string" &&
-    (bankom === "yes" || bankom === "no" || bankom === "maybe") &&
+    (bankom === "ja" || bankom === "nei" || bankom === "kanskje") &&
     typeof applicantPeriodId === "string" &&
     applicantPeriodId === periodId &&
     date instanceof Date;
@@ -34,20 +34,22 @@ export const isApplicantType = (
   );
 
   const { first, second, third } = applicant.preferences as preferencesType;
+  const applicantOptionalCommittees = applicant.optionalCommittees;
 
   const hasPreferencesFields =
-    (applicant.preferences as preferencesType) &&
-    typeof first === "string" &&
-    (typeof second === "string" || second === "") &&
-    (typeof third === "string" || third === "") &&
-    // Ensure that non-empty preferences are unique
-    first !== second &&
-    (first === "" || first !== third) &&
-    (second === "" || second !== third) &&
-    // Ensure preferences are in period committees or empty
-    periodCommittees.includes(first) &&
-    (second === "" || periodCommittees.includes(second)) &&
-    (third === "" || periodCommittees.includes(third));
+    ((applicant.preferences as preferencesType) && typeof first === "string") ||
+    (first === "" &&
+      applicantOptionalCommittees.length !== 0 &&
+      (typeof second === "string" || second === "") &&
+      (typeof third === "string" || third === "") &&
+      // Ensure that non-empty preferences are unique
+      first !== second &&
+      (first === "" || first !== third) &&
+      (second === "" || second !== third) &&
+      // Ensure preferences are in period committees or empty
+      periodCommittees.includes(first) &&
+      (second === "" || periodCommittees.includes(second)) &&
+      (third === "" || periodCommittees.includes(third)));
 
   // Check that the selectedTimes array is valid
 
@@ -70,7 +72,6 @@ export const isApplicantType = (
   const periodOptionalCommittees = period.optionalCommittees.map((committee) =>
     committee.toLowerCase()
   );
-  const applicantOptionalCommittees = applicant.optionalCommittees;
 
   const hasOptionalFields =
     applicantOptionalCommittees &&
@@ -89,7 +90,7 @@ export const isApplicantType = (
   );
 };
 
-export const isCommitteeType = (data: any): data is commiteeType => {
+export const isCommitteeType = (data: any): data is committeeInterviewType => {
   const hasBasicFields =
     typeof data.period_name === "string" &&
     typeof data.committee === "string" &&

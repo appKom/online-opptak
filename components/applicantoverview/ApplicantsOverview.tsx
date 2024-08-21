@@ -14,7 +14,6 @@ import {
   fetchApplicantsByPeriodIdAndCommittee,
 } from "../../lib/api/applicantApi";
 import ErrorPage from "../ErrorPage";
-import { getBankomValue } from "../../lib/utils/toString";
 import ApplicantCard from "./ApplicantCard";
 import { SimpleTitle } from "../Typography";
 
@@ -55,7 +54,7 @@ const ApplicantsOverview = ({
   const [applicants, setApplicants] = useState<applicantType[]>([]);
   const years: string[] = ["1", "2", "3", "4", "5"];
 
-  const bankomOptions: bankomOptionsType[] = ["yes", "no", "maybe"];
+  const bankomOptions: bankomOptionsType[] = ["ja", "nei", "kanskje"];
 
   const {
     data: applicantsData,
@@ -155,7 +154,7 @@ const ApplicantsOverview = ({
   if (applicantsIsError) return <ErrorPage />;
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center px-5">
       {showPeriodName && <SimpleTitle title={period?.name || ""} />}
 
       <div className="w-full max-w-lg mx-auto mt-10 mb-5">
@@ -225,9 +224,9 @@ const ApplicantsOverview = ({
                     }
                   >
                     <option value="">Velg bankom</option>
-                    {bankomOptions.map((bankom) => (
-                      <option key={bankom} value={bankom}>
-                        {getBankomValue(bankom)}
+                    {bankomOptions.map((value) => (
+                      <option key={value} value={value}>
+                        {value}
                       </option>
                     ))}
                   </select>
@@ -250,7 +249,7 @@ const ApplicantsOverview = ({
           <div className="flex flex-col ">
             {filteredApplicants?.map((applicant) => (
               <ApplicantCard
-                key={applicant.owId + applicant.name}
+                key={applicant._id.toString()}
                 applicant={applicant}
                 includePreferences={includePreferences}
               />

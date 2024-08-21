@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { changeDisplayName, getBankomValue } from "../../lib/utils/toString";
+import { changeDisplayName } from "../../lib/utils/toString";
 
 interface Props {
   applicant: applicantType | undefined;
@@ -71,11 +71,9 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
           </div>
         )}
 
-        <h1 className="text-lg font-semibold pt-3">Om:</h1>
-        <p>
-          Ønsker å være økonomiansvarlig: {getBankomValue(applicant?.bankom)}
-        </p>
-        <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
+        <h1 className="pt-3 text-lg font-semibold">Om:</h1>
+        <p>Ønsker å være økonomiansvarlig: {applicant?.bankom}</p>
+        <div className="p-4 mt-2 border-solid border-2 border-gray-200 dark:border-gray-700 rounded-lg">
           <p className="whitespace-pre-wrap">{applicant?.about}</p>
         </div>
       </div>

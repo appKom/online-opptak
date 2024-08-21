@@ -5,7 +5,21 @@ from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
 
-# from typing import TypedDict
+from datetime import timedelta, time
+from itertools import combinations
+
+from mip_matching.utils import subtract_time
+
+
+# Hvor stort buffer man ønsker å ha mellom intervjuene
+APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
+
+# Et mål på hvor viktig det er at intervjuer er i nærheten av hverandre
+CLUSTERING_WEIGHT = 0.001
+
+# Når på dagen man helst vil ha intervjuene rundt
+CLUSTERING_TIME_BASELINE = time(12, 00)
+MAX_SCALE_CLUSTERING_TIME = timedelta(seconds=43200)  # TODO: Rename variable
 
 
 class MeetingMatch(TypedDict):
@@ -20,7 +34,7 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
     """Matches meetings and returns a MeetingMatch-object"""
     model = mip.Model(sense=mip.MAXIMIZE)
 
-    m = {}
+    m: dict[tuple[Applicant, Committee, TimeInterval], mip.Var] = {}
 
     # Lager alle maksimeringsvariabler
     for applicant in applicants:
@@ -44,22 +58,38 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
                               # type: ignore
                               for interval in applicant.get_fitting_committee_slots(committee)) <= 1
 
-    # Legger inn begrensninger for at en person kun kan ha ett intervju på hvert tidspunkt
+    # Legger inn begrensninger for at en søker ikke kan ha overlappende intervjutider
+    # og minst har et buffer mellom hvert intervju som angitt
     for applicant in applicants:
-        potential_intervals = set()
+        potential_interviews: set[tuple[Committee, TimeInterval]] = set()
         for applicant_candidate, committee, interval in m:
             if applicant == applicant_candidate:
-                potential_intervals.add(interval)
+                potential_interviews.add((committee, interval))
 
-        for interval in potential_intervals:
+        for interview_a, interview_b in combinations(potential_interviews, r=2):
+            if interview_a[1].intersects(interview_b[1]) or interview_a[1].is_within_distance(interview_b[1], APPLICANT_BUFFER_LENGTH):
+                model += m[(applicant, *interview_a)] + \
+                    m[(applicant, *interview_b)] <= 1  # type: ignore
 
-            model += mip.xsum(m[(applicant, committee, interval)]
-                              for committee in applicant.get_committees()
-                              # type: ignore
-                              if (applicant, committee, interval) in m) <= 1
+    # Legger til sekundærmål om at man ønsker å sentrere intervjuer rundt CLUSTERING_TIME_BASELINE
+    clustering_objectives = []
 
-    # Setter mål til å være maksimering av antall møter
-    model.objective = mip.maximize(mip.xsum(m.values()))
+    for name, variable in m.items():
+        applicant, committee, interval = name
+        if interval.start.time() < CLUSTERING_TIME_BASELINE:
+            relative_distance_from_baseline = subtract_time(CLUSTERING_TIME_BASELINE,
+                                                            interval.end.time()) / MAX_SCALE_CLUSTERING_TIME
+        else:
+            relative_distance_from_baseline = subtract_time(interval.start.time(),
+                                                            CLUSTERING_TIME_BASELINE) / MAX_SCALE_CLUSTERING_TIME
+
+        clustering_objectives.append(
+            CLUSTERING_WEIGHT * relative_distance_from_baseline * variable)  # type: ignore
+
+        # Setter mål til å være maksimering av antall møter
+        # med sekundærmål om å samle intervjuene rundt CLUSTERING_TIME_BASELINE
+    model.objective = mip.maximize(
+        mip.xsum(m.values()) + mip.xsum(clustering_objectives))
 
     # Kjør optimeringen
     solver_status = model.optimize()

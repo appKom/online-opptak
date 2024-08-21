@@ -1,11 +1,10 @@
 import { Collection, Db, MongoClient, ObjectId, UpdateResult } from "mongodb";
 import clientPromise from "./mongodb";
-import { commiteeType } from "../types/types";
-import { co } from "@fullcalendar/core/internal-common";
+import { committeeInterviewType } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
-let committees: Collection<commiteeType>;
+let committees: Collection<committeeInterviewType>;
 
 async function init() {
   if (db) return;
@@ -37,36 +36,6 @@ const userHasAccessCommittee = (
   dbCommittees: string
 ) => {
   return userCommittees.includes(dbCommittees);
-};
-
-export const updateCommitteeMessage = async (
-  committee: string,
-  periodId: string,
-  message: string,
-  userCommittees: string[]
-) => {
-  try {
-    if (!committees) await init();
-    if (!userHasAccessCommittee(userCommittees, committee)) {
-      return { error: "User does not have access to this committee" };
-    }
-
-    const result = await committees.findOneAndUpdate(
-      { committee: committee, periodId: periodId },
-      { $set: { message: message } },
-      { returnDocument: "after" }
-    );
-
-    const updatedCommittee = result;
-
-    if (updatedCommittee) {
-      return { updatedMessage: updatedCommittee.message };
-    } else {
-      return { error: "Failed to update message" };
-    }
-  } catch (error) {
-    return { error: "Failed to update message" };
-  }
 };
 
 export const getCommittees = async (
@@ -103,8 +72,18 @@ export const getCommittee = async (id: string) => {
   }
 };
 
+export const getCommitteesByPeriod = async (periodId: string) => {
+  try {
+    if (!committees) await init();
+    const result = await committees.find({ periodId: periodId }).toArray();
+    return { result };
+  } catch (error) {
+    return { error: "Failed to fetch committees" };
+  }
+};
+
 export const createCommittee = async (
-  committeeData: commiteeType,
+  committeeData: committeeInterviewType,
   userCommittes: string[],
   periodId: string
 ) => {

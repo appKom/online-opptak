@@ -22,14 +22,14 @@ const TextAreaInput = (props: Props) => {
           maxLength={props.maxLength}
           id="textAreaComponent"
           placeholder={props.placeholder}
-          className="block w-full px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded shadow-sm dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600"
+          className="block w-full px-3 py-2 m-0 text-base text-gray-700 transition bg-white border border-gray-300 rounded dark:text-white peer bg-clip-padding focus:outline-none placeholder:text-sm dark:bg-gray-900 dark:border-gray-600"
           onChange={handleInputChange}
           value={props.value}
           required
         ></textarea>
         <label
           htmlFor="textAreaComponent"
-          className="absolute z-10 px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200"
+          className="absolute px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200"
         >
           {props.label}
         </label>
