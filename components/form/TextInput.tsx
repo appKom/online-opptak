@@ -24,7 +24,7 @@ const TextInput = (props: Props) => {
           onChange={(e) => {
             handleInputChange(e.target);
           }}
-          className="block w-full px-3 py-2 transition border border-gray-300 rounded-md shadow-sm disabled:bg-white disabled:cursor-not-allowed disabled:text-gray-500 placeholder:text-sm dark:bg-gray-900 dark:border-gray-600"
+          className="block w-full px-3 py-2 transition border border-gray-300 rounded-md disabled:bg-white disabled:cursor-not-allowed disabled:text-gray-500 placeholder:text-sm dark:bg-gray-900 dark:border-gray-600"
         />
         <label
           htmlFor="inputComponent"
