@@ -126,7 +126,7 @@ const Application: NextPage = () => {
     applicationData.periodId = periodId as string;
     createApplicantMutation.mutate(applicationData as applicantType);
   };
-
+  //sheesh
   const handleDeleteApplication = async () => {
     if (!session?.user?.owId) {
       toast.error("User ID not found");
