@@ -6,7 +6,8 @@ import Line from "./Line";
 import { DeepPartial, applicantType } from "../../lib/types/types";
 import { changeDisplayName } from "../../lib/utils/toString";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import CustomPhoneInput from "./CustomPhoneInput";
+import "react-phone-input-2/lib/bootstrap.css";
 
 interface Props {
   applicationData: DeepPartial<applicantType>;
@@ -56,17 +57,14 @@ export const ApplicationForm = (props: Props) => {
       props.applicationData.email.includes("ntnu.no")
     ) {
       setIsNtnuEmail(true);
-      // toast.error(
-      //   "Vi har problemer med å sende e-post til ntnu.no-adresser. Vennligst bruk en annen e-postadresse."
-      // );
     } else {
       setIsNtnuEmail(false);
     }
   }, [props.applicationData.email]);
 
   return (
-    <div className="flex justify-center items-center">
-      <form className="px-5 text-online-darkBlue dark:text-white max-w-sm w-full">
+    <div className="flex items-center justify-center">
+      <form className="w-full max-w-sm px-5 text-online-darkBlue dark:text-white">
         {isNtnuEmail && (
           <div className="px-5">
             <p className="text-red-500">
@@ -76,26 +74,28 @@ export const ApplicationForm = (props: Props) => {
           </div>
         )}
         <TextInput
-          label={"E-postadresse"}
+          label="E-postadresse"
           defaultValue={props.applicationData.email}
           updateInputValues={(value: string) =>
             props.setApplicationData({ ...props.applicationData, email: value })
           }
         />
         <TextInput
-          label={"Fullt navn"}
+          label="Fullt navn"
           defaultValue={props.applicationData.name}
           updateInputValues={(value: any) =>
             props.setApplicationData({ ...props.applicationData, name: value })
           }
         />
-        <TextInput
-          label={"Telefonummer"}
-          defaultValue={props.applicationData.phone}
+
+        <CustomPhoneInput
           updateInputValues={(value: any) =>
             props.setApplicationData({ ...props.applicationData, phone: value })
           }
+          label="Telefonnummer"
+          defaultValue={props.applicationData.phone}
         />
+
         <SelectInput
           required
           defaultValue={
@@ -110,7 +110,7 @@ export const ApplicationForm = (props: Props) => {
             ["4.", 4],
             ["5.", 5],
           ]}
-          label={"Hvilket trinn går du?"}
+          label="Hvilket trinn går du?"
           updateInputValues={(value: number) =>
             props.setApplicationData({
               ...props.applicationData,
@@ -120,7 +120,7 @@ export const ApplicationForm = (props: Props) => {
         />
         <Line />
         <TextAreaInput
-          label={"Skriv litt om deg selv"}
+          label="Skriv litt om deg selv"
           updateInputValues={(value: any) =>
             props.setApplicationData({ ...props.applicationData, about: value })
           }
@@ -152,7 +152,7 @@ export const ApplicationForm = (props: Props) => {
         {availableCommittees.length > 2 && (
           <SelectInput
             values={availableCommittees}
-            label={"Andrevalg"}
+            label="Andrevalg"
             updateInputValues={(value: string) =>
               props.setApplicationData({
                 ...props.applicationData,
@@ -167,7 +167,7 @@ export const ApplicationForm = (props: Props) => {
         {availableCommittees.length > 3 && (
           <SelectInput
             values={availableCommittees}
-            label={"Tredjevalg"}
+            label="Tredjevalg"
             updateInputValues={(value: string) =>
               props.setApplicationData({
                 ...props.applicationData,
@@ -186,9 +186,7 @@ export const ApplicationForm = (props: Props) => {
             ["Nei", "nei"],
             ["Usikker (gjerne spør om mer info på intervjuet)", "kanskje"],
           ]}
-          label={
-            "Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankom)?"
-          }
+          label="Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankom)?"
           updateInputValues={(value: boolean) =>
             props.setApplicationData({
               ...props.applicationData,
