@@ -182,12 +182,24 @@ export const getApplicantsForCommittee = async (
 
         applicant.optionalCommittees = [];
 
-        if (new Date(period.applicationPeriod.end) > new Date()) {
-          applicant.name = "Skjult ";
+        const today = new Date();
+        const sevenDaysAfterInterviewEnd = new Date(period.interviewPeriod.end);
+        sevenDaysAfterInterviewEnd.setDate(
+          sevenDaysAfterInterviewEnd.getDate() + 7
+        );
+
+        if (
+          new Date(period.applicationPeriod.end) > today ||
+          today > sevenDaysAfterInterviewEnd
+        ) {
+          applicant.owId = "Skjult";
+          applicant.name = "Skjult";
+          applicant.date = today;
           applicant.phone = "Skjult";
           applicant.email = "Skjult";
           applicant.about = "Skjult";
           applicant.grade = "-";
+          applicant.selectedTimes = [{ start: "Skjult", end: "Skjult" }];
         }
 
         const isSelectedCommitteePresent =

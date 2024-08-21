@@ -15,6 +15,7 @@ export type committeePreferenceType = {
 };
 
 export type applicantType = {
+  _id: ObjectId;
   owId: string;
   name: string;
   email: string;

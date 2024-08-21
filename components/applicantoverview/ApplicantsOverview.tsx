@@ -249,7 +249,7 @@ const ApplicantsOverview = ({
           <div className="flex flex-col ">
             {filteredApplicants?.map((applicant) => (
               <ApplicantCard
-                key={applicant.owId + applicant.name}
+                key={applicant._id.toString()}
                 applicant={applicant}
                 includePreferences={includePreferences}
               />
