@@ -5,12 +5,21 @@ from mip_matching.Committee import Committee
 from mip_matching.Applicant import Applicant
 import mip
 
-from datetime import timedelta
+from datetime import timedelta, time
 from itertools import combinations
+
+from mip_matching.utils import subtract_time
 
 
 # Hvor stort buffer man ønsker å ha mellom intervjuene
 APPLICANT_BUFFER_LENGTH = timedelta(minutes=15)
+
+# Et mål på hvor viktig det er at intervjuer er i nærheten av hverandre
+CLUSTERING_WEIGHT = 0.001
+
+# Når på dagen man helst vil ha intervjuene rundt
+CLUSTERING_TIME_BASELINE = time(12, 00)
+MAX_SCALE_CLUSTERING_TIME = timedelta(seconds=43200)  # TODO: Rename variable
 
 
 class MeetingMatch(TypedDict):
@@ -25,7 +34,7 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
     """Matches meetings and returns a MeetingMatch-object"""
     model = mip.Model(sense=mip.MAXIMIZE)
 
-    m = {}
+    m: dict[tuple[Applicant, Committee, TimeInterval], mip.Var] = {}
 
     # Lager alle maksimeringsvariabler
     for applicant in applicants:
@@ -60,10 +69,27 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
         for interview_a, interview_b in combinations(potential_interviews, r=2):
             if interview_a[1].intersects(interview_b[1]) or interview_a[1].is_within_distance(interview_b[1], APPLICANT_BUFFER_LENGTH):
                 model += m[(applicant, *interview_a)] + \
-                    m[(applicant, *interview_b)] <= 1
+                    m[(applicant, *interview_b)] <= 1  # type: ignore
 
-    # Setter mål til å være maksimering av antall møter
-    model.objective = mip.maximize(mip.xsum(m.values()))
+    # Legger til sekundærmål om at man ønsker å sentrere intervjuer rundt CLUSTERING_TIME_BASELINE
+    clustering_objectives = []
+
+    for name, variable in m.items():
+        applicant, committee, interval = name
+        if interval.start.time() < CLUSTERING_TIME_BASELINE:
+            relative_distance_from_baseline = subtract_time(CLUSTERING_TIME_BASELINE,
+                                                            interval.end.time()) / MAX_SCALE_CLUSTERING_TIME
+        else:
+            relative_distance_from_baseline = subtract_time(interval.start.time(),
+                                                            CLUSTERING_TIME_BASELINE) / MAX_SCALE_CLUSTERING_TIME
+
+        clustering_objectives.append(
+            CLUSTERING_WEIGHT * relative_distance_from_baseline * variable)  # type: ignore
+
+        # Setter mål til å være maksimering av antall møter
+        # med sekundærmål om å samle intervjuene rundt CLUSTERING_TIME_BASELINE
+    model.objective = mip.maximize(
+        mip.xsum(m.values()) + mip.xsum(clustering_objectives))
 
     # Kjør optimeringen
     solver_status = model.optimize()
