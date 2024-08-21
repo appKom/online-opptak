@@ -172,17 +172,23 @@ const Application: NextPage = () => {
             onClick={handleDeleteApplication}
           />
         )}
-        {fetchedApplicationData?.application ||
-          (applicationData && (
-            <div className="w-full max-w-md">
-              <ApplicantCard
-                applicant={
-                  fetchedApplicationData.application || applicationData
-                }
-                includePreferences={true}
-              />
-            </div>
-          ))}
+        {fetchedApplicationData?.application && (
+          <div className="w-full max-w-md">
+            <ApplicantCard
+              applicant={fetchedApplicationData.application}
+              includePreferences={true}
+            />
+          </div>
+        )}
+
+        {applicationData.phone && (
+          <div className="w-full max-w-md">
+            <ApplicantCard
+              applicant={applicationData as applicantType}
+              includePreferences={true}
+            />
+          </div>
+        )}
       </div>
     );
 
