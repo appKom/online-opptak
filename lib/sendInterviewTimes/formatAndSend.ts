@@ -31,10 +31,7 @@ export const formatAndSendEmails = async ({
           htmlContent: formatApplicantInterviewEmail(applicant),
         });
 
-        sendSMS(
-          `+47${applicant.applicantPhone}`,
-          formatInterviewSMS(applicant)
-        );
+        sendSMS(`+${applicant.applicantPhone}`, formatInterviewSMS(applicant));
       }
     );
 
