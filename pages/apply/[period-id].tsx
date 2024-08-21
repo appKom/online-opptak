@@ -172,7 +172,7 @@ const Application: NextPage = () => {
             onClick={handleDeleteApplication}
           />
         )}
-        {fetchedApplicationData?.application ||
+        {/*{fetchedApplicationData?.application ||
           (applicationData && (
             <div className="w-full max-w-md">
               <ApplicantCard
@@ -182,7 +182,7 @@ const Application: NextPage = () => {
                 includePreferences={true}
               />
             </div>
-          ))}
+          ))} */}
       </div>
     );
 
