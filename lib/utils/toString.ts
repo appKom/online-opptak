@@ -6,7 +6,7 @@ export const changeDisplayName = (committee: string) => {
 };
 
 export function formatPhoneNumber(phoneNumber: string) {
-  const countryCode = phoneNumber.slice(0, 2);
+  const countryCode = "(+" + phoneNumber.slice(0, 2) + ")";
   const restOfNumber = phoneNumber.slice(2);
 
   const formattedNumber = restOfNumber.replace(
@@ -14,5 +14,5 @@ export function formatPhoneNumber(phoneNumber: string) {
     "$1 $2 $3"
   );
 
-  return `+${countryCode} ${formattedNumber}`;
+  return `${countryCode} ${formattedNumber}`;
 }
