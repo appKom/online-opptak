@@ -27,16 +27,18 @@ const CustomPhoneInput = (props: Props) => {
 
   return (
     <div className="w-full max-w-xs pb-2 mx-auto my-6">
-      <label className="px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200">
-        Telefonnummer
-      </label>
-      <PhoneInput
-        country="no"
-        inputStyle={inputStyle}
-        dropdownStyle={dropdownStyle}
-        value={props.defaultValue}
-        onChange={(text) => props.updateInputValues(text)}
-      />
+      <div className="relative">
+        <label className="absolute z-10 px-1 text-xs text-gray-500 transition bg-white -top-2 left-2 dark:bg-gray-900 dark:text-gray-200">
+          Telefonnummer
+        </label>
+        <PhoneInput
+          country="no"
+          inputStyle={inputStyle}
+          dropdownStyle={dropdownStyle}
+          value={props.defaultValue}
+          onChange={(text) => props.updateInputValues(text)}
+        />
+      </div>
     </div>
   );
 };
