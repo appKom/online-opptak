@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { changeDisplayName } from "../../lib/utils/toString";
+import { changeDisplayName, formatPhoneNumber } from "../../lib/utils/toString";
 
 interface Props {
   applicant: applicantType | undefined;
@@ -45,7 +45,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
       >
         <h1 className="text-lg font-semibold">Kontakt:</h1>
         <p>E-post: {applicant?.email}</p>
-        <p>Telefon: {applicant?.phone}</p>
+        <p>Telefon: {formatPhoneNumber(applicant?.phone || "")}</p>
 
         {includePreferences && (
           <div>
