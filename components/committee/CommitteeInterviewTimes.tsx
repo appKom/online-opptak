@@ -186,13 +186,6 @@ const CommitteeInterviewTimes = ({
       return;
     }
 
-    if (interviewsPlanned < numberOfApplications) {
-      toast.error(
-        "Du har valgt færre tider enn antall søkere. Vennligst legg til flere tider."
-      );
-      return;
-    }
-
     const dataToSend = {
       periodId: period!._id,
       period_name: period!.name,
