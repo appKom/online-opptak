@@ -3,7 +3,7 @@ export default function getTimeSlots(interviewLength: number) {
   startTime.setHours(8, 0, 0);
 
   const endTime = new Date(0);
-  endTime.setHours(16, 0, 0);
+  endTime.setHours(18, 0, 0);
 
   const timeSlots: string[] = [];
   let currentTime = new Date(startTime);
