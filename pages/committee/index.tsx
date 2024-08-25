@@ -29,10 +29,14 @@ const Committee: NextPage = () => {
     const userCommittees = session?.user?.committees || [];
 
     // Viser bare aktuelle perioder
-    const filteredPeriods = periodsData.periods.filter((period: periodType) =>
-      period.committees.some((committee: string) =>
-        userCommittees.includes(committee.toLowerCase())
-      )
+    const filteredPeriods = periodsData.periods.filter(
+      (period: periodType) =>
+        period.committees.some((committee: string) =>
+          userCommittees.includes(committee.toLowerCase())
+        ) ||
+        period.optionalCommittees.some((committee: string) =>
+          userCommittees.includes(committee.toLowerCase())
+        )
     );
 
     setPeriods(
