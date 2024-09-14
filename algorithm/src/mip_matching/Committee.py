@@ -6,6 +6,8 @@ from mip_matching.TimeInterval import TimeInterval
 
 from typing import Iterator
 
+from mip_matching.types import Room
+
 
 class Committee:
     """

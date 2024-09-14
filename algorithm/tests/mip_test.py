@@ -13,10 +13,12 @@ import unittest
 import random
 from itertools import combinations
 
+from mip_matching.types import Matching
+
 
 def print_matchings(committees: list[Committee],
                     intervals: list[TimeInterval],
-                    matchings: list[tuple[Applicant, Committee, TimeInterval]]):
+                    matchings: list[Matching]):
 
     print("Tid".ljust(15), end="|")
     print("|".join(str(com).ljust(8) for com in committees))
@@ -36,7 +38,7 @@ def print_matchings(committees: list[Committee],
 
 class MipTest(unittest.TestCase):
 
-    def check_constraints(self, matchings: list[tuple[Applicant, Committee, TimeInterval]]):
+    def check_constraints(self, matchings: list[Matching]):
         """Checks if the constraints are satisfied in the provided matchings.
         TODO: Add more constraint tests."""
 
@@ -61,8 +63,9 @@ class MipTest(unittest.TestCase):
 
         # Overlapping interviews per applicant
         interviews_per_applicant: dict[Applicant,
-                                       set[tuple[Committee, TimeInterval]]] = {}
-        for applicant, committee, interval in matchings:
+                                       set[Matching]] = {}
+        for interview in matchings:
+            applicant = interview[0]
             if applicant not in interviews_per_applicant:
                 interviews_per_applicant[applicant] = set()
 

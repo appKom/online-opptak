@@ -8,6 +8,7 @@ import mip
 from datetime import timedelta, time
 from itertools import combinations
 
+from mip_matching.types import Matching, MeetingMatch
 from mip_matching.utils import subtract_time
 
 
@@ -22,19 +23,11 @@ CLUSTERING_TIME_BASELINE = time(12, 00)
 MAX_SCALE_CLUSTERING_TIME = timedelta(seconds=43200)  # TODO: Rename variable
 
 
-class MeetingMatch(TypedDict):
-    """Type definition of a meeting match object"""
-    solver_status: mip.OptimizationStatus
-    matched_meetings: int
-    total_wanted_meetings: int
-    matchings: list[tuple[Applicant, Committee, TimeInterval]]
-
-
 def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> MeetingMatch:
     """Matches meetings and returns a MeetingMatch-object"""
     model = mip.Model(sense=mip.MAXIMIZE)
 
-    m: dict[tuple[Applicant, Committee, TimeInterval], mip.Var] = {}
+    m: dict[Matching, mip.Var] = {}
 
     # Lager alle maksimeringsvariabler
     for applicant in applicants:
