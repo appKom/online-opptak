@@ -106,30 +106,13 @@ const formatApplicants = async (
           interview.committeeName.toLowerCase()
       );
 
-      const committeeTime = committeeInterviewTimes.find(
-        (time) =>
-          time.committee.toLowerCase() === interview.committeeName.toLowerCase()
-      );
-
-      let room = "Info kommer";
-
-      if (committeeTime) {
-        const availableTime = committeeTime.availabletimes.find(
-          (available) =>
-            available.start <= interview.start && available.end >= interview.end
-        );
-        if (availableTime) {
-          room = availableTime.room;
-        }
-      }
-
       return {
         committeeName: interview.committeeName,
         committeeEmail: committeeEmail?.email || "",
         interviewTime: {
           start: interview.start,
           end: interview.end,
-          room: room,
+          room: interview.room,
         },
       };
     });
