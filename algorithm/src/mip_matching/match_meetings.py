@@ -86,8 +86,8 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
         clustering_objectives.append(
             CLUSTERING_WEIGHT * relative_distance_from_baseline * variable)  # type: ignore
 
-        # Setter mål til å være maksimering av antall møter
-        # med sekundærmål om å samle intervjuene rundt CLUSTERING_TIME_BASELINE
+    # Setter mål til å være maksimering av antall møter
+    # med sekundærmål om å samle intervjuene rundt CLUSTERING_TIME_BASELINE
     model.objective = mip.maximize(
         mip.xsum(m.values()) + mip.xsum(clustering_objectives))
 
