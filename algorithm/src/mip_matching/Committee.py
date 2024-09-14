@@ -23,38 +23,39 @@ class Committee:
     """
 
     def __init__(self, name: str, interview_length: timedelta = timedelta(minutes=15)):
-        self.capacities: dict[TimeInterval, int] = dict()
+        self.interview_slots: dict[TimeInterval, set[Room]] = dict()
         self.interview_length: timedelta = interview_length
         self.applicants: set[Applicant] = set()
         self.name = name
 
-    def add_interval(self, interval: TimeInterval, capacity: int = 1) -> None:
-        """Legger til et nytt intervall med gitt kapasitet hvis intervallet 
-        ikke allerede har en kapasitet for denne komitéen.
+    def add_interview_slot(self, interval: TimeInterval, room: Room) -> None:
+        """Legger til et nytt intervall med gitt rom.
         Når intervaller legges til deles det automatisk opp i 
         intervaller med lik lengde som intervjulengder."""
         minimal_intervals = TimeInterval.divide_interval(
             interval=interval, length=self.interview_length)
         for interval in minimal_intervals:
-            if interval not in self.capacities:
-                self.capacities[interval] = capacity
-            else:
-                self.capacities[interval] += capacity
-
-    def add_intervals_with_capacities(self, intervals_with_capacities: dict[TimeInterval, int]):
-        """Legger til flere tidsintervaller samtidig."""
-        for interval, capacity in intervals_with_capacities.items():
-            self.add_interval(interval, capacity)
+            if interval not in self.interview_slots:
+                self.interview_slots[interval] = set()
+            self.interview_slots[interval].add(room)
 
     def get_intervals_and_capacities(self) -> Iterator[tuple[TimeInterval, int]]:
         """Generator som returnerer interval-kapasitet-par."""
-        for interval, capacity in self.capacities.items():
-            yield interval, capacity
+        for interval, rooms in self.interview_slots.items():
+            yield interval, len(rooms)
+
+    def get_capacity(self, interval: TimeInterval) -> int:
+        """Returnerer komitéens kapasitet ved et gitt interval (ferdiginndelt etter lengde)"""
+        return len(self.interview_slots[interval])
 
     def get_intervals(self) -> Iterator[TimeInterval]:
         """Generator som returnerer kun intervallene"""
-        for interval in self.capacities.keys():
+        for interval in self.interview_slots.keys():
             yield interval
+
+    def get_rooms(self, interval: TimeInterval) -> Iterator[Room]:
+        for room in self.interview_slots[interval]:
+            yield room
 
     def _add_applicant(self, applicant: Applicant):
         """Metode brukt for å holde toveis-assosiasjonen."""
@@ -63,10 +64,6 @@ class Committee:
     def get_applicants(self) -> Iterator[Applicant]:
         for applicant in self.applicants:
             yield applicant
-
-    def get_capacity(self, interval: TimeInterval) -> int:
-        """Returnerer komitéens kapasitet ved et gitt interval (ferdiginndelt etter lengde)"""
-        return self.capacities[interval]
 
     def get_applicant_count(self) -> int:
         return len(self.applicants)

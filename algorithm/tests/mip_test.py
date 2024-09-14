@@ -28,7 +28,7 @@ def print_matchings(committees: list[Committee],
         for committee in committees:
             name = ""
             cands = [a.name for a, c,
-                     i in matchings if interval == i and c == committee]
+                     i, r in matchings if interval == i and c == committee]
             name = cands[0] if len(cands) > 0 else ""
 
             print(name.rjust(8), end="|")
@@ -43,12 +43,12 @@ class MipTest(unittest.TestCase):
         TODO: Add more constraint tests."""
 
         self.assertEqual(len(matchings), len(set((applicant, interval)
-                         for applicant, _, interval in matchings)),
+                         for applicant, _, interval, _ in matchings)),
                          "Constraint \"Applicant can only have one meeting during each TimeInterval\" failed.")
 
         load_per_committee_per_slot: dict[Committee, dict[TimeInterval, int]] = {
         }
-        for _, committee, interval in matchings:
+        for _, committee, interval, _ in matchings:
             if committee not in load_per_committee_per_slot:
                 load_per_committee_per_slot[committee] = {}
 
@@ -69,27 +69,28 @@ class MipTest(unittest.TestCase):
             if applicant not in interviews_per_applicant:
                 interviews_per_applicant[applicant] = set()
 
-            interviews_per_applicant[applicant].add((committee, interval))
+            interviews_per_applicant[applicant].add(interview)
 
         for applicant, interviews in interviews_per_applicant.items():
             for interview_a, interview_b in combinations(interviews, r=2):
-                self.assertFalse(interview_a[1].intersects(interview_b[1]), f"Constraint \"Applicant cannot have time-overlapping interviews\" failed for {
-                    applicant}'s interviews with {interview_a[0]} ({interview_a[1]}) and {interview_b[0]} ({interview_b[1]})")
+                self.assertFalse(interview_a[2].intersects(interview_b[2]), f"Constraint \"Applicant cannot have time-overlapping interviews\" failed for {
+                    applicant}'s interviews with {interview_a[1]} ({interview_a[1]}) and {interview_b[1]} ({interview_b[2]})")
 
     def test_fixed_small(self):
         """Small, fixed test with all capacities set to one"""
 
         appkom = Committee(name="Appkom")
-        appkom.add_intervals_with_capacities(
-            {TimeInterval(datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 9, 15)): 1})
+        
+        appkom.add_interview_slot(
+            TimeInterval(datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 9, 15)), "AppkomRom")
 
         oil = Committee(name="OIL")
-        oil.add_intervals_with_capacities(
-            {TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30)): 1})
+        oil.add_interview_slot(
+            TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30)), "OilRom")
 
         prokom = Committee(name="Prokom")
-        prokom.add_intervals_with_capacities({TimeInterval(datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 8, 45)): 1,
-                                              TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30)): 1})
+        prokom.add_interview_slot(TimeInterval(datetime(2024, 8, 24, 8, 0), datetime(2024, 8, 24, 8, 45)), "ProkomRom")
+        prokom.add_interview_slot(TimeInterval(datetime(2024, 8, 24, 9, 0), datetime(2024, 8, 24, 9, 30)), "ProkomRom")
 
         committees: set[Committee] = {appkom, oil, prokom}
 
@@ -219,8 +220,9 @@ class MipTest(unittest.TestCase):
             for _ in range(ANTALL_INTERVALL_FORSØK_KOMITE):
                 interval_date = fake.date_between_dates(START_DATE, END_DATE)
 
-                committee.add_intervals_with_capacities({get_random_interval(interval_date, INTERVALLENGDE_PER_KOMTIE_MIN, INTERVALLENGDE_PER_KOMTIE_MAKS): random.randint(
-                    KAPASITET_PER_INTERVALL_MIN, KAPASITET_PER_INTERVALL_MAKS)})
+                for _ in range(random.randint(KAPASITET_PER_INTERVALL_MIN, KAPASITET_PER_INTERVALL_MAKS)):
+                    committee.add_interview_slot(get_random_interval(interval_date, INTERVALLENGDE_PER_KOMTIE_MIN, INTERVALLENGDE_PER_KOMTIE_MAKS), 
+                                                 room=str(random.getrandbits(128)))
 
         # Lar hver søker søke på tilfeldige komiteer
         committees_list = list(committees)
@@ -299,8 +301,9 @@ class MipTest(unittest.TestCase):
             for _ in range(ANTALL_INTERVALL_FORSØK_KOMITE):
                 interval_date = fake.date_between_dates(START_DATE, END_DATE)
 
-                committee.add_intervals_with_capacities({get_random_interval(interval_date): random.randint(
-                    KAPASITET_PER_INTERVALL_MIN, KAPASITET_PER_INTERVALL_MAKS)})
+                for _ in range(random.randint(KAPASITET_PER_INTERVALL_MIN, KAPASITET_PER_INTERVALL_MAKS)):
+                    committee.add_interview_slot(get_random_interval(interval_date), 
+                                                 room=str(random.getrandbits(128)))
 
         # Lar hver søker søke på tilfeldige komiteer
         committees_list = list(committees)
@@ -367,8 +370,10 @@ class MipTest(unittest.TestCase):
 
         # Gir intervaller til hver komité.
         for committee in committees:
-            committee.add_intervals_with_capacities({slot: 1 for slot in random.sample(
-                SLOTS, random.randint(ANTALL_SLOTS_PER_KOMITE_MIN, ANTALL_SLOTS_PER_KOMITE_MAKS))})
+            
+            for slot in random.sample(
+                SLOTS, random.randint(ANTALL_SLOTS_PER_KOMITE_MIN, ANTALL_SLOTS_PER_KOMITE_MAKS)):
+                committee.add_interview_slot(slot, str(random.getrandbits(128)))
 
         # Lar hver søker søke på tilfeldige komiteer
         committees_list = list(committees)
