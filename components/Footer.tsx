@@ -25,7 +25,7 @@ const footerLinks = [
 
 export default function Footer() {
   return (
-    <footer className="px-4 py-12 mt-24 text-gray-700 border-t border-gray-300 md:px-6 lg:px-8">
+    <footer className="px-4 py-12 mt-24 text-gray-700 bg-white border-t border-gray-300 dark:text-gray-300 dark:border-gray-700 md:px-6 lg:px-8 dark:bg-gray-800">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-between mb-8 space-y-8 md:flex-row md:space-y-0">
           <div className="flex flex-col items-center space-y-4 md:items-start">
@@ -67,14 +67,19 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between py-8 space-y-6 border-t border-gray-300 md:flex-row md:space-y-0">
+        <div className="flex flex-col items-center justify-between py-8 space-y-6 border-t border-gray-300 dark:border-gray-700 md:flex-row md:space-y-0">
           <div className="flex items-center space-x-6">
             <Link href="https://online.ntnu.no/" target="_blank">
               <a className="transition hover:opacity-50">
                 <img
                   src="Online_bla.svg"
                   alt="Online logo"
-                  className="w-32 h-auto"
+                  className="w-32 h-auto dark:hidden"
+                />
+                <img
+                  src="Online_hvit.svg"
+                  alt="Online logo"
+                  className="hidden w-32 h-auto dark:block"
                 />
               </a>
             </Link>
@@ -83,12 +88,12 @@ export default function Footer() {
                 <img
                   src="bekk_black.svg"
                   alt="Bekk logo"
-                  className="w-32 h-auto"
+                  className="w-32 h-auto dark:invert"
                 />
               </a>
             </Link>
           </div>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-400 dark:text-gray-500">
             &copy; {new Date().getFullYear()} Online Opptak. Alle rettigheter
             reservert.
           </p>
