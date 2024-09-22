@@ -150,47 +150,47 @@ const Application: NextPage = () => {
   if (!periodData?.exists)
     return <SimpleTitle title="Opptaket finnes ikke" size="large" />;
 
-  if (fetchedApplicationData?.exists)
-    return (
-      <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
-        <WellDoneIllustration className="h-32" />
-        <p className="max-w-md text-lg text-center">
-          Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!
-        </p>
-        <p className="max-w-md text-lg text-center">
-          Du vil få enda en e-post med intervjutider når søknadsperioden er over
-          (rundt {formatDateNorwegian(period?.applicationPeriod?.end)}).
-        </p>
-        <p className="max-w-md text-center text-gray-500">
-          (Hvis du ikke finner e-posten din, sjekk søppelpost- eller
-          spam-mappen.)
-        </p>
-        {!isApplicationPeriodOver && (
-          <Button
-            title="Trekk tilbake søknad"
-            color="white"
-            onClick={handleDeleteApplication}
-          />
-        )}
-        {fetchedApplicationData?.application && (
-          <div className="w-full max-w-md">
-            <ApplicantCard
-              applicant={fetchedApplicationData.application}
-              includePreferences={true}
-            />
-          </div>
-        )}
+  // if (fetchedApplicationData?.exists)
+  //   return (
+  //     <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
+  //       <WellDoneIllustration className="h-32" />
+  //       <p className="max-w-md text-lg text-center">
+  //         Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!
+  //       </p>
+  //       <p className="max-w-md text-lg text-center">
+  //         Du vil få enda en e-post med intervjutider når søknadsperioden er over
+  //         (rundt {formatDateNorwegian(period?.applicationPeriod?.end)}).
+  //       </p>
+  //       <p className="max-w-md text-center text-gray-500">
+  //         (Hvis du ikke finner e-posten din, sjekk søppelpost- eller
+  //         spam-mappen.)
+  //       </p>
+  //       {!isApplicationPeriodOver && (
+  //         <Button
+  //           title="Trekk tilbake søknad"
+  //           color="white"
+  //           onClick={handleDeleteApplication}
+  //         />
+  //       )}
+  //       {fetchedApplicationData?.application && (
+  //         <div className="w-full max-w-md">
+  //           <ApplicantCard
+  //             applicant={fetchedApplicationData.application}
+  //             includePreferences={true}
+  //           />
+  //         </div>
+  //       )}
 
-        {applicationData.phone && (
-          <div className="w-full max-w-md">
-            <ApplicantCard
-              applicant={applicationData as applicantType}
-              includePreferences={true}
-            />
-          </div>
-        )}
-      </div>
-    );
+  //       {applicationData.phone && (
+  //         <div className="w-full max-w-md">
+  //           <ApplicantCard
+  //             applicant={applicationData as applicantType}
+  //             includePreferences={true}
+  //           />
+  //         </div>
+  //       )}
+  //     </div>
+  //   );
 
   return (
     <div>
