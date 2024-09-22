@@ -100,6 +100,7 @@ export type algorithmType = {
     start: string;
     end: string;
     committeeName: string;
+    room: string;
   }[];
 };
 
