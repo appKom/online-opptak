@@ -8,6 +8,7 @@ import mip
 from datetime import timedelta, time
 from itertools import combinations
 
+from mip_matching.types import Matching, MeetingMatch
 from mip_matching.utils import subtract_time
 
 
@@ -22,60 +23,53 @@ CLUSTERING_TIME_BASELINE = time(12, 00)
 MAX_SCALE_CLUSTERING_TIME = timedelta(seconds=43200)  # TODO: Rename variable
 
 
-class MeetingMatch(TypedDict):
-    """Type definition of a meeting match object"""
-    solver_status: mip.OptimizationStatus
-    matched_meetings: int
-    total_wanted_meetings: int
-    matchings: list[tuple[Applicant, Committee, TimeInterval]]
-
-
 def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> MeetingMatch:
     """Matches meetings and returns a MeetingMatch-object"""
     model = mip.Model(sense=mip.MAXIMIZE)
 
-    m: dict[tuple[Applicant, Committee, TimeInterval], mip.Var] = {}
+    m: dict[Matching, mip.Var] = {}
 
     # Lager alle maksimeringsvariabler
     for applicant in applicants:
         for committee in applicant.get_committees():
             for interval in applicant.get_fitting_committee_slots(committee):
-                m[(applicant, committee, interval)] = model.add_var(
-                    var_type=mip.BINARY, name=f"({applicant}, {committee}, {interval})")
+                for room in committee.get_rooms(interval):
+                    m[(applicant, committee, interval, room)] = model.add_var(
+                        var_type=mip.BINARY, name=f"({applicant}, {committee}, {interval}, {room})")
 
     # Legger inn begrensninger for at en komité kun kan ha antall møter i et slot lik kapasiteten.
     for committee in committees:
         for interval, capacity in committee.get_intervals_and_capacities():
-            model += mip.xsum(m[(applicant, committee, interval)]
+            model += mip.xsum(m[(applicant, committee, interval, room)]
                               for applicant in committee.get_applicants()
+                              for room in committee.get_rooms(interval)
+                              if (applicant, committee, interval, room) in m
                               # type: ignore
-                              if (applicant, committee, interval) in m) <= capacity
+                              ) <= capacity
 
     # Legger inn begrensninger for at en person kun har ett intervju med hver komité
     for applicant in applicants:
         for committee in applicant.get_committees():
-            model += mip.xsum(m[(applicant, committee, interval)]
+            model += mip.xsum(m[(applicant, committee, interval, room)]
+                              for interval in applicant.get_fitting_committee_slots(committee)
+                              for room in committee.get_rooms(interval)
                               # type: ignore
-                              for interval in applicant.get_fitting_committee_slots(committee)) <= 1
+                              ) <= 1
 
     # Legger inn begrensninger for at en søker ikke kan ha overlappende intervjutider
     # og minst har et buffer mellom hvert intervju som angitt
     for applicant in applicants:
-        potential_interviews: set[tuple[Committee, TimeInterval]] = set()
-        for applicant_candidate, committee, interval in m:
-            if applicant == applicant_candidate:
-                potential_interviews.add((committee, interval))
+        potential_interviews = set(slot for slot in m.keys() if slot[0] == applicant)
 
         for interview_a, interview_b in combinations(potential_interviews, r=2):
-            if interview_a[1].intersects(interview_b[1]) or interview_a[1].is_within_distance(interview_b[1], APPLICANT_BUFFER_LENGTH):
-                model += m[(applicant, *interview_a)] + \
-                    m[(applicant, *interview_b)] <= 1  # type: ignore
+            if interview_a[2].intersects(interview_b[2]) or interview_a[2].is_within_distance(interview_b[2], APPLICANT_BUFFER_LENGTH):
+                model += m[interview_a] + m[interview_b] <= 1  # type: ignore
 
     # Legger til sekundærmål om at man ønsker å sentrere intervjuer rundt CLUSTERING_TIME_BASELINE
     clustering_objectives = []
 
     for name, variable in m.items():
-        applicant, committee, interval = name
+        applicant, committee, interval, room = name
         if interval.start.time() < CLUSTERING_TIME_BASELINE:
             relative_distance_from_baseline = subtract_time(CLUSTERING_TIME_BASELINE,
                                                             interval.end.time()) / MAX_SCALE_CLUSTERING_TIME
@@ -101,7 +95,6 @@ def match_meetings(applicants: set[Applicant], committees: set[Committee]) -> Me
         if variable.x:
             antall_matchede_møter += 1
             matchings.append(name)
-            print(f"{name}")
 
     antall_ønskede_møter = sum(
         len(applicant.get_committees()) for applicant in applicants)

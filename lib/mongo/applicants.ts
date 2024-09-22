@@ -27,14 +27,14 @@ export const createApplicant = async (applicantData: applicantType) => {
   try {
     if (!applicants) await init();
 
-    const existingApplicant = await applicants.findOne({
-      owId: applicantData.owId,
-      periodId: applicantData.periodId,
-    });
+    // const existingApplicant = await applicants.findOne({
+    //   owId: applicantData.owId,
+    //   periodId: applicantData.periodId,
+    // });
 
-    if (existingApplicant) {
-      return { error: "409 Application already exists for this period" };
-    }
+    // if (existingApplicant) {
+    //   return { error: "409 Application already exists for this period" };
+    // }
 
     const result = await applicants.insertOne(applicantData);
     if (result.insertedId) {
@@ -185,7 +185,7 @@ export const getApplicantsForCommittee = async (
         const today = new Date();
         const sevenDaysAfterInterviewEnd = new Date(period.interviewPeriod.end);
         sevenDaysAfterInterviewEnd.setDate(
-          sevenDaysAfterInterviewEnd.getDate() + 7
+          sevenDaysAfterInterviewEnd.getDate() + 5
         );
 
         if (

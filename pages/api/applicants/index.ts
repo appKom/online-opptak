@@ -65,50 +65,50 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           optionalCommitteesString = "Ingen";
         }
 
-        const emailData: emailDataType = {
-          name: applicant.name,
-          emails: [applicant.email],
-          phone: applicant.phone,
-          grade: applicant.grade,
-          about: applicant.about.replace(/\n/g, "<br>"),
-          firstChoice: "Tom",
-          secondChoice: "Tom",
-          thirdChoice: "Tom",
-          bankom:
-            applicant.bankom == "ja"
-              ? "Ja"
-              : applicant.bankom == "nei"
-              ? "Nei"
-              : "Kanskje",
-          optionalCommittees: optionalCommitteesString,
-        };
+        //   const emailData: emailDataType = {
+        //     name: applicant.name,
+        //     emails: [applicant.email],
+        //     phone: applicant.phone,
+        //     grade: applicant.grade,
+        //     about: applicant.about.replace(/\n/g, "<br>"),
+        //     firstChoice: "Tom",
+        //     secondChoice: "Tom",
+        //     thirdChoice: "Tom",
+        //     bankom:
+        //       applicant.bankom == "ja"
+        //         ? "Ja"
+        //         : applicant.bankom == "nei"
+        //         ? "Nei"
+        //         : "Kanskje",
+        //     optionalCommittees: optionalCommitteesString,
+        //   };
 
-        //Type guard
-        if (!Array.isArray(applicant.preferences)) {
-          emailData.firstChoice =
-            applicant.preferences.first == "onlineil"
-              ? "Online IL"
-              : capitalizeFirstLetter(applicant.preferences.first);
-          emailData.secondChoice =
-            applicant.preferences.second == "onlineil"
-              ? "Online IL"
-              : capitalizeFirstLetter(applicant.preferences.second);
-          emailData.thirdChoice =
-            applicant.preferences.third == "onlineil"
-              ? "Online IL"
-              : capitalizeFirstLetter(applicant.preferences.third);
-        }
+        //   //Type guard
+        //   if (!Array.isArray(applicant.preferences)) {
+        //     emailData.firstChoice =
+        //       applicant.preferences.first == "onlineil"
+        //         ? "Online IL"
+        //         : capitalizeFirstLetter(applicant.preferences.first);
+        //     emailData.secondChoice =
+        //       applicant.preferences.second == "onlineil"
+        //         ? "Online IL"
+        //         : capitalizeFirstLetter(applicant.preferences.second);
+        //     emailData.thirdChoice =
+        //       applicant.preferences.third == "onlineil"
+        //         ? "Online IL"
+        //         : capitalizeFirstLetter(applicant.preferences.third);
+        //   }
 
-        try {
-          await sendEmail({
-            toEmails: emailData.emails,
-            subject: "Vi har mottatt din søknad!",
-            htmlContent: generateApplicantEmail(emailData),
-          });
-        } catch (error) {
-          console.error("Error sending email: ", error);
-          throw error;
-        }
+        // try {
+        //   await sendEmail({
+        //     toEmails: emailData.emails,
+        //     subject: "Vi har mottatt din søknad!",
+        //     htmlContent: generateApplicantEmail(emailData),
+        //   });
+        // } catch (error) {
+        //   console.error("Error sending email: ", error);
+        //   throw error;
+        // }
       }
 
       return res.status(201).json({ applicant });
