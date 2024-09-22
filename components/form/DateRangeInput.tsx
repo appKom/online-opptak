@@ -4,7 +4,7 @@ interface Props {
   updateDates: (dates: { start: string; end: string }) => void;
 }
 
-const DatePickerInput = (props: Props) => {
+const DateRangeInput = (props: Props) => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
@@ -42,4 +42,4 @@ const DatePickerInput = (props: Props) => {
   );
 };
 
-export default DatePickerInput;
+export default DateRangeInput;
