@@ -32,6 +32,9 @@ const Committee: NextPage = () => {
     const filteredPeriods = periodsData.periods.filter((period: periodType) =>
       period.committees.some((committee: string) =>
         userCommittees.includes(committee.toLowerCase())
+      ) ||
+      period.optionalCommittees.some((committee: string) =>
+        userCommittees.includes(committee.toLowerCase())
       )
     );
 

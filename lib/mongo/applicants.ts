@@ -185,7 +185,7 @@ export const getApplicantsForCommittee = async (
         const today = new Date();
         const sevenDaysAfterInterviewEnd = new Date(period.interviewPeriod.end);
         sevenDaysAfterInterviewEnd.setDate(
-          sevenDaysAfterInterviewEnd.getDate() + 7
+          sevenDaysAfterInterviewEnd.getDate() + 5
         );
 
         if (

@@ -20,7 +20,7 @@ const info = [
     content: [
       "Velg riktig opptaksperiode.",
       "Legg inn intervjutider for komiteen din innen søknadsfristen.",
-      "Motta e-post om intervjutider for komiteen når søknadsfristen er over.",
+      "Motta SMS og e-post om intervjutider for komiteen når søknadsfristen er over.",
     ],
   },
   {
