@@ -1,26 +1,13 @@
 import { useState } from "react";
-import { periodType, committeeInterviewType } from "../lib/types/types";
-import Button from "./Button";
-import Table, { RowType } from "./Table"
-import { ColumnType } from "./Table";
-import TextInput from "./form/TextInput";
-import DateInput from "./form/DateInput";
-import TimeRangeInput from "./form/TimeRangeInput";
+import { periodType, committeeInterviewType, RoomBooking } from "../../lib/types/types";
+import Button from "../Button";
+import Table, { RowType } from "../Table"
+import { ColumnType } from "../Table";
+import TextInput from "../form/TextInput";
+import DateInput from "../form/DateInput";
+import TimeRangeInput from "../form/TimeRangeInput";
 
 import toast from "react-hot-toast";
-
-interface Interview {
-  id: string;
-  title: string;
-  start: string;
-  end: string;
-}
-
-interface RoomBooking {
-  room: String,
-  startDate: String
-  endDate: String
-}
 
 interface Props {
   period: periodType | null;

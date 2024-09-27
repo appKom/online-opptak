@@ -66,6 +66,7 @@ export type periodType = {
   committees: string[];
   optionalCommittees: string[];
   hasSentInterviewTimes: boolean;
+  rooms?: RoomBooking[];
 };
 
 export type AvailableTime = {
@@ -141,3 +142,9 @@ export type emailApplicantInterviewType = {
     };
   }[];
 };
+
+export interface RoomBooking {
+  room: String;
+  startDate: String;
+  endDate: String;
+}

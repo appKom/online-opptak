@@ -4,7 +4,7 @@ import router from "next/router";
 import { periodType } from "../../../lib/types/types";
 import NotFound from "../../404";
 import ApplicantsOverview from "../../../components/applicantoverview/ApplicantsOverview";
-import RoomOverview from "../../../components/RoomOverview";
+import RoomOverview from "../../../components/admin/RoomOverview";
 import { Tabs } from "../../../components/Tabs";
 import { CalendarIcon, InboxIcon, BuildingOffice2Icon } from "@heroicons/react/24/solid";
 import Button from "../../../components/Button";
