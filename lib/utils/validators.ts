@@ -3,6 +3,7 @@ import {
   committeeInterviewType,
   periodType,
   preferencesType,
+  RoomBooking,
 } from "../types/types";
 
 export const isApplicantType = (
@@ -190,4 +191,9 @@ export const isPeriodType = (data: any): data is periodType => {
     arePeriodsValid(data.applicationPeriod, data.interviewPeriod);
 
   return hasBasicFields;
+};
+
+export const isRoomBookings = (data: any): data is RoomBooking => {
+  // TODO: Implement
+  return true;
 };
