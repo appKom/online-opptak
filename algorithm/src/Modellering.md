@@ -1,11 +1,4 @@
-# Modellering av problem gjennom Mixed Integer Linear Programming
-
-## Nyttige ressurser
-
-- https://python-mip.readthedocs.io/en/latest/quickstart.html
-- https://towardsdatascience.com/mixed-integer-linear-programming-1-bc0ef201ee87
-- https://towardsdatascience.com/mixed-integer-linear-programming-formal-definition-and-solution-space-6b3286d54892
-- https://www.gurobi.com/resources/mixed-integer-programming-mip-a-primer-on-the-basics/
+# Modellering av møtetildelingsproblem gjennom Mixed Integer Linear Programming
 
 ## Variabler
 
@@ -19,7 +12,7 @@
 
 `t`
 
-- Timeslot (Må gjøres til intervaller etter hvert)
+- Timeslot
 
 `m(p, k, t)`
 
@@ -55,8 +48,15 @@ For alle `k`:
 
 ## Mål
 
-Maksimere `sum(m(p, k, t))` for alle `p`, `k` og `t`
+Maksimere `sum(m(p, k, t))` for alle `p`, `k` og `t`. Altså: Maksimere antall intervjuer som tildeles.
 
 ### Sekundærmål
 
-- [Ikke enda implementert] La det være færrest mulig og minst mulig mellomrom mellom intervjuene for komitéene.
+- La intervjuene klumpe seg rundt klokken 12 og dermed også minske hvor mange hull komitéene får i sin intervjuplan.
+
+## Nyttige ressurser
+
+- https://python-mip.readthedocs.io/en/latest/quickstart.html
+- https://towardsdatascience.com/mixed-integer-linear-programming-1-bc0ef201ee87
+- https://towardsdatascience.com/mixed-integer-linear-programming-formal-definition-and-solution-space-6b3286d54892
+- https://www.gurobi.com/resources/mixed-integer-programming-mip-a-primer-on-the-basics/
