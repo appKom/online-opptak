@@ -7,6 +7,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { useTheme } from "../lib/hooks/useTheme";
 
 const footerLinks = [
   { name: "Slack", icon: <Slack />, link: "https://onlinentnu.slack.com/" },
@@ -24,6 +26,8 @@ const footerLinks = [
 ];
 
 export default function Footer() {
+  const theme = useTheme();
+
   return (
     <footer className="px-4 py-12 mt-24 text-gray-700 bg-white border-t border-gray-300 dark:text-gray-300 dark:border-gray-700 md:px-6 lg:px-8 dark:bg-gray-800">
       <div className="mx-auto max-w-7xl">
@@ -71,24 +75,21 @@ export default function Footer() {
           <div className="flex items-center space-x-6">
             <Link href="https://online.ntnu.no/" target="_blank">
               <a className="transition hover:opacity-50">
-                <img
-                  src="Online_bla.svg"
+                <Image
+                  src={theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg"}
                   alt="Online logo"
-                  className="w-32 h-auto dark:hidden"
-                />
-                <img
-                  src="Online_hvit.svg"
-                  alt="Online logo"
-                  className="hidden w-32 h-auto dark:block"
+                  width={128}
+                  height={34}
                 />
               </a>
             </Link>
             <Link href="https://www.bekk.no/" target="_blank">
               <a className="transition hover:opacity-50">
-                <img
-                  src="bekk_black.svg"
-                  alt="Bekk logo"
-                  className="w-32 h-auto dark:invert"
+                <Image
+                  src={theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg"}
+                  alt="Online logo"
+                  width={128}
+                  height={57}
                 />
               </a>
             </Link>
