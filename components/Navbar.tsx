@@ -25,12 +25,10 @@ const Navbar = () => {
 
   const handleLogout = () => signOut();
   const handleLogin = () => signIn("auth0");
-  const isLinkActive = (uri: string) => router.pathname === uri;
   const smallOnlineLogoSrc =
     theme === "dark" ? "/Online_hvit_o.svg" : "/Online_bla_o.svg";
   const onlineLogoSrc =
     theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg";
-  const bekkLogoSrc = theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg";
 
   return (
     <div>
@@ -93,17 +91,6 @@ const Navbar = () => {
             </>
           )}
           <ThemeToggle />
-          <Link href="https://www.bekk.no/">
-            <a>
-              <Image
-                src={bekkLogoSrc}
-                width={100}
-                height={30 * 1.5}
-                alt="Bekk logo"
-                className="transition-all cursor-pointer hover:opacity-60"
-              />
-            </a>
-          </Link>
         </div>
       </div>
       <div className="relative md:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
@@ -114,14 +101,6 @@ const Navbar = () => {
           alt="Online logo"
           className="transition-all cursor-pointer hover:opacity-60"
           onClick={() => router.push("/")}
-        />
-        <Image
-          src={bekkLogoSrc}
-          width={100}
-          height={30 * 1.5}
-          alt="Bekk logo"
-          className="transition-all cursor-pointer hover:opacity-60"
-          onClick={() => router.push("https://www.bekk.no/")}
         />
         <div className="relative">
           <button onClick={toggleDropdown} className="flex justify-end">
