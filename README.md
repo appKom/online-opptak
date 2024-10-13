@@ -38,6 +38,19 @@ Copy the .env.local.template file to .env.local and fill in the necessary enviro
 cp .env.local.template .env.local
 ```
 
+- **NODE_ENV**: Specifies the environment in which the app is running. Should be `development` for local development
+- **MONGODB_URI**: The connection string to connect to a MongoDB database.
+- **ADMIN_EMAILS**: A list or comma-separated string of email addresses with administrative privileges.
+- **NEXTAUTH_URL**: The base URL of the application used by NextAuth for authentication callbacks. Should be `http://localhost:3000/` for local development.
+- **NEXTAUTH_SECRET**: A random string used to sign and encrypt session cookies in NextAuth to ensure their security. Generate your secret with `openssl rand -hex 32`.
+- **AUTH0_CLIENT_ID**: The client ID from Auth0 provider.
+- **AUTH0_CLIENT_SECRET**: The secret key from Auth0 provider.
+- **AUTH0_ISSUER**: The base URL of the Auth0 domain.
+- **AWS_SECRET_ACCESS_KEY**: The access key for accessing AWS.
+- **AWS_ACCESS_KEY_ID**: The access key ID for an AWS account.
+- **TWILIO_ACCOUNT_SID**: The Account SID from Twilio.
+- **TWILIO_AUTH_TOKEN**: The authentication token from Twilio.
+
 For access to the application's environment variables, please contact Appkom at <appkom@online.ntnu.no>.
 
 ### Running the Development Server
