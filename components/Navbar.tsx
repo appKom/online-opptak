@@ -15,7 +15,6 @@ import Button from "./Button";
 import ThemeToggle from "./ThemeToggle";
 import DropdownMenu from "./DropdownMenu";
 import { useTheme } from "../lib/hooks/useTheme";
-import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 
 const Navbar = () => {
   const router = useRouter();
@@ -93,12 +92,6 @@ const Navbar = () => {
               />
             </>
           )}
-          <a
-            className="hover:opacity-80 "
-            href="https://docs.google.com/forms/d/e/1FAIpQLScvjEqVsiRIYnVqCNqbH_-nmYk3Ux6la8a7KZzsY3sJDbW-iA/viewform"
-          >
-            <ExclamationTriangleIcon className="size-8" />
-          </a>
           <ThemeToggle />
           <Link href="https://www.bekk.no/">
             <a>
