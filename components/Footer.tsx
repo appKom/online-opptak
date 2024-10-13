@@ -5,6 +5,7 @@ import {
   Github,
   Mail,
   ExternalLink,
+  Bug,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -41,6 +42,20 @@ export default function Footer() {
               </a>
             </Link>
           </div>
+
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLScvjEqVsiRIYnVqCNqbH_-nmYk3Ux6la8a7KZzsY3sJDbW-iA/viewform"
+            target="_blank"
+            rel="noreferrer"
+            className='flex items-center justify-center h-full gap-3 p-1.5 bg-[#f3f4f6] dark:bg-[#212f4d] rounded-lg max-h-min'>
+            <div className="p-1 text-center text-gray-600 dark:text-white">
+              <div className="flex items-center justify-center gap-2">
+                <p className="font-semibold text-lg">Debug</p>
+                <Bug className="w-5" />
+              </div>
+              <p className="text-sm">Opplevd noe ugreit?</p>
+              <p className="text-sm">Trykk her for mer info</p>
+            </div>
+          </a>
 
           <div className="flex flex-col items-center space-y-4 md:items-end">
             <div className="flex space-x-4">
@@ -100,6 +115,6 @@ export default function Footer() {
           </p>
         </div>
       </div>
-    </footer>
+    </footer >
   );
 }
