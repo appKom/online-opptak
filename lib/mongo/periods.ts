@@ -1,6 +1,6 @@
 import { Collection, Db, MongoClient, ObjectId } from "mongodb";
 import clientPromise from "./mongodb";
-import { periodType } from "../types/types";
+import { periodType, RoomBooking } from "../types/types";
 
 let client: MongoClient;
 let db: Db;
@@ -82,6 +82,32 @@ export const getCurrentPeriods = async () => {
   } catch (error) {
     console.error(error);
     return { error: "Failed to fetch periods" };
+  }
+};
+
+export const updateRoomsForPeriod = async (
+  id: string | ObjectId,
+  rooms: RoomBooking[]
+) => {
+  try {
+    if (!periods) await init();
+
+    // Checks if period exists
+    const period = await getPeriodById(id);
+    if (!period.exists) {
+      return { error: "Period not found" };
+    }
+
+    const response = await periods.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: { rooms: rooms } }
+    );
+
+    return response.modifiedCount >= 1
+      ? { message: "Period updated with rooms" }
+      : { message: "Period not updated" };
+  } catch (error) {
+    return { error: "Failed to update rooms for period" };
   }
 };
 

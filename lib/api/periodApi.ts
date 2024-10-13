@@ -1,5 +1,5 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import { periodType } from "../types/types";
+import { periodType, RoomBooking } from "../types/types";
 
 export const fetchPeriodById = async (context: QueryFunctionContext) => {
   const id = context.queryKey[1];
@@ -20,6 +20,19 @@ export const createPeriod = async (period: periodType) => {
   return fetch(`/api/periods`, {
     method: "POST",
     body: JSON.stringify(period),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const updateRoomsForPeriod = async (
+  id: string,
+  rooms: RoomBooking[]
+) => {
+  return fetch(`/api/periods${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(rooms),
     headers: {
       "Content-Type": "application/json",
     },

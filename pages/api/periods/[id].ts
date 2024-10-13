@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { deletePeriodById, getPeriodById } from "../../../lib/mongo/periods";
 import { hasSession, isAdmin } from "../../../lib/utils/apiChecks";
+import { updateRoomsForPeriod } from "../../../lib/api/periodApi";
+import { isRoomBookings } from "../../../lib/utils/validators";
+import { RoomBooking } from "../../../lib/types/types";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
@@ -28,7 +31,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       return res.status(200).json({ exists, period });
+    } else if (req.method === "PATCH") {
+      if (!isAdmin(res, session)) {
+        return res.status(403).json({ error: "Unauthorized" });
+      }
+
+      if (!isRoomBookings(req.body)) {
+        return res.status(400).json({ error: "Invalid data format" });
+      }
+
+      const bookings: RoomBooking[] = req.body as RoomBooking[];
+
+      const { error } = await updateRoomsForPeriod(id, bookings);
+      if (error) throw new Error(error);
+      return res.status(200).json({ message: updated });
     } else if (req.method === "DELETE") {
+      // TODO: The next line is probably supposed to be !isAdmin(res, session)?
       if (!isAdmin) return res.status(403).json({ error: "Unauthorized" });
 
       const { error } = await deletePeriodById(id);
