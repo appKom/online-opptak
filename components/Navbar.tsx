@@ -32,7 +32,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-300 dark:border-0 dark:bg-gray-800">
+      <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-300 dark:border-0 bg-zinc-50 dark:bg-gray-800">
         <Link href="/" passHref>
           <a aria-label="Online logo">
             <Image
