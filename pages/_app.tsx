@@ -84,7 +84,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
           <QueryClientProvider client={queryClient}>
             <Toaster />
             <Navbar />
-            <div className="flex-grow py-10">
+            <div className="flex-grow min-h-screen pt-5">
               <Component {...pageProps} />
             </div>
             <Footer />
