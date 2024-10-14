@@ -30,7 +30,7 @@ export default function Footer() {
   const theme = useTheme();
 
   return (
-    <footer className="px-4 py-12 mt-24 text-gray-700 bg-white border-t border-gray-300 dark:text-gray-300 dark:border-gray-700 md:px-6 lg:px-8 dark:bg-gray-800">
+    <footer className="px-4 py-12 mt-24 text-gray-700 bg-zinc-50 border-t border-gray-300 dark:text-gray-300 dark:border-gray-700 md:px-6 lg:px-8 dark:bg-gray-800">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-between mb-8 space-y-8 md:flex-row md:space-y-0">
           <div className="flex flex-col items-center space-y-4 md:items-start">
