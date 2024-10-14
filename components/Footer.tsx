@@ -110,7 +110,7 @@ export default function Footer() {
             </Link>
           </div>
           <p className="text-sm text-gray-400 dark:text-gray-500">
-            &copy; {new Date().getFullYear()} Online Opptak. Alle rettigheter
+            &copy; {new Date().getFullYear()} Online Opptak
             reservert.
           </p>
         </div>
