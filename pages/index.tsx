@@ -44,6 +44,15 @@ const Home = () => {
             <Button title="Om opptak" color="white" href="/about" />
             <Button title="Komiteer" color="white" href="/committees" />
           </div>
+          <p className="pt-8 text-online-darkTeal">
+            Opplevd noe ugreit?{" "}
+            <a
+              className="font-semibold hover:text-online-orange"
+              href="https://docs.google.com/forms/d/e/1FAIpQLScvjEqVsiRIYnVqCNqbH_-nmYk3Ux6la8a7KZzsY3sJDbW-iA/viewform"
+            >
+              Ta kontakt med Debug
+            </a>
+          </p>
         </div>
         <div className="hidden lg:mt-0 lg:col-span-5 lg:block">
           <FestivitiesIllustration className={""} />

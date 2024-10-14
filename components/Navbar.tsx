@@ -92,6 +92,7 @@ const Navbar = () => {
               />
             </>
           )}
+
           <ThemeToggle />
           <Link href="https://www.bekk.no/">
             <a>
