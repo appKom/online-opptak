@@ -15,6 +15,7 @@ import { fetchOwCommittees } from "../../lib/api/committeesApi";
 import ErrorPage from "../../components/ErrorPage";
 import { createPeriod } from "../../lib/api/periodApi";
 import { SimpleTitle } from "../../components/Typography";
+import Toggle from "../../components/form/Toggle";
 
 const NewPeriod = () => {
   const queryClient = useQueryClient();
@@ -162,6 +163,10 @@ const NewPeriod = () => {
         <DatePickerInput
           label="Intervjuperiode"
           updateDates={updateInterviewPeriodDates}
+        />
+        <Toggle
+          label="Skjul søkere"
+          onToggle={() => {}}
         />
         {owCommitteeIsLoading ? (
           <div className="animate-pulse">Laster komiteer...</div>
