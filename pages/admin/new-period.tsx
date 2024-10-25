@@ -32,6 +32,7 @@ const NewPeriod = () => {
       start: undefined,
       end: undefined,
     },
+    hideApplicants: false,
     committees: [],
     optionalCommittees: [],
     hasSentInterviewTimes: false,
@@ -162,7 +163,6 @@ const NewPeriod = () => {
           label="Intervjuperiode"
           updateDates={updateInterviewPeriodDates}
         />
-
         {owCommitteeIsLoading ? (
           <div className="animate-pulse">Laster komiteer...</div>
         ) : (
