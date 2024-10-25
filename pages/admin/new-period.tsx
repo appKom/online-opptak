@@ -166,7 +166,12 @@ const NewPeriod = () => {
         />
         <Toggle
           label="Skjul søkere"
-          onToggle={() => {}}
+          onToggle={() => {
+            setPeriodData({
+              ...periodData,
+              hideApplicants: !periodData.hideApplicants,
+            })
+          }}
         />
         {owCommitteeIsLoading ? (
           <div className="animate-pulse">Laster komiteer...</div>
