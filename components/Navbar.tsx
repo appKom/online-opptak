@@ -25,7 +25,6 @@ const Navbar = () => {
 
   const handleLogout = () => signOut();
   const handleLogin = () => signIn("auth0");
-  const isLinkActive = (uri: string) => router.pathname === uri;
   const smallOnlineLogoSrc =
     theme === "dark" ? "/Online_hvit_o.svg" : "/Online_bla_o.svg";
   const onlineLogoSrc =
