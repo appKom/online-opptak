@@ -166,6 +166,7 @@ const NewPeriod = () => {
         />
         <Toggle
           label="Skjul søkere"
+          info="Søkerne sin informasjon (navn, trinn etc.) vil holdes skjult for komiteene under søknadsperioden."
           onToggle={() => {
             setPeriodData({
               ...periodData,
