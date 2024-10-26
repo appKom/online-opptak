@@ -26,17 +26,17 @@ export default function Toggle(props: Props) {
         </div>
         <div 
           className="relative flex justify-end basis-1/2"
-          onMouseEnter={() => {
-            setShowPopup(true);
-            console.log(showPopup);
-          }}
-          onMouseLeave={() => {
-            setShowPopup(false);
-            console.log(showPopup);
-          }}  
-        >
+          >
           <InformationCircleIcon
             width={30}
+            onMouseEnter={() => {
+              setShowPopup(true);
+              console.log(showPopup);
+            }}
+            onMouseLeave={() => {
+              setShowPopup(false);
+              console.log(showPopup);
+            }}  
           />
           {showPopup && (
             <div className="absolute top-0 left-full mt-2 w-48 p-2 text-sm text-white bg-gray-800 rounded-lg shadow-lg">
