@@ -166,7 +166,7 @@ const NewPeriod = () => {
         />
         <Toggle
           label="Skjul søkere"
-          info="Søkerne sin informasjon vil holdes skjult for komiteene frem til 7 dager etter at intervjuperioden er over."
+          info="Søkerne sin informasjon vil holdes skjult for komiteen frem til søkeperioden er over."
           onToggle={() => {
             setPeriodData({
               ...periodData,

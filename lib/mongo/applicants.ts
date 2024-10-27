@@ -189,8 +189,8 @@ export const getApplicantsForCommittee = async (
         );
 
         if (
-          (new Date(period.applicationPeriod.end) > today ||
-          today > sevenDaysAfterInterviewEnd) && (period.hideApplicants)
+          (new Date(period.applicationPeriod.end) > today && period.hideApplicants) ||
+          (today > sevenDaysAfterInterviewEnd)
         ) {
           applicant.owId = "Skjult";
           applicant.name = "Skjult";
