@@ -34,7 +34,6 @@ export default function Toggle(props: Props) {
             }}
             onMouseLeave={() => {
               setShowPopup(false);
-              console.log(showPopup);
             }}  
           />
           {showPopup && (
