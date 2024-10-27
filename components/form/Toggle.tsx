@@ -31,7 +31,6 @@ export default function Toggle(props: Props) {
             width={30}
             onMouseEnter={() => {
               setShowPopup(true);
-              console.log(showPopup);
             }}
             onMouseLeave={() => {
               setShowPopup(false);
