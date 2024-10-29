@@ -10,7 +10,7 @@ const info = [
       "Velg riktig opptaksperiode.",
       "Fyll inn søknad for opptaket og velg når du kan intervjues.",
       "Send inn søknad og motta bekreftelse på e-post.",
-      "Motta e-post om innkalling til intervjuer når søknadsfristen er over.",
+      "Motta SMS og e-post om innkalling til intervjuer når søknadsfristen er over.",
     ],
   },
   {
@@ -20,7 +20,7 @@ const info = [
     content: [
       "Velg riktig opptaksperiode.",
       "Legg inn intervjutider for komiteen din innen søknadsfristen.",
-      "Motta SMS og e-post om intervjutider for komiteen når søknadsfristen er over.",
+      "Motta e-post om intervjutider for komiteen når søknadsfristen er over.",
     ],
   },
   {
