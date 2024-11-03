@@ -2,6 +2,7 @@ import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { changeDisplayName, formatPhoneNumber } from "../../lib/utils/toString";
+import Button from "../Button";
 
 interface Props {
   applicant: applicantType | undefined;
@@ -10,6 +11,7 @@ interface Props {
 
 const ApplicantCard = ({ applicant, includePreferences }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [interviewed, setInterviewed] = useState(applicant?.interviewed);
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
@@ -33,15 +35,13 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
           </p>
         </div>
         <ChevronDownIcon
-          className={`w-5 h-5 transition-transform duration-300 transform ${
-            isExpanded ? "rotate-180" : "rotate-0"
-          }`}
+          className={`w-5 h-5 transition-transform duration-300 transform ${isExpanded ? "rotate-180" : "rotate-0"
+            }`}
         />
       </div>
       <div
-        className={`transition-all duration-500 ease-in-out overflow-hidden ${
-          isExpanded ? "opacity-100 mt-4" : "max-h-0 opacity-0"
-        }`}
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${isExpanded ? "opacity-100 mt-4" : "max-h-0 opacity-0"
+          }`}
       >
         <h1 className="text-lg font-semibold">Kontakt:</h1>
         <p>E-post: {applicant?.email}</p>
@@ -75,6 +75,16 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         <p>Ønsker å være økonomiansvarlig: {applicant?.bankom}</p>
         <div className="p-4 mt-2 border-solid border-2 border-gray-200 dark:border-gray-700 rounded-lg">
           <p className="whitespace-pre-wrap">{applicant?.about}</p>
+        </div>
+        <div className="mt-4">
+          {interviewed ?
+            <Button
+              title="Merk som ikke intervjuet"
+              color="white"
+            /> : <Button
+              title="Merk som intervjuet"
+              color="white"
+            />}
         </div>
       </div>
     </div>
