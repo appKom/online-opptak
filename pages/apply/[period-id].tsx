@@ -48,6 +48,7 @@ const Application: NextPage = () => {
       second: "",
       third: "",
     },
+    interviewed: false
   });
   const [period, setPeriod] = useState<periodType>();
   const [isApplicationPeriodOver, setIsApplicationPeriodOver] = useState(false);

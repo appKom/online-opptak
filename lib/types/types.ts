@@ -33,6 +33,7 @@ export type applicantType = {
   ];
   date: Date;
   periodId: string | ObjectId;
+  interviewed: boolean;
 };
 
 export type bankomOptionsType = "ja" | "nei" | "kanskje" | undefined;
