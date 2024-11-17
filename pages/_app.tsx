@@ -10,6 +10,7 @@ import LoadingPage from "../components/LoadingPage";
 import Signature from "../lib/utils/Signature";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
+import { ThemeProvider } from "../components/theme/ThemeContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,51 +47,27 @@ const SessionHandler: React.FC<{ children: React.ReactNode }> = ({
 };
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: any) {
-  useEffect(() => {
-    if (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
-      document.documentElement.classList.add("dark");
-    }
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (e.matches) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-    };
-
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", handleChange);
-
-    return () => {
-      window
-        .matchMedia("(prefers-color-scheme: dark)")
-        .removeEventListener("change", handleChange);
-    };
-  }, []);
-
   return (
     <SessionProvider session={session}>
       <Head>
         <link rel="icon" href="/Online_hvit_o.svg" />
         <title>Online Komitéopptak</title>
       </Head>
-      <div className="flex flex-col min-h-screen bg-white dark:text-white dark:bg-gray-900">
-        <SessionHandler>
-          <QueryClientProvider client={queryClient}>
-            <Toaster />
-            <Navbar />
-            <div className="flex-grow py-10">
-              <Component {...pageProps} />
+      <SessionHandler>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>
+            <div className="flex flex-col min-h-screen bg-white dark:text-white dark:bg-gray-900">
+              <Toaster />
+              <Navbar />
+              <div className="flex-grow py-10">
+                <Component {...pageProps} />
+              </div>
+              <Footer />
             </div>
-            <Footer />
-          </QueryClientProvider>
-        </SessionHandler>
-      </div>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </SessionHandler>
+
       <Analytics />
     </SessionProvider>
   );

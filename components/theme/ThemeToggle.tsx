@@ -1,28 +1,11 @@
-import { useState, useEffect } from "react";
-import { MoonIcon as MoonIconSolid } from "@heroicons/react/24/solid";
-import { SunIcon as SunIconSolid } from "@heroicons/react/24/solid";
+import {
+  MoonIcon as MoonIconSolid,
+  SunIcon as SunIconSolid,
+} from "@heroicons/react/24/solid";
+import { useTheme } from "./ThemeContext";
 
 const ThemeToggle = () => {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== "undefined" && window.localStorage) {
-      const storedTheme = window.localStorage.getItem("theme");
-      return storedTheme ? storedTheme : "light";
-    }
-    return "light";
-  });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.toggle("dark", theme === "dark");
-
-    if (typeof window !== "undefined" && window.localStorage) {
-      window.localStorage.setItem("theme", theme);
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "dark" ? "light" : "dark"));
-  };
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div>
@@ -30,6 +13,7 @@ const ThemeToggle = () => {
         <button
           className="p-2 transition duration-300 ease-in-out rounded-full group"
           onClick={toggleTheme}
+          aria-label="Toggle Theme"
         >
           {theme === "dark" ? (
             <MoonIconSolid className="w-6 h-6 transition-transform duration-300 ease-in-out text-online-orange group-hover:scale-110" />

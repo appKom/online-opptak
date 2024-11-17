@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import ThemeToggle from "./ThemeToggle";
+import ThemeToggle from "./theme/ThemeToggle";
 import Link from "next/link";
 
 interface User {

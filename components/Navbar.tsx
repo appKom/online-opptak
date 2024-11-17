@@ -12,7 +12,7 @@ import LoginIcon from "./icons/icons/LogInIcon";
 import LogOutIcon from "./icons/icons/LogOutIcon";
 import AdminIcon from "./icons/icons/AdminIcon";
 import Button from "./Button";
-import ThemeToggle from "./ThemeToggle";
+import ThemeToggle from "./theme/ThemeToggle";
 import DropdownMenu from "./DropdownMenu";
 import { useTheme } from "../lib/hooks/useTheme";
 
