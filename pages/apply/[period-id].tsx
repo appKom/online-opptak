@@ -156,7 +156,7 @@ const Application: NextPage = () => {
         <WellDoneIllustration className="h-32" />
         <p className="max-w-md text-lg text-center">
           Vi har mottatt din søknad og sendt deg en bekreftelse på e-post og
-          SMS! Dobbelt sjekk at du har motatt e-posten og SMS-en.
+          SMS! Dobbeltsjekk at du har mottatt e-posten og SMS-en.
         </p>
         <p className="max-w-md text-lg text-center">
           Du vil få enda en e-post med intervjutider når søknadsperioden er over

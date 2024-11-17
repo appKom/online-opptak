@@ -1,10 +1,5 @@
 import { QueryFunctionContext } from "@tanstack/react-query";
-import { applicantType, emailDataType } from "../types/types";
-import capitalizeFirstLetter from "../utils/capitalizeFirstLetter";
-import sendEmail from "../email/sendEmail";
-import { generateApplicantEmail } from "../email/applicantEmailTemplate";
-import { changeDisplayName } from "../utils/toString";
-import sendSMS from "../sms/sendSMS";
+import { applicantType } from "../types/types";
 
 export const fetchApplicantByPeriodAndId = async (
   context: QueryFunctionContext
