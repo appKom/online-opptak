@@ -123,10 +123,11 @@ const CommitteeApplicantOverview: NextPage = () => {
           <div className="inline-flex flex-row items-center">
             {changeDisplayName(committee)}
             {!singleCommitteeInPeriod && (
-              <Link href={`/committee/${periodId}`}>
-                <a className="ml-1 text-sm text-blue-500 hover:text-blue-800">
-                  (Bytt)
-                </a>
+              <Link
+                href={`/committee/${periodId}`}
+                className="ml-1 text-sm text-blue-500 hover:text-blue-800"
+              >
+                (Bytt)
               </Link>
             )}
           </div>

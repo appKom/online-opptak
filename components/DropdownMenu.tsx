@@ -29,12 +29,12 @@ const DropdownMenu = ({
 
   const RenderLink = ({ path, label }: { path: string; label: string }) => (
     <Link href={path} passHref>
-      <a
+      <button
         onClick={toggleDropdown}
         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
       >
         {label}
-      </a>
+      </button>
     </Link>
   );
 
@@ -60,12 +60,12 @@ const DropdownMenu = ({
       {!session?.user ? (
         <>
           <ThemeToggle />
-          <a
+          <button
             onClick={handleLogin}
             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             Logg inn
-          </a>
+          </button>
         </>
       ) : (
         <>
@@ -81,7 +81,7 @@ const DropdownMenu = ({
             <RenderLink path="/committee" label="For komiteer" />
           )}
           <ThemeToggle />
-          <a
+          <button
             onClick={() => {
               handleLogout();
               toggleDropdown();
@@ -89,7 +89,7 @@ const DropdownMenu = ({
             className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           >
             Logg ut
-          </a>
+          </button>
         </>
       )}
     </div>
