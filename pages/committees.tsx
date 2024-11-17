@@ -7,12 +7,46 @@ import { fetchOwCommittees } from "../lib/api/committeesApi";
 import ErrorPage from "../components/ErrorPage";
 import { fetchPeriods } from "../lib/api/periodApi";
 import { MainTitle } from "../components/Typography";
+import { UsersIcon } from "@heroicons/react/24/outline";
+import { Tabs } from "../components/Tabs";
+import { UserIcon } from "@heroicons/react/24/solid";
+import { shuffleList } from "../lib/utils/shuffleList";
 
 const excludedCommittees = ["Faddere", "Output"];
 
+const otherCommittees = ["Jubkom", "Velkom", "Ekskom", "Debug"];
+
+const hasPeriod = (committee: owCommitteeType, periods: periodType[]) => {
+  if (!Array.isArray(periods)) return false;
+
+  const today = new Date();
+
+  if (committee.name_short === "Bankom") {
+    return periods.some((period) => {
+      const applicationStart = new Date(period.applicationPeriod.start);
+      const applicationEnd = new Date(period.applicationPeriod.end);
+      return applicationStart <= today && applicationEnd >= today;
+    });
+  }
+
+  return periods.some((period) => {
+    const applicationStart = new Date(period.applicationPeriod.start);
+    const applicationEnd = new Date(period.applicationPeriod.end);
+
+    return (
+      applicationStart <= today &&
+      applicationEnd >= today &&
+      (period.committees.includes(committee.name_short) ||
+        period.optionalCommittees.includes(committee.name_short))
+    );
+  });
+};
+
 const Committees = () => {
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
+  const [nodeCommittees, setNodeCommittees] = useState<owCommitteeType[]>([]);
   const [periods, setPeriods] = useState<periodType[]>([]);
+  const [activeTab, setActiveTab] = useState(0);
 
   const {
     data: owCommitteeData,
@@ -35,12 +69,19 @@ const Committees = () => {
   useEffect(() => {
     if (!owCommitteeData) return;
 
-    const filteredCommittees = owCommitteeData.filter(
+    const filterNodeCommittees = owCommitteeData.filter(
       (committee: owCommitteeType) =>
-        !excludedCommittees.includes(committee.name_short)
+        otherCommittees.includes(committee.name_short)
+    );
+    setNodeCommittees(shuffleList(filterNodeCommittees));
+
+    let filteredCommittees = owCommitteeData.filter(
+      (committee: owCommitteeType) =>
+        !excludedCommittees.includes(committee.name_short) &&
+        !otherCommittees.includes(committee.name_short)
     );
 
-    setCommittees(filteredCommittees);
+    setCommittees(shuffleList(filteredCommittees));
   }, [owCommitteeData]);
 
   useEffect(() => {
@@ -49,57 +90,68 @@ const Committees = () => {
     setPeriods(periodsData.periods);
   }, [periodsData]);
 
-  const hasPeriod = (committee: owCommitteeType) => {
-    if (!Array.isArray(periods)) return false;
-
-    const today = new Date();
-
-    if (committee.name_short === "Bankom") {
-      return periods.some((period) => {
-        const applicationStart = new Date(period.applicationPeriod.start);
-        const applicationEnd = new Date(period.applicationPeriod.end);
-        return applicationStart <= today && applicationEnd >= today;
-      });
-    }
-
-    return periods.some((period) => {
-      const applicationStart = new Date(period.applicationPeriod.start);
-      const applicationEnd = new Date(period.applicationPeriod.end);
-
-      return (
-        applicationStart <= today &&
-        applicationEnd >= today &&
-        (period.committees.includes(committee.name_short) ||
-          period.optionalCommittees.includes(committee.name_short))
-      );
-    });
-  };
-
   if (owCommitteeIsLoading || periodsIsLoading) return <LoadingPage />;
   if (owCommitteeIsError || periodsIsError) return <ErrorPage />;
 
   return (
-    <div className="max-w-screen-xl px-4 mx-auto bg-white sm:py-6 lg:px-6 dark:bg-gray-900">
-      <div className="max-w-screen-md mb-8 lg:mb-16">
-        <MainTitle
-          boldMainTitle="Onlines komiteer"
-          subTitle="Komitémedlemmer får Online til å gå rundt, og arbeider for at alle
-          informatikkstudenter skal ha en flott studiehverdag."
-        />
-      </div>
-      <div className="space-y-8 md:grid md:grid-cols-2 md:gap-12 md:space-y-0">
-        {committees?.map((committee, index) => {
-          return (
-            <CommitteeAboutCard
-              key={index}
-              committee={committee}
-              hasPeriod={hasPeriod(committee)}
-            />
-          );
-        })}
-      </div>
+    <div className="flex flex-col items-center gap-5">
+      <MainTitle
+        boldMainTitle={"Onlines komiteer"}
+        subTitle={
+          "Komitémedlemmer får Online til å gå rundt, og arbeider for at alle informatikkstudenter skal ha en flott studiehverdag."
+        }
+        boldSubTitle=""
+      />
+
+      <Tabs
+        activeTab={activeTab}
+        setActiveTab={(index) => {
+          setActiveTab(index);
+        }}
+        content={[
+          {
+            title: "Komiteer",
+            icon: <UsersIcon className="w-5 h-5" />,
+            content: <CommitteList committees={committees} periods={periods} />,
+          },
+          {
+            title: "Nodekomiteer",
+            icon: <UserIcon className="w-5 h-5" />,
+            content: (
+              <CommitteList committees={nodeCommittees} periods={periods} />
+            ),
+          },
+        ]}
+      />
     </div>
   );
 };
 
 export default Committees;
+
+const CommitteList = ({
+  committees,
+  periods,
+}: {
+  committees: owCommitteeType[];
+  periods: periodType[];
+}) => (
+  <div className="w-10/12 px-4 mx-auto bg-white lg:px-6 dark:bg-gray-900">
+    <div className="space-y-8 md:grid lg:grid-cols-2 md:gap-12 md:space-y-0">
+      {committees
+        ?.sort(
+          (a, b) =>
+            Number(hasPeriod(b, periods)) - Number(hasPeriod(a, periods))
+        )
+        .map((committee, index) => {
+          return (
+            <CommitteeAboutCard
+              key={index}
+              committee={committee}
+              hasPeriod={hasPeriod(committee, periods)}
+            />
+          );
+        })}
+    </div>
+  </div>
+);

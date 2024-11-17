@@ -62,7 +62,7 @@ const Application: NextPage = () => {
   });
 
   const {
-    data: applicantData,
+    data: fetchedApplicationData,
     isError: applicantIsError,
     isLoading: applicantIsLoading,
   } = useQuery({
@@ -115,7 +115,10 @@ const Application: NextPage = () => {
     if (!validateApplication(applicationData)) return;
 
     // Validate selected times
-    if (applicationData.selectedTimes && applicationData.selectedTimes.length === 0) {
+    if (
+      applicationData.selectedTimes &&
+      applicationData.selectedTimes.length === 0
+    ) {
       toast.error("Velg minst én tilgjengelig tid");
       return false;
     }
@@ -147,7 +150,7 @@ const Application: NextPage = () => {
   if (!periodData?.exists)
     return <SimpleTitle title="Opptaket finnes ikke" size="large" />;
 
-  if (applicantData?.exists)
+  if (fetchedApplicationData?.exists)
     return (
       <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
         <WellDoneIllustration className="h-32" />
@@ -169,10 +172,19 @@ const Application: NextPage = () => {
             onClick={handleDeleteApplication}
           />
         )}
-        {applicantData?.application && (
+        {fetchedApplicationData?.application && (
           <div className="w-full max-w-md">
             <ApplicantCard
-              applicant={applicantData.application}
+              applicant={fetchedApplicationData.application}
+              includePreferences={true}
+            />
+          </div>
+        )}
+
+        {applicationData.phone && (
+          <div className="w-full max-w-md">
+            <ApplicantCard
+              applicant={applicationData as applicantType}
               includePreferences={true}
             />
           </div>

@@ -13,7 +13,6 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
 import { Tabs } from "../../../../components/Tabs";
-import SendCommitteeMessage from "../../../../components/committee/SendCommitteeMessage";
 import CommitteeInterviewTimes from "../../../../components/committee/CommitteeInterviewTimes";
 import LoadingPage from "../../../../components/LoadingPage";
 import { changeDisplayName } from "../../../../lib/utils/toString";
@@ -154,17 +153,7 @@ const CommitteeApplicantOverview: NextPage = () => {
               />
             ),
           },
-          {
-            title: "Melding",
-            icon: <InboxIcon className="w-5 h-5" />,
-            content: (
-              <SendCommitteeMessage
-                period={period}
-                committee={committee}
-                committeeInterviewTimes={committeeInterviewTimes}
-              />
-            ),
-          },
+
           {
             title: "Søkere",
             icon: <UserGroupIcon className="w-5 h-5" />,

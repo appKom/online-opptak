@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { applicantType } from "../../lib/types/types";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { changeDisplayName } from "../../lib/utils/toString";
+import { changeDisplayName, formatPhoneNumber } from "../../lib/utils/toString";
 
 interface Props {
   applicant: applicantType | undefined;
@@ -45,7 +45,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
       >
         <h1 className="text-lg font-semibold">Kontakt:</h1>
         <p>E-post: {applicant?.email}</p>
-        <p>Telefon: {applicant?.phone}</p>
+        <p>Telefon: {formatPhoneNumber(applicant?.phone || "")}</p>
 
         {includePreferences && (
           <div>
@@ -73,7 +73,7 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
 
         <h1 className="pt-3 text-lg font-semibold">Om:</h1>
         <p>Ønsker å være økonomiansvarlig: {applicant?.bankom}</p>
-        <div className="p-4 mt-2 bg-gray-100 rounded-lg dark:bg-gray-700">
+        <div className="p-4 mt-2 border-solid border-2 border-gray-200 dark:border-gray-700 rounded-lg">
           <p className="whitespace-pre-wrap">{applicant?.about}</p>
         </div>
       </div>

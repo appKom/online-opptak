@@ -11,8 +11,13 @@ import Button from "../Button";
 import ImportantNote from "../ImportantNote";
 import useUnsavedChangesWarning from "../../lib/utils/unSavedChangesWarning";
 import { SimpleTitle } from "../Typography";
+import { useQuery } from "@tanstack/react-query";
+import { fetchApplicantsByPeriodIdAndCommittee } from "../../lib/api/applicantApi";
+import { CheckIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 interface Interview {
+  id: string;
   title: string;
   start: string;
   end: string;
@@ -32,8 +37,6 @@ const CommitteeInterviewTimes = ({
   committeeInterviewTimes,
 }: Props) => {
   const { data: session } = useSession();
-
-  const [markedCells, setMarkedCells] = useState<Interview[]>([]);
   const [interviewInterval, setInterviewInterval] = useState(15);
   const [visibleRange, setVisibleRange] = useState({ start: "", end: "" });
 
@@ -55,6 +58,8 @@ const CommitteeInterviewTimes = ({
 
   const { unsavedChanges, setUnsavedChanges } = useUnsavedChangesWarning();
 
+  const [numberOfApplications, setNumberOfApplications] = useState<number>(0);
+
   useEffect(() => {
     if (period) {
       setVisibleRange({
@@ -63,6 +68,21 @@ const CommitteeInterviewTimes = ({
       });
     }
   }, [period]);
+
+  const {
+    data: applicantsData,
+    isError: applicantsIsError,
+    isLoading: applicantsIsLoading,
+  } = useQuery({
+    queryKey: ["applicants", period?._id, committee],
+    queryFn: fetchApplicantsByPeriodIdAndCommittee,
+  });
+
+  useEffect(() => {
+    if (applicantsData) {
+      setNumberOfApplications(applicantsData.applicants.length);
+    }
+  }, [applicantsData]);
 
   useEffect(() => {
     if (committee && committeeInterviewTimes) {
@@ -79,6 +99,7 @@ const CommitteeInterviewTimes = ({
         setHasAlreadySubmitted(true);
         const events = committeeInterviewTimes.availabletimes.map(
           (at: any) => ({
+            id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
             title: at.room,
             start: new Date(at.start).toISOString(),
             end: new Date(at.end).toISOString(),
@@ -123,6 +144,10 @@ const CommitteeInterviewTimes = ({
     if (calendarEvents.length > 0) {
       calculateInterviewsPlanned();
     }
+
+    if (!calendarEvents || calendarEvents.length === 0) {
+      setInterviewsPlanned(0);
+    }
   }, [calendarEvents, selectedTimeslot]);
 
   const handleDateSelect = (selectionInfo: any) => {
@@ -137,21 +162,16 @@ const CommitteeInterviewTimes = ({
       return;
     }
 
-    const event = {
+    const event: Interview = {
+      id: crypto.getRandomValues(new Uint32Array(1))[0].toString(),
       title: roomInput,
-      start: currentSelection.start,
-      end: currentSelection.end,
+      start: currentSelection.start.toISOString(),
+      end: currentSelection.end.toISOString(),
     };
 
     const calendarApi = currentSelection.view.calendar;
     calendarApi.addEvent(event);
     calendarApi.render();
-
-    addCell([
-      roomInput,
-      currentSelection.start.toISOString(),
-      currentSelection.end.toISOString(),
-    ]);
 
     setRoomInput("");
     setIsModalOpen(false);
@@ -160,7 +180,7 @@ const CommitteeInterviewTimes = ({
 
   const submit = async (e: BaseSyntheticEvent) => {
     e.preventDefault();
-    const formattedEvents = formatEventsForExport(markedCells);
+    const formattedEvents = formatEventsForExport(calendarEvents);
     if (formattedEvents.length === 0) {
       toast.error("Fyll inn minst et gyldig tidspunkt");
       return;
@@ -197,21 +217,11 @@ const CommitteeInterviewTimes = ({
     }
   };
 
-  const removeCell = (event: any) => {
-    setMarkedCells((prevCells) =>
-      prevCells.filter(
-        (cell) => cell.start !== event.startStr && cell.end !== event.endStr
-      )
+  const removeCell = (event: Interview) => {
+    setCalendarEvents((prevEvents) =>
+      prevEvents.filter((evt) => evt.id !== event.id)
     );
-    event.remove();
-    setUnsavedChanges(true);
-  };
 
-  const addCell = (cell: string[]) => {
-    setMarkedCells([
-      ...markedCells,
-      { title: cell[0], start: cell[1], end: cell[2] },
-    ]);
     setUnsavedChanges(true);
   };
 
@@ -220,7 +230,7 @@ const CommitteeInterviewTimes = ({
     setUnsavedChanges(true);
   };
 
-  const renderEventContent = (eventContent: any) => {
+  const calendarEventStyle = (eventContent: { event: Interview }) => {
     return (
       <div className="relative flex flex-col p-4">
         {!hasAlreadySubmitted && (
@@ -231,9 +241,10 @@ const CommitteeInterviewTimes = ({
               e.stopPropagation();
 
               removeCell({
-                startStr: eventContent.event.start.toISOString(),
-                endStr: eventContent.event.end.toISOString(),
-                remove: () => eventContent.event.remove(),
+                id: eventContent.event.id,
+                start: eventContent.event.start,
+                end: eventContent.event.end,
+                title: eventContent.event.title,
               });
             }}
           >
@@ -251,21 +262,16 @@ const CommitteeInterviewTimes = ({
     );
   };
 
-  const formatEventsForExport = (events: any[]) => {
-    return events
-      .map((event) => {
-        const startDateTimeString = `${event.start}`;
-        const endDatetimeString = `${event.end}`;
-
-        const startDateTime = new Date(startDateTimeString);
-        const endDateTime = new Date(endDatetimeString);
-        return {
-          room: event.title,
-          start: startDateTime.toISOString(),
-          end: endDateTime.toISOString(),
-        };
-      })
-      .filter((event) => event !== null);
+  const formatEventsForExport = (events: Interview[]) => {
+    return events.map((event) => {
+      const startDateTime = new Date(event.start);
+      const endDateTime = new Date(event.end);
+      return {
+        room: event.title,
+        start: startDateTime.toISOString(),
+        end: endDateTime.toISOString(),
+      };
+    });
   };
 
   const handleTimeslotSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -292,6 +298,7 @@ const CommitteeInterviewTimes = ({
 
       setHasAlreadySubmitted(false);
       setCalendarEvents([]);
+      setInterviewsPlanned(0);
       setUnsavedChanges(false);
     } catch (error: any) {
       console.error("Error deleting submission:", error);
@@ -411,7 +418,7 @@ const CommitteeInterviewTimes = ({
             </select>
           </div>
         )}
-        <p className="py-5 text-lg">{`${interviewsPlanned} intervjuer planlagt`}</p>
+        <p className="py-5 text-lg">{`${interviewsPlanned} / ${numberOfApplications} intervjuer planlagt`}</p>
         <div className="mx-4 sm:mx-20">
           <FullCalendar
             ref={calendarRef}
@@ -433,8 +440,9 @@ const CommitteeInterviewTimes = ({
             weekends={false}
             slotMinTime="08:00"
             slotMaxTime="18:00"
+            allDaySlot={false}
             validRange={visibleRange}
-            eventContent={renderEventContent}
+            eventContent={calendarEventStyle}
             eventConstraint={{ startTime: "08:00", endTime: "18:00" }}
             selectAllow={(selectInfo) => {
               const start = selectInfo.start;
@@ -488,12 +496,18 @@ const CommitteeInterviewTimes = ({
               onChange={(e) => setRoomInput(e.target.value)}
             />
             <div className="flex flex-row justify-center gap-2 mt-4">
-              <Button
-                title="Avbryt"
+              <button
+                className="px-8 py-2 text-white bg-red-700 rounded-lg hover:bg-red-800"
                 onClick={() => setIsModalOpen(false)}
-                color="orange"
-              />
-              <Button title="Ok" onClick={handleRoomSubmit} color="blue" />
+              >
+                <XMarkIcon className="w-6 h-6 " />
+              </button>
+              <button
+                className="px-8 py-2 text-white bg-green-700 hover:bg-green-800 rounded-lg"
+                onClick={handleRoomSubmit}
+              >
+                <CheckIcon className="w-6 h-6" />
+              </button>
             </div>
           </div>
         </div>
