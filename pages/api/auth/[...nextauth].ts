@@ -54,25 +54,9 @@ export const authOptions: NextAuthOptions = {
           email: userInfo.email,
           //phone: userInfo.phone_number,
           //grade: userInfo.year,
-          committees: [
-            "appkom",
-            "arrkom",
-            "backlog",
-            "bankom",
-            "bedkom",
-            "debug",
-            "dotkom",
-            "ekskom",
-            "fagkom",
-            "feminit",
-            "jubkom",
-            "online-il",
-            "output",
-            "prokom",
-            "kjelleren",
-            "trikom",
-            "velkom",
-          ],
+          committees: committeeData.results.map((committee: any) =>
+            committee.name_short.toLowerCase()
+          ),
           isCommittee: userInfo.is_committee,
         };
       },
