@@ -35,15 +35,13 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between mb-8 space-y-8 md:flex-row md:space-y-0">
           <div className="flex flex-col items-center space-y-4 md:items-start">
             <h2 className="text-2xl font-bold">Online Opptak</h2>
-            <Link href="mailto:onlinefondet@online.ntnu.no" passHref>
-              <a className="flex items-center gap-2 transition-colors cursor-pointer hover:text-online-orange">
-                <Mail size={18} />
-                appkom@online.ntnu.no
-              </a>
+            <Link href="mailto:onlinefondet@online.ntnu.no" passHref className="flex items-center gap-2 transition-colors cursor-pointer hover:text-online-orange">
+              <Mail size={18} />
+              appkom@online.ntnu.no
             </Link>
           </div>
 
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLScvjEqVsiRIYnVqCNqbH_-nmYk3Ux6la8a7KZzsY3sJDbW-iA/viewform"
+          <Link href="https://docs.google.com/forms/d/e/1FAIpQLScvjEqVsiRIYnVqCNqbH_-nmYk3Ux6la8a7KZzsY3sJDbW-iA/viewform"
             target="_blank"
             rel="noreferrer"
             className='flex items-center justify-center h-full gap-3 p-1.5 bg-[#f3f4f6] dark:bg-[#212f4d] rounded-lg max-h-min'>
@@ -55,18 +53,13 @@ export default function Footer() {
               <p className="text-sm">Opplevd noe ugreit?</p>
               <p className="text-sm">Trykk her for mer info</p>
             </div>
-          </a>
+          </Link>
 
           <div className="flex flex-col items-center space-y-4 md:items-end">
             <div className="flex space-x-4">
               {footerLinks.map((link, index) => (
-                <Link href={link.link} key={index} passHref>
-                  <a
-                    className="transition cursor-pointer hover:text-online-orange"
-                    aria-label={link.name}
-                  >
-                    {link.icon}
-                  </a>
+                <Link href={link.link} key={index} passHref className="transition cursor-pointer hover:text-online-orange" aria-label={link.name}>
+                  {link.icon}
                 </Link>
               ))}
             </div>
@@ -74,13 +67,11 @@ export default function Footer() {
               <p>Skjedd en feil?</p>
               <Link
                 href="mailto:appkom@online.ntnu.no"
-                className="flex items-center justify-center md:justify-end"
+                className="flex items-center justify-center md:justify-end space-x-1 transition hover:text-online-orange hover:underline"
                 passHref
               >
-                <a className="flex items-center space-x-1 transition hover:text-online-orange hover:underline">
-                  <span>Ta kontakt med Appkom</span>
-                  <ExternalLink size={14} />
-                </a>
+                <span>Ta kontakt med Appkom</span>
+                <ExternalLink size={14} />
               </Link>
             </div>
           </div>
@@ -88,25 +79,21 @@ export default function Footer() {
 
         <div className="flex flex-col items-center justify-between py-8 space-y-6 border-t border-gray-300 dark:border-gray-700 md:flex-row md:space-y-0">
           <div className="flex items-center space-x-6">
-            <Link href="https://online.ntnu.no/" target="_blank">
-              <a className="transition hover:opacity-50">
-                <Image
-                  src={theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg"}
-                  alt="Online logo"
-                  width={128}
-                  height={34}
-                />
-              </a>
+            <Link href="https://online.ntnu.no/" target="_blank" className="transition hover:opacity-50">
+              <Image
+                src={theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg"}
+                alt="Online logo"
+                width={128}
+                height={34}
+              />
             </Link>
-            <Link href="https://www.bekk.no/" target="_blank">
-              <a className="transition hover:opacity-50">
-                <Image
-                  src={theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg"}
-                  alt="Online logo"
-                  width={128}
-                  height={57}
-                />
-              </a>
+            <Link href="https://www.bekk.no/" target="_blank" className="transition hover:opacity-50">
+              <Image
+                src={theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg"}
+                alt="Online logo"
+                width={128}
+                height={57}
+              />
             </Link>
           </div>
           <p className="text-sm text-gray-400 dark:text-gray-500">
