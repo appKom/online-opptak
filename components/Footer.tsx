@@ -35,13 +35,13 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between mb-8 space-y-8 md:flex-row md:space-y-0">
           <div className="flex flex-col items-center space-y-4 md:items-start">
             <h2 className="text-2xl font-bold">Online Opptak</h2>
-            <Link href="mailto:onlinefondet@online.ntnu.no" passHref className="flex items-center gap-2 transition-colors cursor-pointer hover:text-online-orange">
+            <a href="mailto:onlinefondet@online.ntnu.no" className="flex items-center gap-2 transition-colors cursor-pointer hover:text-online-orange">
               <Mail size={18} />
               appkom@online.ntnu.no
-            </Link>
+            </a>
           </div>
 
-          <Link href="https://docs.google.com/forms/d/e/1FAIpQLScvjEqVsiRIYnVqCNqbH_-nmYk3Ux6la8a7KZzsY3sJDbW-iA/viewform"
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLScvjEqVsiRIYnVqCNqbH_-nmYk3Ux6la8a7KZzsY3sJDbW-iA/viewform"
             target="_blank"
             rel="noreferrer"
             className='flex items-center justify-center h-full gap-3 p-1.5 bg-[#f3f4f6] dark:bg-[#212f4d] rounded-lg max-h-min'>
@@ -53,7 +53,7 @@ export default function Footer() {
               <p className="text-sm">Opplevd noe ugreit?</p>
               <p className="text-sm">Trykk her for mer info</p>
             </div>
-          </Link>
+          </a>
 
           <div className="flex flex-col items-center space-y-4 md:items-end">
             <div className="flex space-x-4">
@@ -65,14 +65,13 @@ export default function Footer() {
             </div>
             <div className="text-sm text-center md:text-right">
               <p>Skjedd en feil?</p>
-              <Link
+              <a
                 href="mailto:appkom@online.ntnu.no"
                 className="flex items-center justify-center md:justify-end space-x-1 transition hover:text-online-orange hover:underline"
-                passHref
               >
                 <span>Ta kontakt med Appkom</span>
                 <ExternalLink size={14} />
-              </Link>
+              </a>
             </div>
           </div>
         </div>

@@ -103,12 +103,12 @@ const CommitteeApplicantOverview: NextPage = () => {
         <p className="text-lg">
           Har det skjedd noe feil eller trenger du tilgang til informasjonen? Ta
           kontakt med{" "}
-          <Link
+          <a
             className="font-semibold underline transition-all hover:text-online-orange"
             href="mailto:appkom@online.ntnu.no"
           >
             Appkom
-          </Link>
+          </a>
           .
         </p>
       </div>
