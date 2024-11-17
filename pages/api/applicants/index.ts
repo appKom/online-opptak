@@ -53,7 +53,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { applicant, error } = await createApplicant(requestBody);
       if (error) throw new Error(error);
 
-      if (applicant) {
+      const mode = process.env.NODE_ENV;
+
+      if (applicant && mode == "production") {
         await sendConfirmationEmail(applicant);
         await sendConfirmationSMS(applicant);
       }
