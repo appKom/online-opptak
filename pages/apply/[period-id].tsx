@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { NextPage } from "next";
 import ApplicationForm from "../../components/form/ApplicationForm";
 import { useSession } from "next-auth/react";
@@ -155,7 +155,8 @@ const Application: NextPage = () => {
       <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
         <WellDoneIllustration className="h-32" />
         <p className="max-w-md text-lg text-center">
-          Vi har mottatt din søknad og sendt deg en bekreftelse på e-post!
+          Vi har mottatt din søknad og sendt deg en bekreftelse på e-post og
+          SMS! Dobbelt sjekk at du har motatt e-posten og SMS-en.
         </p>
         <p className="max-w-md text-lg text-center">
           Du vil få enda en e-post med intervjutider når søknadsperioden er over
