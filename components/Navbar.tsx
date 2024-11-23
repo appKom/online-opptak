@@ -92,14 +92,23 @@ const Navbar = () => {
         </div>
       </div>
       <div className="relative lg:hidden flex justify-between items-center px-5 py-5">
-        <Image
-          src={smallOnlineLogoSrc}
-          width={50}
-          height={30 * 1.5}
-          alt="Online logo"
-          className="transition-all cursor-pointer hover:opacity-60"
-          onClick={() => router.push("/")}
-        />
+        <Link href="/" passHref aria-label="Online logo">
+          <Image
+            src={smallOnlineLogoSrc}
+            width={50}
+            height={30 * 1.5}
+            alt="Online logo"
+            className="sm:hidden transition-all cursor-pointer hover:opacity-60"
+          />
+          <Image
+            src={onlineLogoSrc}
+            width={100 * 1.5}
+            height={30 * 1.5}
+            priority
+            alt="Online logo"
+            className="hidden sm:block transition-all cursor-pointer hover:opacity-60"
+          />
+        </Link>
         <div className="relative">
           <button onClick={toggleDropdown} className="flex justify-end">
             <Bars3Icon
