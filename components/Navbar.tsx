@@ -32,7 +32,7 @@ const Navbar = () => {
 
   return (
     <div>
-      <div className="hidden md:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-300 dark:border-0 bg-zinc-50 dark:bg-gray-800">
+      <div className="hidden lg:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-300 dark:border-0 bg-zinc-50 dark:bg-gray-800">
         <Link href="/" passHref aria-label="Online logo">
           <Image
             src={onlineLogoSrc}
@@ -91,10 +91,10 @@ const Navbar = () => {
           <ThemeToggle />
         </div>
       </div>
-      <div className="relative md:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
+      <div className="relative lg:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
         <Image
           src={smallOnlineLogoSrc}
-          width={60}
+          width={50}
           height={30 * 1.5}
           alt="Online logo"
           className="transition-all cursor-pointer hover:opacity-60"
