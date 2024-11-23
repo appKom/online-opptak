@@ -31,7 +31,7 @@ const DropdownMenu = ({
     <Link href={path} passHref>
       <button
         onClick={toggleDropdown}
-        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
       >
         {label}
       </button>
@@ -54,7 +54,7 @@ const DropdownMenu = ({
 
   return (
     <div
-      className="absolute right-0 z-10 w-48 py-2 mt-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg shadow-xl cursor-pointer dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+      className="absolute right-0 z-10 min-w-48 py-2 mt-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg shadow-xl cursor-pointer dark:bg-gray-800 dark:border-gray-600 dark:text-white"
       ref={menuRef}
     >
       {!session?.user ? (
@@ -86,7 +86,7 @@ const DropdownMenu = ({
               handleLogout();
               toggleDropdown();
             }}
-            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
           >
             Logg ut
           </button>
