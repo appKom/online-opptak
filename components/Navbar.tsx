@@ -31,8 +31,8 @@ const Navbar = () => {
     theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg";
 
   return (
-    <div>
-      <div className="hidden lg:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-300 dark:border-0 bg-zinc-50 dark:bg-gray-800">
+    <div className="border-b-[1px] border-gray-300 dark:border-0 bg-zinc-50 dark:bg-gray-800">
+      <div className="hidden lg:flex justify-between w-full px-5 py-5 sm:items-center">
         <Link href="/" passHref aria-label="Online logo">
           <Image
             src={onlineLogoSrc}
@@ -91,7 +91,7 @@ const Navbar = () => {
           <ThemeToggle />
         </div>
       </div>
-      <div className="relative lg:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
+      <div className="relative lg:hidden flex justify-between items-center px-5 py-5">
         <Image
           src={smallOnlineLogoSrc}
           width={50}
