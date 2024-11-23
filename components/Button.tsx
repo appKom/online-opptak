@@ -13,7 +13,7 @@ interface Props {
 const Button = (props: Props) => {
   let colorClasses = "";
   let sizeClasses = "";
-  const fullWidthClasses = props.fullWidth ? "w-full" : "";
+  const fullWidthClasses = props.fullWidth && "w-full";
 
   switch (props.color) {
     case "blue":

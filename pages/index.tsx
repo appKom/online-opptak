@@ -40,19 +40,14 @@ const Home = () => {
               color="blue"
               icon={<ArrowRightIcon className="w-4 h-4" />}
               href="/apply"
-              fullWidth={true}
+              fullWidth
             />
-            <Button
-              title="Om opptak"
-              color="white"
-              href="/about"
-              fullWidth={true}
-            />
+            <Button title="Om opptak" color="white" href="/about" fullWidth />
             <Button
               title="Komiteer"
               color="white"
               href="/committees"
-              fullWidth={true}
+              fullWidth
             />
           </div>
         </div>
