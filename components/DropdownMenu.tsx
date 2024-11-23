@@ -70,8 +70,9 @@ const DropdownMenu = ({
       ) : (
         <>
           <div className="px-4 py-2 cursor-default">
-            Logget inn som{" "}
-            <span className="font-medium">{session?.user.name}</span>
+            Logget inn som
+            <br />
+            <b>{session?.user.name}</b>
           </div>
           <RenderLink path="/" label="Hjem" />
           {session?.user.role === "admin" && (
