@@ -174,11 +174,20 @@ const Application: NextPage = () => {
               color="white"
               onClick={handleDeleteApplication}
             />
-            <ApplicationEditModal
-              availableCommittees={period?.committees || []}
-              optionalCommittees={period?.optionalCommittees || []}
-              originalApplicationData={fetchedApplicationData.application}
-            />
+            {fetchedApplicationData?.application && (
+              <ApplicationEditModal
+                availableCommittees={period?.committees || []}
+                optionalCommittees={period?.optionalCommittees || []}
+                originalApplicationData={fetchedApplicationData.application}
+              />
+            )}
+            {applicationData.phone && (
+              <ApplicationEditModal
+                availableCommittees={period?.committees || []}
+                optionalCommittees={period?.optionalCommittees || []}
+                originalApplicationData={applicationData as applicantType}
+              />
+            )}
           </div>
         )}
 
