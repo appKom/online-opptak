@@ -175,9 +175,9 @@ const Application: NextPage = () => {
               onClick={handleDeleteApplication}
             />
             <ApplicationEditModal
-              period={period}
               availableCommittees={period?.committees || []}
               optionalCommittees={period?.optionalCommittees || []}
+              originalApplicationData={fetchedApplicationData.application}
             />
           </div>
         )}

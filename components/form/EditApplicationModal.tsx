@@ -3,38 +3,32 @@
 import { useState } from "react";
 import { ApplicationForm } from "./ApplicationForm";
 import { applicantType, DeepPartial, periodType } from "../../lib/types/types";
-import { useSession } from "next-auth/react";
 import Button from "../Button";
 
 interface Props {
-  period: periodType | undefined;
+  originalApplicationData: applicantType;
   availableCommittees: string[];
   optionalCommittees: string[];
 }
 
 const ApplicationEditModal = ({
-  period,
   availableCommittees,
   optionalCommittees,
+  originalApplicationData,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data: session } = useSession();
 
   const [applicationData, setApplicationData] = useState<
     DeepPartial<applicantType>
   >({
-    owId: session?.user?.owId,
-    name: session?.user?.name,
-    email: session?.user?.email,
-    phone: session?.user?.phone || "",
-    grade: "1",
-    about: "",
-    optionalCommittees: [],
-    preferences: {
-      first: "",
-      second: "",
-      third: "",
-    },
+    owId: originalApplicationData.owId,
+    name: originalApplicationData.name,
+    email: originalApplicationData.email,
+    phone: originalApplicationData.phone,
+    grade: originalApplicationData.grade,
+    about: originalApplicationData.about,
+    optionalCommittees: originalApplicationData.optionalCommittees,
+    preferences: originalApplicationData.preferences,
   });
 
   const submitEdit = () => {
