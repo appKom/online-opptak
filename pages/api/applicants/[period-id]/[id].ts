@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   deleteApplication,
+  editApplication,
   getApplication,
 } from "../../../../lib/mongo/applicants";
 import { getServerSession } from "next-auth";
@@ -49,6 +50,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const { error } = await deleteApplication(id, periodId);
       if (error) throw new Error(error);
       return res.status(204).end();
+    } else if (req.method === "PUT") {
+      const currentDate = new Date().toISOString();
+
+      if (new Date(period.applicationPeriod.end) < new Date(currentDate)) {
+        return res.status(403).json({ error: "Application period is over" });
+      }
+
+      const { application } = req.body;
+
+      if (!application) {
+        return res.status(400).json({ error: "Invalid data format" });
+      }
+
+      const { error } = await editApplication(id, periodId, application);
+      if (error) throw new Error(error);
+      return res.status(200).end();
     }
   } catch (error) {
     if (error instanceof Error) {
@@ -57,7 +74,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json("Unexpected error occurred");
   }
 
-  res.setHeader("Allow", ["GET", "DELETE"]);
+  res.setHeader("Allow", ["GET", "DELETE", "PUT"]);
   res.status(405).end(`Method ${req.method} is not allowed.`);
 };
 
