@@ -24,6 +24,7 @@ import {
 } from "../../lib/api/applicantApi";
 import ErrorPage from "../../components/ErrorPage";
 import { MainTitle, SimpleTitle } from "../../components/Typography";
+import ApplicationEditModal from "../../components/form/EditApplicationModal";
 
 const Application: NextPage = () => {
   const queryClient = useQueryClient();
@@ -167,12 +168,20 @@ const Application: NextPage = () => {
           spam-mappen.)
         </p>
         {!isApplicationPeriodOver && (
-          <Button
-            title="Trekk tilbake søknad"
-            color="white"
-            onClick={handleDeleteApplication}
-          />
+          <div className="flex flex-row gap-6">
+            <Button
+              title="Trekk tilbake søknad"
+              color="white"
+              onClick={handleDeleteApplication}
+            />
+            <ApplicationEditModal
+              period={period}
+              availableCommittees={period?.committees || []}
+              optionalCommittees={period?.optionalCommittees || []}
+            />
+          </div>
         )}
+
         {fetchedApplicationData?.application && (
           <div className="w-full max-w-md">
             <ApplicantCard
