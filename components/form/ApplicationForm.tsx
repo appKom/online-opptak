@@ -202,6 +202,7 @@ export const ApplicationForm = (props: Props) => {
             ["Nei", "nei"],
             ["Usikker (gjerne spør om mer info på intervjuet)", "kanskje"],
           ]}
+          defaultValue={props.applicationData.bankom ? "ja" : "nei"}
           label="Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankom)?"
           updateInputValues={(value: boolean) =>
             props.setApplicationData({
@@ -213,6 +214,11 @@ export const ApplicationForm = (props: Props) => {
         {optionalCommittees.map((committee) => (
           <div key={committee}>
             <RadioInput
+              defaultValue={
+                props.applicationData.optionalCommittees?.includes(committee)
+                  ? "ja"
+                  : "nei"
+              }
               values={[
                 ["Ja", "ja"],
                 ["Nei", "nei"],
