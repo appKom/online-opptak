@@ -58,7 +58,7 @@ export const editApplicant = async ({
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(applicant),
+    body: JSON.stringify({ application: applicant }),
   });
 
   const data = await response.json();

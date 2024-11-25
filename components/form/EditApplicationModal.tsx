@@ -4,9 +4,13 @@ import { useState } from "react";
 import { ApplicationForm } from "./ApplicationForm";
 import { applicantType, DeepPartial, periodType } from "../../lib/types/types";
 import Button from "../Button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { editApplicant } from "../../lib/api/applicantApi";
+import toast from "react-hot-toast";
 
 interface Props {
   originalApplicationData: applicantType;
+  periodId: string;
   availableCommittees: string[];
   optionalCommittees: string[];
 }
@@ -14,9 +18,11 @@ interface Props {
 const ApplicationEditModal = ({
   availableCommittees,
   optionalCommittees,
+  periodId,
   originalApplicationData,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const [applicationData, setApplicationData] = useState<
     DeepPartial<applicantType>
@@ -32,8 +38,24 @@ const ApplicationEditModal = ({
   });
 
   const submitEdit = () => {
-    setIsOpen(false);
+    editApplicationMutation.mutate({
+      applicant: applicationData as applicantType,
+      periodId,
+      owId: originalApplicationData.owId,
+    });
   };
+
+  const editApplicationMutation = useMutation({
+    mutationFn: editApplicant,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["applicant", periodId, originalApplicationData.owId],
+      });
+      toast.success("Søknad oppdatert successfully");
+      setIsOpen(false);
+    },
+    onError: () => toast.error("Det skjedde en feil, vennligst prøv igjen"),
+  });
 
   return (
     <>

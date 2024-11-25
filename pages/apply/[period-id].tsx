@@ -179,6 +179,7 @@ const Application: NextPage = () => {
                 availableCommittees={period?.committees || []}
                 optionalCommittees={period?.optionalCommittees || []}
                 originalApplicationData={fetchedApplicationData.application}
+                periodId={periodId}
               />
             )}
             {applicationData.phone && (
@@ -186,6 +187,7 @@ const Application: NextPage = () => {
                 availableCommittees={period?.committees || []}
                 optionalCommittees={period?.optionalCommittees || []}
                 originalApplicationData={applicationData as applicantType}
+                periodId={periodId}
               />
             )}
           </div>
