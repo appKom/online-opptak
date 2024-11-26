@@ -69,7 +69,7 @@ const DropdownMenu = ({
         </>
       ) : (
         <>
-          <div className="px-4 pb-2 pt-1 cursor-default border-b">
+          <div className="px-4 pb-2 pt-1 cursor-default border-b dark:border-gray-600">
             <div>Logget inn som</div>
             <b>{session?.user.name}</b>
           </div>
