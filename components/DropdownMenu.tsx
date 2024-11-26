@@ -59,19 +59,18 @@ const DropdownMenu = ({
     >
       {!session?.user ? (
         <>
-          <ThemeToggle />
           <button
             onClick={handleLogin}
-            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
           >
             Logg inn
           </button>
+          <ThemeToggle />
         </>
       ) : (
         <>
-          <div className="px-4 py-2 cursor-default">
-            Logget inn som
-            <br />
+          <div className="px-4 pb-2 pt-1 cursor-default border-b">
+            <div>Logget inn som</div>
             <b>{session?.user.name}</b>
           </div>
           <RenderLink path="/" label="Hjem" />
