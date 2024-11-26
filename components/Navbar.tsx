@@ -31,8 +31,8 @@ const Navbar = () => {
     theme === "dark" ? "/Online_hvit.svg" : "/Online_bla.svg";
 
   return (
-    <div>
-      <div className="hidden lg:flex justify-between w-full px-5 py-5 sm:items-center border-b-[1px] border-gray-300 dark:border-0 bg-zinc-50 dark:bg-gray-800">
+    <div className="border-b-[1px] border-gray-300 dark:border-0 bg-zinc-50 dark:bg-gray-800">
+      <div className="hidden lg:flex justify-between w-full px-5 py-5 sm:items-center">
         <Link href="/" passHref aria-label="Online logo">
           <Image
             src={onlineLogoSrc}
@@ -91,15 +91,24 @@ const Navbar = () => {
           <ThemeToggle />
         </div>
       </div>
-      <div className="relative lg:hidden flex justify-between items-center px-5 py-5 border-b-[1px] border-gray-200 dark:border-gray-600">
-        <Image
-          src={smallOnlineLogoSrc}
-          width={50}
-          height={30 * 1.5}
-          alt="Online logo"
-          className="transition-all cursor-pointer hover:opacity-60"
-          onClick={() => router.push("/")}
-        />
+      <div className="relative lg:hidden flex justify-between items-center px-5 py-5">
+        <Link href="/" passHref aria-label="Online logo">
+          <Image
+            src={smallOnlineLogoSrc}
+            width={50}
+            height={30 * 1.5}
+            alt="Online logo"
+            className="sm:hidden transition-all cursor-pointer hover:opacity-60"
+          />
+          <Image
+            src={onlineLogoSrc}
+            width={100 * 1.5}
+            height={30 * 1.5}
+            priority
+            alt="Online logo"
+            className="hidden sm:block transition-all cursor-pointer hover:opacity-60"
+          />
+        </Link>
         <div className="relative">
           <button onClick={toggleDropdown} className="flex justify-end">
             <Bars3Icon

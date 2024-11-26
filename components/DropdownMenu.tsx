@@ -31,7 +31,7 @@ const DropdownMenu = ({
     <Link href={path} passHref>
       <button
         onClick={toggleDropdown}
-        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
       >
         {label}
       </button>
@@ -54,24 +54,24 @@ const DropdownMenu = ({
 
   return (
     <div
-      className="absolute right-0 z-10 w-48 py-2 mt-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg shadow-xl cursor-pointer dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+      className="absolute right-0 z-10 min-w-48 py-2 mt-2 text-sm text-gray-700 bg-white border border-gray-200 rounded-lg shadow-xl cursor-pointer dark:bg-gray-800 dark:border-gray-600 dark:text-white"
       ref={menuRef}
     >
       {!session?.user ? (
         <>
-          <ThemeToggle />
           <button
             onClick={handleLogin}
-            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
           >
             Logg inn
           </button>
+          <ThemeToggle />
         </>
       ) : (
         <>
-          <div className="px-4 py-2 cursor-default">
-            Logget inn som{" "}
-            <span className="font-medium">{session?.user.name}</span>
+          <div className="px-4 pb-2 pt-1 cursor-default border-b dark:border-gray-600">
+            <div>Logget inn som</div>
+            <b>{session?.user.name}</b>
           </div>
           <RenderLink path="/" label="Hjem" />
           {session?.user.role === "admin" && (
@@ -86,7 +86,7 @@ const DropdownMenu = ({
               handleLogout();
               toggleDropdown();
             }}
-            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
           >
             Logg ut
           </button>
