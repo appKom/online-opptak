@@ -34,6 +34,7 @@ const Application: NextPage = () => {
   const applicantId = session?.user?.owId;
 
   const [activeTab, setActiveTab] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
   const [applicationData, setApplicationData] = useState<
     DeepPartial<applicantType>
   >({
@@ -151,6 +152,33 @@ const Application: NextPage = () => {
   if (!periodData?.exists)
     return <SimpleTitle title="Opptaket finnes ikke" size="large" />;
 
+  if (isEditing) {
+    return (
+      <>
+        {fetchedApplicationData?.application && (
+          <ApplicationEditModal
+            availableCommittees={period?.committees || []}
+            optionalCommittees={period?.optionalCommittees || []}
+            originalApplicationData={fetchedApplicationData.application}
+            periodId={periodId}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+          />
+        )}
+        {applicationData.phone && (
+          <ApplicationEditModal
+            availableCommittees={period?.committees || []}
+            optionalCommittees={period?.optionalCommittees || []}
+            originalApplicationData={applicationData as applicantType}
+            periodId={periodId}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+          />
+        )}
+      </>
+    );
+  }
+
   if (fetchedApplicationData?.exists)
     return (
       <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
@@ -174,22 +202,11 @@ const Application: NextPage = () => {
               color="white"
               onClick={handleDeleteApplication}
             />
-            {fetchedApplicationData?.application && (
-              <ApplicationEditModal
-                availableCommittees={period?.committees || []}
-                optionalCommittees={period?.optionalCommittees || []}
-                originalApplicationData={fetchedApplicationData.application}
-                periodId={periodId}
-              />
-            )}
-            {applicationData.phone && (
-              <ApplicationEditModal
-                availableCommittees={period?.committees || []}
-                optionalCommittees={period?.optionalCommittees || []}
-                originalApplicationData={applicationData as applicantType}
-                periodId={periodId}
-              />
-            )}
+            <Button
+              title="Rediger søknad"
+              color="blue"
+              onClick={() => setIsEditing(true)}
+            />
           </div>
         )}
 
