@@ -86,14 +86,7 @@ export default function Footer() {
                 height={34}
               />
             </Link>
-            <Link href="https://www.bekk.no/" target="_blank" className="transition hover:opacity-50">
-              <Image
-                src={theme === "dark" ? "/bekk_white.svg" : "/bekk_black.svg"}
-                alt="Online logo"
-                width={128}
-                height={57}
-              />
-            </Link>
+            {/* HSP logo */}
           </div>
           <p className="text-sm text-gray-400 dark:text-gray-500">
             &copy; {new Date().getFullYear()} Online Opptak
