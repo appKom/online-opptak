@@ -76,8 +76,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const applicationStart = period.applicationPeriod.start;
       const applicationEnd = period.applicationPeriod.end;
 
-      console.log(now < applicationStart || now > applicationEnd);
-
       if (now < applicationStart || now > applicationEnd) {
         return res
           .status(400)

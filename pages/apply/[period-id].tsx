@@ -155,21 +155,21 @@ const Application: NextPage = () => {
   if (isEditing) {
     return (
       <>
-        {fetchedApplicationData?.application && (
+        {fetchedApplicationData?.application && period && (
           <ApplicationEditModal
             availableCommittees={period?.committees || []}
             optionalCommittees={period?.optionalCommittees || []}
             originalApplicationData={fetchedApplicationData.application}
-            periodId={periodId}
+            period={period}
             setIsEditing={setIsEditing}
           />
         )}
-        {applicationData.phone && (
+        {applicationData.phone && period && (
           <ApplicationEditModal
             availableCommittees={period?.committees || []}
             optionalCommittees={period?.optionalCommittees || []}
             originalApplicationData={applicationData as applicantType}
-            periodId={periodId}
+            period={period}
             setIsEditing={setIsEditing}
           />
         )}

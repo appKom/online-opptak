@@ -6,10 +6,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { editApplicant } from "../../lib/api/applicantApi";
 import toast from "react-hot-toast";
 import { validateApplication } from "../../lib/utils/validateApplication";
+import { Tabs } from "../Tabs";
+import CheckBoxIcon from "../icons/icons/CheckBoxIcon";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import Schedule from "../committee/Schedule";
 
 interface Props {
   originalApplicationData: applicantType;
-  periodId: string;
+  period: periodType;
   availableCommittees: string[];
   optionalCommittees: string[];
   setIsEditing: (isEditing: boolean) => void;
@@ -18,12 +22,12 @@ interface Props {
 const ApplicationEditModal = ({
   availableCommittees,
   optionalCommittees,
-  periodId,
+  period,
   originalApplicationData,
   setIsEditing,
 }: Props) => {
   const queryClient = useQueryClient();
-
+  const [activeTab, setActiveTab] = useState(0);
   const [applicationData, setApplicationData] = useState<
     DeepPartial<applicantType>
   >({
@@ -45,7 +49,7 @@ const ApplicationEditModal = ({
 
     editApplicationMutation.mutate({
       applicant: applicationData as applicantType,
-      periodId,
+      periodId: period._id.toString(),
       owId: originalApplicationData.owId,
     });
   };
@@ -54,7 +58,11 @@ const ApplicationEditModal = ({
     mutationFn: editApplicant,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["applicant", periodId, originalApplicationData.owId],
+        queryKey: [
+          "applicant",
+          period._id.toString(),
+          originalApplicationData.owId,
+        ],
       });
       toast.success("Søknad oppdatert successfully");
       setIsEditing(false);
@@ -77,13 +85,52 @@ const ApplicationEditModal = ({
               </p>
             </div>
           </div>
-          <div className="mt-5 sm:mt-4">
-            <ApplicationForm
-              applicationData={applicationData}
-              setApplicationData={setApplicationData}
-              availableCommittees={availableCommittees}
-              optionalCommittees={optionalCommittees}
-              isEditing={true}
+          <div className="mt-5 sm:mt-4 max-w-md">
+            <Tabs
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+              content={[
+                {
+                  title: "Søknad",
+                  icon: <CheckBoxIcon className="w-5 h-5" />,
+                  content: (
+                    <>
+                      <ApplicationForm
+                        applicationData={applicationData}
+                        setApplicationData={setApplicationData}
+                        availableCommittees={availableCommittees}
+                        optionalCommittees={optionalCommittees}
+                        isEditing={true}
+                      />
+                      <div className="flex justify-center w-full">
+                        <Button
+                          title="Videre"
+                          color="blue"
+                          onClick={() => {
+                            if (!validateApplication(applicationData)) return;
+                            setActiveTab(activeTab + 1);
+                          }}
+                          size="small"
+                        />
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  title: "Intervjutider",
+                  icon: <CalendarIcon className="w-5 h-5" />,
+                  content: (
+                    <div className="flex flex-col items-center justify-center">
+                      <Schedule
+                        interviewLength={Number(30)}
+                        periodTime={period?.interviewPeriod}
+                        setApplicationData={setApplicationData}
+                        applicationData={applicationData}
+                      />
+                    </div>
+                  ),
+                },
+              ]}
             />
           </div>
           <div className="flex flex-row gap-6 justify-center">
