@@ -217,7 +217,7 @@ const Application: NextPage = () => {
           </div>
         )}
 
-        {applicationData.phone && (
+        {applicationData.phone && !fetchedApplicationData.application && (
           <div className="w-full max-w-md">
             <ApplicantCard
               applicant={applicationData as applicantType}
