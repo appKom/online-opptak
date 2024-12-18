@@ -3,7 +3,11 @@ import RadioInput from "./RadioInput";
 import TextAreaInput from "./TextAreaInput";
 import SelectInput from "./SelectInput";
 import Line from "./Line";
-import { DeepPartial, applicantType } from "../../lib/types/types";
+import {
+  DeepPartial,
+  applicantType,
+  preferencesType,
+} from "../../lib/types/types";
 import { changeDisplayName } from "../../lib/utils/toString";
 import { useEffect, useState } from "react";
 import CustomPhoneInput from "./CustomPhoneInput";
@@ -14,6 +18,7 @@ interface Props {
   setApplicationData: Function;
   availableCommittees: string[];
   optionalCommittees: string[];
+  isEditing?: boolean;
 }
 
 export const ApplicationForm = (props: Props) => {
@@ -121,6 +126,7 @@ export const ApplicationForm = (props: Props) => {
         <Line />
         <TextAreaInput
           label="Skriv litt om deg selv"
+          value={props.applicationData.about}
           updateInputValues={(value: any) =>
             props.setApplicationData({ ...props.applicationData, about: value })
           }
@@ -136,6 +142,9 @@ export const ApplicationForm = (props: Props) => {
         </div>
         <SelectInput
           required
+          defaultValue={
+            (props.applicationData.preferences as preferencesType)?.first || ""
+          }
           values={availableCommittees}
           label={availableCommittees.length > 2 ? "Førstevalg" : "Velg komite"}
           updateInputValues={(value: string) =>
@@ -152,6 +161,10 @@ export const ApplicationForm = (props: Props) => {
         {availableCommittees.length > 2 && (
           <SelectInput
             values={availableCommittees}
+            defaultValue={
+              (props.applicationData.preferences as preferencesType)?.second ||
+              ""
+            }
             label="Andrevalg"
             updateInputValues={(value: string) =>
               props.setApplicationData({
@@ -167,6 +180,10 @@ export const ApplicationForm = (props: Props) => {
         {availableCommittees.length > 3 && (
           <SelectInput
             values={availableCommittees}
+            defaultValue={
+              (props.applicationData.preferences as preferencesType)?.third ||
+              ""
+            }
             label="Tredjevalg"
             updateInputValues={(value: string) =>
               props.setApplicationData({
@@ -186,8 +203,17 @@ export const ApplicationForm = (props: Props) => {
             ["Nei", "nei"],
             ["Usikker (gjerne spør om mer info på intervjuet)", "kanskje"],
           ]}
+          defaultValue={
+            props.isEditing
+              ? props.applicationData.bankom === "ja"
+                ? "ja"
+                : props.applicationData.bankom === "nei"
+                ? "nei"
+                : "kanskje"
+              : undefined
+          }
           label="Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankom)?"
-          updateInputValues={(value: boolean) =>
+          updateInputValues={(value: string) =>
             props.setApplicationData({
               ...props.applicationData,
               bankom: value,
@@ -197,6 +223,15 @@ export const ApplicationForm = (props: Props) => {
         {optionalCommittees.map((committee) => (
           <div key={committee}>
             <RadioInput
+              defaultValue={
+                props.isEditing
+                  ? props.applicationData.optionalCommittees?.includes(
+                      committee
+                    )
+                    ? "ja"
+                    : "nei"
+                  : undefined
+              }
               values={[
                 ["Ja", "ja"],
                 ["Nei", "nei"],

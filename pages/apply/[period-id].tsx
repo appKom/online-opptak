@@ -24,6 +24,7 @@ import {
 } from "../../lib/api/applicantApi";
 import ErrorPage from "../../components/ErrorPage";
 import { MainTitle, SimpleTitle } from "../../components/Typography";
+import ApplicationEditModal from "../../components/form/EditApplicationModal";
 
 const Application: NextPage = () => {
   const queryClient = useQueryClient();
@@ -33,6 +34,7 @@ const Application: NextPage = () => {
   const applicantId = session?.user?.owId;
 
   const [activeTab, setActiveTab] = useState(0);
+  const [isEditing, setIsEditing] = useState(false);
   const [applicationData, setApplicationData] = useState<
     DeepPartial<applicantType>
   >({
@@ -150,6 +152,31 @@ const Application: NextPage = () => {
   if (!periodData?.exists)
     return <SimpleTitle title="Opptaket finnes ikke" size="large" />;
 
+  if (isEditing) {
+    return (
+      <>
+        {fetchedApplicationData?.application && period && (
+          <ApplicationEditModal
+            availableCommittees={period?.committees || []}
+            optionalCommittees={period?.optionalCommittees || []}
+            originalApplicationData={fetchedApplicationData.application}
+            period={period}
+            setIsEditing={setIsEditing}
+          />
+        )}
+        {applicationData.phone && period && (
+          <ApplicationEditModal
+            availableCommittees={period?.committees || []}
+            optionalCommittees={period?.optionalCommittees || []}
+            originalApplicationData={applicationData as applicantType}
+            period={period}
+            setIsEditing={setIsEditing}
+          />
+        )}
+      </>
+    );
+  }
+
   if (fetchedApplicationData?.exists)
     return (
       <div className="flex flex-col items-center justify-center h-full gap-5 px-5 py-10 md:px-40 lg:px-80 dark:text-white">
@@ -167,12 +194,20 @@ const Application: NextPage = () => {
           spam-mappen.)
         </p>
         {!isApplicationPeriodOver && (
-          <Button
-            title="Trekk tilbake søknad"
-            color="white"
-            onClick={handleDeleteApplication}
-          />
+          <div className="flex flex-row gap-6">
+            <Button
+              title="Trekk tilbake søknad"
+              color="white"
+              onClick={handleDeleteApplication}
+            />
+            <Button
+              title="Rediger søknad"
+              color="blue"
+              onClick={() => setIsEditing(true)}
+            />
+          </div>
         )}
+
         {fetchedApplicationData?.application && (
           <div className="w-full max-w-md">
             <ApplicantCard
@@ -182,7 +217,7 @@ const Application: NextPage = () => {
           </div>
         )}
 
-        {applicationData.phone && (
+        {applicationData.phone && !fetchedApplicationData.application && (
           <div className="w-full max-w-md">
             <ApplicantCard
               applicant={applicationData as applicantType}

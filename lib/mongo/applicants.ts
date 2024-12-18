@@ -225,6 +225,31 @@ export const getApplicantsForCommittee = async (
   }
 };
 
+export const editApplication = async (
+  owId: string,
+  periodId: string | ObjectId,
+  newApplicationData: applicantType
+) => {
+  try {
+    if (!applicants) await init();
+
+    const result = await applicants.findOneAndUpdate(
+      { owId: owId, periodId: periodId },
+      { $set: newApplicationData },
+      { returnDocument: "after" }
+    );
+
+    if (result) {
+      return { applicant: result };
+    } else {
+      return { error: "Application not found" };
+    }
+  } catch (error) {
+    console.error(error);
+    return { error: "Failed to edit application" };
+  }
+};
+
 export const deleteApplication = async (
   owId: string,
   periodId: string | ObjectId

@@ -44,6 +44,30 @@ export const createApplicant = async (applicant: applicantType) => {
   return data;
 };
 
+export const editApplicant = async ({
+  applicant,
+  periodId,
+  owId,
+}: {
+  applicant: applicantType;
+  periodId: string;
+  owId: string;
+}) => {
+  const response = await fetch(`/api/applicants/${periodId}/${owId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ application: applicant }),
+  });
+
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || "Unknown error occurred");
+  }
+  return data;
+};
+
 export const deleteApplicant = async ({
   periodId,
   owId,
