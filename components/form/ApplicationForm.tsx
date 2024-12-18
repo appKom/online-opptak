@@ -18,6 +18,7 @@ interface Props {
   setApplicationData: Function;
   availableCommittees: string[];
   optionalCommittees: string[];
+  isEditing?: boolean;
 }
 
 export const ApplicationForm = (props: Props) => {
@@ -202,9 +203,17 @@ export const ApplicationForm = (props: Props) => {
             ["Nei", "nei"],
             ["Usikker (gjerne spør om mer info på intervjuet)", "kanskje"],
           ]}
-          defaultValue={props.applicationData.bankom ? "ja" : "nei"}
+          defaultValue={
+            props.isEditing
+              ? props.applicationData.bankom === "ja"
+                ? "ja"
+                : props.applicationData.bankom === "nei"
+                ? "nei"
+                : "kanskje"
+              : undefined
+          }
           label="Er du interessert i å være økonomiansvarlig i komiteen (tilleggsverv i Bankom)?"
-          updateInputValues={(value: boolean) =>
+          updateInputValues={(value: string) =>
             props.setApplicationData({
               ...props.applicationData,
               bankom: value,
@@ -215,9 +224,13 @@ export const ApplicationForm = (props: Props) => {
           <div key={committee}>
             <RadioInput
               defaultValue={
-                props.applicationData.optionalCommittees?.includes(committee)
-                  ? "ja"
-                  : "nei"
+                props.isEditing
+                  ? props.applicationData.optionalCommittees?.includes(
+                      committee
+                    )
+                    ? "ja"
+                    : "nei"
+                  : undefined
               }
               values={[
                 ["Ja", "ja"],

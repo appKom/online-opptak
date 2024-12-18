@@ -12,7 +12,6 @@ interface Props {
   periodId: string;
   availableCommittees: string[];
   optionalCommittees: string[];
-  isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
 }
 
@@ -21,7 +20,6 @@ const ApplicationEditModal = ({
   optionalCommittees,
   periodId,
   originalApplicationData,
-  isEditing,
   setIsEditing,
 }: Props) => {
   const queryClient = useQueryClient();
@@ -35,6 +33,8 @@ const ApplicationEditModal = ({
     phone: originalApplicationData.phone,
     grade: originalApplicationData.grade,
     about: originalApplicationData.about,
+    bankom: originalApplicationData.bankom,
+
     optionalCommittees: originalApplicationData.optionalCommittees,
     preferences: originalApplicationData.preferences,
     selectedTimes: originalApplicationData.selectedTimes,
@@ -83,6 +83,7 @@ const ApplicationEditModal = ({
               setApplicationData={setApplicationData}
               availableCommittees={availableCommittees}
               optionalCommittees={optionalCommittees}
+              isEditing={true}
             />
           </div>
           <div className="flex flex-row gap-6 justify-center">

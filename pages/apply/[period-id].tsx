@@ -161,7 +161,6 @@ const Application: NextPage = () => {
             optionalCommittees={period?.optionalCommittees || []}
             originalApplicationData={fetchedApplicationData.application}
             periodId={periodId}
-            isEditing={isEditing}
             setIsEditing={setIsEditing}
           />
         )}
@@ -171,7 +170,6 @@ const Application: NextPage = () => {
             optionalCommittees={period?.optionalCommittees || []}
             originalApplicationData={applicationData as applicantType}
             periodId={periodId}
-            isEditing={isEditing}
             setIsEditing={setIsEditing}
           />
         )}
