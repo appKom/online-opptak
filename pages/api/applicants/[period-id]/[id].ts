@@ -53,16 +53,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (error) throw new Error(error);
       return res.status(204).end();
     } else if (req.method === "PUT") {
+      const { application } = req.body;
+
+      if (!application) {
+        return res.status(400).json({ error: "Missing application data" });
+      }
+
       const { period } = await getPeriodById(periodId);
 
       if (!period) {
         return res.status(400).json({ error: "Invalid period id" });
       }
 
-      const requestBody: applicantType = req.body;
-      requestBody.periodId = periodId;
+      application.periodId = periodId;
+      application.date = new Date(new Date().getTime() + 60 * 60 * 2000); // add date with norwegain time (GMT+2)
 
-      if (!isApplicantType(requestBody, period)) {
+      if (!isApplicantType(application, period)) {
         return res.status(400).json({ error: "Invalid data format" });
       }
 
@@ -70,17 +76,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const applicationStart = period.applicationPeriod.start;
       const applicationEnd = period.applicationPeriod.end;
 
+      console.log(now < applicationStart || now > applicationEnd);
+
       if (now < applicationStart || now > applicationEnd) {
         return res
           .status(400)
           .json({ error: "Not within the application period" });
       }
 
-      if (!isApplicantType(requestBody, period)) {
+      if (!isApplicantType(application, period)) {
         return res.status(400).json({ error: "Invalid data format" });
       }
 
-      const { error } = await editApplication(id, periodId, requestBody);
+      const { error } = await editApplication(id, periodId, application);
       if (error) throw new Error(error);
       return res
         .status(200)
