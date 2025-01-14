@@ -127,27 +127,34 @@ export const ApplicationForm = (props: Props) => {
           maxLength={1000}
         />
         <Line />
-        <div className="flex justify-center">
-          <label className="inline-block mt-6 text-gray-700 dark:text-white form-label">
-            {availableCommittees.length > 2
-              ? `Velg opptil 3 komiteer`
-              : `Velg opptil ${availableCommittees.length - 1} komiteer`}
-          </label>
-        </div>
-        <SelectInput
-          required
-          values={availableCommittees}
-          label={availableCommittees.length > 2 ? "Førstevalg" : "Velg komite"}
-          updateInputValues={(value: string) =>
-            props.setApplicationData({
-              ...props.applicationData,
-              preferences: {
-                ...props.applicationData.preferences,
-                first: value,
-              },
-            })
-          }
-        />
+
+        {props.availableCommittees.length > 0 && (
+          <>
+            <div className="flex justify-center">
+              <label className="inline-block mt-6 text-gray-700 dark:text-white form-label">
+                {availableCommittees.length > 2
+                  ? `Velg opptil 3 komiteer`
+                  : `Velg opptil ${availableCommittees.length - 1} komiteer`}
+              </label>
+            </div>
+            <SelectInput
+              required
+              values={availableCommittees}
+              label={
+                availableCommittees.length > 2 ? "Førstevalg" : "Velg komite"
+              }
+              updateInputValues={(value: string) =>
+                props.setApplicationData({
+                  ...props.applicationData,
+                  preferences: {
+                    ...props.applicationData.preferences,
+                    first: value,
+                  },
+                })
+              }
+            />
+          </>
+        )}
 
         {availableCommittees.length > 2 && (
           <SelectInput
