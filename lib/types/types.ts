@@ -141,3 +141,11 @@ export type emailApplicantInterviewType = {
     };
   }[];
 };
+
+export interface RoomBooking {
+  periodId: string;
+  room: String;
+  startDate: Date;
+  endDate: Date;
+  committeeId?: String;
+}
