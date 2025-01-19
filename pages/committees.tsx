@@ -9,7 +9,7 @@ import { fetchPeriods } from "../lib/api/periodApi";
 import { MainTitle } from "../components/Typography";
 import { UsersIcon } from "@heroicons/react/24/outline";
 import { Tabs } from "../components/Tabs";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { UserIcon, BellAlertIcon } from "@heroicons/react/24/solid";
 import { shuffleList } from "../lib/utils/shuffleList";
 
 const excludedCommittees = ["Faddere", "Output"];
@@ -45,6 +45,7 @@ const hasPeriod = (committee: owCommitteeType, periods: periodType[]) => {
 const Committees = () => {
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
   const [nodeCommittees, setNodeCommittees] = useState<owCommitteeType[]>([]);
+  const [committeesWithPeriod, setCommitteesWithPeriod] = useState<owCommitteeType[]>([]);
   const [periods, setPeriods] = useState<periodType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -82,6 +83,15 @@ const Committees = () => {
     );
 
     setCommittees(shuffleList(filteredCommittees));
+
+    const filteredCommitteesWithPeriod = owCommitteeData.filter(
+      (commitee: owCommitteeType) =>
+        hasPeriod(commitee, periods) &&
+        !excludedCommittees.includes(commitee.name_short)
+    );
+
+    setCommitteesWithPeriod(filteredCommitteesWithPeriod);
+
   }, [owCommitteeData]);
 
   useEffect(() => {
@@ -120,6 +130,13 @@ const Committees = () => {
             content: (
               <CommitteList committees={nodeCommittees} periods={periods} />
             ),
+          },
+          {
+            title: "Har opptak",
+            icon: <BellAlertIcon className="w-5 h-5" />,
+            content: (
+              <CommitteList committees={committeesWithPeriod} periods={periods} />
+            )
           },
         ]}
       />
