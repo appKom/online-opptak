@@ -131,13 +131,20 @@ const Committees = () => {
               <CommitteList committees={nodeCommittees} periods={periods} />
             ),
           },
-          {
-            title: "Har opptak",
-            icon: <BellAlertIcon className="w-5 h-5" />,
-            content: (
-              <CommitteList committees={committeesWithPeriod} periods={periods} />
-            )
-          },
+          ...(committeesWithPeriod.length > 0
+            ? [
+              {
+                title: "Har opptak",
+                icon: <BellAlertIcon className="w-5 h-5" />,
+                content: (
+                  <CommitteList
+                    committees={committeesWithPeriod}
+                    periods={periods}
+                  />
+                ),
+              },
+            ]
+            : []),
         ]}
       />
     </div>
