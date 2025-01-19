@@ -92,6 +92,8 @@ const Committees = () => {
 
     setCommitteesWithPeriod(filteredCommitteesWithPeriod);
 
+    if (filteredCommitteesWithPeriod.length > 0) setActiveTab(2);
+
   }, [owCommitteeData, periods]);
 
   useEffect(() => {
