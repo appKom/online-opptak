@@ -92,7 +92,7 @@ const Committees = () => {
 
     setCommitteesWithPeriod(filteredCommitteesWithPeriod);
 
-  }, [owCommitteeData]);
+  }, [owCommitteeData, periods]);
 
   useEffect(() => {
     if (!periodsData) return;
