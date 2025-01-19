@@ -4,6 +4,7 @@ interface Props {
   title: string;
   color: "blue" | "white" | "orange";
   size?: "small";
+  fullWidth?: boolean;
   icon?: React.ReactNode;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   href?: string;
@@ -12,6 +13,7 @@ interface Props {
 const Button = (props: Props) => {
   let colorClasses = "";
   let sizeClasses = "";
+  const fullWidthClasses = props.fullWidth && "w-full";
 
   switch (props.color) {
     case "blue":
@@ -35,15 +37,15 @@ const Button = (props: Props) => {
     sizeClasses = "px-6 py-3";
   }
 
-  const className = `font-medium text-center justify-center transition-all rounded-lg shadow-sm focus:ring focus:ring-primary-200 inline-flex items-center gap-1.5 ${colorClasses} ${sizeClasses}`;
+  const className = `font-medium text-center justify-center transition-all rounded-lg shadow-sm focus:ring focus:ring-primary-200 inline-flex items-center gap-1.5 ${colorClasses} ${sizeClasses} ${fullWidthClasses}`;
 
   if (props.href) {
     return (
       <Link href={props.href}>
-        <a className={className}>
+        <button className={className}>
           {props.title}
           {props.icon}
-        </a>
+        </button>
       </Link>
     );
   }

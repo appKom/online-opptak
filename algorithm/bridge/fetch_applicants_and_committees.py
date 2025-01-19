@@ -18,7 +18,6 @@ def main():
         application_end = datetime.fromisoformat(period["applicationPeriod"]["end"].replace("Z", "+00:00"))
         
         now = datetime.now(timezone.utc)
-        
 
         #or period["name"] == "Juli Opptak"
         if  (application_end < now and period["hasSentInterviewTimes"] == False):
@@ -115,11 +114,13 @@ def format_match_results(match_results: MeetingMatch, applicants: List[dict], pe
         time_interval = result[2]
         start = time_interval.start.isoformat()
         end = time_interval.end.isoformat()
+        room = result[3]
         
         transformed_results[applicant_id]["interviews"].append({
             "start": start,
             "end": end,
-            "committeeName": committee.name
+            "committeeName": committee.name,
+            "room": room
         })
 
     return list(transformed_results.values())
@@ -156,8 +157,8 @@ def create_committee_objects(committee_data: List[dict]) -> set[Committee]:
                 start=datetime.fromisoformat(interval_data['start'].replace("Z", "+00:00")),
                 end=datetime.fromisoformat(interval_data['end'].replace("Z", "+00:00"))
             )
-            capacity = interval_data.get('capacity', 1)  
-            committee.add_interval(interval, capacity)
+            room = interval_data["room"]
+            committee.add_interview_slot(interval, room)
         committees.add(committee)
     return committees
 
