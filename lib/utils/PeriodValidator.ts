@@ -29,7 +29,10 @@ export const validatePeriod = (
   }
 
   // Check for at least one committee
-  if (periodData.committees?.length === 0) {
+  if (
+    periodData.committees?.length === 0 &&
+    periodData.optionalCommittees?.length === 0
+  ) {
     toast.error("Minst én komité må velges.");
     return false;
   }

@@ -4,7 +4,7 @@ import {
 } from "../types/types";
 
 import sendEmail from "../email/sendEmail";
-import sendSMS from "./sendSMS";
+import sendSMS from "../sms/sendSMS";
 import {
   formatApplicantInterviewEmail,
   formatCommitteeInterviewEmail,

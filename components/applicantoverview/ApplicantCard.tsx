@@ -47,8 +47,8 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
         <p>E-post: {applicant?.email}</p>
         <p>Telefon: {formatPhoneNumber(applicant?.phone || "")}</p>
 
-        {includePreferences && (
-          <div>
+        {includePreferences && filteredPreferences.length > 0 && (
+          <>
             <h1 className="text-lg font-semibold pt-3">Komiteer:</h1>
             <ul>
               {filteredPreferences.map(([key, value], index) => (
@@ -57,17 +57,17 @@ const ApplicantCard = ({ applicant, includePreferences }: Props) => {
                 )}`}</li>
               ))}
             </ul>
+          </>
+        )}
 
-            {applicant?.optionalCommittees && (
-              <div className="pt-3">
-                <h1 className="text-lg font-semibold">Andre valg:</h1>
-                <p>
-                  {applicant?.optionalCommittees
-                    ?.map(changeDisplayName)
-                    .join(", ") || "Ingen valg"}{" "}
-                </p>
-              </div>
-            )}
+        {applicant?.optionalCommittees && (
+          <div className="pt-3">
+            <h1 className="text-lg font-semibold">Andre valg:</h1>
+            <p>
+              {applicant?.optionalCommittees
+                ?.map(changeDisplayName)
+                .join(", ") || "Ingen valg"}{" "}
+            </p>
           </div>
         )}
 

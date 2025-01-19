@@ -29,9 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       return res.status(200).json({ exists, period });
     } else if (req.method === "DELETE") {
-      // TODO: The next line is probably supposed to be !isAdmin(res, session)?
-      if (!isAdmin(res, session))
-        return res.status(403).json({ error: "Unauthorized" });
+      if (!isAdmin(res, session)) return res.status(403).json({ error: "Unauthorized" });
 
       const { error } = await deletePeriodById(id);
       if (error) throw new Error(error);
