@@ -42,6 +42,32 @@ const hasPeriod = (committee: owCommitteeType, periods: periodType[]) => {
   });
 };
 
+const isInterviewing = (committee: owCommitteeType, periods: periodType[]) => {
+  if (!Array.isArray(periods)) return false;
+
+  const today = new Date();
+
+  if (committee.name_short === "Bankom") {
+    return periods.some((period) => {
+      const interviewStart = new Date(period.interviewPeriod.start);
+      const interviewEnd = new Date(period.interviewPeriod.end);
+      return interviewStart <= today && interviewEnd >= today;
+    });
+  }
+
+  return periods.some((period) => {
+    const interviewStart = new Date(period.interviewPeriod.start);
+    const interviewEnd = new Date(period.interviewPeriod.end);
+
+    return (
+      interviewStart <= today &&
+      interviewEnd >= today &&
+      (period.committees.includes(committee.name_short) ||
+        period.optionalCommittees.includes(committee.name_short))
+    );
+  });
+};
+
 const Committees = () => {
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
   const [nodeCommittees, setNodeCommittees] = useState<owCommitteeType[]>([]);
@@ -86,7 +112,7 @@ const Committees = () => {
 
     const filteredCommitteesWithPeriod = owCommitteeData.filter(
       (commitee: owCommitteeType) =>
-        hasPeriod(commitee, periods) &&
+        (hasPeriod(commitee, periods) || isInterviewing(commitee, periods)) &&
         !excludedCommittees.includes(commitee.name_short)
     );
 
@@ -175,6 +201,7 @@ const CommitteList = ({
               key={index}
               committee={committee}
               hasPeriod={hasPeriod(committee, periods)}
+              isInterviewing={isInterviewing(committee, periods)}
             />
           );
         })}
