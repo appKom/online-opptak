@@ -208,9 +208,9 @@ export const ApplicationForm = (props: Props) => {
                 ["Ja", "ja"],
                 ["Nei", "nei"],
               ]}
-              label={`Ønsker du å søke ${changeDisplayName(
-                committee
-              )} i tillegg?`}
+              label={`Ønsker du å søke ${changeDisplayName(committee)} ${
+                availableCommittees.length > 1 ? "i tilegg?" : "?"
+              }`}
               updateInputValues={(value: string) =>
                 addOptionalCommittee(committee, value)
               }
