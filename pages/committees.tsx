@@ -9,7 +9,7 @@ import { fetchPeriods } from "../lib/api/periodApi";
 import { MainTitle } from "../components/Typography";
 import { UsersIcon } from "@heroicons/react/24/outline";
 import { Tabs } from "../components/Tabs";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { UserIcon, BellAlertIcon } from "@heroicons/react/24/solid";
 import { shuffleList } from "../lib/utils/shuffleList";
 
 const excludedCommittees = ["Faddere", "Output"];
@@ -42,9 +42,36 @@ const hasPeriod = (committee: owCommitteeType, periods: periodType[]) => {
   });
 };
 
+const isInterviewing = (committee: owCommitteeType, periods: periodType[]) => {
+  if (!Array.isArray(periods)) return false;
+
+  const today = new Date();
+
+  if (committee.name_short === "Bankom") {
+    return periods.some((period) => {
+      const interviewStart = new Date(period.interviewPeriod.start);
+      const interviewEnd = new Date(period.interviewPeriod.end);
+      return interviewStart <= today && interviewEnd >= today;
+    });
+  }
+
+  return periods.some((period) => {
+    const interviewStart = new Date(period.interviewPeriod.start);
+    const interviewEnd = new Date(period.interviewPeriod.end);
+
+    return (
+      interviewStart <= today &&
+      interviewEnd >= today &&
+      (period.committees.includes(committee.name_short) ||
+        period.optionalCommittees.includes(committee.name_short))
+    );
+  });
+};
+
 const Committees = () => {
   const [committees, setCommittees] = useState<owCommitteeType[]>([]);
   const [nodeCommittees, setNodeCommittees] = useState<owCommitteeType[]>([]);
+  const [committeesWithPeriod, setCommitteesWithPeriod] = useState<owCommitteeType[]>([]);
   const [periods, setPeriods] = useState<periodType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -82,7 +109,18 @@ const Committees = () => {
     );
 
     setCommittees(shuffleList(filteredCommittees));
-  }, [owCommitteeData]);
+
+    const filteredCommitteesWithPeriod = owCommitteeData.filter(
+      (commitee: owCommitteeType) =>
+        (hasPeriod(commitee, periods) || isInterviewing(commitee, periods)) &&
+        !excludedCommittees.includes(commitee.name_short)
+    );
+
+    setCommitteesWithPeriod(filteredCommitteesWithPeriod);
+
+    if (filteredCommitteesWithPeriod.length > 0) setActiveTab(2);
+
+  }, [owCommitteeData, periods]);
 
   useEffect(() => {
     if (!periodsData) return;
@@ -121,6 +159,20 @@ const Committees = () => {
               <CommitteList committees={nodeCommittees} periods={periods} />
             ),
           },
+          ...(committeesWithPeriod.length > 0
+            ? [
+              {
+                title: "Har opptak",
+                icon: <BellAlertIcon className="w-5 h-5" />,
+                content: (
+                  <CommitteList
+                    committees={committeesWithPeriod}
+                    periods={periods}
+                  />
+                ),
+              },
+            ]
+            : []),
         ]}
       />
     </div>
@@ -149,6 +201,7 @@ const CommitteList = ({
               key={index}
               committee={committee}
               hasPeriod={hasPeriod(committee, periods)}
+              isInterviewing={isInterviewing(committee, periods)}
             />
           );
         })}

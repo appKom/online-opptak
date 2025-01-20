@@ -3,11 +3,13 @@ import { owCommitteeType } from "../lib/types/types";
 interface CommitteeAboutCardProps {
   committee: owCommitteeType;
   hasPeriod: boolean;
+  isInterviewing: boolean
 }
 
 const CommitteeAboutCard = ({
   committee,
   hasPeriod,
+  isInterviewing
 }: CommitteeAboutCardProps) => {
   const { image, name_long, name_short, email, application_description } =
     committee;
@@ -27,6 +29,11 @@ const CommitteeAboutCard = ({
         {hasPeriod && (
           <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300 whitespace-nowrap">
             Har opptak!
+          </span>
+        )}
+        {isInterviewing && !hasPeriod && (
+          <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300 whitespace-nowrap">
+            Intervjuer pågår
           </span>
         )}
       </div>
