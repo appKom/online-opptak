@@ -93,15 +93,22 @@ export default function Footer() {
             reservert.
           </p>
         </div>
-        <Link href='/cappelini' passHref>
+        <div className="flex justify-end group mb-10 cursor-help">
           <Image
-            src="/cappelini.svg"
+            src="/cappelini/cappelini-gray.svg"
             alt="cappelini"
-            width={20}
-            height={20}
-            className="absolute bottom-4 right-4"
+            width={75}
+            height={75}
+            className="absolute group-hover:opacity-0 transition-opacity duration-300"
           />
-        </Link>
+          <Image
+            src="/cappelini/cappelini.svg"
+            alt="cappelini hover"
+            width={75}
+            height={75}
+            className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          />
+        </div>
       </div>
     </footer >
   );
