@@ -14,7 +14,6 @@ export const PeriodSkeleton = () => {
 export const PeriodSkeletonPage = () => {
   return (
     <div className="flex flex-col gap-10 my-10">
-      <SimpleTitle title="Nåværende opptaksperioder" />
       <div className="flex flex-col items-center max-w-full gap-5">
         <PeriodSkeleton />
       </div>
