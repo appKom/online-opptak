@@ -21,6 +21,8 @@ export default function ScheduleColumn({
 }: Props) {
   const [isDragging, setDragging] = useState(false);
   const timeSlots = getTimeSlots(interviewLength);
+  const dateOfMonth = date.split('-')[2];
+  const month = date.split('-')[1]
 
   return (
     <div
@@ -29,7 +31,7 @@ export default function ScheduleColumn({
       onMouseUp={() => setDragging(false)}
       onMouseLeave={() => setDragging(false)}
     >
-      <div className="flex justify-center">{weekDay}</div>
+      <div className="flex justify-center">{weekDay} {dateOfMonth}.{month}</div>
       {timeSlots.map((time, index) => (
         <ScheduleCell
           date={date}
