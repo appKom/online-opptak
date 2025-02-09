@@ -57,7 +57,7 @@ const PeriodCard = ({ period, active }: Props) => {
           </span>
         )}
         <div className="flex justify-center mt-4">
-          { active ? 
+          {active ?
             <Button
               title={hasApplied ? "Se søknad" : "Søk nå"}
               size="small"

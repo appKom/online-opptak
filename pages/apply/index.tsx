@@ -82,17 +82,17 @@ const Apply = () => {
               for kunngjøringer!
             </p>
           </div>
-        ) : ( 
+        ) : (
           <>
             {currentPeriods.length > 0 ? (
-            <div className="flex flex-col gap-10">
-              <SimpleTitle title="Nåværende opptaksperioder" />
-              <div className="flex flex-col items-center max-w-full gap-5">
-                {currentPeriods.map((period: periodType, index: number) => (
-                  <PeriodCard key={index} period={period} active={true} />
-                ))}
+              <div className="flex flex-col gap-10">
+                <SimpleTitle title="Nåværende opptaksperioder" />
+                <div className="flex flex-col items-center max-w-full gap-5">
+                  {currentPeriods.map((period: periodType, index: number) => (
+                    <PeriodCard key={index} period={period} active={true} />
+                  ))}
+                </div>
               </div>
-            </div> 
             ) : <></>}
             {upcomingPeriods.length > 0 ? (
               <div className="flex flex-col gap-10 mt-16">
@@ -102,8 +102,8 @@ const Apply = () => {
                     <PeriodCard key={index} period={period} active={false} />
                   ))}
                 </div>
-              </div> 
-              ) : <></>}
+              </div>
+            ) : <></>}
           </>
         )
         }
