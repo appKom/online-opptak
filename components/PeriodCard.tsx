@@ -10,9 +10,10 @@ import { PeriodSkeleton } from "./PeriodSkeleton";
 
 interface Props {
   period: periodType;
+  active: boolean;
 }
 
-const PeriodCard = ({ period }: Props) => {
+const PeriodCard = ({ period, active }: Props) => {
   const { data: session } = useSession();
   const [hasApplied, setHasApplied] = useState(false);
 
@@ -56,12 +57,14 @@ const PeriodCard = ({ period }: Props) => {
           </span>
         )}
         <div className="flex justify-center mt-4">
-          <Button
-            title={hasApplied ? "Se søknad" : "Søk nå"}
-            size="small"
-            color="white"
-            href={`/apply/${period._id}`}
-          />
+          {active ?
+            <Button
+              title={hasApplied ? "Se søknad" : "Søk nå"}
+              size="small"
+              color="white"
+              href={`/apply/${period._id}`}
+            /> : <></>
+          }
         </div>
       </div>
     </div>

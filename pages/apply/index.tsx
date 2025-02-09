@@ -10,6 +10,7 @@ import { SimpleTitle } from "../../components/Typography";
 
 const Apply = () => {
   const [currentPeriods, setCurrentPeriods] = useState<periodType[]>([]);
+  const [upcomingPeriods, setUpcomingPeriods] = useState<periodType[]>([])
 
   const {
     data: periodsData,
@@ -33,6 +34,14 @@ const Apply = () => {
         return startDate <= today && endDate >= today;
       })
     );
+
+    setUpcomingPeriods(
+      periodsData.periods.filter((period: periodType) => {
+        const startDate = new Date(period.applicationPeriod.start || "");
+
+        return startDate >= today
+      })
+    )
   }, [periodsData]);
 
   if (periodsIsLoading) return <PeriodSkeletonPage />;
@@ -41,7 +50,7 @@ const Apply = () => {
   return (
     <div className="flex flex-col justify-between overflow-x-hidden text-online-darkBlue dark:text-white">
       <div className="flex flex-col items-center justify-center gap-5 px-5">
-        {currentPeriods.length === 0 ? (
+        {currentPeriods.length === 0 && upcomingPeriods.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-8">
             <SimpleTitle title="Ingen åpne opptak for øyeblikket" />
             <p className="w-10/12 max-w-2xl text-center text-md ">
@@ -74,15 +83,30 @@ const Apply = () => {
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-10">
-            <SimpleTitle title="Nåværende opptaksperioder" />
-            <div className="flex flex-col items-center max-w-full gap-5">
-              {currentPeriods.map((period: periodType, index: number) => (
-                <PeriodCard key={index} period={period} />
-              ))}
-            </div>
-          </div>
-        )}
+          <>
+            {currentPeriods.length > 0 ? (
+              <div className="flex flex-col gap-10">
+                <SimpleTitle title="Nåværende opptaksperioder" />
+                <div className="flex flex-col items-center max-w-full gap-5">
+                  {currentPeriods.map((period: periodType, index: number) => (
+                    <PeriodCard key={index} period={period} active={true} />
+                  ))}
+                </div>
+              </div>
+            ) : <></>}
+            {upcomingPeriods.length > 0 ? (
+              <div className="flex flex-col gap-10 mt-16">
+                <SimpleTitle title="Kommende opptaksperioder" />
+                <div className="flex flex-col items-center max-w-full gap-5">
+                  {upcomingPeriods.map((period: periodType, index: number) => (
+                    <PeriodCard key={index} period={period} active={false} />
+                  ))}
+                </div>
+              </div>
+            ) : <></>}
+          </>
+        )
+        }
       </div>
     </div>
   );
