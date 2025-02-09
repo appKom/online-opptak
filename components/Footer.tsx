@@ -30,7 +30,7 @@ export default function Footer() {
   const theme = useTheme();
 
   return (
-    <footer className="px-4 py-12 mt-24 text-gray-700 bg-zinc-50 border-t border-gray-300 dark:text-gray-300 dark:border-gray-700 md:px-6 lg:px-8 dark:bg-gray-800">
+    <footer className="px-4 py-12 mt-24 text-gray-700 bg-zinc-50 border-t border-gray-300 dark:text-gray-300 dark:border-gray-700 md:px-6 lg:px-8 dark:bg-gray-800 relative">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col items-center justify-between mb-8 space-y-8 md:flex-row md:space-y-0">
           <div className="flex flex-col items-center space-y-4 md:items-start">
@@ -92,6 +92,22 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Online Opptak
             reservert.
           </p>
+        </div>
+        <div className="flex justify-end group mb-10 cursor-help">
+          <Image
+            src="/cappelini/cappelini-gray.svg"
+            alt="cappelini"
+            width={75}
+            height={75}
+            className="absolute group-hover:opacity-0 transition-opacity duration-300"
+          />
+          <Image
+            src="/cappelini/cappelini.svg"
+            alt="cappelini hover"
+            width={75}
+            height={75}
+            className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          />
         </div>
       </div>
     </footer >
