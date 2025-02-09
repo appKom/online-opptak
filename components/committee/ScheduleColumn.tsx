@@ -31,7 +31,7 @@ export default function ScheduleColumn({
       onMouseUp={() => setDragging(false)}
       onMouseLeave={() => setDragging(false)}
     >
-      <div className="flex justify-center">{weekDay} {dateOfMonth}.{month}</div>
+      <div className="flex justify-center text-center">{weekDay} {dateOfMonth}.{month}</div>
       {timeSlots.map((time, index) => (
         <ScheduleCell
           date={date}
