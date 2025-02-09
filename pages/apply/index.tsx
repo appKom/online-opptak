@@ -89,7 +89,7 @@ const Apply = () => {
               <SimpleTitle title="Nåværende opptaksperioder" />
               <div className="flex flex-col items-center max-w-full gap-5">
                 {currentPeriods.map((period: periodType, index: number) => (
-                  <PeriodCard key={index} period={period} />
+                  <PeriodCard key={index} period={period} active={true} />
                 ))}
               </div>
             </div> 
@@ -99,7 +99,7 @@ const Apply = () => {
                 <SimpleTitle title="Kommende opptaksperioder" />
                 <div className="flex flex-col items-center max-w-full gap-5">
                   {upcomingPeriods.map((period: periodType, index: number) => (
-                    <PeriodCard key={index} period={period} />
+                    <PeriodCard key={index} period={period} active={false} />
                   ))}
                 </div>
               </div> 
