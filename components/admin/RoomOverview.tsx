@@ -10,6 +10,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { WithId } from "mongodb";
 import toast from "react-hot-toast";
 import { createRoom, deleteRoom, fetchRoomsByPeriodId } from "../../lib/api/roomApi";
+import { formatDateNorwegian } from "../../lib/utils/dateUtils";
 
 interface Props {
   period?: periodType | null;
@@ -47,7 +48,11 @@ const RoomInterview = ({
       return false;
     }
 
-    // TODO: Make sure time is within interviewPeriod
+    const dateObject = new Date(date)
+    if (period && (new Date(period?.interviewPeriod.start) > dateObject || dateObject > new Date(period.interviewPeriod.end))) {
+      toast.error("Dato må være innenfor angitt intervjuperiode")
+      return false;
+    }
 
     return true;
   }
@@ -103,8 +108,9 @@ const RoomInterview = ({
 
   const handleDeleteBooking = async (booking: WithId<RoomBooking>) => {
     if (!period) return;
+    // TODO: Format date
     const isConfirmed = window.confirm(
-      `Er det sikker på at du ønsker å fjerne bookingen av ${booking.room} fra ${booking.startDate} til ${booking.endDate}?`
+      `Er det sikker på at du ønsker å fjerne bookingen av ${booking.room} ${formatDateNorwegian(booking.startDate)} fra ${"test"} til ${booking.endDate}?`
     );
     if (!isConfirmed) return;
 
