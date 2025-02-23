@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { createRoom, deleteRoom, fetchRoomsByPeriodId } from "../../lib/api/roomApi";
 
 interface Props {
-  period?: periodType;
+  period?: periodType | null;
 }
 
 const RoomInterview = ({
